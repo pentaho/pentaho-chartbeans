@@ -5,7 +5,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/jcommon-1.0.12.jar"/>
 	<classpathentry kind="lib" path="lib/junit-4.3.1.jar"/>
-	<classpathentry kind="lib" path="lib/commons-beanutils-1.8.0-BETA.jar" sourcepath="C:/downloads/apache/beanutils/commons-beanutils-1.8.0-BETA/commons-beanutils-1.8.0-BETA-sources.jar"/>
+	<classpathentry kind="lib" path="lib/commons-beanutils-1.8.0-BETA.jar" />
 	<classpathentry kind="lib" path="lib/commons-collections-3.2.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.14.jar"/>
