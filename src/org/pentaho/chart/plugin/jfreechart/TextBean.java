@@ -4,11 +4,11 @@ import java.awt.Paint;
 
 import org.jfree.chart.title.TextTitle;
 import org.jfree.ui.HorizontalAlignment;
-import org.pentaho.chart.api.engine.Text;
 
 
-public class TextBean extends AbstractBean implements Text{
+public class TextBean extends AbstractBean{
   
+  private static final long serialVersionUID = 4978279626529992366L;
   private TextTitle text;
 
   public TextBean() {

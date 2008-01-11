@@ -2,6 +2,8 @@ package org.pentaho.chart.api.exceptions;
 
 public class PersistenceException extends Exception {
 
+  private static final long serialVersionUID = -5922555902251829661L;
+
   public PersistenceException() {
   }
 

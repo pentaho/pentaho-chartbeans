@@ -24,13 +24,12 @@ public class ChartUtilTest {
 
   @Test
   public final void testMakeBarLineChart() {
-    Output outHandler = new JFreeChartPngChartOutput("chart.png");
 
+    Output outHandler = new JFreeChartPngChartOutput("chart.png");
     ChartUtil.makeBarLineChart(null, TestStyles.COMBINATION_CHART_STYLES, outHandler);
 
     try {
       outHandler.persist();
-
     } catch (Exception e) {
       fail();
     }
@@ -43,7 +42,14 @@ public class ChartUtilTest {
 
   @Test
   public final void testMakeBarChart() {
-    fail("Not yet implemented"); // TODO
+    Output outHandler = new JFreeChartPngChartOutput("barchart.png");
+    ChartUtil.makeBarChart(null, TestStyles.BAR_CHART_STYLES, outHandler);
+
+    try {
+      outHandler.persist();
+    } catch (Exception e) {
+      fail();
+    }
   }
 
   @Test

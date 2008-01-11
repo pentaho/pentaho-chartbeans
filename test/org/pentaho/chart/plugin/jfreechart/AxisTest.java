@@ -31,11 +31,6 @@ public class AxisTest extends TestCase implements PropertyChangeListener{
     assertEquals(axis, bean.getAxis()); // TODO
   }
 
-  @Test
-  public final void testSetVisible() {
-    bean.setVisible(false);
-    assertFalse(bean.isVisible());
-  }
 
   public void propertyChange(PropertyChangeEvent event) {
     

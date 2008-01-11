@@ -4,6 +4,8 @@ import org.jfree.data.category.CategoryDataset;
 
 public interface Chart {
   
+  public void createDefaultChart();
+  
   public String getTitle();
   public void setTitle(String title);
   

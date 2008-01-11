@@ -29,6 +29,8 @@ import java.beans.VetoableChangeListener;
 import java.beans.VetoableChangeSupport;
 import java.io.Serializable;
 
+import org.pentaho.chart.messages.Messages;
+
 /**
  * <p>A convenience class from which to extend all non-visual AbstractBeans. It
  * manages the PropertyChange notification system, making it relatively trivial
@@ -136,10 +138,10 @@ public abstract class AbstractBean implements Serializable{
    */
   protected AbstractBean(PropertyChangeSupport pcs, VetoableChangeSupport vcs) {
     if (pcs == null) {
-      throw new NullPointerException("PropertyChangeSupport must not be null");
+      throw new NullPointerException(Messages.getString("AbstractBean.ERROR_0001_NOT_NULL_PROPERTYCHANGESUPPORT")); //$NON-NLS-1$
     }
     if (vcs == null) {
-      throw new NullPointerException("VetoableChangeSupport must not be null");
+      throw new NullPointerException(Messages.getString("AbstractBean.ERROR_0002_NOT_NULL_VETOABLECHANGESUPPORT")); //$NON-NLS-1$
     }
 
     this.pcs = pcs;

@@ -1,7 +1,6 @@
 package org.pentaho.chart.plugin.jfreechart;
 
-import java.io.Serializable;
-
+import org.jfree.chart.renderer.AbstractRenderer;
 import org.pentaho.chart.api.engine.Series;
 
 public class SeriesBean extends AbstractBean implements Series {
@@ -15,6 +14,8 @@ public class SeriesBean extends AbstractBean implements Series {
   private int index;
   
   private Type type;
+  
+  private AbstractRenderer renderer; 
   
   public SeriesBean() {
     type = Type.UNKNOWN;
@@ -60,6 +61,20 @@ public class SeriesBean extends AbstractBean implements Series {
    */
   public final void setType(Type type) {
     this.type = type;
+  }
+
+  /**
+   * @return the renderer
+   */
+  public final AbstractRenderer getRenderer() {
+    return renderer;
+  }
+
+  /**
+   * @param renderer the renderer to set
+   */
+  public final void setRenderer(AbstractRenderer renderer) {
+    this.renderer = renderer;
   }
   
   

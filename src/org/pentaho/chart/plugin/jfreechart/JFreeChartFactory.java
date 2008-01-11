@@ -21,19 +21,35 @@ public class JFreeChartFactory implements ChartFactory, Serializable {
     return this;
   }
 
-  public void makeAreaChart(Data data, Map styles, Output outHandler) {
+  public void makeAreaChart(Data data, Map <String,?> styles, Output outHandler) {
     // TODO Auto-generated method stub
 
   }
 
-  public void makeBarChart(Data data, Map styles, Output outHandler) {
-    // TODO Auto-generated method stub
+  public void makeBarChart(Data data, Map <String,?> styles, Output outHandler) {
+    BarChartBean chartBean = new BarChartBean();
+    chartBean.createDefaultChart();
+    
+    // TODO: figure out data loading
+    
+    try {
+      BeanUtils.populate(chartBean, styles);
+    } catch (IllegalAccessException e) {
+      e.printStackTrace();
+    } catch (InvocationTargetException e) {
+      e.printStackTrace();
+    }
+    
+    outHandler.setChart(chartBean);
+    
+    // TODO: figure out output handling
 
   }
 
-  public void makeBarLineChart(Data data, Map styles, Output outHandler) {
+  public void makeBarLineChart(Data data, Map <String,?> styles, Output outHandler) {
 
     Chart chartBean = new CombinationChartBean();
+    chartBean.createDefaultChart();
     
     // TODO: figure out data loading
     
@@ -50,43 +66,43 @@ public class JFreeChartFactory implements ChartFactory, Serializable {
     // TODO: figure out output handling
   }
 
-  public void makeBubbleChart(Data data, Map styles, Output outHandler) {
+  public void makeBubbleChart(Data data, Map <String,?> styles, Output outHandler) {
 
   }
 
-  public void makeDialChart(Data data, Map styles, Output outHandler) {
+  public void makeDialChart(Data data, Map <String,?> styles, Output outHandler) {
 
   }
 
-  public void makeDifferenceChart(Data data, Map styles, Output outHandler) {
+  public void makeDifferenceChart(Data data, Map <String,?> styles, Output outHandler) {
 
   }
 
-  public void makeLineChart(Data data, Map styles, Output outHandler) {
+  public void makeLineChart(Data data, Map <String,?> styles, Output outHandler) {
 
   }
 
-  public void makeMultiPieChart(Data data, Map styles, Output outHandler) {
+  public void makeMultiPieChart(Data data, Map <String,?> styles, Output outHandler) {
 
   }
 
-  public void makePieChart(Data data, Map styles, Output outHandler) {
+  public void makePieChart(Data data, Map <String,?> styles, Output outHandler) {
 
   }
 
-  public void makeScatterPlotChart(Data data, Map styles, Output outHandler) {
+  public void makeScatterPlotChart(Data data, Map <String,?> styles, Output outHandler) {
 
   }
 
-  public void makeStepAreaChart(Data data, Map styles, Output outHandler) {
+  public void makeStepAreaChart(Data data, Map <String,?> styles, Output outHandler) {
 
   }
 
-  public void makeStepChart(Data data, Map styles, Output outHandler) {
+  public void makeStepChart(Data data, Map <String,?> styles, Output outHandler) {
 
   }
 
-  public void makeWaterfallChart(Data data, Map styles, Output outHandler) {
+  public void makeWaterfallChart(Data data, Map <String,?> styles, Output outHandler) {
 
   }
 

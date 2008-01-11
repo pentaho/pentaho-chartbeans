@@ -6,7 +6,7 @@ public class AxisBean extends AbstractBean implements org.pentaho.chart.api.engi
   
   private static final long serialVersionUID = -5245978368873701196L;
   
-  private Axis axis; 
+  protected Axis axis; 
 
   public AxisBean() {
   }
@@ -25,24 +25,4 @@ public class AxisBean extends AbstractBean implements org.pentaho.chart.api.engi
     this.axis = axis;
   }
   
-  public boolean isVisible(){
-    if (axis != null){
-      return axis.isVisible();
-    }
-    return false;
-  }
-  
-  public void setVisible(boolean vis){
-    if(axis != null){
-      boolean old = isVisible();
-      axis.setVisible(vis);
-      firePropertyChange("visible", old, vis);
-    }
-  }
-  
-  
-  
-  
-
-
 }
