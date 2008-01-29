@@ -16,12 +16,16 @@
 package org.pentaho.experimental.chart.core.parser;
 
 import org.pentaho.experimental.chart.core.ChartDocument;
+import org.pentaho.experimental.chart.core.ChartElement;
 import org.xml.sax.SAXException;
 
 public class ChartDocumentReadHandler extends ChartElementReadHandler {
 
-  public Object getObject() throws SAXException {
-    return new ChartDocument();
+  public ChartDocumentReadHandler() {
+  }
+
+  public Object getObject() {
+    return new ChartDocument((ChartElement) super.getObject());
   }
 
 }

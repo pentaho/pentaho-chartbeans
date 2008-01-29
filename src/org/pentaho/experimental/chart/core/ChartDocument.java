@@ -15,12 +15,42 @@
  */
 package org.pentaho.experimental.chart.core;
 
+/**
+ * This is the object that contains the root element of the parsed chart defintion
+ */
 public class ChartDocument {
-  public ChartElement getRootElement() {
-    return null;
+
+  /**
+   * The top-most element in the parsed chart definition
+   */
+  private ChartElement rootElement;
+
+  /**
+   * Constructor that creats the chart document.
+   * @param rootElement the parsed root element of the chart document
+   */
+  public ChartDocument(ChartElement rootElement) {
+    this.rootElement = rootElement;
   }
-  
+
+  /**
+   * Returns the root element of the parsed chart document
+   */
+  public ChartElement getRootElement() {
+    return rootElement;
+  }
+
+  /**
+   * Generates a string representation of the chart document
+   */
   public String toString() {
-    return getClass().toString() + "[" + "]";
+    final StringBuffer sb = new StringBuffer();
+    sb.append(getClass().getName());
+    if (rootElement == null) {
+      sb.append(" [null]");
+    } else {
+      sb.append("\n").append(rootElement.toString("  "));
+    }
+    return sb.toString();
   }
 }

@@ -17,24 +17,52 @@ package org.pentaho.experimental.chart.core.parser;
 
 import org.jfree.xmlns.parser.AbstractXmlReadHandler;
 import org.jfree.xmlns.parser.XmlReadHandler;
+import org.jfree.xmlns.parser.StringReadHandler;
 import org.pentaho.experimental.chart.core.ChartElement;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-public class ChartElementReadHandler extends AbstractXmlReadHandler {
+public class ChartElementReadHandler extends StringReadHandler {
   private ChartElement chartElement;
+  private ChartElement parentChartElement;
 
   public ChartElementReadHandler() {
     chartElement = new ChartElement();
   }
 
-  protected XmlReadHandler getHandlerForChild(final String uri, final String tagName, final Attributes atts)
-      throws SAXException {
-    return new ChartElementReadHandler();
+  public ChartElementReadHandler(ChartElement parentChartElement) {
+    this.parentChartElement = parentChartElement;
+    chartElement = new ChartElement();
+    parentChartElement.addChildElement(chartElement);
   }
 
-  public Object getObject() throws SAXException {
+  protected XmlReadHandler getHandlerForChild(final String uri, final String tagName, final Attributes atts)
+      throws SAXException {
+    return new ChartElementReadHandler(chartElement);
+  }
+
+  public Object getObject() {
     return chartElement;
   }
 
+  protected void doneParsing() throws SAXException {
+    super.doneParsing();
+    String result = getResult();
+    if (result.trim().length() > 0) {
+      chartElement.setText(result);
+    }
+  }
+
+  protected void startParsing(Attributes attrs) throws SAXException {
+    super.startParsing(attrs);
+    chartElement.setNamespace(getUri());
+    chartElement.setTagName(getTagName());
+
+    for (int i = 0; i < attrs.getLength(); ++i) {
+      final String uri = attrs.getURI(i);
+      final String name = attrs.getLocalName(i);
+      final String value = attrs.getValue(i);
+      chartElement.setAttribute(uri, name, value);
+    }
+  }
 }

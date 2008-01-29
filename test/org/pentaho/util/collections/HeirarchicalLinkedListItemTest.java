@@ -13,9 +13,10 @@
  * Created  
  * @author David Kincade
  */
-package org.pentaho.experimental.chart.core;
+package org.pentaho.util.collections;
 
 import junit.framework.TestCase;
+import org.pentaho.util.collections.HeirarchicalLinkedListItem;
 
 public class HeirarchicalLinkedListItemTest extends TestCase {
   /**
@@ -427,5 +428,49 @@ public class HeirarchicalLinkedListItemTest extends TestCase {
     assertEquals("incorrect child order", child4, child2.getNextItem());
     assertEquals("incorrect child order", child2, child4.getPreviousItem());
     assertNull("endpoint problem", child4.getNextItem());
+  }
+
+  /**
+   * Tests the <code>getChildCount()</code> method
+   */
+  public void testGetChildCount() {
+    HeirarchicalLinkedListItem parent = new HeirarchicalLinkedListItem();
+    HeirarchicalLinkedListItem child1 = new HeirarchicalLinkedListItem();
+    HeirarchicalLinkedListItem child2 = new HeirarchicalLinkedListItem();
+    HeirarchicalLinkedListItem child3 = new HeirarchicalLinkedListItem();
+    HeirarchicalLinkedListItem child4 = new HeirarchicalLinkedListItem();
+    HeirarchicalLinkedListItem child5 = new HeirarchicalLinkedListItem();
+
+    assertEquals("Empty parent should have 0 children", 0, parent.getChildCount());
+
+    parent.addChildItem(child1);
+    assertEquals(1, parent.getChildCount());
+    assertEquals(0, child1.getChildCount());
+
+    parent.addChildItem(child2);
+    assertEquals(2, parent.getChildCount());
+    assertEquals(0, child1.getChildCount());
+    assertEquals(0, child2.getChildCount());
+
+    parent.addChildItem(child3);
+    assertEquals(3, parent.getChildCount());
+    assertEquals(0, child1.getChildCount());
+    assertEquals(0, child2.getChildCount());
+    assertEquals(0, child3.getChildCount());
+
+    child1.addChildItem(child4);
+    assertEquals(3, parent.getChildCount());
+    assertEquals(1, child1.getChildCount());
+    assertEquals(0, child2.getChildCount());
+    assertEquals(0, child3.getChildCount());
+    assertEquals(0, child4.getChildCount());
+
+    child1.addChildItem(child5);
+    assertEquals(3, parent.getChildCount());
+    assertEquals(2, child1.getChildCount());
+    assertEquals(0, child2.getChildCount());
+    assertEquals(0, child3.getChildCount());
+    assertEquals(0, child4.getChildCount());
+    assertEquals(0, child5.getChildCount());
   }
 }

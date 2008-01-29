@@ -24,16 +24,215 @@ import org.jfree.resourceloader.ResourceManager;
 import org.pentaho.experimental.chart.ChartBoot;
 
 public class ParseTest extends TestCase {
+
+  /**
+   * Tests the ability of the system to parse the supplied XML document and constuct a correct
+   * ChartDocument and ChartElement tree. The tree should be complete with all elements
+   * and each element should contain the information (tag name, text, attributes, etc.)
+   */
   @SuppressWarnings("nls")
-  public void testBoot() throws Exception {
-    // Boot the charting library
+  public void testParser() throws Exception {
+    // Boot the charting library - required for parsing configuration
     ChartBoot.getInstance().start();
-    
-    URL xmlDocument = ParseTest.class.getResource("sample1.xml");
+
+    // Parse the test document located in the same class location as this class
+    URL xmlDocument = this.getClass().getResource("ParseTest.xml");
     ResourceManager resourceManager = new ResourceManager();
     resourceManager.registerDefaults();
     Resource res = resourceManager.createDirectly(xmlDocument, ChartDocument.class);
     ChartDocument doc = (ChartDocument)res.getResource();
-    System.out.println(doc);
+    if (doc == null) {
+      fail("A null document should never be returned");
+    }
+
+    // Test the resulting document
+    //
+    // <chart xmlns="http://www.pentaho.org/namespaces/chart">
+    // ...
+    // </chart>
+    //
+    ChartElement rootElement = doc.getRootElement();
+    assertNotNull(rootElement);
+    assertEquals("chart", rootElement.getTagName());
+    assertEquals(12, rootElement.getChildCount());
+    assertNull(rootElement.getText());
+
+    // 1st Element
+    //
+    //   <inline-stylesheet>
+    //     axis {
+    //         color: #FFF000;
+    //         font-family: sans-serif;
+    //     }
+    //     axis label {
+    //         font-weight: bold;
+    //     }
+    //     axis[type="numeric"] {
+    //         format: "#.00%";
+    //     }
+    //     axis[type="datetime"] {
+    //         format: "MM/dd  hh:mm a";
+    //     }
+    //     axis.myAxis {
+    //         color: blue;
+    //         font-family: "Comic Sans MS";
+    //     }
+    //
+    //     axis#mzId {}
+    //     axis[xml>id+"mzId"]
+    //
+    //
+    //   </inline-stylesheet>
+    ChartElement element = rootElement.getFirstChildItem();
+    assertNotNull(element);
+    assertEquals("inline-stylesheet", element.getTagName());
+    assertNotNull(element.getText());
+    assertTrue(element.getText().length() > 0);
+    assertTrue(element.getText().indexOf("xml>id") > -1);
+    assertEquals(0, element.getChildCount());
+
+    // 2nd element
+    // <external-stylesheet href="sample1.css"/>
+    element = element.getNextItem();
+    assertNotNull(element);
+    assertEquals("external-stylesheet", element.getTagName());
+    assertNull(element.getText());
+    assertNotNull(element.getAttributeMap());
+    assertEquals("sample1.css", element.getAttribute("href"));
+
+    // 3rd element
+    //   <plot/>
+    element = element.getNextItem();
+    assertNotNull(element);
+    assertEquals("plot", element.getTagName());
+    assertNull(element.getText());
+    assertNotNull(element.getAttributeMap());
+    assertNull(element.getAttribute("test"));
+
+    // 4th element
+    //  <axis type="numeric" id="y1" position="left" style="">
+    //    <!-- This label represents the title for the axis -->
+    //    <label><![CDATA[This is <b>my</b> chart]]></label>
+    //  </axis>
+    element = element.getNextItem();
+    assertNotNull(element);
+    assertEquals("axis", element.getTagName());
+    assertNull(element.getText());
+    assertNotNull(element.getAttributeMap());
+    assertEquals("numeric", element.getAttribute("type"));
+    assertEquals("y1", element.getAttribute("id"));
+    assertEquals("left", element.getAttribute("position"));
+    assertEquals("", element.getAttribute("style"));
+    assertNull(element.getAttribute("Position")); // Note the uppercase 'P'
+    ChartElement childElement = element.getFirstChildItem();
+    assertNotNull(childElement);
+    assertEquals(childElement, element.getLastChildItem());
+    assertEquals("label", childElement.getTagName());
+    assertEquals("This is <b>my</b> chart", childElement.getText());
+    assertEquals(0, childElement.getChildCount());
+
+    // 5th element - http://www.imdb.com/title/tt0119116/
+    //   <axis class="myAxis" type="numeric" id="y2" position="right">
+    //    <!-- This label represents the title for the axis -->
+    //    <label>Test</label>
+    //  </axis>
+    element = element.getNextItem();
+    assertNotNull(element);
+    assertEquals("axis", element.getTagName());
+    assertNull(element.getText());
+    assertNotNull(element.getAttributeMap());
+    assertEquals("numeric", element.getAttribute("type"));
+    assertEquals("y2", element.getAttribute("id"));
+    assertEquals("right", element.getAttribute("position"));
+    assertNull(element.getAttribute("style"));
+    assertNull(element.getAttribute("Position")); // Note the uppercase 'P'
+    childElement = element.getFirstChildItem();
+    assertNotNull(childElement);
+    assertEquals(childElement, element.getLastChildItem());
+    assertEquals("label", childElement.getTagName());
+    assertEquals("Test", childElement.getText());
+    assertEquals(0, childElement.getChildCount());
+
+    // 6th element
+    //   <axis type="datetime" id="x1" position="bottom">
+    //    <!-- This label represents the title for the axis -->
+    //    <label/>
+    //  </axis>
+    element = element.getNextItem();
+    assertNotNull(element);
+    assertEquals("axis", element.getTagName());
+    assertNull(element.getText());
+    assertNotNull(element.getAttributeMap());
+    assertEquals("datetime", element.getAttribute("type"));
+    assertEquals("x1", element.getAttribute("id"));
+    assertEquals("bottom", element.getAttribute("position"));
+    assertNull(element.getAttribute("style"));
+    childElement = element.getFirstChildItem();
+    assertNotNull(childElement);
+    assertEquals(childElement, element.getLastChildItem());
+    assertEquals("label", childElement.getTagName());
+    assertNull(childElement.getText());
+    assertEquals(0, childElement.getChildCount());
+
+    // 7th element
+    // <legend/>
+    element = element.getNextItem();
+    assertNotNull(element);
+    assertEquals("legend", element.getTagName());
+
+    // 8th element
+    // <title/>
+    element = element.getNextItem();
+    assertNotNull(element);
+    assertEquals("title", element.getTagName());
+
+    // 9th element
+    // <subtitles>
+    //   <subtitle></subtitle>
+    //   <subtitle></subtitle>
+    // </subtitles>
+    element = element.getNextItem();
+    assertNotNull(element);
+    assertEquals("subtitles", element.getTagName());
+    assertEquals(2, element.getChildCount());
+    assertNotSame(element.getFirstChildItem(), element.getLastChildItem());
+    assertEquals(element.getFirstChildItem().getTagName(), element.getLastChildItem().getTagName());
+
+    // 10th element
+    // <chart-series>
+    //   <series id="" position="0" axis="y1"></series>
+    //   <series id="" position="1" axis="y2"></series>
+    // </chart-series>
+    element = element.getNextItem();
+    assertNotNull(element);
+    assertEquals("chart-series", element.getTagName());
+    childElement = element.getFirstChildItem();
+    assertNotNull(childElement);
+    assertEquals("series", childElement.getTagName());
+    assertEquals("0", childElement.getAttribute("position"));
+    assertEquals("y1", childElement.getAttribute("axis"));
+    assertEquals("", childElement.getAttribute("id"));
+    assertNull(childElement.getAttribute("ID"));
+    assertEquals(0, childElement.getChildCount());
+
+    // 11th element
+    // <annotations>
+    //   <annotation></annotation>
+    // </annotations>
+    element = element.getNextItem();
+    assertNotNull(element);
+    assertEquals("annotations", element.getTagName());
+
+    // 12th elemenet
+    // <intervals>
+    //   <interval></interval>
+    // </intervals>
+    element = element.getNextItem();
+    assertNotNull(element);
+    assertEquals("intervals", element.getTagName());
+
+    // 13th element - ok ... there isn't one
+    element = element.getNextItem();
+    assertNull(element);
   }
 }

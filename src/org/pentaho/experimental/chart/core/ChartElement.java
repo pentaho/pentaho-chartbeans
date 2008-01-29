@@ -11,14 +11,9 @@
  * the license for the specific language governing your rights and limitations.
  *
  * Created  
- * @author 
+ * @author David Kincade 
  */
 package org.pentaho.experimental.chart.core;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
 
 import org.jfree.xmlns.LibXmlInfo;
 import org.jfree.xmlns.common.AttributeMap;
@@ -27,33 +22,30 @@ import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
 import org.pentaho.reporting.libraries.css.keys.box.BoxStyleKeys;
 import org.pentaho.reporting.libraries.css.model.CSSStyleRule;
 import org.pentaho.reporting.libraries.css.values.CSSConstant;
+import org.pentaho.util.Empty;
+import org.pentaho.util.collections.HeirarchicalLinkedListItem;
+
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Defines the element information for the elements in the chart definition file
  */
 public class ChartElement extends HeirarchicalLinkedListItem implements Cloneable, LayoutElement {
-  private static final String[] EMPTY_STRINGS = new String[0];
-
-  private static final Map EMPTY_MAP = Collections.unmodifiableMap(new HashMap<Object, Object>());
-
   public static final String NAME_ATTRIBUTE = "name"; //$NON-NLS-1$
 
   public static final String ID_ATTRIBUTE = "id"; //$NON-NLS-1$
-
-  /**
-   * The type corresponds (somewhat) to the tagname of HTML.
-   */
-  public static final String TYPE_ATTRIBUTE = "type"; //$NON-NLS-1$
 
   /**
    * See XML-Namespaces for the idea of that one ...
    */
   public static final String NAMESPACE_ATTRIBUTE = "namespace"; //$NON-NLS-1$
 
+
   public static final String NAMESPACE = "charting-rulez"; //$NON-NLS-1$
 
   /**
-   * The attributes of this element. These attributes are namespaced, therefore  
+   * The attributes of this element. These attributes are namespaced, therefore
    */
   private AttributeMap attributes;
 
@@ -61,6 +53,21 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
    * The style information of this element
    */
   private CSSStyleRule style;
+
+  /**
+   * The name of the tag that this element represents
+   */
+  private String tagName;
+
+  /**
+   * The text contents of this element.
+   */
+  private String text;
+
+  /**
+   * Constant used when generating the deep <code>toString</code> representation
+   */
+  private static final String TO_STRING_PREFIX = "  ";
 
   /**
    * Constructs an element.
@@ -106,15 +113,17 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
   }
 
   /**
+   * Returns the tag name that this element represents
    */
   public String getTagName() {
-    return (String) getAttribute(NAMESPACE, TYPE_ATTRIBUTE);
+    return tagName;
   }
 
   /**
+   * Sets the tagname for this element
    */
-  public void setType(final String type) {
-    setAttribute(NAMESPACE, TYPE_ATTRIBUTE, type);
+  public void setTagName(String tagName) {
+    this.tagName = tagName;
   }
 
   /**
@@ -131,6 +140,7 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
 
   /**
    * Returns the name of the Element. The name of the Element is never null.
+   *
    * @return the name.
    */
   public String getName() {
@@ -138,7 +148,6 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
   }
 
   /**
-   * 
    * @param name
    * @param value
    */
@@ -147,7 +156,6 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
   }
 
   /**
-   * 
    * @param namespace
    * @param name
    * @param value
@@ -163,7 +171,6 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
   }
 
   /**
-   * 
    * @param name
    * @return
    */
@@ -172,7 +179,6 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
   }
 
   /**
-   * 
    * @param namespace
    * @param name
    * @return
@@ -185,30 +191,29 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
   }
 
   /**
-   * 
    * @param namespace
    * @return
    */
   public Map getAttributes(final String namespace) {
     if (this.attributes == null) {
-      return EMPTY_MAP;
+      return Empty.MAP;
     }
     return this.attributes.getAttributes(namespace);
   }
 
   /**
-   * Returns a copy of the attributes for this chart element 
+   * Returns a copy of the attributes for this chart element
    */
   public AttributeMap getAttributeMap() {
     return new AttributeMap(this.attributes);
   }
 
   /**
-   * Returns a set of namespaces used in the attributes for this chart elements 
+   * Returns a set of namespaces used in the attributes for this chart elements
    */
   public String[] getAttributeNameSpaces() {
     if (this.attributes == null) {
-      return EMPTY_STRINGS;
+      return Empty.STRING_ARRAY;
     }
     return this.attributes.getNameSpaces();
   }
@@ -224,7 +229,6 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
   }
 
   /**
-   * 
    * @param v
    */
   public void setVisibility(final CSSConstant v) {
@@ -232,7 +236,6 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
   }
 
   /**
-   * 
    * @return
    */
   public CSSConstant getVisibility() {
@@ -240,7 +243,7 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
   }
 
   /**
-   * 
+   *
    */
   public Object clone() throws CloneNotSupportedException {
     final ChartElement element = (ChartElement) super.clone();
@@ -271,7 +274,7 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
   }
 
   public Map getStrings() {
-    return EMPTY_MAP;
+    return Empty.MAP;
   }
 
   public boolean isPseudoElement() {
@@ -286,5 +289,91 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
   public LayoutElement getParentLayoutElement() {
     // TODO Auto-generated method stub
     return null;
+  }
+
+  public void addChildElement(ChartElement chartElement) {
+    addChildItem(chartElement);
+  }
+
+  public String getText() {
+    return text;
+  }
+
+  public void setText(String text) {
+
+    this.text = text;
+  }
+
+  /**
+   * Dumps the content of this ChartElement
+   */
+  public String toString() {
+    final StringBuffer sb = new StringBuffer();
+
+    // Dump this object
+    sb.append(getClass().getName()).append(" {").append("tagName=[").append(tagName).append("]");
+    sb.append(" attributes=[").append(attributes).append("]");
+    if (text != null) {
+      sb.append(" text=[").append(text).append("]");
+    }
+    sb.append("}");
+    return sb.toString();
+  }
+
+  /**
+   * Performs a "deep" toString() where this element and all the children of this element are included
+   *
+   * @param prefix used for indenting the output
+   */
+  public String toString(final String prefix) {
+    final StringBuffer sb = new StringBuffer();
+    sb.append(prefix).append(toString()).append("\n");
+    ChartElement child = (ChartElement) getFirstChildItem();
+    while (child != null) {
+      sb.append("\n").append(child.toString(prefix + TO_STRING_PREFIX));
+      child = (ChartElement) child.getNextItem();
+    }
+    return sb.toString();
+  }
+
+  /**
+   * Returns the parent <code>ChartElement</code> for the current <code>ChartElement</code>.
+   * If this <code>ChartElement</code> is the root element of the document, this method
+   * will return <code>null</code>
+   */
+  public ChartElement getParentItem() {
+    return (ChartElement)super.getParentItem();
+  }
+
+  /**
+   * Returns the <code>ChartElement</code> that is previous to this element. If there is none,
+   * this method will return <code>null</code>
+   */
+  public ChartElement getPreviousItem() {
+    return (ChartElement)super.getPreviousItem();
+  }
+
+  /**
+   * Returns the <code>ChartElement</code> this follows this element. If there is none,
+   * this method will return <code>null</code>
+   */
+  public ChartElement getNextItem() {
+    return (ChartElement)super.getNextItem();
+  }
+
+  /**
+   * Returns the first <code>ChartElement</code> that is a child of this <code>ChartElement</code>.
+   * If this <code>ChartElement</code> does not have any children, this method will return <code>null</code>.
+   */
+  public ChartElement getFirstChildItem() {
+    return (ChartElement)super.getFirstChildItem();
+  }
+
+  /**
+   * Returns the last <code>ChartElement</code> that is a child of this <code>ChartElement</code>.
+   * If this <code>ChartElement</code> does not have any children, this method will return <code>null</code>.
+   */
+  public ChartElement getLastChildItem() {
+    return (ChartElement)super.getLastChildItem();
   }
 }
