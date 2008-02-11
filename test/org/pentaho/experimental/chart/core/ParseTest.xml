@@ -19,10 +19,6 @@
         font-family: "Comic Sans MS";
     }
 
-    axis#mzId {}
-    axis[xml>id+"mzId"]
-
-
   </inline-stylesheet>
 
   <external-stylesheet href="sample1.css"/>

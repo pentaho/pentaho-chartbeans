@@ -27,6 +27,7 @@ import org.pentaho.util.collections.HeirarchicalLinkedListItem;
 
 import java.util.Locale;
 import java.util.Map;
+import java.util.ArrayList;
 
 /**
  * Defines the element information for the elements in the chart definition file
@@ -68,6 +69,8 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
    * Constant used when generating the deep <code>toString</code> representation
    */
   private static final String TO_STRING_PREFIX = "  ";
+  public static final String STYLESHEET_TAGNAME = "stylesheet";
+  public static final String CHART_TAGNAME = "chart";
 
   /**
    * Constructs an element.
@@ -376,4 +379,30 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
   public ChartElement getLastChildItem() {
     return (ChartElement)super.getLastChildItem();
   }
+
+  /**
+   * Returns all child <code>ChartElements</code> to this <code>ChartElement</code> which
+   * has the specified <code>tagName</code>.
+   * @param tagName the name of the tag used in searching
+   * @return an array of <code>ChartElement</code> objects that match the search criteria
+   */
+  public ChartElement[] findChildrenByName(String tagName) {
+    // Holder for the elements that match
+    final ArrayList matchList = new ArrayList();
+
+    // If there is no tag name specified, then nothing will match
+    if (tagName != null) {
+      // "Have you checked the children lately"
+      for (ChartElement item = getFirstChildItem(); item != null; item = item.getNextItem()) {
+        // See if this item matches
+        if (tagName.equals(item.getTagName())) {
+          matchList.add(item);
+        }
+      }
+    }
+
+    // Return the list as an array
+    return (ChartElement[])matchList.toArray(new ChartElement[matchList.size()]);
+  }
 }
+

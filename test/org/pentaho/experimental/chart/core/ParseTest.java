@@ -22,8 +22,21 @@ import junit.framework.TestCase;
 import org.jfree.resourceloader.Resource;
 import org.jfree.resourceloader.ResourceManager;
 import org.pentaho.experimental.chart.ChartBoot;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class ParseTest extends TestCase {
+
+  /**
+   * Performs the ChartBoot before performing the tests
+   * @throws Exception
+   */
+  protected void setUp() throws Exception {
+    super.setUp();
+
+    // Boot the charting library - required for parsing configuration
+    ChartBoot.getInstance().start();
+  }
 
   /**
    * Tests the ability of the system to parse the supplied XML document and constuct a correct
@@ -32,9 +45,6 @@ public class ParseTest extends TestCase {
    */
   @SuppressWarnings("nls")
   public void testParser() throws Exception {
-    // Boot the charting library - required for parsing configuration
-    ChartBoot.getInstance().start();
-
     // Parse the test document located in the same class location as this class
     URL xmlDocument = this.getClass().getResource("ParseTest.xml");
     ResourceManager resourceManager = new ResourceManager();
@@ -78,17 +88,13 @@ public class ParseTest extends TestCase {
     //         font-family: "Comic Sans MS";
     //     }
     //
-    //     axis#mzId {}
-    //     axis[xml>id+"mzId"]
-    //
-    //
     //   </inline-stylesheet>
     ChartElement element = rootElement.getFirstChildItem();
     assertNotNull(element);
     assertEquals("inline-stylesheet", element.getTagName());
     assertNotNull(element.getText());
     assertTrue(element.getText().length() > 0);
-    assertTrue(element.getText().indexOf("xml>id") > -1);
+    assertTrue(element.getText().indexOf("\"Comic Sans MS\"") > -1);
     assertEquals(0, element.getChildCount());
 
     // 2nd element
@@ -234,5 +240,16 @@ public class ParseTest extends TestCase {
     // 13th element - ok ... there isn't one
     element = element.getNextItem();
     assertNull(element);
+
+    // Test the ability to retrieve children by name
+    assertEquals(0, rootElement.findChildrenByName(null).length); // no key ... array should be empty
+    assertEquals(0, rootElement.findChildrenByName("").length); // blank key ... none match that
+    assertEquals(0, rootElement.findChildrenByName("foo").length); // foo doesn't exist in the test
+    assertEquals(0, rootElement.findChildrenByName("subtitle").length); // subtitle exists, but not as a direct descendent of the root
+    final ChartElement[] elements = rootElement.findChildrenByName("axis");
+    assertEquals(3, elements.length);
+    assertTrue(!elements[0].getAttribute("id").equals(elements[1].getAttribute("id")));
+    assertTrue(!elements[0].getAttribute("id").equals(elements[2].getAttribute("id")));
+    assertTrue(!elements[1].getAttribute("id").equals(elements[2].getAttribute("id")));
   }
 }

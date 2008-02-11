@@ -1,0 +1,14 @@
+<chart>
+Description:    This element is the root element of the chart definition.
+Attributes:     none
+Text:           none
+Child Elements: Any (all are acceptable, none are required)
+
+
+<stylesheet>
+Description:    Defines style information for the chart (can have 0 or more and all are interpreted in the order of
+                appearance. If a style in a later stylesheet tag contradicts with an earlier stylesheet tag, that
+                later tag's information is used.
+Attributes:     href (not required) - specifies an external style sheet file (css)
+Text:           (not required) interpreted as a style sheet fragment
+Child Elements: none
