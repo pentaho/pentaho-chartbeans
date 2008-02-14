@@ -1,0 +1,21 @@
+@namespace url(http://www.pentaho.org/namespaces/chart); /* set default namespace to Pentaho Charts */
+
+/* blocks */
+
+chart {
+}
+
+stylesheet {
+}
+
+title {
+}
+
+plot {
+}
+
+axis {
+}
+
+series {
+}

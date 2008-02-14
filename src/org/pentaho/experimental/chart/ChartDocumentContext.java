@@ -15,7 +15,6 @@
  */
 package org.pentaho.experimental.chart;
 
-import org.jfree.resourceloader.ResourceException;
 import org.jfree.resourceloader.ResourceKey;
 import org.jfree.resourceloader.ResourceManager;
 import org.pentaho.experimental.chart.core.ChartDocument;
@@ -23,8 +22,10 @@ import org.pentaho.experimental.chart.core.ChartElement;
 import org.pentaho.reporting.libraries.css.dom.DocumentContext;
 import org.pentaho.reporting.libraries.css.dom.StyleReference;
 import org.pentaho.reporting.libraries.css.model.StyleKeyRegistry;
+import org.pentaho.reporting.libraries.css.namespace.DefaultNamespaceCollection;
 import org.pentaho.reporting.libraries.css.namespace.NamespaceCollection;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 /**
@@ -35,50 +36,97 @@ import java.util.ArrayList;
 public class ChartDocumentContext implements DocumentContext {
   private final ResourceManager resourceManager;
   private final ChartDocument chartDocument;
+  private final ResourceKey resourceKey;
+
+  /**
+   * List of classes that can be loaded as resources from the style information
+   */
+  private static final Class[] SUPPORTED_TYPES = new Class[]{Image.class};
 
   /**
    * Constructs a chart document context based on a chart document
    */
-  public ChartDocumentContext(final ResourceManager resourceManager, final ChartDocument chartDocument) throws ResourceException {
-    // Setup the resource manager
-    this.resourceManager = resourceManager;
-
-    // Parse the chart definition
-    this.chartDocument = chartDocument;
+  public ChartDocumentContext(final ChartDocument chart) {
+    this.chartDocument = chart;
+    this.resourceManager = chart.getResourceManager();
+    this.resourceKey = chart.getResourceKey();
   }
 
   /**
-   * Returns the style references for the chart
+   * Returns the ChartDocument
+   */
+  public ChartDocument getChartDocument() {
+    return chartDocument;
+  }
+
+  /**
+   * Returns the style references for the chart.
    *
    * @return an array of <code>StyleReferences</code> which contain the style information extracted
    *         from the chart definition. The objects are in the same order as they are encountered in the
    *         chart definition file.
    */
   public StyleReference[] getStyleReferences() {
-      return createStyleReferences(chartDocument);
+    return createStyleReferences(chartDocument);
   }
 
   /**
-   * Returns the <code>ResourceManager</code> used by this document context.
+   * Returns the resource manager that is used to load externally referenced resources.
+   * Such resources can be either images, drawable or other stylesheets. In some cases, this might even
+   * reference whole documents.
+   * <p/>
+   * The implementation should indicate which document types can be loaded using the
+   * {@link ChartDocumentContext#getSupportedResourceTypes()} method.
+   *
+   * @return the resource manager.
+   * @see ChartDocumentContext#getSupportedResourceTypes()
    */
   public ResourceManager getResourceManager() {
     return resourceManager;
   }
 
+  /**
+   * Returns the context key provides the base-key for resolving relative
+   * URLs. Usually it is the key that was used to parse the document. Without this key, it would be
+   * impossible to resolve non-absolute URLs/paths into a usable URL or path.
+   *
+   * @return the context key
+   * @see ResourceManager#deriveKey(ResourceKey, String)
+   */
   public ResourceKey getContextKey() {
-    return null;  //To change body of implemented methods use File | Settings | File Templates.
+    return resourceKey;
   }
 
+  /**
+   * Returns the style-key registry that holds all known stylekeys that might be encountered during the
+   * parsing.
+   *
+   * @return the stylekey registry to use.
+   */
   public StyleKeyRegistry getStyleKeyRegistry() {
-    return null;  //To change body of implemented methods use File | Settings | File Templates.
+    return StyleKeyRegistry.getRegistry();
   }
 
+  /**
+   * Returns the list of supported resource types that can be loaded as external resources.
+   *
+   * @return the supported resource types.
+   * @see ResourceManager#create(ResourceKey, ResourceKey, Class[])
+   */
   public Class[] getSupportedResourceTypes() {
-    return new Class[0];  //To change body of implemented methods use File | Settings | File Templates.
+    return (Class[]) SUPPORTED_TYPES.clone();
   }
 
+  /**
+   * Returns information about the known namespaces. This allows the system to recognize 'class' and 'style' attributes
+   * for each defined namespace.
+   *
+   * @return the defines namespaces.
+   * @see org.pentaho.reporting.libraries.css.namespace.NamespaceDefinition
+   * @see NamespaceCollection#getDefinition(String)
+   */
   public NamespaceCollection getNamespaces() {
-    return null;  //To change body of implemented methods use File | Settings | File Templates.
+    return new DefaultNamespaceCollection();
   }
 
   /**

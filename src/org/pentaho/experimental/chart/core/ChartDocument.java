@@ -15,6 +15,9 @@
  */
 package org.pentaho.experimental.chart.core;
 
+import org.jfree.resourceloader.ResourceManager;
+import org.jfree.resourceloader.ResourceKey;
+
 /**
  * This is the object that contains the root element of the parsed chart defintion
  */
@@ -24,6 +27,17 @@ public class ChartDocument {
    * The top-most element in the parsed chart definition
    */
   private ChartElement rootElement;
+
+  /**
+   * The ResourceManager used to load the resources of the chart
+   * (which may include the chart itself)
+   */
+  private ResourceManager resourceManager;
+
+  /**
+   * The resource key that servers as the base location for loading relative infomraiton
+   */
+  private ResourceKey resourceKey;
 
   /**
    * Constructor that creats the chart document.
@@ -38,6 +52,34 @@ public class ChartDocument {
    */
   public ChartElement getRootElement() {
     return rootElement;
+  }
+
+  /**
+   * Returns the <code>ResourceManager</code> used to load the chart document
+   */
+  public ResourceManager getResourceManager() {
+    return resourceManager;
+  }
+
+  /**
+   * Returns the <code>ResourceKey</code> that serves as the base location for loading relative information
+   */
+  public ResourceKey getResourceKey() {
+    return resourceKey;
+  }
+
+  /**
+   * Sets the resource manager for this chart document
+   */
+  public void setResourceManager(ResourceManager resourceManager) {
+    this.resourceManager = resourceManager;
+  }
+
+  /**
+   * Sets the resource key for this chart document
+   */
+  public void setResourceKey(ResourceKey resourceKey) {
+    this.resourceKey = resourceKey;
   }
 
   /**

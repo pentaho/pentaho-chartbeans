@@ -17,11 +17,12 @@ package org.pentaho.experimental.chart;
 
 import org.jfree.resourceloader.ResourceException;
 import org.jfree.resourceloader.ResourceManager;
-import org.pentaho.reporting.libraries.css.resolver.StyleResolver;
-import org.pentaho.reporting.libraries.css.resolver.impl.DefaultStyleResolver;
-import org.pentaho.reporting.libraries.css.dom.StyleReference;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.parser.ChartXMLParser;
+import org.pentaho.reporting.libraries.css.dom.StyleReference;
+import org.pentaho.reporting.libraries.css.namespace.DefaultNamespaceCollection;
+import org.pentaho.reporting.libraries.css.resolver.StyleResolver;
+import org.pentaho.reporting.libraries.css.resolver.impl.DefaultStyleResolver;
 
 import java.net.URL;
 
@@ -31,25 +32,27 @@ import java.net.URL;
  * @author David Kincade
  */
 public class ChartFactory {
+  private static ResourceManager resourceManager;
+
   /**
    * Creats a chart based on the chart definition
    * TODO: document / complete
    *
    * @param chartURL the URL of the chart definition
-   * @throws ResourceException indicates an error loading the chart resources
+   * @throws ResourceException      indicates an error loading the chart resources
    * @throws InvalidChartDefinition indicates an error with chart definition
    */
   public static void generateChart(URL chartURL) throws ResourceException {
-    // Create a ResourceManager
-    ResourceManager resourceManager = new ResourceManager();
-    resourceManager.registerDefaults();
-
     // Parse the chart
-    ChartXMLParser chartParser = new ChartXMLParser(resourceManager);
-    ChartDocument cd = chartParser.parseChartDocument(chartURL);
+    ChartXMLParser chartParser = new ChartXMLParser();
+    ChartDocument chart = chartParser.parseChartDocument(chartURL);
 
     // Create a ChartDocumentContext
-    ChartDocumentContext cdc = new ChartDocumentContext(resourceManager, cd);
+    ChartDocumentContext cdc = new ChartDocumentContext(chart);
+
+    // Create the namespace collection for the charting api
+    DefaultNamespaceCollection namespaceCollection = new DefaultNamespaceCollection();
+    namespaceCollection.addDefinition(new ChartNamespaceDefinition(cdc.getResourceManager()));
 
     // Get the style sheet information
     StyleReference[] styleReferences = cdc.getStyleReferences();

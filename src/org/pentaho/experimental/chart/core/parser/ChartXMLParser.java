@@ -19,6 +19,7 @@ import org.pentaho.experimental.chart.core.ChartDocument;
 import org.jfree.resourceloader.ResourceException;
 import org.jfree.resourceloader.Resource;
 import org.jfree.resourceloader.ResourceManager;
+import org.jfree.resourceloader.ResourceKey;
 
 import java.net.URL;
 
@@ -58,7 +59,11 @@ public class ChartXMLParser {
    */
   public ChartDocument parseChartDocument(URL chartDefinitionURL) throws ResourceException {
     Resource res = resourceManager.createDirectly(chartDefinitionURL, ChartDocument.class);
-    return (ChartDocument) res.getResource();
+    ResourceKey key = res.getSource();
+    ChartDocument chart = (ChartDocument) res.getResource();
+    chart.setResourceManager(resourceManager);
+    chart.setResourceKey(key);
+    return chart;
   }
 
   /**
