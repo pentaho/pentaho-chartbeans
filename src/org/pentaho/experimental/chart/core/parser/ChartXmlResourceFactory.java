@@ -20,6 +20,11 @@ import org.pentaho.experimental.chart.ChartBoot;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.reporting.libraries.base.config.Configuration;
 
+/**
+ * Returns resource information used in the parsing of the chart XML document.
+ *
+ * @author David Kincade
+ */
 public class ChartXmlResourceFactory extends AbstractXmlResourceFactory {
 
   /**

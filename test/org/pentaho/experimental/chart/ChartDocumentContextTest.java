@@ -28,7 +28,13 @@ import org.pentaho.reporting.libraries.css.dom.StyleReference;
  */
 public class ChartDocumentContextTest extends TestCase {
   /**
+   * Chart document used for testing
+   */
+  private ChartDocument chart = null;
+
+  /**
    * Performs the ChartBoot before performing the tests
+   *
    * @throws Exception
    */
   protected void setUp() throws Exception {
@@ -36,6 +42,9 @@ public class ChartDocumentContextTest extends TestCase {
 
     // Boot the charting library - required for parsing configuration
     ChartBoot.getInstance().start();
+
+    // Create a chart document
+    chart = new ChartXMLParser().parseChartDocument(getClass().getResource("test1.xml"));
   }
 
   /**
@@ -43,10 +52,9 @@ public class ChartDocumentContextTest extends TestCase {
    * for style information and returns the information created from the style information.
    */
   public void testCreateStyleReferences() throws ResourceException {
-    ChartXMLParser chartParser = new ChartXMLParser();
-    ChartDocument chartDoc = chartParser.parseChartDocument(getClass().getResource("test1.xml"));
+    ChartDocumentContext cdc = new ChartDocumentContext(chart);
+    ChartDocument chartDoc = cdc.getChartDocument();
 
-    ChartDocumentContext cdc = new ChartDocumentContext(chartParser.getResourceManager(), chartDoc);
     StyleReference[] styleReferences = cdc.createStyleReferences(chartDoc);
     assertNotNull(styleReferences);
     assertEquals(4, styleReferences.length);

@@ -17,13 +17,25 @@ package org.pentaho.experimental.chart.core.parser;
 
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
-import org.xml.sax.SAXException;
 
+/**
+ * Used in the parsing of the chart structure xml document. This is the first document read handler that is
+ * called when the parsing starts. It will create a new <code>ChartDocument</code> and initialize it with
+ * the top-most <code>ChartElement</code>,
+ *
+ * @author David Kincade
+ */
 public class ChartDocumentReadHandler extends ChartElementReadHandler {
 
+  /**
+   * Creates a default <code>ChartDocumentReadHandler</code>.
+   */
   public ChartDocumentReadHandler() {
   }
 
+  /**
+   * Returns the <code>ChartDocument</code> which contains all the parsed <code>ChartElements</code>
+   */
   public Object getObject() {
     return new ChartDocument((ChartElement) super.getObject());
   }

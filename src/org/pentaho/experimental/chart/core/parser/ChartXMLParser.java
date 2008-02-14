@@ -15,16 +15,17 @@
  */
 package org.pentaho.experimental.chart.core.parser;
 
-import org.pentaho.experimental.chart.core.ChartDocument;
-import org.jfree.resourceloader.ResourceException;
 import org.jfree.resourceloader.Resource;
-import org.jfree.resourceloader.ResourceManager;
+import org.jfree.resourceloader.ResourceException;
 import org.jfree.resourceloader.ResourceKey;
+import org.jfree.resourceloader.ResourceManager;
+import org.pentaho.experimental.chart.core.ChartDocument;
 
 import java.net.URL;
 
 /**
  * Parses the chart XML document into the internal representation of the chart document.
+ *
  * @author David Kincade
  */
 public class ChartXMLParser {
@@ -43,6 +44,7 @@ public class ChartXMLParser {
 
   /**
    * Initializes the chart parser with a <code>ResourceManager</code>
+   *
    * @param resourceManager the <code>ResourceManager</code> to use while parsing a chart definition
    */
   public ChartXMLParser(ResourceManager resourceManager) {
@@ -55,7 +57,8 @@ public class ChartXMLParser {
    *
    * @param chartDefinitionURL the location of the chart definition file
    * @return a <code>ChartDocument</code> that was created from the chart definition
-   * @throws org.jfree.resourceloader.ResourceException indeicates an error occurred loading the chart defintion
+   * @throws org.jfree.resourceloader.ResourceException
+   *          indeicates an error occurred loading the chart defintion
    */
   public ChartDocument parseChartDocument(URL chartDefinitionURL) throws ResourceException {
     Resource res = resourceManager.createDirectly(chartDefinitionURL, ChartDocument.class);

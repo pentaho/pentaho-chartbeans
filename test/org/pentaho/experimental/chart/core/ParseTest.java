@@ -15,20 +15,18 @@
  */
 package org.pentaho.experimental.chart.core;
 
-import java.net.URL;
-
 import junit.framework.TestCase;
-
 import org.jfree.resourceloader.Resource;
 import org.jfree.resourceloader.ResourceManager;
 import org.pentaho.experimental.chart.ChartBoot;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import java.net.URL;
 
 public class ParseTest extends TestCase {
 
   /**
    * Performs the ChartBoot before performing the tests
+   *
    * @throws Exception
    */
   protected void setUp() throws Exception {
@@ -50,7 +48,7 @@ public class ParseTest extends TestCase {
     ResourceManager resourceManager = new ResourceManager();
     resourceManager.registerDefaults();
     Resource res = resourceManager.createDirectly(xmlDocument, ChartDocument.class);
-    ChartDocument doc = (ChartDocument)res.getResource();
+    ChartDocument doc = (ChartDocument) res.getResource();
     if (doc == null) {
       fail("A null document should never be returned");
     }

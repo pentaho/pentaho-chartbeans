@@ -37,7 +37,7 @@ public class ChartBoot extends AbstractBoot {
     return createDefaultHierarchicalConfiguration(
         "/org/pentaho/experimental/chart/chart.properties", // Hard coded default values that shoulnd't be changed by user
         "/chart.properties", // User changable values (these override above)
-        true, 
+        true,
         ChartBoot.class);
   }
 

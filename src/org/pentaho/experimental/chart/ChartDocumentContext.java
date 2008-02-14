@@ -16,6 +16,7 @@
 package org.pentaho.experimental.chart;
 
 import org.jfree.resourceloader.ResourceKey;
+import org.jfree.resourceloader.ResourceKeyCreationException;
 import org.jfree.resourceloader.ResourceManager;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
@@ -37,6 +38,7 @@ public class ChartDocumentContext implements DocumentContext {
   private final ResourceManager resourceManager;
   private final ChartDocument chartDocument;
   private final ResourceKey resourceKey;
+  private final DefaultNamespaceCollection namespaceCollection;
 
   /**
    * List of classes that can be loaded as resources from the style information
@@ -46,10 +48,15 @@ public class ChartDocumentContext implements DocumentContext {
   /**
    * Constructs a chart document context based on a chart document
    */
-  public ChartDocumentContext(final ChartDocument chart) {
+  public ChartDocumentContext(final ChartDocument chart) throws ResourceKeyCreationException {
+    // Save the information from the chart
     this.chartDocument = chart;
     this.resourceManager = chart.getResourceManager();
     this.resourceKey = chart.getResourceKey();
+
+    // Setup the namespace collection
+    namespaceCollection = new DefaultNamespaceCollection();
+    namespaceCollection.addDefinition(new ChartNamespaceDefinition(this.resourceManager));
   }
 
   /**
@@ -98,16 +105,6 @@ public class ChartDocumentContext implements DocumentContext {
   }
 
   /**
-   * Returns the style-key registry that holds all known stylekeys that might be encountered during the
-   * parsing.
-   *
-   * @return the stylekey registry to use.
-   */
-  public StyleKeyRegistry getStyleKeyRegistry() {
-    return StyleKeyRegistry.getRegistry();
-  }
-
-  /**
    * Returns the list of supported resource types that can be loaded as external resources.
    *
    * @return the supported resource types.
@@ -126,7 +123,17 @@ public class ChartDocumentContext implements DocumentContext {
    * @see NamespaceCollection#getDefinition(String)
    */
   public NamespaceCollection getNamespaces() {
-    return new DefaultNamespaceCollection();
+    return namespaceCollection;
+  }
+
+  /**
+   * Returns the style-key registry that holds all known stylekeys that might be encountered during the
+   * parsing.
+   *
+   * @return the stylekey registry to use.
+   */
+  public StyleKeyRegistry getStyleKeyRegistry() {
+    return StyleKeyRegistry.getRegistry();
   }
 
   /**

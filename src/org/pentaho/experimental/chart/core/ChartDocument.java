@@ -15,8 +15,8 @@
  */
 package org.pentaho.experimental.chart.core;
 
-import org.jfree.resourceloader.ResourceManager;
 import org.jfree.resourceloader.ResourceKey;
+import org.jfree.resourceloader.ResourceManager;
 
 /**
  * This is the object that contains the root element of the parsed chart defintion
@@ -41,6 +41,7 @@ public class ChartDocument {
 
   /**
    * Constructor that creats the chart document.
+   *
    * @param rootElement the parsed root element of the chart document
    */
   public ChartDocument(ChartElement rootElement) {

@@ -16,11 +16,10 @@
 package org.pentaho.util.collections;
 
 import junit.framework.TestCase;
-import org.pentaho.util.collections.HeirarchicalLinkedListItem;
 
 public class HeirarchicalLinkedListItemTest extends TestCase {
   /**
-   * Tests the <code>addChild()</code> method. 
+   * Tests the <code>addChild()</code> method.
    */
   @SuppressWarnings("nls")
   public void testAddChild() {

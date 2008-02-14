@@ -114,6 +114,7 @@ public class HeirarchicalLinkedListItem implements Cloneable {
 
   /**
    * Returns the number of direct children the current element contains
+   *
    * @return the number of direct children the current element contains
    */
   public int getChildCount() {

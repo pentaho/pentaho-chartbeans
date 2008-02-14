@@ -17,6 +17,7 @@ package org.pentaho.experimental.chart;
 
 /**
  * Exception indicating an error with the chart definition
+ *
  * @author David Kincade
  */
 public class InvalidChartDefinition extends Exception {

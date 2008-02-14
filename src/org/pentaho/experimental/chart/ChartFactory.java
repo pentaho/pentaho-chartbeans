@@ -20,7 +20,6 @@ import org.jfree.resourceloader.ResourceManager;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.parser.ChartXMLParser;
 import org.pentaho.reporting.libraries.css.dom.StyleReference;
-import org.pentaho.reporting.libraries.css.namespace.DefaultNamespaceCollection;
 import org.pentaho.reporting.libraries.css.resolver.StyleResolver;
 import org.pentaho.reporting.libraries.css.resolver.impl.DefaultStyleResolver;
 
@@ -49,10 +48,6 @@ public class ChartFactory {
 
     // Create a ChartDocumentContext
     ChartDocumentContext cdc = new ChartDocumentContext(chart);
-
-    // Create the namespace collection for the charting api
-    DefaultNamespaceCollection namespaceCollection = new DefaultNamespaceCollection();
-    namespaceCollection.addDefinition(new ChartNamespaceDefinition(cdc.getResourceManager()));
 
     // Get the style sheet information
     StyleReference[] styleReferences = cdc.getStyleReferences();

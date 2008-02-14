@@ -10,9 +10,7 @@
   border-top-width: medium;
   border-bottom-width: medium;
   border-left-width: medium;
-  border-right-width: medium;
-
-  /* new in CSS3 */
+  border-right-width: medium; /* new in CSS3 */
   box-sizing: content-box;
   box-width: auto;
   box-height: auto;
@@ -22,41 +20,41 @@
 
   crop: auto;
   display: inline;
-  display-model:inline-inside;
+  display-model: inline-inside;
   display-role: inline;
-  fit:fill;
+  fit: fill;
   fit-position: 0% 0%;
   float: none;
-  float-displace:line;
+  float-displace: line;
   indent-edge-reset: none;
 
-  margin-top:0;
-  margin-left:0;
-  margin-bottom:0;
-  margin-right:0;
+  margin-top: 0;
+  margin-left: 0;
+  margin-bottom: 0;
+  margin-right: 0;
 
-  marquee-direction:auto;
+  marquee-direction: auto;
   marquee-repetition: infinite;
   marquee-speed: normal;
   marquee-style: alternate;
 
-  max-width:auto;
-  max-height:auto;
-  min-width:0;
-  min-height:0;
+  max-width: auto;
+  max-height: auto;
+  min-width: 0;
+  min-height: 0;
 
-  overflow:visible;
+  overflow: visible;
   overflow-clip: auto;
   overflow-x: visible;
   overflow-y: visible;
 
-  padding-top:0;
-  padding-left:0;
-  padding-bottom:0;
-  padding-right:0;
+  padding-top: 0;
+  padding-left: 0;
+  padding-bottom: 0;
+  padding-right: 0;
 
-  width:auto;
-  height:auto;
+  width: auto;
+  height: auto;
 }
 
 /** Color Module */
@@ -104,10 +102,9 @@
   box-shadow: none;
 }
 
-
 /** Line-Box Module */
 * {
-  /* this has some meaning in the table-module, so it must be defined. */
+/* this has some meaning in the table-module, so it must be defined. */
   vertical-align: baseline;
 
   alignment-adjust: auto;
@@ -130,7 +127,7 @@
 
 /** text Module */
 * {
-  /** The following properties are defined in the 2003-CR */
+/** The following properties are defined in the 2003-CR */
   block-progression: tb;
   direction: ltr;
   glyph-orientation-horizontal: auto;
@@ -159,18 +156,15 @@
   text-overline-mode: continuous;
   text-overline-style: none;
   text-overline-width: auto;
-  text-script: auto;
-  /* text-shadow: none; is not yet implemented nor defined. */
+  text-script: auto; /* text-shadow: none; is not yet implemented nor defined. */
   text-transform: none;
   text-underline-color: auto;
   text-underline-mode: continuous;
   text-underline-style: none;
   text-underline-width: auto;
   unicode-bidi: normal;
-  white-space:normal;
-  word-spacing: normal;
-
-  /** These properties are defined in the 2005-WD */
+  white-space: normal;
+  word-spacing: normal; /** These properties are defined in the 2005-WD */
   white-space-collapse: collapse;
   word-break: normal;
   hyphenate: auto;
@@ -179,8 +173,8 @@
   text-align: start;
   text-align-last: start;
   text-justify: auto;
-  word-spacing:normal;
-  letter-spacing:normal;
+  word-spacing: normal;
+  letter-spacing: normal;
 }
 
 /** Fonts-Module */
@@ -195,7 +189,7 @@
   font-stretch: normal;
   font-style: normal;
   font-variant: normal;
-  font-weight:normal;
+  font-weight: normal;
 
   max-font-size: auto;
   min-font-size: auto;
@@ -204,7 +198,7 @@
 /** Content-Module */
 * {
   content: normal;
-  counter-increment:none;
+  counter-increment: none;
   counter-reset: none;
   move-to: normal;
   quotes: none;
@@ -254,12 +248,27 @@
   target-position: above;
 }
 
-@page {
-  @top {
-    content: pending(page-header);
-  }
+@page
+{
+@top
+{
+content
+:
+pending
+(
+page-header
+)
+;
+}
 
-  @bottom {
-    content: pending(page-footer);
-  }
+@bottom
+{
+content
+:
+pending
+(
+page-footer
+)
+;
+}
 }

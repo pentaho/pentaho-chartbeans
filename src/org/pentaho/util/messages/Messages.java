@@ -1,4 +1,4 @@
-package org.pentaho.experimental.chart.messages;
+package org.pentaho.util.messages;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;

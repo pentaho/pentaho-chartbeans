@@ -1,4 +1,22 @@
-@namespace url(http://www.pentaho.org/namespaces/chart); /* set default namespace to Pentaho Charts */
+@namespace
+url
+(
+http
+:
+/
+/
+www
+.
+pentaho
+.
+org
+/
+namespaces
+/
+chart
+)
+;
+/* set default namespace to Pentaho Charts */
 
 /* blocks */
 

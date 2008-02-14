@@ -39,7 +39,7 @@ public final class Empty {
   /**
    * An empty array of Strings
    */
-  public static final String [] STRING_ARRAY = new String[0];
+  public static final String[] STRING_ARRAY = new String[0];
 
   /**
    * An empty Map

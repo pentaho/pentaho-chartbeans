@@ -17,9 +17,6 @@ package org.pentaho.experimental.chart;
 
 import junit.framework.TestCase;
 import org.jfree.resourceloader.ResourceException;
-import org.pentaho.experimental.chart.core.ChartDocument;
-import org.pentaho.experimental.chart.core.parser.ChartXMLParser;
-import org.pentaho.reporting.libraries.css.dom.StyleReference;
 
 /**
  * Unit tests for the ChartFactory class.
@@ -29,6 +26,7 @@ import org.pentaho.reporting.libraries.css.dom.StyleReference;
 public class ChartFactoryTest extends TestCase {
   /**
    * Performs the ChartBoot before performing the tests
+   *
    * @throws Exception
    */
   protected void setUp() throws Exception {

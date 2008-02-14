@@ -16,12 +16,11 @@
 package org.pentaho.experimental.chart;
 
 import org.jfree.resourceloader.ResourceKey;
-import org.jfree.resourceloader.ResourceManager;
 import org.jfree.resourceloader.ResourceKeyCreationException;
-import org.pentaho.reporting.libraries.css.namespace.DefaultNamespaceDefinition;
-import org.pentaho.reporting.libraries.css.namespace.NamespaceDefinition;
+import org.jfree.resourceloader.ResourceManager;
 import org.pentaho.reporting.libraries.base.config.Configuration;
 import org.pentaho.reporting.libraries.base.util.StringUtils;
+import org.pentaho.reporting.libraries.css.namespace.NamespaceDefinition;
 
 /**
  * Defines the namespace used with the charting API.
@@ -33,8 +32,8 @@ public class ChartNamespaceDefinition implements NamespaceDefinition {
   private ResourceKey chartStyleSheetKey;
   private String preferredPrefix;
   private String uri;
-  private String [] classAttributeNames;
-  private String [] styleAttributeNames;
+  private String[] classAttributeNames;
+  private String[] styleAttributeNames;
 
   private static final String PREFERRED_PREFIX = "org.pentaho.experimental.chart.namespace.prefix";
   private static final String URI = "org.pentaho.experimental.chart.namespace.uri";
