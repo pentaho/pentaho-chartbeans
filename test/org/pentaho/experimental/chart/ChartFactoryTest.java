@@ -17,6 +17,11 @@ package org.pentaho.experimental.chart;
 
 import junit.framework.TestCase;
 import org.jfree.resourceloader.ResourceException;
+import org.pentaho.experimental.chart.core.ChartDocument;
+import org.pentaho.experimental.chart.core.ChartElement;
+import org.pentaho.experimental.chart.core.parser.ChartXMLParser;
+import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
+import org.pentaho.reporting.libraries.css.resolver.StyleResolver;
 
 /**
  * Unit tests for the ChartFactory class.
@@ -54,5 +59,24 @@ public class ChartFactoryTest extends TestCase {
    */
   public void testLoadStyleSheet() throws ResourceException {
     ChartFactory.generateChart(getClass().getResource("test1.xml"));
+  }
+
+  /**
+   * Tests the style resolution to make sure the <code>StyleResolver</code> class is initialized correctly
+   */
+  public void testStyleResolver() throws ResourceException {
+    // Create the chart for testing
+    ChartDocument cd = new ChartXMLParser().parseChartDocument(this.getClass().getResource("style_test.xml"));
+    ChartDocumentContext cdc = new ChartDocumentContext(cd);
+
+    // Get the initialized style resolver
+    StyleResolver sr = ChartFactory.getStyleResolver(cdc);
+    assertNotNull(sr);
+
+    // The 1st element of the chart should have no style information
+    ChartElement element = cd.getRootElement();
+    sr.resolveStyle(element);
+    LayoutStyle styleRule = element.getLayoutStyle();
+    assertNotNull(styleRule);
   }
 }

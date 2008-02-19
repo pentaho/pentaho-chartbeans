@@ -1,6 +1,6 @@
-<chart xmlns="http://www.pentaho.org/namespaces/chart">
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
 
-  <inline-stylesheet>
+  <stylesheet>
     axis {
     color: #FFF000;
     font-family: sans-serif;
@@ -19,9 +19,9 @@
     font-family: "Comic Sans MS";
     }
 
-  </inline-stylesheet>
+  </stylesheet>
 
-  <external-stylesheet href="sample1.css"/>
+  <stylesheet href="sample1.css"/>
 
   <plot/>
   <axis type="numeric" id="y1" position="left" style="">

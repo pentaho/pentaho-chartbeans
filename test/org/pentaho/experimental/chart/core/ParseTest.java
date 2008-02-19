@@ -16,12 +16,14 @@
 package org.pentaho.experimental.chart.core;
 
 import junit.framework.TestCase;
-import org.jfree.resourceloader.Resource;
-import org.jfree.resourceloader.ResourceManager;
 import org.pentaho.experimental.chart.ChartBoot;
+import org.pentaho.experimental.chart.core.parser.ChartXMLParser;
 
 import java.net.URL;
 
+/**
+ * Tests for the ChartXMLParser class and all the other classes used in the parsing of the chart XML document.
+ */
 public class ParseTest extends TestCase {
 
   /**
@@ -44,11 +46,9 @@ public class ParseTest extends TestCase {
   @SuppressWarnings("nls")
   public void testParser() throws Exception {
     // Parse the test document located in the same class location as this class
-    URL xmlDocument = this.getClass().getResource("ParseTest.xml");
-    ResourceManager resourceManager = new ResourceManager();
-    resourceManager.registerDefaults();
-    Resource res = resourceManager.createDirectly(xmlDocument, ChartDocument.class);
-    ChartDocument doc = (ChartDocument) res.getResource();
+    ChartXMLParser chartParser = new ChartXMLParser();
+    URL chartXmlDocument = this.getClass().getResource("ParseTest.xml");
+    ChartDocument doc = chartParser.parseChartDocument(chartXmlDocument);
     if (doc == null) {
       fail("A null document should never be returned");
     }
@@ -67,7 +67,7 @@ public class ParseTest extends TestCase {
 
     // 1st Element
     //
-    //   <inline-stylesheet>
+    //   <stylesheet>
     //     axis {
     //         color: #FFF000;
     //         font-family: sans-serif;
@@ -86,20 +86,20 @@ public class ParseTest extends TestCase {
     //         font-family: "Comic Sans MS";
     //     }
     //
-    //   </inline-stylesheet>
+    //   </stylesheet>
     ChartElement element = rootElement.getFirstChildItem();
     assertNotNull(element);
-    assertEquals("inline-stylesheet", element.getTagName());
+    assertEquals("stylesheet", element.getTagName());
     assertNotNull(element.getText());
     assertTrue(element.getText().length() > 0);
     assertTrue(element.getText().indexOf("\"Comic Sans MS\"") > -1);
     assertEquals(0, element.getChildCount());
 
     // 2nd element
-    // <external-stylesheet href="sample1.css"/>
+    // <stylesheet href="sample1.css"/>
     element = element.getNextItem();
     assertNotNull(element);
-    assertEquals("external-stylesheet", element.getTagName());
+    assertEquals("stylesheet", element.getTagName());
     assertNull(element.getText());
     assertNotNull(element.getAttributeMap());
     assertEquals("sample1.css", element.getAttribute("href"));

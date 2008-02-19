@@ -19,7 +19,6 @@ import org.jfree.resourceloader.ResourceException;
 import org.jfree.resourceloader.ResourceManager;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.parser.ChartXMLParser;
-import org.pentaho.reporting.libraries.css.dom.StyleReference;
 import org.pentaho.reporting.libraries.css.resolver.StyleResolver;
 import org.pentaho.reporting.libraries.css.resolver.impl.DefaultStyleResolver;
 
@@ -49,11 +48,18 @@ public class ChartFactory {
     // Create a ChartDocumentContext
     ChartDocumentContext cdc = new ChartDocumentContext(chart);
 
-    // Get the style sheet information
-    StyleReference[] styleReferences = cdc.getStyleReferences();
+    // Resolve the style information
+    StyleResolver sr = getStyleResolver(cdc);
+    System.out.println(sr);
+  }
 
-    // Resolve the style information 
+  /**
+   * Returns the initialized <code>StyleResolver</code>.
+   * NOTE: this method is protected for testing purposes only
+   */
+  protected static StyleResolver getStyleResolver(ChartDocumentContext cdc) {
     StyleResolver sr = new DefaultStyleResolver();
     sr.initialize(cdc);
+    return sr;
   }
 }

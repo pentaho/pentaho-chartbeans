@@ -17,11 +17,9 @@ package org.pentaho.experimental.chart.core;
 
 import org.jfree.xmlns.LibXmlInfo;
 import org.jfree.xmlns.common.AttributeMap;
+import org.pentaho.reporting.libraries.css.dom.DefaultLayoutStyle;
 import org.pentaho.reporting.libraries.css.dom.LayoutElement;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
-import org.pentaho.reporting.libraries.css.keys.box.BoxStyleKeys;
-import org.pentaho.reporting.libraries.css.model.CSSStyleRule;
-import org.pentaho.reporting.libraries.css.values.CSSConstant;
 import org.pentaho.util.Empty;
 import org.pentaho.util.collections.HeirarchicalLinkedListItem;
 
@@ -53,7 +51,7 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
   /**
    * The style information of this element
    */
-  private CSSStyleRule style;
+//  private CSSStyleRule style;
 
   /**
    * The name of the tag that this element represents
@@ -64,6 +62,11 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
    * The text contents of this element.
    */
   private String text;
+
+  /**
+   * The layout style for this element
+   */
+  private LayoutStyle layoutStyle;
 
   /**
    * Constant used when generating the deep <code>toString</code> representation
@@ -84,9 +87,10 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
    * which always returns null.
    */
   public ChartElement() {
-    this.style = new CSSStyleRule(null, null);
+//    this.style = new CSSStyleRule(null, null);
     this.attributes = new AttributeMap();
     setNamespace(NAMESPACE);
+    this.layoutStyle = new DefaultLayoutStyle();
   }
 
   /**
@@ -227,30 +231,30 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
    *
    * @return the Element's stylesheet
    */
-  public CSSStyleRule getStyle() {
-    return style;
-  }
+//  public CSSStyleRule getStyle() {
+//    return style;
+//  }
 
   /**
    * @param v
    */
-  public void setVisibility(final CSSConstant v) {
-    getStyle().setPropertyValue(BoxStyleKeys.VISIBILITY, v);
-  }
+//  public void setVisibility(final CSSConstant v) {
+//    getStyle().setPropertyValue(BoxStyleKeys.VISIBILITY, v);
+//  }
 
   /**
    * @return
    */
-  public CSSConstant getVisibility() {
-    return (CSSConstant) getStyle().getPropertyCSSValue(BoxStyleKeys.VISIBILITY);
-  }
+//  public CSSConstant getVisibility() {
+//    return (CSSConstant) getStyle().getPropertyCSSValue(BoxStyleKeys.VISIBILITY);
+//  }
 
   /**
    *
    */
   public Object clone() throws CloneNotSupportedException {
     final ChartElement element = (ChartElement) super.clone();
-    element.style = (CSSStyleRule) style.clone();
+//    element.style = (CSSStyleRule) style.clone();
     if (attributes != null) {
       element.attributes = (AttributeMap) attributes.clone();
     }
@@ -268,8 +272,7 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
   }
 
   public LayoutStyle getLayoutStyle() {
-    // TODO Auto-generated method stub
-    return null;
+    return layoutStyle;
   }
 
   public String getPseudoElement() {
