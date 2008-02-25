@@ -18,6 +18,7 @@ package org.pentaho.experimental.chart;
 import org.jfree.resourceloader.ResourceException;
 import org.jfree.resourceloader.ResourceManager;
 import org.pentaho.experimental.chart.core.ChartDocument;
+import org.pentaho.experimental.chart.core.ChartElement;
 import org.pentaho.experimental.chart.core.parser.ChartXMLParser;
 import org.pentaho.reporting.libraries.css.resolver.StyleResolver;
 import org.pentaho.reporting.libraries.css.resolver.impl.DefaultStyleResolver;
@@ -40,7 +41,7 @@ public class ChartFactory {
    * @throws ResourceException      indicates an error loading the chart resources
    * @throws InvalidChartDefinition indicates an error with chart definition
    */
-  public static void generateChart(URL chartURL) throws ResourceException {
+  public static ChartDocument generateChart(URL chartURL) throws ResourceException {
     // Parse the chart
     ChartXMLParser chartParser = new ChartXMLParser();
     ChartDocument chart = chartParser.parseChartDocument(chartURL);
@@ -48,18 +49,38 @@ public class ChartFactory {
     // Create a ChartDocumentContext
     ChartDocumentContext cdc = new ChartDocumentContext(chart);
 
-    // Resolve the style information
-    StyleResolver sr = getStyleResolver(cdc);
-    System.out.println(sr);
+    // temporary
+    return chart;
   }
 
   /**
    * Returns the initialized <code>StyleResolver</code>.
    * NOTE: this method is protected for testing purposes only
    */
-  protected static StyleResolver getStyleResolver(ChartDocumentContext cdc) {
+  protected static StyleResolver getStyleResolver(final ChartDocumentContext cdc) {
     StyleResolver sr = new DefaultStyleResolver();
     sr.initialize(cdc);
     return sr;
+  }
+
+  /**
+   * Resolves the style information for all the elements in the chart document
+   *
+   * @param chart the chart document to process
+   * @param cdc   the chart document context used with the <code>StyleResolver</code>
+   */
+  protected static void resolveStyles(final ChartDocument chart, final ChartDocumentContext cdc) {
+    // Get the style resolveer
+    StyleResolver sr = getStyleResolver(cdc);
+
+    // Resolve the style for all the nodes in the chart
+    ChartElement element = chart.getRootElement();
+    while (element != null) {
+      // Resolve this element's style
+      sr.resolveStyle(element);
+
+      // Get the next element to process
+      element = element.getNextDepthFirstItem();
+    }
   }
 }

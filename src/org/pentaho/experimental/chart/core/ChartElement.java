@@ -49,11 +49,6 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
   private AttributeMap attributes;
 
   /**
-   * The style information of this element
-   */
-//  private CSSStyleRule style;
-
-  /**
    * The name of the tag that this element represents
    */
   private String tagName;
@@ -226,30 +221,6 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
   }
 
   /**
-   * Returns this elements private stylesheet. This sheet can be used to
-   * override the default values set in one of the parent-stylesheets.
-   *
-   * @return the Element's stylesheet
-   */
-//  public CSSStyleRule getStyle() {
-//    return style;
-//  }
-
-  /**
-   * @param v
-   */
-//  public void setVisibility(final CSSConstant v) {
-//    getStyle().setPropertyValue(BoxStyleKeys.VISIBILITY, v);
-//  }
-
-  /**
-   * @return
-   */
-//  public CSSConstant getVisibility() {
-//    return (CSSConstant) getStyle().getPropertyCSSValue(BoxStyleKeys.VISIBILITY);
-//  }
-
-  /**
    *
    */
   public Object clone() throws CloneNotSupportedException {
@@ -384,6 +355,20 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
   }
 
   /**
+   * Returns the next <code>ChartElement</code> based on a "depth-first" search. This will return
+   * (in the following order)
+   * <ol>
+   * <li>the first child of this <code>ChartElement</code>
+   * <li>the "next" sibling of this <code>ChartElement</code>
+   * <li>the "next" sibling of the closest parent of this <code>ChartElement</code>
+   * <li><code>null</code> (indicates that this is the last <code>ChartElements</code> from a depth-first point of view
+   * </ol>
+   */
+  public ChartElement getNextDepthFirstItem() {
+    return (ChartElement) super.getNextDepthFirstItem();
+  }
+
+  /**
    * Returns all child <code>ChartElements</code> to this <code>ChartElement</code> which
    * has the specified <code>tagName</code>.
    *
@@ -392,7 +377,7 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
    */
   public ChartElement[] findChildrenByName(String tagName) {
     // Holder for the elements that match
-    final ArrayList matchList = new ArrayList();
+    final ArrayList<ChartElement> matchList = new ArrayList<ChartElement>();
 
     // If there is no tag name specified, then nothing will match
     if (tagName != null) {
@@ -406,7 +391,7 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
     }
 
     // Return the list as an array
-    return (ChartElement[]) matchList.toArray(new ChartElement[matchList.size()]);
+    return matchList.toArray(new ChartElement[matchList.size()]);
   }
 }
 

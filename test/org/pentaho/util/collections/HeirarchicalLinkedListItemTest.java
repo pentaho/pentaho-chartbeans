@@ -472,4 +472,65 @@ public class HeirarchicalLinkedListItemTest extends TestCase {
     assertEquals(0, child4.getChildCount());
     assertEquals(0, child5.getChildCount());
   }
+
+  /**
+   * Tests the <code>getNextDepthFirstItem()</code> method. For this test,
+   * we will consturct a HLL that look like the following:
+   * <pre>
+   *                           parent
+   *                             |
+   *                  child1<----+------------------->child2
+   *                     |                              |
+   *           child3<---+--->child4                  child5
+   *                             |
+   *                   child6<---+--->child7<------>child8
+   * </pre>
+   * So the order of the results of a depth-first search starting at the parent
+   * should be:
+   * <ol>
+   * <li>child 1
+   * <li>child 3
+   * <li>child 4
+   * <li>child 6
+   * <li>child 7
+   * <li>child 8
+   * <li>child 2
+   * <li>child 5
+   * </ol>
+   */
+  @SuppressWarnings("nls")
+  public void testGetNextDepthFirstItem() {
+    // First, a node that as "not connected" should return null
+    assertNull("A non-connected node should return null", new HeirarchicalLinkedListItem().getNextDepthFirstItem());
+
+    // Setup the tree
+    HeirarchicalLinkedListItem parent = new HeirarchicalLinkedListItem();
+    HeirarchicalLinkedListItem child1 = new HeirarchicalLinkedListItem();
+    HeirarchicalLinkedListItem child2 = new HeirarchicalLinkedListItem();
+    HeirarchicalLinkedListItem child3 = new HeirarchicalLinkedListItem();
+    HeirarchicalLinkedListItem child4 = new HeirarchicalLinkedListItem();
+    HeirarchicalLinkedListItem child5 = new HeirarchicalLinkedListItem();
+    HeirarchicalLinkedListItem child6 = new HeirarchicalLinkedListItem();
+    HeirarchicalLinkedListItem child7 = new HeirarchicalLinkedListItem();
+    HeirarchicalLinkedListItem child8 = new HeirarchicalLinkedListItem();
+    parent.addChildItem(child1);
+    parent.addChildItem(child2);
+    child1.addChildItem(child3);
+    child1.addChildItem(child4);
+    child4.addChildItem(child6);
+    child4.addChildItem(child7);
+    child4.addChildItem(child8);
+    child2.addChildItem(child5);
+
+    // Check the results
+    assertEquals(child1, parent.getNextDepthFirstItem());
+    assertEquals(child3, child1.getNextDepthFirstItem());
+    assertEquals(child4, child3.getNextDepthFirstItem());
+    assertEquals(child6, child4.getNextDepthFirstItem());
+    assertEquals(child7, child6.getNextDepthFirstItem());
+    assertEquals(child8, child7.getNextDepthFirstItem());
+    assertEquals(child2, child8.getNextDepthFirstItem());
+    assertEquals(child5, child2.getNextDepthFirstItem());
+    assertNull(child5.getNextDepthFirstItem());
+  }
 }

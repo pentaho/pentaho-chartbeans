@@ -42,10 +42,10 @@ public class ChartNamespaceDefinition implements NamespaceDefinition {
   private static final String CHART_STYLE_LOCATION = "org.pentaho.experimental.chart.namespace.style";
 
   private static final String DEFAULT_PREFERRED_PREFIX = "";
-  private static final String DEFAULT_URI = "http://www.pentaho.org/namespaces/chart";
+  private static final String DEFAULT_URI = "http://reporting.pentaho.org/namespaces/charting/1.0";
   private static final String DEFAULT_CLASS_ATTRIBUTE_NAMES = "class";
   private static final String DEFAULT_STYLE_ATTRIBUTE_NAMES = "style";
-  private static final String DEFAULT_CHART_STYLE_LOCATION = "";
+  private static final String DEFAULT_CHART_STYLE_LOCATION = "res://org/pentaho/experimental/chart/css/chart.css";
 
   public ChartNamespaceDefinition(final ResourceManager resourceManager) throws ResourceKeyCreationException {
     // Save the resource manager

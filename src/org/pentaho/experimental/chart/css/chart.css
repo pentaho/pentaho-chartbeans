@@ -15,6 +15,13 @@ stylesheet {
 }
 
 title {
+  font-family: fantasy;
+  font-size: 12.0pt;
+  font-weight: bold;
+  font-style: italic;
+  text-align: center;
+  color: darkslategray;
+  background-color: YELLOW;
 }
 
 plot {

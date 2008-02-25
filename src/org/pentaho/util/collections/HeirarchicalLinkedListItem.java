@@ -126,6 +126,32 @@ public class HeirarchicalLinkedListItem implements Cloneable {
   }
 
   /**
+   * Returns the next element in the heirarchical linked list based on a depth-first iteration
+   *
+   * @return the next depth-first item in the list, or <code>null</code> if this is the last item.
+   */
+  public HeirarchicalLinkedListItem getNextDepthFirstItem() {
+    // If we have children, return the first child
+    if (firstChild != null) {
+      return firstChild;
+    }
+
+    // Since we have no children, the next item would be the "next" sibling
+    if (next != null) {
+      return next;
+    }
+
+    // We don't have any children or siblings ... we have to look for the first ancestor with a "next" sibling
+    HeirarchicalLinkedListItem item = this;
+    while (item != null && item.next == null) {
+      item = item.parent;
+    }
+
+    // We are either out of ancestors or found an ancestor with a "next" sibling...
+    return (item == null ? null : item.next);
+  }
+
+  /**
    * Clones this object. This class does not allow cloning of the data, so it will throw
    * a CloneNotSupportedException.
    */
