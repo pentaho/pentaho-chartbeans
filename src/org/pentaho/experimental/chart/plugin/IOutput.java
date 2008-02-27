@@ -1,5 +1,6 @@
 package org.pentaho.experimental.chart.plugin;
 
+import java.io.OutputStream;
 import java.net.URL;
 
 
@@ -14,4 +15,5 @@ public interface IOutput {
   public void setFilename(String filename);
   public URL getLastSaveLocation();
   public void persist(byte[] object) throws PersistenceException;
+  public OutputStream getAsStream() throws Exception;
 }

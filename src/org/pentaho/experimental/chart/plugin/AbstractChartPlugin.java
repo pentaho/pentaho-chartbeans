@@ -52,9 +52,9 @@ public abstract class AbstractChartPlugin implements IChartPlugin {
     }
     
     // Validate the series
-    ChartElement[] seriesElement = chartDocument.getRootElement().findChildrenByName("series");
+    ChartElement[] seriesElement = chartDocument.getRootElement().findChildrenByName("chart-series");
     if (seriesElement == null || seriesElement.length < 1) {
-      return new ChartResult(ERROR_MISSING_REQUIRED_DATA, "series", "Missing the series element");
+      return new ChartResult(ERROR_MISSING_REQUIRED_DATA, "chart-series", "Missing the series element");
     }
 
     return new ChartResult();
