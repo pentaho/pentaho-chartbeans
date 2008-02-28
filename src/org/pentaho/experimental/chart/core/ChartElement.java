@@ -61,7 +61,7 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
   /**
    * The layout style for this element
    */
-  private LayoutStyle layoutStyle;
+  private DefaultLayoutStyle layoutStyle;
 
   /**
    * Constant used when generating the deep <code>toString</code> representation
@@ -82,10 +82,19 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
    * which always returns null.
    */
   public ChartElement() {
-//    this.style = new CSSStyleRule(null, null);
     this.attributes = new AttributeMap();
     setNamespace(NAMESPACE);
     this.layoutStyle = new DefaultLayoutStyle();
+  }
+
+  /**
+   * Indicates if style information has been set on the <code>ChartElement</code>
+   *
+   * @return <code>true</code> if this <code>ChartElement</code> contains style information,
+   *         <code>false</code> otherwise
+   */
+  public boolean containsStyleInformation() {
+    return !(this.layoutStyle.isClean());
   }
 
   /**

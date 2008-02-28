@@ -39,8 +39,11 @@ Attributes:     id       - optional - defines an id that allows other objects to
 
 <series>
 Description:    Defines one series to be plotted on the chart
-Attributes:     id       - optional - defines an id that allows other objects to reference this plot
-                plot-id  - optional - defines which plot this series should be plotted upon
-                axis-id  - optional - defines which axis this series should be plotted against
+Attributes:     id           - optional - defines an id that allows other objects to reference this plot
+                position-ref - optional - defines the column position in the data to which this series is related
+                                          (overrides the name-ref attribute if valid)
+                name-ref     - optional - defines the column name in the data to which this series is related
+                plot-id      - optional - defines which plot this series should be plotted upon
+                axis-id      - optional - defines which axis this series should be plotted against
 Text:           none
 Child Elements: none

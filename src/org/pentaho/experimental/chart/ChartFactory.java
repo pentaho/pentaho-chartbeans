@@ -76,8 +76,10 @@ public class ChartFactory {
     // Resolve the style for all the nodes in the chart
     ChartElement element = chart.getRootElement();
     while (element != null) {
-      // Resolve this element's style
-      sr.resolveStyle(element);
+      // Resolve this element's style (if it hasn't been done before)
+      if (!element.containsStyleInformation()) {
+        sr.resolveStyle(element);
+      }
 
       // Get the next element to process
       element = element.getNextDepthFirstItem();
