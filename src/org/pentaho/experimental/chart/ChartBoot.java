@@ -33,7 +33,7 @@ public class ChartBoot extends AbstractBoot {
   }
 
   @SuppressWarnings("nls")
-  protected Configuration loadConfiguration() {
+  public Configuration loadConfiguration() {
     return createDefaultHierarchicalConfiguration(
         "/org/pentaho/experimental/chart/chart.properties", // Hard coded default values that shoulnd't be changed by user
         "/chart.properties", // User changable values (these override above)

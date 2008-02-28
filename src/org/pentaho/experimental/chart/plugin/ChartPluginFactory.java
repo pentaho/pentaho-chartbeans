@@ -17,19 +17,49 @@
 
 package org.pentaho.experimental.chart.plugin;
 
-import org.pentaho.experimental.chart.plugin.jfreechart.JFreeChartPlugin;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.pentaho.experimental.chart.ChartBoot;
+import org.pentaho.reporting.libraries.base.config.Configuration;
 
 /**
  * @author wseyler
  *
  */
-public class ChartPluginFactory {
+public class ChartPluginFactory  {
+  private static final Log logger = LogFactory.getLog(ChartPluginFactory.class);
   static IChartPlugin chartPlugin = null;
   
   public static synchronized IChartPlugin getChartPlugin() {
-    if (chartPlugin == null) {
-      chartPlugin = new JFreeChartPlugin();
+    Configuration config = ChartBoot.getInstance().loadConfiguration();
+    String className = config.getConfigProperty("IChartPlugin"); //$NON-NLS-1$
+    Class pluginClass = null;
+    try {
+      pluginClass = Class.forName(className);
+    } catch (ClassNotFoundException e) {
+      logger.error(e);
+    }
+    if (chartPlugin == null || !chartPlugin.getClass().equals(pluginClass)) {
+      chartPlugin = getChartPlugin(className);
     }
     return chartPlugin;
   }
+
+  /**
+   * @param className
+   * @return
+   */
+  public static IChartPlugin getChartPlugin(String className) {
+    try {
+      return (IChartPlugin) Class.forName(className).newInstance();
+    } catch (ClassNotFoundException e) {
+      logger.error(e);
+    } catch (InstantiationException e) {
+      logger.error(e);
+    } catch (IllegalAccessException e) {
+      logger.error(e);
+    }
+    return null;
+  }
+
 }
