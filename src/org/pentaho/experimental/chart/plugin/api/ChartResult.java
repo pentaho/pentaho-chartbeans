@@ -15,7 +15,9 @@
  */
 
 
-package org.pentaho.experimental.chart.plugin;
+package org.pentaho.experimental.chart.plugin.api;
+
+import org.pentaho.experimental.chart.plugin.IChartPlugin;
 
 /**
  * @author wseyler

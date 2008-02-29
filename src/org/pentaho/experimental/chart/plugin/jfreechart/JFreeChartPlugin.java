@@ -19,20 +19,37 @@ package org.pentaho.experimental.chart.plugin.jfreechart;
 
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.plugin.AbstractChartPlugin;
-import org.pentaho.experimental.chart.plugin.ChartResult;
-import org.pentaho.experimental.chart.plugin.IOutput;
+import org.pentaho.experimental.chart.plugin.IChartPlugin;
+import org.pentaho.experimental.chart.plugin.api.ChartResult;
+import org.pentaho.experimental.chart.plugin.api.IOutput;
+import org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine;
 
 /**
  * @author wseyler
  *
  */
 public class JFreeChartPlugin extends AbstractChartPlugin {
+  IOutput outputHandler;
   
   public ChartResult renderChartDocument(ChartDocument chartDocument, IOutput output) {
-    return super.renderChartDocument(chartDocument, output);
+    ChartResult chartResult = super.renderChartDocument(chartDocument, output);
+    if (chartResult.getErrorCode() == IChartPlugin.RESULT_VALIDATED) {
+      ChartFactoryEngine chartFactory = new JFreeChartFactoryEngine();
+//      chartFactory.makeBarChart(data, styles, output);
+    }
+    
+    return chartResult;
   }
   
   public ChartResult validateChartDocument(ChartDocument chartDocument) {
     return super.validateChartDocument(chartDocument);
+  }
+
+  public IOutput getOutputHandler() {
+    return outputHandler;
+  }
+
+  public void setOutputHandler(IOutput outputHandler) {
+    this.outputHandler = outputHandler;
   }
 }

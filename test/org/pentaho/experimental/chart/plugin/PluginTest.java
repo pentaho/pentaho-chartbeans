@@ -22,6 +22,7 @@ import java.net.URL;
 import org.pentaho.experimental.chart.ChartBoot;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.parser.ChartXMLParser;
+import org.pentaho.experimental.chart.plugin.api.ChartResult;
 
 import junit.framework.TestCase;
 

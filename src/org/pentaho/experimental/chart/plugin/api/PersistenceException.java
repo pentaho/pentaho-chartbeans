@@ -1,4 +1,4 @@
-package org.pentaho.experimental.chart.plugin;
+package org.pentaho.experimental.chart.plugin.api;
 
 public class PersistenceException extends Exception {
 

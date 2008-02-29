@@ -19,6 +19,8 @@ package org.pentaho.experimental.chart.plugin;
 
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
+import org.pentaho.experimental.chart.plugin.api.ChartResult;
+import org.pentaho.experimental.chart.plugin.api.IOutput;
 
 /**
  * @author wseyler
