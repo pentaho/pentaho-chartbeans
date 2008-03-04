@@ -19,6 +19,7 @@ package org.pentaho.experimental.chart.plugin;
 
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
+import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.api.ChartResult;
 import org.pentaho.experimental.chart.plugin.api.IOutput;
 
@@ -31,7 +32,7 @@ public abstract class AbstractChartPlugin implements IChartPlugin {
   /* (non-Javadoc)
    * @see org.pentaho.experimental.chart.plugin.IChartPlugin#renderChartDocument(org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.IOutput)
    */
-  public ChartResult renderChartDocument(ChartDocument chartDocument, IOutput output) {
+  public ChartResult renderChartDocument(ChartDocument chartDocument, ChartTableModel data, IOutput output) {
     ChartResult validated = validateChartDocument(chartDocument);
     return validated;
   }

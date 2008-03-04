@@ -18,6 +18,7 @@
 package org.pentaho.experimental.chart.plugin.jfreechart;
 
 import org.pentaho.experimental.chart.core.ChartDocument;
+import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.AbstractChartPlugin;
 import org.pentaho.experimental.chart.plugin.IChartPlugin;
 import org.pentaho.experimental.chart.plugin.api.ChartResult;
@@ -31,11 +32,12 @@ import org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine;
 public class JFreeChartPlugin extends AbstractChartPlugin {
   IOutput outputHandler;
   
-  public ChartResult renderChartDocument(ChartDocument chartDocument, IOutput output) {
-    ChartResult chartResult = super.renderChartDocument(chartDocument, output);
+  public ChartResult renderChartDocument(ChartDocument chartDocument, ChartTableModel data, IOutput output) {
+    ChartResult chartResult = super.renderChartDocument(chartDocument, data, output);
     if (chartResult.getErrorCode() == IChartPlugin.RESULT_VALIDATED) {
       ChartFactoryEngine chartFactory = new JFreeChartFactoryEngine();
-//      chartFactory.makeBarChart(data, styles, output);
+
+      chartFactory.makeBarChart(data, null, output);
     }
     
     return chartResult;
@@ -52,4 +54,5 @@ public class JFreeChartPlugin extends AbstractChartPlugin {
   public void setOutputHandler(IOutput outputHandler) {
     this.outputHandler = outputHandler;
   }
+
 }

@@ -18,7 +18,9 @@
 package org.pentaho.experimental.chart.plugin;
 
 import org.pentaho.experimental.chart.ChartBoot;
+import org.pentaho.experimental.chart.plugin.api.IOutput;
 import org.pentaho.experimental.chart.plugin.jfreechart.JFreeChartPlugin;
+import org.pentaho.experimental.chart.plugin.jfreechart.outputs.JFreeChartOutput;
 
 import junit.framework.TestCase;
 
@@ -42,5 +44,9 @@ public class ChartPluginTest extends TestCase {
     plugin = ChartPluginFactory.getChartPlugin();
     assertTrue(plugin instanceof AbstractChartPlugin);
     assertTrue(plugin instanceof JFreeChartPlugin);
+    
+    IOutput output = ChartPluginFactory.getChartOutput();
+    assertNotNull(output);
+    assertTrue(output instanceof JFreeChartOutput);
   }
 }

@@ -22,7 +22,9 @@ import java.net.URL;
 import org.pentaho.experimental.chart.ChartBoot;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.parser.ChartXMLParser;
+import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.api.ChartResult;
+import org.pentaho.experimental.chart.plugin.api.IOutput;
 
 import junit.framework.TestCase;
 
@@ -53,12 +55,28 @@ public class PluginTest extends TestCase {
   }
   
   public void testRender() throws Exception {
+    IChartPlugin plugin = ChartPluginFactory.getChartPlugin("org.pentaho.experimental.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
+    IOutput output = ChartPluginFactory.getChartOutput();
+    // At this point we have an output of the correct type
+    // Now we can manipulate it to meet our needs so that we get the correct
+    // output location and type.
+    
+    // Now get the chart definition
     ChartXMLParser chartParser = new ChartXMLParser();
     URL chartXmlDocument = this.getClass().getResource("PluginTest.xml");
     ChartDocument chartDocument = chartParser.parseChartDocument(chartXmlDocument);
     if (chartDocument == null) {
       fail("A null document should never be returned");
     }
-
+    
+    // Now lets create some data
+    ChartTableModel data = new ChartTableModel();
+    Object[][] dataArray = {{30, 20, 17}, {20, 40, 35}, {46, 35, 86}};
+    data.setData(dataArray);
+    output.setFilename("TestChart.png");
+    output.setFileType(IOutput.FILE_TYPE_PNG);
+    
+    // Render and save the plot
+    plugin.renderChartDocument(chartDocument, data, output);
   }
 }

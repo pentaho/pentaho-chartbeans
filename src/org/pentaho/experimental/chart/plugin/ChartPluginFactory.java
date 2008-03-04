@@ -20,6 +20,7 @@ package org.pentaho.experimental.chart.plugin;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.pentaho.experimental.chart.ChartBoot;
+import org.pentaho.experimental.chart.plugin.api.IOutput;
 import org.pentaho.reporting.libraries.base.config.Configuration;
 
 /**
@@ -57,6 +58,21 @@ public class ChartPluginFactory  {
     } catch (InstantiationException e) {
       logger.error(e);
     } catch (IllegalAccessException e) {
+      logger.error(e);
+    }
+    return null;
+  }
+  
+  public static IOutput getChartOutput() {
+    Configuration config = ChartBoot.getInstance().loadConfiguration();
+    String className = config.getConfigProperty("IOutput");
+    try {
+      return  (IOutput) Class.forName(className).newInstance();
+    } catch (InstantiationException e) {
+      logger.error(e);
+    } catch (IllegalAccessException e) {
+      logger.error(e);
+    } catch (ClassNotFoundException e) {
       logger.error(e);
     }
     return null;

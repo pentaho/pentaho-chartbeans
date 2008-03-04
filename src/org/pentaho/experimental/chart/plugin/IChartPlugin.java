@@ -18,6 +18,7 @@
 package org.pentaho.experimental.chart.plugin;
 
 import org.pentaho.experimental.chart.core.ChartDocument;
+import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.api.ChartResult;
 import org.pentaho.experimental.chart.plugin.api.IOutput;
 
@@ -29,9 +30,9 @@ public interface IChartPlugin {
   public static final int RESULT_VALIDATED = 0;             // All is well
   public static final int RESULT_ERROR = 1;                 // General error... see description field
   public static final int ERROR_MISSING_REQUIRED_DATA = 2;  // Some required item was not provided
-  public static final int ERROR_INVALID_DATA = 3;           // Item existed but the value didn't make sense
+  public static final int ERROR_INVALID_DEFINITION = 3;     // Item existed but the value didn't make sense
   public static final int ERROR_DUPLICATE_SINGLETON = 4;    // One item was expected but more than one was found
   
   public ChartResult validateChartDocument(ChartDocument chartDocument);
-  public ChartResult renderChartDocument(ChartDocument chartDocument, IOutput output);
+  public ChartResult renderChartDocument(ChartDocument chartDocument, ChartTableModel data, IOutput output);
 }

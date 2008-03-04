@@ -26,14 +26,14 @@ public class BarChartBean extends BaseJFreeChartBean implements Chart {
   }
 
 
-  public void createDefaultChart(){
+  public void createDefaultChart() {
 
     CategoryPlot plot = new CategoryPlot(null, new CategoryAxis(), new NumberAxis(), new BarRenderer());
-
+    
     chart = new JFreeChart(plot);
     
     axes = new AxisBean[2];
-    series = new SeriesBean[4];
+    series = new SeriesBean[3];
     data = new CategoryDataset[1];
 
     axes[0] = new CategoryAxisBean();
@@ -48,8 +48,6 @@ public class BarChartBean extends BaseJFreeChartBean implements Chart {
     series[1].setIndex(1);
     series[2] = new SeriesBean();
     series[2].setIndex(2);
-    series[3] = new SeriesBean();
-    series[3].setIndex(3);
 
     // Now set the BAR renderer on all BAR series
     BeanPropertyValueChangeClosure closure = new BeanPropertyValueChangeClosure("renderer", plot.getRenderer()); //$NON-NLS-1$
@@ -77,6 +75,9 @@ public class BarChartBean extends BaseJFreeChartBean implements Chart {
    */
   public final void setData(CategoryDataset[] data) {
     this.data = data;
+    for (int i=0; i<data.length; i++) {
+      setData(i, data[i]);
+    }
   }
 
   public final void setData(int index, CategoryDataset data) {
