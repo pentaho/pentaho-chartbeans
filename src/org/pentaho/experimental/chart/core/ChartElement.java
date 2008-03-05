@@ -15,6 +15,7 @@
  */
 package org.pentaho.experimental.chart.core;
 
+import org.apache.commons.lang.StringUtils;
 import org.jfree.xmlns.LibXmlInfo;
 import org.jfree.xmlns.common.AttributeMap;
 import org.pentaho.reporting.libraries.css.dom.DefaultLayoutStyle;
@@ -131,10 +132,13 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
   }
 
   /**
-   * Sets the tagname for this element
+   * Sets the tagname for this element.
    */
   public void setTagName(String tagName) {
-    this.tagName = tagName;
+    if (StringUtils.isBlank(tagName)) {
+      throw new NullPointerException();
+    }
+    this.tagName = tagName.trim().toLowerCase();
   }
 
   /**
@@ -172,13 +176,13 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
    * @param value
    */
   public void setAttribute(final String namespace, final String name, final Object value) {
-    if (name == null) {
+    if (StringUtils.isBlank(name)) {
       throw new NullPointerException();
     }
     if (attributes == null) {
       this.attributes = new AttributeMap();
     }
-    this.attributes.setAttribute(namespace, name, value);
+    this.attributes.setAttribute(namespace, name.trim().toLowerCase(), value);
   }
 
   /**
