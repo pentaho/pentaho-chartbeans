@@ -73,7 +73,7 @@ public class PluginTest extends TestCase {
     ChartTableModel data = new ChartTableModel();
     Object[][] dataArray = {{30, 20, 17}, {20, 40, 35}, {46, 35, 86}};
     data.setData(dataArray);
-    output.setFilename("TestChart.png");
+    output.setFilename("test/test-output/TestChart.png");
     output.setFileType(IOutput.FILE_TYPE_PNG);
     
     // Render and save the plot
