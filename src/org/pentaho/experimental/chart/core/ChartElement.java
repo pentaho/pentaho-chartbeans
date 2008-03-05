@@ -138,7 +138,7 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
     if (StringUtils.isBlank(tagName)) {
       throw new NullPointerException();
     }
-    this.tagName = tagName.trim().toLowerCase();
+    this.tagName = tagName.trim();
   }
 
   /**
@@ -182,7 +182,7 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
     if (attributes == null) {
       this.attributes = new AttributeMap();
     }
-    this.attributes.setAttribute(namespace, name.trim().toLowerCase(), value);
+    this.attributes.setAttribute(namespace, name.trim(), value);
   }
 
   /**
