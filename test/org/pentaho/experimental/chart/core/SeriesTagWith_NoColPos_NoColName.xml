@@ -1,0 +1,36 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+	
+	<series style="    "/> 
+	<series style=" null   "/> 
+	<series style="  0  "/> 
+	<series style="First Name"/>
+	<series style="Last Name  "/>
+	<series style="Fav Sport"/>	
+	<series style="Num of Years"/>
+	<series style="    Proffesional        "/>
+	<series style="Budget"/> 
+	<series style="44"/> 
+	<series style="445"/> 
+	
+	
+  <stylesheet>
+    axis {
+    color: #FFF000;
+    font-family: sans-serif;
+    }
+    axis label {
+    font-weight: bold;
+    }
+    axis[type="numeric"] {
+    format: "#.00%";
+    }
+    axis[type="datetime"] {
+    format: "MM/dd hh:mm a";
+    }
+    axis.myAxis {
+    color: blue;
+    font-family: "Comic Sans MS";
+    }
+
+  </stylesheet>
+</chart>

@@ -1,0 +1,16 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+	
+	<!-- Following is a series of correct and incorrect data positions -->
+	<series column-pos="2"/> 
+	<series column-name="Fav Sport"/>
+	<series axis="X"/> 
+	<series column-name="First Name"/> 
+	<series column-pos="1"/> 
+	<series column-name="Soup" column-pos="29293"/> 
+	<series column-pos="3"/> 	
+	<series column-pos="300" column-name="Proffesional"/> 		
+	<series axis="X"/> 
+	<series axis="X"/> 
+	<series axis="X"/> 
+	<series axis="X"/> 
+</chart>
