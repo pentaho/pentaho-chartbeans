@@ -28,6 +28,7 @@ import org.pentaho.experimental.chart.plugin.api.IOutput;
  *
  */
 public abstract class AbstractChartPlugin implements IChartPlugin {
+  protected IChartCallback callback = null;
 
   /* (non-Javadoc)
    * @see org.pentaho.experimental.chart.plugin.IChartPlugin#renderChartDocument(org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.IOutput)
@@ -62,5 +63,14 @@ public abstract class AbstractChartPlugin implements IChartPlugin {
 
     return new ChartResult();
   }
+  
+  public void setChartCallback(IChartCallback callback) {
+    this.callback = callback;
+  }
+  
+  public IChartCallback getChartCallback() {
+    return callback;
+  }
+
 
 }

@@ -35,4 +35,6 @@ public interface IChartPlugin {
   
   public ChartResult validateChartDocument(ChartDocument chartDocument);
   public ChartResult renderChartDocument(ChartDocument chartDocument, ChartTableModel data, IOutput output);
+  public void setChartCallback(IChartCallback callback);
+  public IChartCallback getChartCallback();
 }
