@@ -19,5 +19,5 @@ public interface IOutput {
   public int getFileType();
   public void setFilename(String filename);
   public void setOutputStream(OutputStream outputStream);
-  public OutputStream getAsStream() throws PersistenceException;
+  public OutputStream getChartAsStream() throws PersistenceException;
 }

@@ -80,9 +80,7 @@ public class PluginTest extends TestCase {
     
     // Render and save the plot
     plugin.renderChartDocument(chartDocument, data, output);
-    OutputStream outputStream = new ByteArrayOutputStream();
-    output.setOutputStream(outputStream);
-    ByteArrayOutputStream newOutputStream = (ByteArrayOutputStream) output.getAsStream();
+    ByteArrayOutputStream newOutputStream = (ByteArrayOutputStream) output.getChartAsStream();
     assertTrue(newOutputStream.toByteArray().length > 5000);
   }
 }

@@ -17,6 +17,8 @@
 
 package org.pentaho.experimental.chart.plugin.jfreechart.outputs;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -42,8 +44,15 @@ public class JFreeChartOutput implements IOutput {
   /* (non-Javadoc)
    * @see org.pentaho.experimental.chart.plugin.api.IOutput#getAsStream()
    */
-  public OutputStream getAsStream() throws PersistenceException {
-   
+  public OutputStream getChartAsStream() throws PersistenceException {
+    if (outputStream == null) {
+      outputStream = new ByteArrayOutputStream();
+    }
+    try {
+      outputStream.flush();
+    } catch (IOException e1) {
+      throw new PersistenceException(e1);
+    }
     if (fileType == IOutput.FILE_TYPE_JPG) {
       try {
         ChartUtilities.writeChartAsJPEG(outputStream, ((BaseJFreeChartBean)chart).getChart(), 400, 400);
