@@ -1,0 +1,11 @@
+/**
+ * This file contains the inital stylesheet properties for the
+ * charting API. The style-rules here do not get matched,
+ * so no matter what selector you put in, they always get matched
+ * as *ANY_NODE* selector.
+ */
+
+/** Series Styles */
+* {
+  -x-pentaho-chart-line-style: solid;
+}

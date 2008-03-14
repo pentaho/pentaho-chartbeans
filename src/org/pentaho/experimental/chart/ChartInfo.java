@@ -19,6 +19,7 @@ import org.jfree.resourceloader.LibLoaderInfo;
 import org.jfree.xmlns.LibXmlInfo;
 import org.pentaho.reporting.libraries.base.LibBaseInfo;
 import org.pentaho.reporting.libraries.base.versioning.ProjectInformation;
+import org.pentaho.reporting.libraries.css.LibCssInfo;
 
 public class ChartInfo extends ProjectInformation {
   public static final ProjectInformation INSTANCE = new ChartInfo();
@@ -35,5 +36,6 @@ public class ChartInfo extends ProjectInformation {
     addLibrary(LibBaseInfo.INSTANCE);
     addLibrary(LibLoaderInfo.getInstance());
     addLibrary(LibXmlInfo.getInstance());
+    addLibrary(LibCssInfo.getInstance());
   }
 }

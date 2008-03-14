@@ -49,6 +49,9 @@ public class ChartFactory {
     // Create a ChartDocumentContext
     ChartDocumentContext cdc = new ChartDocumentContext(chart);
 
+    // Resolve the style information
+    resolveStyles(chart, cdc);
+
     // temporary
     return chart;
   }

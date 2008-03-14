@@ -1,14 +1,14 @@
 package org.pentaho.experimental.chart.css;
 
 import junit.framework.TestCase;
-
 import org.pentaho.experimental.chart.ChartBoot;
+import org.pentaho.experimental.chart.ChartFactory;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
-import org.pentaho.experimental.chart.core.parser.ChartXMLParser;
 import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
 import org.pentaho.experimental.chart.css.styles.ChartLineStyle;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
+import org.pentaho.reporting.libraries.css.values.CSSConstant;
 
 public class LineStyleTest extends TestCase {
 
@@ -22,24 +22,21 @@ public class LineStyleTest extends TestCase {
   }
   
   public void testLineStyle() throws Exception {
-    ChartDocument cd = new ChartXMLParser().parseChartDocument(this.getClass().getResource("LineStyleTest.xml"));
+    ChartDocument cd = ChartFactory.generateChart(getClass().getResource("LineStyleTest.xml"));
     assertNotNull(cd);
     ChartElement element = cd.getRootElement();
     assertNotNull(element);
-    ChartElement child1 = element.getFirstChildItem();
-    LayoutStyle tempStyle = child1.getLayoutStyle();
-    assertNotNull(tempStyle);
-    assertEquals(ChartLineStyle.SOLID, tempStyle.getValue(ChartStyleKeys.LINE_STYLE));
-     
-    ChartElement child2= child1.getNextItem();
-    tempStyle = child2.getLayoutStyle();
-    assertNotNull(tempStyle);
-    assertEquals(ChartLineStyle.DOTTED, tempStyle.getValue(ChartStyleKeys.LINE_STYLE));
-    
-    ChartElement child3 = child1.getNextItem();
-    tempStyle = child3.getLayoutStyle();
-    assertNotNull(tempStyle);
-    assertEquals(ChartLineStyle.SOLID, tempStyle.getValue(ChartStyleKeys.LINE_STYLE));
+
+    int index = 0;
+    CSSConstant[] passValues = new CSSConstant[] { ChartLineStyle.SOLID, ChartLineStyle.DASHED, ChartLineStyle.DOT_DOT_DASH, ChartLineStyle.SOLID, ChartLineStyle.SOLID };
+    ChartElement child = element.getFirstChildItem().getNextItem();
+    while(child != null) {
+      LayoutStyle layoutStyle = child.getLayoutStyle();
+      assertNotNull(layoutStyle);
+      System.out.println("expected: "+passValues[index]+" - got: "+layoutStyle.getValue(ChartStyleKeys.LINE_STYLE));
+      assertEquals(passValues[index++], layoutStyle.getValue(ChartStyleKeys.LINE_STYLE));
+      child = child.getNextItem();
+    }
   }
   
 }

@@ -1,9 +1,4 @@
-@namespace
-url
-(
-http://reporting.pentaho.org/namespaces/charting/1.0
-)
-;
+@namespace url(http://reporting.pentaho.org/namespaces/charting/1.0);
 /* set default namespace to Pentaho Charts */
 
 /* blocks */
