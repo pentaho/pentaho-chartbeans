@@ -31,4 +31,5 @@ axis {
 }
 
 series {
+  -x-pentaho-chart-line-style: solid;
 }
