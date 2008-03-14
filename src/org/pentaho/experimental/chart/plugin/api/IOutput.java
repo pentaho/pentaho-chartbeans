@@ -15,12 +15,9 @@ public interface IOutput {
   public void setChart(Chart chart);
   public void persist() throws PersistenceException;
 
-  public void setLocation(URL baseLocationURL);
   public void setFileType(int fileType);
   public int getFileType();
   public void setFilename(String filename);
-  public URL getLastSaveLocation();
-  public void persist(byte[] data) throws PersistenceException;
-  public void persist(URL baseLocationURL, String filename, int fileType, byte[] data);
-  public OutputStream getAsStream() throws Exception;
+  public void setOutputStream(OutputStream outputStream);
+  public OutputStream getAsStream() throws PersistenceException;
 }

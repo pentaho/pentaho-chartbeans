@@ -37,15 +37,27 @@ public class JFreeChartOutput implements IOutput {
   Chart chart;
   int fileType;
   String filename;
-  URL baseLocationURL;
-  URL lastSaveLocation;
+  OutputStream outputStream;
   
   /* (non-Javadoc)
    * @see org.pentaho.experimental.chart.plugin.api.IOutput#getAsStream()
    */
-  public OutputStream getAsStream() throws Exception {
-    // TODO Auto-generated method stub
-    return null;
+  public OutputStream getAsStream() throws PersistenceException {
+   
+    if (fileType == IOutput.FILE_TYPE_JPG) {
+      try {
+        ChartUtilities.writeChartAsJPEG(outputStream, ((BaseJFreeChartBean)chart).getChart(), 400, 400);
+      } catch (IOException e) {
+        throw new PersistenceException(e);
+      }
+    } else if (fileType == IOutput.FILE_TYPE_PNG) {
+      try {
+        ChartUtilities.writeChartAsPNG(outputStream, ((BaseJFreeChartBean)chart).getChart(), 400, 400);
+      } catch (IOException e) {
+        throw new PersistenceException(e);
+      }
+    }
+    return outputStream;
   }
 
   /* (non-Javadoc)
@@ -60,13 +72,6 @@ public class JFreeChartOutput implements IOutput {
    */
   public int getFileType() {
     return fileType;
-  }
-
-  /* (non-Javadoc)
-   * @see org.pentaho.experimental.chart.plugin.api.IOutput#getLastSaveLocation()
-   */
-  public URL getLastSaveLocation() {
-    return lastSaveLocation;
   }
 
   /* (non-Javadoc)
@@ -86,22 +91,6 @@ public class JFreeChartOutput implements IOutput {
         throw new PersistenceException(e);
       }
     }
-  }
-
-  /* (non-Javadoc)
-   * @see org.pentaho.experimental.chart.plugin.api.IOutput#persist(byte[])
-   */
-  public void persist(byte[] data) throws PersistenceException {
-    // TODO Auto-generated method stub
-
-  }
-
-  /* (non-Javadoc)
-   * @see org.pentaho.experimental.chart.plugin.api.IOutput#persist(java.net.URL, java.lang.String, int, byte[])
-   */
-  public void persist(URL baseLocationURL, String filename, int fileType, byte[] data) {
-    // TODO Auto-generated method stub
-
   }
 
   /* (non-Javadoc)
@@ -125,11 +114,8 @@ public class JFreeChartOutput implements IOutput {
     this.filename = filename;
   }
 
-  /* (non-Javadoc)
-   * @see org.pentaho.experimental.chart.plugin.api.IOutput#setLocation(java.net.URL)
-   */
-  public void setLocation(URL baseLocationURL) {
-    this.baseLocationURL = baseLocationURL;
+  public void setOutputStream(OutputStream outputStream) {
+    this.outputStream = outputStream;
   }
 
 }

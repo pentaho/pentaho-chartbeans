@@ -17,6 +17,8 @@
 
 package org.pentaho.experimental.chart.plugin;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.net.URL;
 
 import org.pentaho.experimental.chart.ChartBoot;
@@ -78,5 +80,9 @@ public class PluginTest extends TestCase {
     
     // Render and save the plot
     plugin.renderChartDocument(chartDocument, data, output);
+    OutputStream outputStream = new ByteArrayOutputStream();
+    output.setOutputStream(outputStream);
+    ByteArrayOutputStream newOutputStream = (ByteArrayOutputStream) output.getAsStream();
+    assertTrue(newOutputStream.toByteArray().length > 5000);
   }
 }
