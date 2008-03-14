@@ -1,0 +1,5 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+<series/> 
+<series style="-x-pentaho-chart-line-style:dotted"/>
+<series style="-x-pentaho-chart-line-style:dotted1223"/>
+</chart>
