@@ -17,12 +17,10 @@
 
 package org.pentaho.experimental.chart.plugin.jfreechart.outputs;
 
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URL;
 
 import org.jfree.chart.ChartUtilities;
 import org.pentaho.experimental.chart.plugin.api.IOutput;
@@ -53,7 +51,7 @@ public class JFreeChartOutput implements IOutput {
     } catch (IOException e1) {
       throw new PersistenceException(e1);
     }
-    if (fileType == IOutput.FILE_TYPE_JPG) {
+    if (fileType == IOutput.FILE_TYPE_JPEG) {
       try {
         ChartUtilities.writeChartAsJPEG(outputStream, ((BaseJFreeChartBean)chart).getChart(), 400, 400);
       } catch (IOException e) {
@@ -87,17 +85,19 @@ public class JFreeChartOutput implements IOutput {
    * @see org.pentaho.experimental.chart.plugin.api.IOutput#persist()
    */
   public void persist() throws PersistenceException {
-    if (fileType == IOutput.FILE_TYPE_JPG) {
-      try {
-        ChartUtilities.saveChartAsJPEG(new File(filename), ((BaseJFreeChartBean)chart).getChart(), 400, 400);
-      } catch (IOException e) {
-        throw new PersistenceException(e);
-      }
-    } else if (fileType == IOutput.FILE_TYPE_PNG) {
-      try {
-        ChartUtilities.saveChartAsPNG(new File(filename), ((BaseJFreeChartBean)chart).getChart(), 400, 400);
-      } catch (IOException e) {
-        throw new PersistenceException(e);
+    if (filename != null && filename.length() > 0) {
+      if (fileType == IOutput.FILE_TYPE_JPEG) {
+        try {
+          ChartUtilities.saveChartAsJPEG(new File(filename), ((BaseJFreeChartBean)chart).getChart(), 400, 400);
+        } catch (IOException e) {
+          throw new PersistenceException(e);
+        }
+      } else if (fileType == IOutput.FILE_TYPE_PNG) {
+        try {
+          ChartUtilities.saveChartAsPNG(new File(filename), ((BaseJFreeChartBean)chart).getChart(), 400, 400);
+        } catch (IOException e) {
+          throw new PersistenceException(e);
+        }
       }
     }
   }

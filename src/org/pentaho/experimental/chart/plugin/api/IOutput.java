@@ -6,7 +6,7 @@ import org.pentaho.experimental.chart.plugin.api.engine.Chart;
 
 
 public interface IOutput {
-  public static final int FILE_TYPE_JPG = 1;
+  public static final int FILE_TYPE_JPEG = 1;
   public static final int FILE_TYPE_PNG = 2;
   public static final int CHART_DEFINITION = 3;
   

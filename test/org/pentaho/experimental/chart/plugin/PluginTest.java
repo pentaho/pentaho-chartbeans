@@ -18,8 +18,9 @@
 package org.pentaho.experimental.chart.plugin;
 
 import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
 import java.net.URL;
+
+import junit.framework.TestCase;
 
 import org.pentaho.experimental.chart.ChartBoot;
 import org.pentaho.experimental.chart.core.ChartDocument;
@@ -28,13 +29,16 @@ import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.api.ChartResult;
 import org.pentaho.experimental.chart.plugin.api.IOutput;
 
-import junit.framework.TestCase;
-
 /**
  * @author wseyler
  *
  */
 public class PluginTest extends TestCase {
+  private static final Object[][] dataArray = {{30, 20, 17}, {20, 40, 35}, {46, 35, 86}};
+  
+  private static final String PNG_SUFFIX = ".png"; //$NON-NLS-1$
+  private static final String JPG_SUFFIX = ".jpeg"; //$NON-NLS-1$
+  private static final String TEST_FILE_PATH = "test/test-output/TestChart"; //$NON-NLS-1$
   
   protected void setUp() throws Exception {
     super.setUp();
@@ -45,10 +49,10 @@ public class PluginTest extends TestCase {
   
   public void testValidate() throws Exception {
     ChartXMLParser chartParser = new ChartXMLParser();
-    URL chartXmlDocument = this.getClass().getResource("PluginTest.xml");
+    URL chartXmlDocument = this.getClass().getResource("PluginTest.xml"); //$NON-NLS-1$
     ChartDocument chartDocument = chartParser.parseChartDocument(chartXmlDocument);
     if (chartDocument == null) {
-      fail("A null document should never be returned");
+      fail("A null document should never be returned"); //$NON-NLS-1$
     }
     
     IChartPlugin chartPlugin = ChartPluginFactory.getChartPlugin();
@@ -56,7 +60,7 @@ public class PluginTest extends TestCase {
     assertEquals(result.getErrorCode(), IChartPlugin.RESULT_VALIDATED);
   }
   
-  public void testRender() throws Exception {
+  public void testRenderAsPng() throws Exception {
     IChartPlugin plugin = ChartPluginFactory.getChartPlugin("org.pentaho.experimental.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
     IOutput output = ChartPluginFactory.getChartOutput();
     // At this point we have an output of the correct type
@@ -65,22 +69,101 @@ public class PluginTest extends TestCase {
     
     // Now get the chart definition
     ChartXMLParser chartParser = new ChartXMLParser();
-    URL chartXmlDocument = this.getClass().getResource("PluginTest.xml");
+    URL chartXmlDocument = this.getClass().getResource("PluginTest.xml"); //$NON-NLS-1$
     ChartDocument chartDocument = chartParser.parseChartDocument(chartXmlDocument);
     if (chartDocument == null) {
-      fail("A null document should never be returned");
+      fail("A null document should never be returned"); //$NON-NLS-1$
     }
     
     // Now lets create some data
     ChartTableModel data = new ChartTableModel();
-    Object[][] dataArray = {{30, 20, 17}, {20, 40, 35}, {46, 35, 86}};
     data.setData(dataArray);
-    output.setFilename("test/test-output/TestChart.png");
+    output.setFilename(TEST_FILE_PATH + PNG_SUFFIX);
+    output.setFileType(IOutput.FILE_TYPE_PNG);
+    
+    // Render and save the plot
+    plugin.renderChartDocument(chartDocument, data, output);   
+  }
+  
+  public void testRenderAsJpeg() throws Exception {
+    IChartPlugin plugin = ChartPluginFactory.getChartPlugin("org.pentaho.experimental.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
+    IOutput output = ChartPluginFactory.getChartOutput();
+    // At this point we have an output of the correct type
+    // Now we can manipulate it to meet our needs so that we get the correct
+    // output location and type.
+    
+    // Now get the chart definition
+    ChartXMLParser chartParser = new ChartXMLParser();
+    URL chartXmlDocument = this.getClass().getResource("PluginTest.xml"); //$NON-NLS-1$
+    ChartDocument chartDocument = chartParser.parseChartDocument(chartXmlDocument);
+    if (chartDocument == null) {
+      fail("A null document should never be returned"); //$NON-NLS-1$
+    }
+    
+    // Now lets create some data
+    ChartTableModel data = new ChartTableModel();
+    data.setData(dataArray);
+    output.setFilename(TEST_FILE_PATH + JPG_SUFFIX);
+    output.setFileType(IOutput.FILE_TYPE_JPEG);
+    
+    // Render and save the plot
+    plugin.renderChartDocument(chartDocument, data, output);
+  }
+  
+  public void testRenderAsPngStream() throws Exception {
+    IChartPlugin plugin = ChartPluginFactory.getChartPlugin("org.pentaho.experimental.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
+    IOutput output = ChartPluginFactory.getChartOutput();
+    // At this point we have an output of the correct type
+    // Now we can manipulate it to meet our needs so that we get the correct
+    // output location and type.
+    
+    // Now get the chart definition
+    ChartXMLParser chartParser = new ChartXMLParser();
+    URL chartXmlDocument = this.getClass().getResource("PluginTest.xml"); //$NON-NLS-1$
+    ChartDocument chartDocument = chartParser.parseChartDocument(chartXmlDocument);
+    if (chartDocument == null) {
+      fail("A null document should never be returned"); //$NON-NLS-1$
+    }
+    
+    // Now lets create some data
+    ChartTableModel data = new ChartTableModel();
+    data.setData(dataArray);
     output.setFileType(IOutput.FILE_TYPE_PNG);
     
     // Render and save the plot
     plugin.renderChartDocument(chartDocument, data, output);
+    
     ByteArrayOutputStream newOutputStream = (ByteArrayOutputStream) output.getChartAsStream();
     assertTrue(newOutputStream.toByteArray().length > 5000);
+    
   }
+  
+  public void testRenderAsJpegStream() throws Exception {
+    IChartPlugin plugin = ChartPluginFactory.getChartPlugin("org.pentaho.experimental.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
+    IOutput output = ChartPluginFactory.getChartOutput();
+    // At this point we have an output of the correct type
+    // Now we can manipulate it to meet our needs so that we get the correct
+    // output location and type.
+    
+    // Now get the chart definition
+    ChartXMLParser chartParser = new ChartXMLParser();
+    URL chartXmlDocument = this.getClass().getResource("PluginTest.xml"); //$NON-NLS-1$
+    ChartDocument chartDocument = chartParser.parseChartDocument(chartXmlDocument);
+    if (chartDocument == null) {
+      fail("A null document should never be returned"); //$NON-NLS-1$
+    }
+    
+    // Now lets create some data
+    ChartTableModel data = new ChartTableModel();
+    data.setData(dataArray);
+    output.setFileType(IOutput.FILE_TYPE_JPEG);
+    
+    // Render and save the plot
+    plugin.renderChartDocument(chartDocument, data, output);
+    
+    ByteArrayOutputStream newOutputStream = (ByteArrayOutputStream) output.getChartAsStream();
+    assertTrue(newOutputStream.toByteArray().length > 5000);
+    
+  }
+
 }
