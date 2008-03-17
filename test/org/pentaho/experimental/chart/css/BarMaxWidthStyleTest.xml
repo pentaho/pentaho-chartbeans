@@ -1,0 +1,6 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+<series/>
+<series style="-x-pentaho-chart-bar-max-width: 100%"/>
+<series style="-x-pentaho-chart-bar-max-width: 75%"/>
+<series style="-x-pentaho-chart-bar-max-width: junk%"/>
+</chart>

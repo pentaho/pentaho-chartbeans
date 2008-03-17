@@ -7,5 +7,10 @@
 
 /** Series Styles */
 * {
+  -x-pentaho-chart-categorical: false;
+  -x-pentaho-chart-orientation: vertical;
   -x-pentaho-chart-line-style: solid;
+  -x-pentaho-chart-bar-style: bar;
+  -x-pentaho-chart-bar-max-width: 50%;    
 }
+

@@ -1,0 +1,9 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+	<series style="-x-pentaho-chart-bar-style: bar"/>
+	<series/>
+	<series style="-x-pentaho-chart-bar-style: cylinder"/>
+	<series style="-x-pentaho-chart-bar-style: interval"/>	
+	<series style="-x-pentaho-chart-bar-style: stacked"/>
+	<series style="-x-pentaho-chart-bar-style: layered"/>	
+	<series style="-x-pentaho-chart-bar-style: junk"/>	
+</chart>
