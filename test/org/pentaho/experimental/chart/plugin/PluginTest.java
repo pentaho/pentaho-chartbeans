@@ -18,6 +18,7 @@
 package org.pentaho.experimental.chart.plugin;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.net.URL;
 
 import junit.framework.TestCase;
@@ -82,7 +83,10 @@ public class PluginTest extends TestCase {
     output.setFileType(IOutput.FILE_TYPE_PNG);
     
     // Render and save the plot
-    plugin.renderChartDocument(chartDocument, data, output);   
+    plugin.renderChartDocument(chartDocument, data, output);
+    File chartFile = new File(output.getFilename());
+    assertTrue(chartFile.exists());
+    assertTrue(chartFile.length() > 5000);
   }
   
   public void testRenderAsJpeg() throws Exception {
@@ -108,6 +112,9 @@ public class PluginTest extends TestCase {
     
     // Render and save the plot
     plugin.renderChartDocument(chartDocument, data, output);
+    File chartFile = new File(output.getFilename());
+    assertTrue(chartFile.exists());
+    assertTrue(chartFile.length() > 5000);
   }
   
   public void testRenderAsPngStream() throws Exception {

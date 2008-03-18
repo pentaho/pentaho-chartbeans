@@ -16,6 +16,16 @@ public interface IOutput {
 
   public void setFileType(int fileType);
   public int getFileType();
+  
+  /**
+   * @return a path/filename that represents the current
+   * persist location.
+   */
+  public String getFilename();
+  /**
+   * @param filename
+   * sets the current path/filename.
+   */
   public void setFilename(String filename);
   /**
    * @param outputStream

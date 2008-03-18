@@ -122,6 +122,10 @@ public class JFreeChartOutput implements IOutput {
   public void setFilename(String filename) {
     this.filename = filename;
   }
+  
+  public String getFilename() {
+    return filename;
+  }
 
   public void setOutputStream(OutputStream outputStream) {
     this.outputStream = outputStream;
