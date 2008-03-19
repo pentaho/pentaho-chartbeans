@@ -17,18 +17,21 @@
 
 package org.pentaho.experimental.chart.plugin;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.net.URL;
-
 import junit.framework.TestCase;
-
 import org.pentaho.experimental.chart.ChartBoot;
+import org.pentaho.experimental.chart.ChartDocumentContext;
+import org.pentaho.experimental.chart.ChartFactory;
 import org.pentaho.experimental.chart.core.ChartDocument;
+import org.pentaho.experimental.chart.core.ChartSeriesDataLinkInfo;
+import org.pentaho.experimental.chart.core.ChartSeriesDataLinkInfoFactory;
 import org.pentaho.experimental.chart.core.parser.ChartXMLParser;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.api.ChartResult;
 import org.pentaho.experimental.chart.plugin.api.IOutput;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.net.URL;
 
 /**
  * @author wseyler
@@ -171,6 +174,22 @@ public class PluginTest extends TestCase {
     ByteArrayOutputStream newOutputStream = (ByteArrayOutputStream) output.getChartAsStream();
     assertTrue(newOutputStream.toByteArray().length > 5000);
     
+  }
+
+  public void testRenderWithStyles() throws Exception {
+    // Create the test table model
+    final ChartTableModel tableModel = new ChartTableModel();
+    tableModel.setData(dataArray);
+    tableModel.setColumnName(0, "budget");
+    tableModel.setColumnName(1, "sales");
+    tableModel.setColumnName(2, "forecast");
+
+    // Load / parse the chart document
+    final URL chartURL = this.getClass().getResource("PluginTest2.xml");
+    ChartDocumentContext cdc = ChartFactory.generateChart(chartURL, tableModel); //$NON-NLS-1$);
+    assertNotNull(cdc);
+    assertNotNull(cdc.getChartDocument());
+    assertNotNull(cdc.getDataLinkInfo());
   }
 
 }

@@ -1,9 +1,9 @@
 package org.pentaho.experimental.chart.css;
 
 import junit.framework.TestCase;
-
 import org.jfree.resourceloader.ResourceException;
 import org.pentaho.experimental.chart.ChartBoot;
+import org.pentaho.experimental.chart.ChartDocumentContext;
 import org.pentaho.experimental.chart.ChartFactory;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
@@ -23,7 +23,8 @@ public class BarStyleTest extends TestCase {
   }
   
   public void testBarStyle() throws IllegalStateException, ResourceException {
-    ChartDocument cd = ChartFactory.generateChart(getClass().getResource("BarStyleTest.xml")); //$NON-NLS-1$
+    ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource("BarStyleTest.xml")); //$NON-NLS-1$
+    ChartDocument cd = cdc.getChartDocument();
     assertNotNull(cd);
     ChartElement element = cd.getRootElement();
     assertNotNull(element);

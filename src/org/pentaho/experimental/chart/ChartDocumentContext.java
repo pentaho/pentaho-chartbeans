@@ -20,6 +20,7 @@ import org.jfree.resourceloader.ResourceKeyCreationException;
 import org.jfree.resourceloader.ResourceManager;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
+import org.pentaho.experimental.chart.core.ChartSeriesDataLinkInfo;
 import org.pentaho.reporting.libraries.css.dom.DocumentContext;
 import org.pentaho.reporting.libraries.css.dom.StyleReference;
 import org.pentaho.reporting.libraries.css.model.StyleKeyRegistry;
@@ -39,6 +40,8 @@ public class ChartDocumentContext implements DocumentContext {
   private final ChartDocument chartDocument;
   private final ResourceKey resourceKey;
   private final DefaultNamespaceCollection namespaceCollection;
+
+  private ChartSeriesDataLinkInfo dataLinkInfo;
 
   /**
    * List of classes that can be loaded as resources from the style information
@@ -171,4 +174,13 @@ public class ChartDocumentContext implements DocumentContext {
     // Return the list of StyleReferences
     return styleReferenceList.toArray(new StyleReference[styleReferenceList.size()]);
   }
+
+  public ChartSeriesDataLinkInfo getDataLinkInfo() {
+    return dataLinkInfo;
+  }
+
+  public void setDataLinkInfo(ChartSeriesDataLinkInfo dataLinkInfo) {
+    this.dataLinkInfo = dataLinkInfo;
+  }
+
 }

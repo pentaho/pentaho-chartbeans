@@ -1,8 +1,8 @@
 package org.pentaho.experimental.chart.css;
 
 import junit.framework.TestCase;
-
 import org.pentaho.experimental.chart.ChartBoot;
+import org.pentaho.experimental.chart.ChartDocumentContext;
 import org.pentaho.experimental.chart.ChartFactory;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
@@ -22,7 +22,8 @@ public class ChartOrientationStyleTest extends TestCase {
   }
   
   public void testOrientationStyle() throws Exception {
-    ChartDocument cd = ChartFactory.generateChart(getClass().getResource("ChartOrientationStyleTest.xml")); //$NON-NLS-1$
+    ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource("ChartOrientationStyleTest.xml")); //$NON-NLS-1$
+    ChartDocument cd = cdc.getChartDocument();
     assertNotNull(cd);
     ChartElement element = cd.getRootElement();
     assertNotNull(element);

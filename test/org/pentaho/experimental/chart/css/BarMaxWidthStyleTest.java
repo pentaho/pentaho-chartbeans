@@ -1,8 +1,8 @@
 package org.pentaho.experimental.chart.css;
 
 import junit.framework.TestCase;
-
 import org.pentaho.experimental.chart.ChartBoot;
+import org.pentaho.experimental.chart.ChartDocumentContext;
 import org.pentaho.experimental.chart.ChartFactory;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
@@ -21,7 +21,8 @@ public class BarMaxWidthStyleTest extends TestCase {
   }
   
   public void testBarMaxWidthStyle() throws Exception {
-    ChartDocument cd = ChartFactory.generateChart(getClass().getResource("BarMaxWidthStyleTest.xml")); //$NON-NLS-1$
+    ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource("BarMaxWidthStyleTest.xml")); //$NON-NLS-1$
+    ChartDocument cd = cdc.getChartDocument();
     assertNotNull(cd);
     ChartElement element = cd.getRootElement();
     assertNotNull(element);
@@ -31,7 +32,6 @@ public class BarMaxWidthStyleTest extends TestCase {
         new CSSConstant("100 %"), //$NON-NLS-1$
         new CSSConstant("75 %"), //$NON-NLS-1$
         new CSSConstant("50 %"), //$NON-NLS-1$
-        new CSSConstant("50 %") //$NON-NLS-1$        
     };
     
     int counter = 0;

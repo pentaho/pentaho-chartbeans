@@ -19,7 +19,9 @@ import org.jfree.resourceloader.ResourceException;
 import org.jfree.resourceloader.ResourceManager;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
+import org.pentaho.experimental.chart.core.ChartSeriesDataLinkInfoFactory;
 import org.pentaho.experimental.chart.core.parser.ChartXMLParser;
+import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.reporting.libraries.css.resolver.StyleResolver;
 import org.pentaho.reporting.libraries.css.resolver.impl.DefaultStyleResolver;
 
@@ -41,7 +43,20 @@ public class ChartFactory {
    * @throws ResourceException      indicates an error loading the chart resources
    * @throws InvalidChartDefinition indicates an error with chart definition
    */
-  public static ChartDocument generateChart(URL chartURL) throws ResourceException {
+  public static ChartDocumentContext generateChart(final URL chartURL) throws ResourceException {
+    return generateChart(chartURL, null);
+  }
+
+  /**
+   * Creats a chart based on the chart definition and the table model
+   * TODO: document / complete
+   *
+   * @param chartURL the URL of the chart definition
+   * @param tableModel the chart table model for this chart
+   * @throws ResourceException      indicates an error loading the chart resources
+   * @throws InvalidChartDefinition indicates an error with chart definition
+   */
+  public static ChartDocumentContext generateChart(final URL chartURL, final ChartTableModel tableModel) throws ResourceException {
     // Parse the chart
     ChartXMLParser chartParser = new ChartXMLParser();
     ChartDocument chart = chartParser.parseChartDocument(chartURL);
@@ -52,8 +67,13 @@ public class ChartFactory {
     // Resolve the style information
     resolveStyles(chart, cdc);
 
+    // Link the series tags with the tabel model
+    if (tableModel != null) {
+      cdc.setDataLinkInfo(ChartSeriesDataLinkInfoFactory.generateSeriesDataLinkInfo(chart, tableModel));
+    }
+
     // temporary
-    return chart;
+    return cdc;
   }
 
   /**
