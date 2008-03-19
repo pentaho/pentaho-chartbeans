@@ -7,6 +7,7 @@
 
 /** Series Styles */
 * {
+	-x-pentaho-chart-series-type: bar;
   -x-pentaho-chart-categorical: false;
   -x-pentaho-chart-orientation: vertical;
   -x-pentaho-chart-line-style: solid;

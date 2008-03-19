@@ -24,6 +24,13 @@ import org.pentaho.reporting.libraries.css.model.StyleKeyRegistry;
  * @author David Kincade, Ravi Hasija
  */
 public class ChartStyleKeys {
+
+  /**
+   * The chart type: bar, line, pie etc.
+   */
+  public static final StyleKey CHART_TYPE = StyleKeyRegistry.getRegistry().
+      createKey("-x-pentaho-chart-series-type", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+
   /**
    * "true" if the chart is categorical, "false" if value based.
    */ 
