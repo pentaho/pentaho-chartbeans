@@ -59,6 +59,12 @@ public class ChartStyleKeys {
    * Bar width specified in terms of percentage
    */ 
   public static final StyleKey BAR_MAX_WIDTH = StyleKeyRegistry.getRegistry().
-      createKey("-x-pentaho-chart-bar-max-width", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$  
+      createKey("-x-pentaho-chart-bar-max-width", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+
+  /**
+   * The Drill-Through URL
+   */
+  public static final StyleKey DRILL_URL = StyleKeyRegistry.getRegistry().
+    createKey("-x-pentaho-chart-drill-url", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
 }
 
