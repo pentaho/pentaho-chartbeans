@@ -72,21 +72,21 @@ public class PluginTest extends TestCase {
     // Now we can manipulate it to meet our needs so that we get the correct
     // output location and type.
     
-    // Now get the chart definition
-    ChartXMLParser chartParser = new ChartXMLParser();
-    URL chartXmlDocument = this.getClass().getResource("PluginTest2.xml"); //$NON-NLS-1$
-    ChartDocument chartDocument = chartParser.parseChartDocument(chartXmlDocument);
-    if (chartDocument == null) {
-      fail("A null document should never be returned"); //$NON-NLS-1$
-    }
-    
     // Now lets create some data
     ChartTableModel data = createChartTableModel();
     output.setFilename(TEST_FILE_PATH + (CHART_COUNT++) + PNG_SUFFIX);
     output.setFileType(IOutput.FILE_TYPE_PNG);
+
+     // Load / parse the chart document
+    final URL chartURL = this.getClass().getResource("PluginTest2.xml");
+    ChartDocumentContext cdc = ChartFactory.generateChart(chartURL, data); //$NON-NLS-1$);
+    assertNotNull(cdc);
+    assertNotNull(cdc.getChartDocument());
+    assertNotNull(cdc.getDataLinkInfo());
+    
     
     // Render and save the plot
-    plugin.renderChartDocument(chartDocument, data, output);
+    plugin.renderChartDocument(cdc.getChartDocument(), data, output);
     File chartFile = new File(output.getFilename());
     assertTrue(chartFile.exists());
     assertTrue(chartFile.length() > 5000);
@@ -98,22 +98,22 @@ public class PluginTest extends TestCase {
     // At this point we have an output of the correct type
     // Now we can manipulate it to meet our needs so that we get the correct
     // output location and type.
-    
-    // Now get the chart definition
-    ChartXMLParser chartParser = new ChartXMLParser();
-    URL chartXmlDocument = this.getClass().getResource("PluginTest2.xml"); //$NON-NLS-1$
-    ChartDocument chartDocument = chartParser.parseChartDocument(chartXmlDocument);
-    if (chartDocument == null) {
-      fail("A null document should never be returned"); //$NON-NLS-1$
-    }
-    
+ 
     // Now lets create some data
     ChartTableModel data = createChartTableModel();
     output.setFilename(TEST_FILE_PATH + (CHART_COUNT++) + JPG_SUFFIX);
     output.setFileType(IOutput.FILE_TYPE_JPEG);
+
+    // Load / parse the chart document
+    final URL chartURL = this.getClass().getResource("PluginTest2.xml");
+    ChartDocumentContext cdc = ChartFactory.generateChart(chartURL, data); //$NON-NLS-1$);
+    assertNotNull(cdc);
+    assertNotNull(cdc.getChartDocument());
+    assertNotNull(cdc.getDataLinkInfo());
+    
     
     // Render and save the plot
-    plugin.renderChartDocument(chartDocument, data, output);
+    plugin.renderChartDocument(cdc.getChartDocument(), data, output);
     File chartFile = new File(output.getFilename());
     assertTrue(chartFile.exists());
     assertTrue(chartFile.length() > 5000);
@@ -125,21 +125,21 @@ public class PluginTest extends TestCase {
     // At this point we have an output of the correct type
     // Now we can manipulate it to meet our needs so that we get the correct
     // output location and type.
-    
-    // Now get the chart definition
-    ChartXMLParser chartParser = new ChartXMLParser();
-    URL chartXmlDocument = this.getClass().getResource("PluginTest2.xml"); //$NON-NLS-1$
-    ChartDocument chartDocument = chartParser.parseChartDocument(chartXmlDocument);
-    if (chartDocument == null) {
-      fail("A null document should never be returned"); //$NON-NLS-1$
-    }
-    
+
     // Now lets create some data
     ChartTableModel data = createChartTableModel();
     output.setFileType(IOutput.FILE_TYPE_PNG);
+
+    // Load / parse the chart document
+    final URL chartURL = this.getClass().getResource("PluginTest2.xml");
+    ChartDocumentContext cdc = ChartFactory.generateChart(chartURL, data); //$NON-NLS-1$);
+    assertNotNull(cdc);
+    assertNotNull(cdc.getChartDocument());
+    assertNotNull(cdc.getDataLinkInfo());
+    
     
     // Render and save the plot
-    plugin.renderChartDocument(chartDocument, data, output);
+    plugin.renderChartDocument(cdc.getChartDocument(), data, output);
     
     ByteArrayOutputStream newOutputStream = (ByteArrayOutputStream) output.getChartAsStream();
     assertTrue(newOutputStream.toByteArray().length > 5000);
@@ -153,20 +153,19 @@ public class PluginTest extends TestCase {
     // Now we can manipulate it to meet our needs so that we get the correct
     // output location and type.
     
-    // Now get the chart definition
-    ChartXMLParser chartParser = new ChartXMLParser();
-    URL chartXmlDocument = this.getClass().getResource("PluginTest2.xml"); //$NON-NLS-1$
-    ChartDocument chartDocument = chartParser.parseChartDocument(chartXmlDocument);
-    if (chartDocument == null) {
-      fail("A null document should never be returned"); //$NON-NLS-1$
-    }
-    
     // Now lets create some data
     ChartTableModel data = createChartTableModel();
     output.setFileType(IOutput.FILE_TYPE_JPEG);
     
+    // Load / parse the chart document
+    final URL chartURL = this.getClass().getResource("PluginTest2.xml");
+    ChartDocumentContext cdc = ChartFactory.generateChart(chartURL, data); //$NON-NLS-1$);
+    assertNotNull(cdc);
+    assertNotNull(cdc.getChartDocument());
+    assertNotNull(cdc.getDataLinkInfo());
+    
     // Render and save the plot
-    plugin.renderChartDocument(chartDocument, data, output);
+    plugin.renderChartDocument(cdc.getChartDocument(), data, output);
     
     ByteArrayOutputStream newOutputStream = (ByteArrayOutputStream) output.getChartAsStream();
     assertTrue(newOutputStream.toByteArray().length > 5000);
