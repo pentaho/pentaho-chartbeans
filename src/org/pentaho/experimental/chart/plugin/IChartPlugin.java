@@ -32,6 +32,7 @@ public interface IChartPlugin {
   public static final int ERROR_MISSING_REQUIRED_DATA = 2;  // Some required item was not provided
   public static final int ERROR_INVALID_DEFINITION = 3;     // Item existed but the value didn't make sense
   public static final int ERROR_DUPLICATE_SINGLETON = 4;    // One item was expected but more than one was found
+  public static final int ERROR_INDETERMINATE_CHART_TYPE = 5; // Couldn't figure out the chart type
   
   public ChartResult validateChartDocument(ChartDocument chartDocument);
   public ChartResult renderChartDocument(ChartDocument chartDocument, ChartTableModel data, IOutput output);

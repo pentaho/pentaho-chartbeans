@@ -17,21 +17,20 @@
 
 package org.pentaho.experimental.chart.plugin;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.net.URL;
+
 import junit.framework.TestCase;
+
 import org.pentaho.experimental.chart.ChartBoot;
 import org.pentaho.experimental.chart.ChartDocumentContext;
 import org.pentaho.experimental.chart.ChartFactory;
 import org.pentaho.experimental.chart.core.ChartDocument;
-import org.pentaho.experimental.chart.core.ChartSeriesDataLinkInfo;
-import org.pentaho.experimental.chart.core.ChartSeriesDataLinkInfoFactory;
 import org.pentaho.experimental.chart.core.parser.ChartXMLParser;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.api.ChartResult;
 import org.pentaho.experimental.chart.plugin.api.IOutput;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.net.URL;
 
 /**
  * @author wseyler
@@ -43,6 +42,8 @@ public class PluginTest extends TestCase {
   private static final String PNG_SUFFIX = ".png"; //$NON-NLS-1$
   private static final String JPG_SUFFIX = ".jpeg"; //$NON-NLS-1$
   private static final String TEST_FILE_PATH = "test/test-output/TestChart"; //$NON-NLS-1$
+  private static final String ROW_NAME = "row-name"; //$NON-NLS-1$
+  private static int CHART_COUNT = 0;
   
   protected void setUp() throws Exception {
     super.setUp();
@@ -53,7 +54,7 @@ public class PluginTest extends TestCase {
   
   public void testValidate() throws Exception {
     ChartXMLParser chartParser = new ChartXMLParser();
-    URL chartXmlDocument = this.getClass().getResource("PluginTest.xml"); //$NON-NLS-1$
+    URL chartXmlDocument = this.getClass().getResource("PluginTest2.xml"); //$NON-NLS-1$
     ChartDocument chartDocument = chartParser.parseChartDocument(chartXmlDocument);
     if (chartDocument == null) {
       fail("A null document should never be returned"); //$NON-NLS-1$
@@ -73,16 +74,15 @@ public class PluginTest extends TestCase {
     
     // Now get the chart definition
     ChartXMLParser chartParser = new ChartXMLParser();
-    URL chartXmlDocument = this.getClass().getResource("PluginTest.xml"); //$NON-NLS-1$
+    URL chartXmlDocument = this.getClass().getResource("PluginTest2.xml"); //$NON-NLS-1$
     ChartDocument chartDocument = chartParser.parseChartDocument(chartXmlDocument);
     if (chartDocument == null) {
       fail("A null document should never be returned"); //$NON-NLS-1$
     }
     
     // Now lets create some data
-    ChartTableModel data = new ChartTableModel();
-    data.setData(dataArray);
-    output.setFilename(TEST_FILE_PATH + PNG_SUFFIX);
+    ChartTableModel data = createChartTableModel();
+    output.setFilename(TEST_FILE_PATH + (CHART_COUNT++) + PNG_SUFFIX);
     output.setFileType(IOutput.FILE_TYPE_PNG);
     
     // Render and save the plot
@@ -101,16 +101,15 @@ public class PluginTest extends TestCase {
     
     // Now get the chart definition
     ChartXMLParser chartParser = new ChartXMLParser();
-    URL chartXmlDocument = this.getClass().getResource("PluginTest.xml"); //$NON-NLS-1$
+    URL chartXmlDocument = this.getClass().getResource("PluginTest2.xml"); //$NON-NLS-1$
     ChartDocument chartDocument = chartParser.parseChartDocument(chartXmlDocument);
     if (chartDocument == null) {
       fail("A null document should never be returned"); //$NON-NLS-1$
     }
     
     // Now lets create some data
-    ChartTableModel data = new ChartTableModel();
-    data.setData(dataArray);
-    output.setFilename(TEST_FILE_PATH + JPG_SUFFIX);
+    ChartTableModel data = createChartTableModel();
+    output.setFilename(TEST_FILE_PATH + (CHART_COUNT++) + JPG_SUFFIX);
     output.setFileType(IOutput.FILE_TYPE_JPEG);
     
     // Render and save the plot
@@ -129,15 +128,14 @@ public class PluginTest extends TestCase {
     
     // Now get the chart definition
     ChartXMLParser chartParser = new ChartXMLParser();
-    URL chartXmlDocument = this.getClass().getResource("PluginTest.xml"); //$NON-NLS-1$
+    URL chartXmlDocument = this.getClass().getResource("PluginTest2.xml"); //$NON-NLS-1$
     ChartDocument chartDocument = chartParser.parseChartDocument(chartXmlDocument);
     if (chartDocument == null) {
       fail("A null document should never be returned"); //$NON-NLS-1$
     }
     
     // Now lets create some data
-    ChartTableModel data = new ChartTableModel();
-    data.setData(dataArray);
+    ChartTableModel data = createChartTableModel();
     output.setFileType(IOutput.FILE_TYPE_PNG);
     
     // Render and save the plot
@@ -157,15 +155,14 @@ public class PluginTest extends TestCase {
     
     // Now get the chart definition
     ChartXMLParser chartParser = new ChartXMLParser();
-    URL chartXmlDocument = this.getClass().getResource("PluginTest.xml"); //$NON-NLS-1$
+    URL chartXmlDocument = this.getClass().getResource("PluginTest2.xml"); //$NON-NLS-1$
     ChartDocument chartDocument = chartParser.parseChartDocument(chartXmlDocument);
     if (chartDocument == null) {
       fail("A null document should never be returned"); //$NON-NLS-1$
     }
     
     // Now lets create some data
-    ChartTableModel data = new ChartTableModel();
-    data.setData(dataArray);
+    ChartTableModel data = createChartTableModel();
     output.setFileType(IOutput.FILE_TYPE_JPEG);
     
     // Render and save the plot
@@ -177,12 +174,14 @@ public class PluginTest extends TestCase {
   }
 
   public void testRenderWithStyles() throws Exception {
+    IChartPlugin plugin = ChartPluginFactory.getChartPlugin("org.pentaho.experimental.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
+    IOutput output = ChartPluginFactory.getChartOutput();
+
+    output.setFilename(TEST_FILE_PATH + (CHART_COUNT++) + PNG_SUFFIX);
+    output.setFileType(IOutput.FILE_TYPE_PNG);
+
     // Create the test table model
-    final ChartTableModel tableModel = new ChartTableModel();
-    tableModel.setData(dataArray);
-    tableModel.setColumnName(0, "budget");
-    tableModel.setColumnName(1, "sales");
-    tableModel.setColumnName(2, "forecast");
+    final ChartTableModel tableModel = createChartTableModel();
 
     // Load / parse the chart document
     final URL chartURL = this.getClass().getResource("PluginTest2.xml");
@@ -190,6 +189,23 @@ public class PluginTest extends TestCase {
     assertNotNull(cdc);
     assertNotNull(cdc.getChartDocument());
     assertNotNull(cdc.getDataLinkInfo());
+    
+    plugin.renderChartDocument(cdc.getChartDocument(), tableModel, output);
+    File chartFile = new File(output.getFilename());
+  }
+
+  private static final ChartTableModel createChartTableModel() {
+    ChartTableModel data = new ChartTableModel();
+    data.setData(dataArray);
+    data.setColumnName(0, "budget"); //$NON-NLS-1$
+    data.setColumnName(1, "sales"); //$NON-NLS-1$
+    data.setColumnName(2, "forecast"); //$NON-NLS-1$
+    
+    data.setRowMetadata(0, ROW_NAME, "Jan"); //$NON-NLS-1$
+    data.setRowMetadata(1, ROW_NAME, "Feb"); //$NON-NLS-1$
+    data.setRowMetadata(2, ROW_NAME, "Mar"); //$NON-NLS-1$
+    
+    return data;
   }
 
 }

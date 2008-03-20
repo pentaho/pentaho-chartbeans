@@ -42,21 +42,21 @@ public abstract class AbstractChartPlugin implements IChartPlugin {
    * @see org.pentaho.experimental.chart.plugin.IChartPlugin#validateChartDocument(org.pentaho.experimental.chart.core.ChartDocument)
    */
   public ChartResult validateChartDocument(ChartDocument chartDocument) {
-    
-    // Validate the plot
-    ChartElement[] plotElement = chartDocument.getRootElement().findChildrenByName("plot");
-    if (plotElement == null || plotElement.length < 1) {
-      return new ChartResult(ERROR_MISSING_REQUIRED_DATA, "plot", "Missing the plot element");
-    }
-    
-    // Validate the axis
-    ChartElement[] axisElement = chartDocument.getRootElement().findChildrenByName("axis");
-    if (axisElement == null || axisElement.length < 1) {
-      return new ChartResult(ERROR_MISSING_REQUIRED_DATA, "axis", "Missing the axis element");
-    }
+//    
+//    // Validate the plot
+//    ChartElement[] plotElement = chartDocument.getRootElement().findChildrenByName("plot");
+//    if (plotElement == null || plotElement.length < 1) {
+//      return new ChartResult(ERROR_MISSING_REQUIRED_DATA, "plot", "Missing the plot element");
+//    }
+//    
+//    // Validate the axis
+//    ChartElement[] axisElement = chartDocument.getRootElement().findChildrenByName("axis");
+//    if (axisElement == null || axisElement.length < 1) {
+//      return new ChartResult(ERROR_MISSING_REQUIRED_DATA, "axis", "Missing the axis element");
+//    }
     
     // Validate the series
-    ChartElement[] seriesElement = chartDocument.getRootElement().findChildrenByName("chart-series");
+    ChartElement[] seriesElement = chartDocument.getRootElement().findChildrenByName("series");
     if (seriesElement == null || seriesElement.length < 1) {
       return new ChartResult(ERROR_MISSING_REQUIRED_DATA, "chart-series", "Missing the series element");
     }
@@ -71,6 +71,4 @@ public abstract class AbstractChartPlugin implements IChartPlugin {
   public IChartCallback getChartCallback() {
     return callback;
   }
-
-
 }

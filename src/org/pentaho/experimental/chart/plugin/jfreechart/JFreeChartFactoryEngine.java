@@ -5,7 +5,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.jfree.chart.JFreeChart;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.api.IOutput;
@@ -35,7 +34,6 @@ public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable
     BarChartBean chartBean = new BarChartBean();
     chartBean.createDefaultChart();
     
-    JFreeChart aChart = chartBean.getChart();
     try {
       BeanUtils.populate(chartBean, styles);
     } catch (IllegalAccessException e) {
@@ -71,8 +69,12 @@ public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable
     }
     
     outHandler.setChart(chartBean);
-    
-    // TODO: figure out output handling
+    try {
+      outHandler.persist();
+    } catch (PersistenceException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
 
   public void makeBubbleChart(ChartTableModel data, Map <String,?> styles, IOutput outHandler) {
@@ -123,7 +125,9 @@ public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable
     DefaultCategoryDataset dataset = new DefaultCategoryDataset();
     for(int row=0; row<data.getRowCount(); row++) {
       for(int column=0; column<data.getColumnCount(); column++) {
-        dataset.setValue((Number) data.getValueAt(row, column), row, column);
+        Comparable columnName = data.getColumnName(column) == null ? column : data.getColumnName(column);
+        Comparable rowName = (Comparable) (data.getRowMetadata(row, "row-name") == null ? row : data.getRowMetadata(row, "row-name"));
+        dataset.setValue((Number) data.getValueAt(row, column), rowName, columnName);
       }
     }
     
