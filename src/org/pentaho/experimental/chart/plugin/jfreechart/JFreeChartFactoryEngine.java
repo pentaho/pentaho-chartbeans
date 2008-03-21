@@ -1,10 +1,11 @@
 package org.pentaho.experimental.chart.plugin.jfreechart;
 
+import java.awt.Color;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.jfree.chart.JFreeChart;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
@@ -13,10 +14,10 @@ import org.pentaho.experimental.chart.plugin.api.IOutput;
 import org.pentaho.experimental.chart.plugin.api.PersistenceException;
 import org.pentaho.experimental.chart.plugin.api.engine.Chart;
 import org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine;
-import org.pentaho.experimental.chart.plugin.api.engine.Series;
 import org.pentaho.experimental.chart.plugin.jfreechart.beans.BarChartBean;
 import org.pentaho.experimental.chart.plugin.jfreechart.beans.CombinationChartBean;
-import org.pentaho.experimental.chart.plugin.jfreechart.beans.SeriesBean;
+import org.pentaho.reporting.libraries.css.model.StyleKey;
+import org.pentaho.reporting.libraries.css.model.StyleKeyRegistry;
 
 public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable {
   
@@ -50,7 +51,7 @@ public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable
     }
     DefaultCategoryDataset[] categoryDataSet = createCategoryDataset(data, chartDocument);
     chartBean.setData(categoryDataSet);
-
+    setSeriesColor(chartBean.getChart(), chartDocument, data);
     outHandler.setChart(chartBean);
     try {
       outHandler.persist();
@@ -145,20 +146,58 @@ public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable
     return value;
   }
 
+  private void setSeriesColor(JFreeChart chart, ChartDocument chartDocument, ChartTableModel data) {
+    StyleKey colorKey = StyleKeyRegistry.getRegistry().createKey("color", false, true, StyleKey.All_ELEMENTS);
+    ChartElement[] seriesElements = chartDocument.getRootElement().findChildrenByName("series");
+    for (int i=0; i<seriesElements.length; i++) {
+      ChartElement seriesElement = seriesElements[i];
+      Object positionAttr = seriesElement.getAttribute("column-pos");
+      int column = 0;
+      if (positionAttr != null) {
+        column = Integer.parseInt(positionAttr.toString());
+      } else {
+        positionAttr = seriesElement.getAttribute("column-name");
+        if (positionAttr != null) {
+          column = lookupPosition(data, positionAttr.toString());
+        } else {
+          column = i;
+        }
+      }
+      Color color = (Color) seriesElement.getLayoutStyle().getValue(colorKey);
+      if (color != null) {
+        chart.getCategoryPlot().getRenderer(0).setSeriesPaint(column, color);
+      }
+      
+    }
+  }
+  
   /**
-   * @param chartDocument
+   * @param string
    * @return
    */
-  private Series[] createSeriesBeans(ChartDocument chartDocument) {
-    ChartElement[] seriesElements = chartDocument.getRootElement().findChildrenByName("series");
-    Series[] values = new Series[seriesElements.length];
-    for (int i=0; i<seriesElements.length; i++) {
-      SeriesBean seriesBean = new SeriesBean();
-      
-      values[i] = seriesBean;
+  private int lookupPosition(ChartTableModel data, String columnName) {
+    for (int i=0; i<data.getColumnCount(); i++) {
+      if (data.getColumnName(i).equalsIgnoreCase(columnName)) {
+        return i;
+      }
     }
-    return values;
+    return -1;
   }
+
+
+//  /**
+//   * @param chartDocument
+//   * @return
+//   */
+//  private Series[] createSeriesBeans(ChartDocument chartDocument) {
+//    ChartElement[] seriesElements = chartDocument.getRootElement().findChildrenByName("series");
+//    Series[] values = new Series[seriesElements.length];
+//    for (int i=0; i<seriesElements.length; i++) {
+//      SeriesBean seriesBean = new SeriesBean();
+//      values[i] = seriesBean;
+//    }
+//    return values;
+//  }
 
 
 }

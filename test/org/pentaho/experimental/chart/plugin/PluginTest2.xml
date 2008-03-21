@@ -2,7 +2,7 @@
 
   <stylesheet>
     .bar1 {
-    color: magenta;
+    color: yellow;
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
     -x-pentaho-chart-categorical: true;
@@ -18,7 +18,7 @@
     }
 
     .bar3 {
-    color: yellow;
+    color: green;
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
     -x-pentaho-chart-categorical: true;

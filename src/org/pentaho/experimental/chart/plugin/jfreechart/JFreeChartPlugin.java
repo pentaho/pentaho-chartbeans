@@ -49,9 +49,9 @@ public class JFreeChartPlugin extends AbstractChartPlugin {
 
       ChartFactoryEngine chartFactory = new JFreeChartFactoryEngine();
       if (currentChartType == ChartTypes.BAR) {
-        chartFactory.makeBarChart(data, null, output);
+        chartFactory.makeBarChart(data, chartDocument, output);
       } else if (currentChartType == ChartTypes.LINE) {
-        chartFactory.makeLineChart(data, null, output);
+        chartFactory.makeLineChart(data, chartDocument, output);
       }
       
     }
