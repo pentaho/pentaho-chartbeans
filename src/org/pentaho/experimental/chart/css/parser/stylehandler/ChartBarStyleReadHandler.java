@@ -32,5 +32,7 @@ public class ChartBarStyleReadHandler extends OneOfConstantsReadHandler {
     addValue(ChartBarStyle.INTERVAL);
     addValue(ChartBarStyle.LAYERED);
     addValue(ChartBarStyle.STACKED);
+    addValue(ChartBarStyle.STACK_PERCENT);
+    addValue(ChartBarStyle.STACK_100_PERCENT);    
   }
 }

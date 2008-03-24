@@ -35,6 +35,9 @@ public class BarStyleTest extends TestCase {
         ChartBarStyle.INTERVAL,
         ChartBarStyle.STACKED,
         ChartBarStyle.LAYERED,
+        ChartBarStyle.BAR,
+        ChartBarStyle.STACK_PERCENT,
+        ChartBarStyle.STACK_100_PERCENT, 
         ChartBarStyle.BAR
     };
     

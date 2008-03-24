@@ -6,4 +6,7 @@
 	<series style="-x-pentaho-chart-bar-style: stacked"/>
 	<series style="-x-pentaho-chart-bar-style: layered"/>	
 	<series style="-x-pentaho-chart-bar-style: junk"/>	
+	<series style="-x-pentaho-chart-bar-style: stack-percent"/>	
+  <series style="-x-pentaho-chart-bar-style: stack-100percent"/>	
+  <series style="-x-pentaho-chart-bar-style: stack-100perc"/>	<!-- misspelled -->
 </chart>
