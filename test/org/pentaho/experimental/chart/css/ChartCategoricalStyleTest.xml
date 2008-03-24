@@ -1,6 +1,2 @@
-<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
-<plot/> 
-<plot style="-x-pentaho-chart-categorical: true"/>
-<plot style="-x-pentaho-chart-categorical: false"/>
-<plot style="-x-pentaho-chart-categorical: wrongorientationstyle"/>
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0" style="-x-pentaho-chart-categorical: true">
 </chart>

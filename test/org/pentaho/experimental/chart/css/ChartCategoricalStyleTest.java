@@ -23,34 +23,30 @@ public class ChartCategoricalStyleTest extends TestCase {
   }
   
   public void testCategoryStyle() throws IllegalStateException, ResourceException {
-    ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource("ChartCategoricalStyleTest.xml")); //$NON-NLS-1$
-    ChartDocument cd = cdc.getChartDocument();
-    assertNotNull(cd);
-    ChartElement element = cd.getRootElement();
-    assertNotNull(element);
+    
+    String[] testFileNames = new String[] {
+        "ChartCategoricalStyleTest.xml", //$NON-NLS-1$
+        "ChartCategoricalStyleTest_FalseCase.xml", //$NON-NLS-1$
+        "ChartCategoricalStyleTest_Misspelled.xml", //$NON-NLS-1$
+        "ChartCategoricalStyleTest_Misspelled.xml"}; //$NON-NLS-1$
 
     CSSConstant[] passValues = new CSSConstant[]{
-        ChartCategoricalStyle.FALSE,
         ChartCategoricalStyle.TRUE,
+        ChartCategoricalStyle.FALSE,
         ChartCategoricalStyle.FALSE,
         ChartCategoricalStyle.FALSE
     };
-    
-    int counter = 0;
-    int lenArray = passValues.length;
-    ChartElement child = element.getFirstChildItem();
-    
-    while(child != null) {
-      LayoutStyle layoutStyle = child.getLayoutStyle();
-      assertNotNull(layoutStyle);
-      System.out.println("Expected: "+passValues[counter]+" - Got: "+layoutStyle.getValue(ChartStyleKeys.CATEGORICAL)); //$NON-NLS-1$ //$NON-NLS-2$
-      assertEquals(passValues[counter++], layoutStyle.getValue(ChartStyleKeys.CATEGORICAL));
-      child = child.getNextItem();
-    }
 
-    if (counter < lenArray-1) {
-      throw new IllegalStateException("Not all tests covered!");  //$NON-NLS-1$
+    for (int i = 0; i < testFileNames.length; i++) {
+      ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource(testFileNames[i])); 
+      ChartDocument cd = cdc.getChartDocument();
+      assertNotNull(cd);
+      ChartElement element = cd.getRootElement();
+      assertNotNull(element);
+      LayoutStyle layoutStyle = element.getLayoutStyle();
+      assertNotNull(layoutStyle);
+      System.out.println("Expected: "+passValues[i]+" - Got: "+layoutStyle.getValue(ChartStyleKeys.CATEGORICAL)); //$NON-NLS-1$ //$NON-NLS-2$
+      assertEquals(passValues[i], layoutStyle.getValue(ChartStyleKeys.CATEGORICAL));
     }
-  
   }
 }

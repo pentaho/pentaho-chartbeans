@@ -4,6 +4,7 @@
 /* blocks */
 
 chart {
+	  -x-pentaho-chart-categorical: false;	
 }
 
 stylesheet {
@@ -28,7 +29,6 @@ axis {
 series {
   -x-pentaho-chart-series-type: bar;
   -x-pentaho-chart-line-style: solid;
-  -x-pentaho-chart-categorical: false;
   -x-pentaho-chart-orientation: vertical;
   -x-pentaho-chart-bar-style: bar;
   -x-pentaho-chart-bar-max-width: 50%;
