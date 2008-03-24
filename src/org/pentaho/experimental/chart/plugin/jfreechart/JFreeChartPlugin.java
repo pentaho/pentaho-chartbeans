@@ -43,15 +43,25 @@ public class JFreeChartPlugin extends AbstractChartPlugin {
     if (chartResult.getErrorCode() == IChartPlugin.RESULT_VALIDATED) {  // The superclass so now we'll render
       currentChartType = determineChartType(chartDocument);
       if (currentChartType == ChartTypes.UNDETERMINED) {
-        chartResult.setErrorCode(IChartPlugin.ERROR_INDETERMINATE_CHART_TYPE);
+        chartResult.setErrorCode(ERROR_INDETERMINATE_CHART_TYPE);
         chartResult.setDescription("Couldn't determine chart type");
       }
 
       ChartFactoryEngine chartFactory = new JFreeChartFactoryEngine();
       if (currentChartType == ChartTypes.BAR) {
-        chartFactory.makeBarChart(data, chartDocument, output);
+        try {
+          chartFactory.makeBarChart(data, chartDocument, output);
+        } catch (Exception e) {
+          chartResult.setErrorCode(RESULT_ERROR);
+          chartResult.setDescription(e.getLocalizedMessage());
+        }
       } else if (currentChartType == ChartTypes.LINE) {
-        chartFactory.makeLineChart(data, chartDocument, output);
+        try {
+          chartFactory.makeLineChart(data, chartDocument, output);
+        } catch (Exception e) {
+          chartResult.setErrorCode(RESULT_ERROR);
+          chartResult.setDescription(e.getLocalizedMessage());
+        }
       }
       
     }

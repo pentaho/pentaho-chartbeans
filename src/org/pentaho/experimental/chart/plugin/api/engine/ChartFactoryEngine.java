@@ -8,18 +8,18 @@ public interface ChartFactoryEngine {
   
   public ChartFactoryEngine getInstance();
   
-  public void makeBarChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler);
-  public void makeLineChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler);
-  public void makeAreaChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler);
-  public void makePieChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler);
-  public void makeMultiPieChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler);
-  public void makeScatterPlotChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler);
-  public void makeDifferenceChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler);
-  public void makeStepChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler);
-  public void makeStepAreaChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler);
-  public void makeWaterfallChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler);
-  public void makeDialChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler);
-  public void makeBubbleChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler);
-  public void makeBarLineChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler);
+  public void makeBarChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler) throws Exception;
+  public void makeLineChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler) throws Exception;
+  public void makeAreaChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler) throws Exception;
+  public void makePieChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler) throws Exception;
+  public void makeMultiPieChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler) throws Exception;
+  public void makeScatterPlotChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler) throws Exception;
+  public void makeDifferenceChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler) throws Exception;
+  public void makeStepChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler) throws Exception;
+  public void makeStepAreaChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler) throws Exception;
+  public void makeWaterfallChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler) throws Exception;
+  public void makeDialChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler) throws Exception;
+  public void makeBubbleChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler) throws Exception;
+  public void makeBarLineChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler) throws Exception;
 
 }

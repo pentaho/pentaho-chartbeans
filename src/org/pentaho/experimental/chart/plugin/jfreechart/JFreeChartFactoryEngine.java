@@ -2,20 +2,18 @@ package org.pentaho.experimental.chart.plugin.jfreechart;
 
 import java.awt.Color;
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.api.IOutput;
-import org.pentaho.experimental.chart.plugin.api.PersistenceException;
-import org.pentaho.experimental.chart.plugin.api.engine.Chart;
 import org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine;
-import org.pentaho.experimental.chart.plugin.jfreechart.beans.BarChartBean;
-import org.pentaho.experimental.chart.plugin.jfreechart.beans.CombinationChartBean;
 import org.pentaho.reporting.libraries.css.model.StyleKey;
 import org.pentaho.reporting.libraries.css.model.StyleKeyRegistry;
 
@@ -35,56 +33,18 @@ public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable
 
   }
 
-  public void makeBarChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler) {
-    BarChartBean chartBean = new BarChartBean();
-    chartBean.createDefaultChart();
-//    Series series[] = createSeriesBeans(chartDocument);
-//    chartBean.setSeries(series);
+  public void makeBarChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler) throws Exception {
+    JFreeChart chart = new JFreeChart(new CategoryPlot(null, new CategoryAxis(), new NumberAxis(), new BarRenderer()));
+    chart.getCategoryPlot().setDataset(createCategoryDataset(data));
     
-    try {
-      
-      BeanUtils.populate(chartBean, null);
-    } catch (IllegalAccessException e) {
-      e.printStackTrace();
-    } catch (InvocationTargetException e) {
-      e.printStackTrace();
-    }
-    DefaultCategoryDataset[] categoryDataSet = createCategoryDataset(data, chartDocument);
-    chartBean.setData(categoryDataSet);
-    setSeriesColor(chartBean.getChart(), chartDocument, data);
-    outHandler.setChart(chartBean);
-    try {
-      outHandler.persist();
-    } catch (PersistenceException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+    setSeriesColor(chart, chartDocument, data);
+    outHandler.setChart(chart);
+    outHandler.persist();
   }
 
 
   public void makeBarLineChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler) {
 
-    Chart chartBean = new CombinationChartBean();
-    chartBean.createDefaultChart();
-    
-    // TODO: figure out data loading
-    
-    try {
-      // TODO populate styles from chartDocument
-      BeanUtils.populate(chartBean, null);
-    } catch (IllegalAccessException e) {
-      e.printStackTrace();
-    } catch (InvocationTargetException e) {
-      e.printStackTrace();
-    }
-    
-    outHandler.setChart(chartBean);
-    try {
-      outHandler.persist();
-    } catch (PersistenceException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
   }
 
   public void makeBubbleChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler) {
@@ -130,8 +90,7 @@ public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable
   /**
    * @return
    */
-  private DefaultCategoryDataset[] createCategoryDataset(ChartTableModel data, ChartDocument chartDoc) {
-    DefaultCategoryDataset[] value = new DefaultCategoryDataset[1];
+  private DefaultCategoryDataset createCategoryDataset(ChartTableModel data) {
     DefaultCategoryDataset dataset = new DefaultCategoryDataset();
     for(int row=0; row<data.getRowCount(); row++) {
       for(int column=0; column<data.getColumnCount(); column++) {
@@ -140,10 +99,7 @@ public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable
         dataset.setValue((Number) data.getValueAt(row, column), rowName, columnName);
       }
     }
-    
-    value[0] = dataset;
-    
-    return value;
+    return dataset;
   }
 
   private void setSeriesColor(JFreeChart chart, ChartDocument chartDocument, ChartTableModel data) {
@@ -183,21 +139,4 @@ public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable
     }
     return -1;
   }
-
-
-//  /**
-//   * @param chartDocument
-//   * @return
-//   */
-//  private Series[] createSeriesBeans(ChartDocument chartDocument) {
-//    ChartElement[] seriesElements = chartDocument.getRootElement().findChildrenByName("series");
-//    Series[] values = new Series[seriesElements.length];
-//    for (int i=0; i<seriesElements.length; i++) {
-//      SeriesBean seriesBean = new SeriesBean();
-//      values[i] = seriesBean;
-//    }
-//    return values;
-//  }
-
-
 }

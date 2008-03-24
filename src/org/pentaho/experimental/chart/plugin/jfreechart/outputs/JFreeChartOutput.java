@@ -23,10 +23,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.JFreeChart;
 import org.pentaho.experimental.chart.plugin.api.IOutput;
 import org.pentaho.experimental.chart.plugin.api.PersistenceException;
-import org.pentaho.experimental.chart.plugin.api.engine.Chart;
-import org.pentaho.experimental.chart.plugin.jfreechart.beans.BaseJFreeChartBean;
 
   
 /**
@@ -34,7 +33,7 @@ import org.pentaho.experimental.chart.plugin.jfreechart.beans.BaseJFreeChartBean
  *
  */
 public class JFreeChartOutput implements IOutput {
-  Chart chart;
+  JFreeChart chart;
   int fileType;
   String filename;
   OutputStream outputStream;
@@ -53,13 +52,13 @@ public class JFreeChartOutput implements IOutput {
     }
     if (fileType == IOutput.FILE_TYPE_JPEG) {
       try {
-        ChartUtilities.writeChartAsJPEG(outputStream, ((BaseJFreeChartBean)chart).getChart(), 400, 400);
+        ChartUtilities.writeChartAsJPEG(outputStream, chart, 400, 400);
       } catch (IOException e) {
         throw new PersistenceException(e);
       }
     } else if (fileType == IOutput.FILE_TYPE_PNG) {
       try {
-        ChartUtilities.writeChartAsPNG(outputStream, ((BaseJFreeChartBean)chart).getChart(), 400, 400);
+        ChartUtilities.writeChartAsPNG(outputStream, chart, 400, 400);
       } catch (IOException e) {
         throw new PersistenceException(e);
       }
@@ -70,7 +69,7 @@ public class JFreeChartOutput implements IOutput {
   /* (non-Javadoc)
    * @see org.pentaho.experimental.chart.plugin.api.IOutput#getChart()
    */
-  public Chart getChart() {
+  public JFreeChart getChart() {
     return chart;
   }
 
@@ -88,13 +87,13 @@ public class JFreeChartOutput implements IOutput {
     if (filename != null && filename.length() > 0) {
       if (fileType == IOutput.FILE_TYPE_JPEG) {
         try {
-          ChartUtilities.saveChartAsJPEG(new File(filename), ((BaseJFreeChartBean)chart).getChart(), 400, 400);
+          ChartUtilities.saveChartAsJPEG(new File(filename), chart, 400, 400);
         } catch (IOException e) {
           throw new PersistenceException(e);
         }
       } else if (fileType == IOutput.FILE_TYPE_PNG) {
         try {
-          ChartUtilities.saveChartAsPNG(new File(filename), ((BaseJFreeChartBean)chart).getChart(), 400, 400);
+          ChartUtilities.saveChartAsPNG(new File(filename), chart, 400, 400);
         } catch (IOException e) {
           throw new PersistenceException(e);
         }
@@ -105,8 +104,8 @@ public class JFreeChartOutput implements IOutput {
   /* (non-Javadoc)
    * @see org.pentaho.experimental.chart.plugin.api.IOutput#setChart(org.pentaho.experimental.chart.plugin.api.engine.Chart)
    */
-  public void setChart(Chart chart) {
-    this.chart = chart;
+  public void setChart(Object chart) {
+    this.chart = (JFreeChart) chart;
   }
 
   /* (non-Javadoc)

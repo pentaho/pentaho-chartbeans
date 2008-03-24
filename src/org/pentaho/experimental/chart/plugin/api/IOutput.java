@@ -2,16 +2,14 @@ package org.pentaho.experimental.chart.plugin.api;
 
 import java.io.OutputStream;
 
-import org.pentaho.experimental.chart.plugin.api.engine.Chart;
-
 
 public interface IOutput {
   public static final int FILE_TYPE_JPEG = 1;
   public static final int FILE_TYPE_PNG = 2;
   public static final int CHART_DEFINITION = 3;
   
-  public Chart getChart();
-  public void setChart(Chart chart);
+  public Object getChart();
+  public void setChart(Object chart);
   public void persist() throws PersistenceException;
 
   public void setFileType(int fileType);
