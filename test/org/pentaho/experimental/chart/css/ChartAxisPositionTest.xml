@@ -1,0 +1,6 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+	<axis style="-x-pentaho-chart-axis-type-position: primary"/>
+	<axis style="-x-pentaho-chart-axis-type-position: secondary"/>
+	<axis style="-x-pentaho-chart-axis-type-position: junk"/>
+	<axis style="-x-pentaho-chart-axis-type-position: secondary12334"/><!-- misspelled -->
+</chart>

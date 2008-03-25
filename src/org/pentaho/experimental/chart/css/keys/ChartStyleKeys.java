@@ -66,5 +66,23 @@ public class ChartStyleKeys {
    */
   public static final StyleKey DRILL_URL = StyleKeyRegistry.getRegistry().
     createKey("-x-pentaho-chart-drill-url", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+  
+  /**
+   * The axis type dimention (auto, range, domain)
+   */
+  public static final StyleKey AXIS_DIMENSION = StyleKeyRegistry.getRegistry().
+    createKey("-x-pentaho-chart-axis-type-dimension", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+
+  /**
+   * The axis position (primary, secondary)
+   */
+  public static final StyleKey AXIS_POSITION = StyleKeyRegistry.getRegistry().
+    createKey("-x-pentaho-chart-axis-type-position", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+  
+  /**
+   * The axis order (1, 2)
+   */
+  public static final StyleKey AXIS_ORDER = StyleKeyRegistry.getRegistry().
+    createKey("-x-pentaho-chart-axis-type-order", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
 }
 

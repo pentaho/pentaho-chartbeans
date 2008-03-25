@@ -1,0 +1,8 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+	<axis style="-x-pentaho-chart-axis-type-order: 1"/>
+	<axis style="-x-pentaho-chart-axis-type-order: 2"/>
+	<axis style="-x-pentaho-chart-axis-type-order: 3"/>
+	<axis style="-x-pentaho-chart-axis-type-order: 44.48"/><!-- (decimal value is wrong value, should default to 1) -->
+	<axis style="-x-pentaho-chart-axis-type-order: "/><!-- (blank, should default to 1) -->
+	<axis style="-x-pentaho-chart-axis-type-order: junk"/><!-- (Not a number, should default to 1) -->
+</chart>
