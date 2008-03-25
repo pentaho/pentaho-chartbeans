@@ -84,5 +84,11 @@ public class ChartStyleKeys {
    */
   public static final StyleKey AXIS_ORDER = StyleKeyRegistry.getRegistry().
     createKey("-x-pentaho-chart-axis-type-order", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+  
+  /**
+   * The label text with it's formatting information
+   */
+  public static final StyleKey LABEL_TEXT = StyleKeyRegistry.getRegistry().
+    createKey("-x-pentaho-chart-label-text", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$ 
 }
 

@@ -17,5 +17,6 @@
   -x-pentaho-chart-axis-type-dimension: auto;
   -x-pentaho-chart-axis-type-position: primary;
   -x-pentaho-chart-axis-type-order: 1;  
+  -x-pentaho-chart-label-text: '{0}';
 }
 

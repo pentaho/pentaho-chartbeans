@@ -36,4 +36,5 @@ series {
   -x-pentaho-chart-bar-style: bar;
   -x-pentaho-chart-bar-max-width: 50%;
   -x-pentaho-chart-drill-url: none;
+  -x-pentaho-chart-label-text: '{0}';
 }
