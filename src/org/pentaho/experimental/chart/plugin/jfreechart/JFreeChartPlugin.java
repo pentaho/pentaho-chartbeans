@@ -27,6 +27,7 @@ import org.pentaho.experimental.chart.plugin.api.ChartResult;
 import org.pentaho.experimental.chart.plugin.api.IOutput;
 import org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine;
 import org.pentaho.reporting.libraries.css.values.CSSValue;
+import org.pentaho.util.messages.Messages;
 
 /**
  * @author wseyler
@@ -44,7 +45,7 @@ public class JFreeChartPlugin extends AbstractChartPlugin {
       currentChartType = determineChartType(chartDocument);
       if (currentChartType == ChartTypes.UNDETERMINED) {
         chartResult.setErrorCode(ERROR_INDETERMINATE_CHART_TYPE);
-        chartResult.setDescription("Couldn't determine chart type");
+        chartResult.setDescription(Messages.getErrorString("JFreeChartPlugin.ERROR_0001_CHART_TYPE_INDETERMINABLE")); //$NON-NLS-1$
       }
 
       ChartFactoryEngine chartFactory = new JFreeChartFactoryEngine();

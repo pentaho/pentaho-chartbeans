@@ -1,21 +1,15 @@
 package org.pentaho.experimental.chart.plugin.jfreechart;
 
-import java.awt.Color;
 import java.io.Serializable;
 
+import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.CategoryAxis;
-import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.renderer.category.BarRenderer;
-import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.chart.plot.PlotOrientation;
 import org.pentaho.experimental.chart.core.ChartDocument;
-import org.pentaho.experimental.chart.core.ChartElement;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.api.IOutput;
 import org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine;
-import org.pentaho.reporting.libraries.css.model.StyleKey;
-import org.pentaho.reporting.libraries.css.model.StyleKeyRegistry;
+import org.pentaho.experimental.chart.plugin.jfreechart.utils.JFreeChartUtils;
 
 public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable {
   
@@ -34,10 +28,17 @@ public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable
   }
 
   public void makeBarChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler) throws Exception {
-    JFreeChart chart = new JFreeChart(new CategoryPlot(null, new CategoryAxis(), new NumberAxis(), new BarRenderer()));
-    chart.getCategoryPlot().setDataset(createCategoryDataset(data));
-    
-    setSeriesColor(chart, chartDocument, data);
+    String title = JFreeChartUtils.getTitle();
+    String valueCategoryLabel = JFreeChartUtils.getValueCategoryLabel();
+    String valueAxisLabel = JFreeChartUtils.getValueAxisLabel();
+    PlotOrientation orientation = JFreeChartUtils.getPlotOrientation(chartDocument);
+    boolean legend = JFreeChartUtils.getShowLegend(chartDocument);
+    boolean toolTips = JFreeChartUtils.getShowToolTips(chartDocument);
+    boolean urls = JFreeChartUtils.getShowUrls(chartDocument);
+    JFreeChart chart = ChartFactory.createBarChart(title, valueCategoryLabel, valueAxisLabel, null, orientation, legend, toolTips, urls);
+
+    chart.getCategoryPlot().setDataset(JFreeChartUtils.createCategoryDataset(data));
+    JFreeChartUtils.setSeriesColor(chart, chartDocument, data);
     outHandler.setChart(chart);
     outHandler.persist();
   }
@@ -87,56 +88,6 @@ public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable
 
   }
 
-  /**
-   * @return
-   */
-  private DefaultCategoryDataset createCategoryDataset(ChartTableModel data) {
-    DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-    for(int row=0; row<data.getRowCount(); row++) {
-      for(int column=0; column<data.getColumnCount(); column++) {
-        Comparable<?> columnName = data.getColumnName(column) == null ? column : data.getColumnName(column);
-        Comparable<?> rowName = (Comparable<?>) (data.getRowMetadata(row, "row-name") == null ? row : data.getRowMetadata(row, "row-name"));
-        dataset.setValue((Number) data.getValueAt(row, column), rowName, columnName);
-      }
-    }
-    return dataset;
-  }
 
-  private void setSeriesColor(JFreeChart chart, ChartDocument chartDocument, ChartTableModel data) {
-    StyleKey colorKey = StyleKeyRegistry.getRegistry().createKey("color", false, true, StyleKey.All_ELEMENTS);
-    ChartElement[] seriesElements = chartDocument.getRootElement().findChildrenByName("series");
-    for (int i=0; i<seriesElements.length; i++) {
-      ChartElement seriesElement = seriesElements[i];
-      Object positionAttr = seriesElement.getAttribute("column-pos");
-      int column = 0;
-      if (positionAttr != null) {
-        column = Integer.parseInt(positionAttr.toString());
-      } else {
-        positionAttr = seriesElement.getAttribute("column-name");
-        if (positionAttr != null) {
-          column = lookupPosition(data, positionAttr.toString());
-        } else {
-          column = i;
-        }
-      }
-      Color color = (Color) seriesElement.getLayoutStyle().getValue(colorKey);
-      if (color != null) {
-        chart.getCategoryPlot().getRenderer(0).setSeriesPaint(column, color);
-      }
-      
-    }
-  }
   
-  /**
-   * @param string
-   * @return
-   */
-  private int lookupPosition(ChartTableModel data, String columnName) {
-    for (int i=0; i<data.getColumnCount(); i++) {
-      if (data.getColumnName(i).equalsIgnoreCase(columnName)) {
-        return i;
-      }
-    }
-    return -1;
-  }
 }
