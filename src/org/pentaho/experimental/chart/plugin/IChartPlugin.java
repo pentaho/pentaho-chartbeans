@@ -24,7 +24,6 @@ import org.pentaho.experimental.chart.plugin.api.IOutput;
 
 /**
  * @author wseyler
- *
  */
 public interface IChartPlugin {
   public static final int RESULT_VALIDATED = 0;             // All is well
@@ -33,9 +32,12 @@ public interface IChartPlugin {
   public static final int ERROR_INVALID_DEFINITION = 3;     // Item existed but the value didn't make sense
   public static final int ERROR_DUPLICATE_SINGLETON = 4;    // One item was expected but more than one was found
   public static final int ERROR_INDETERMINATE_CHART_TYPE = 5; // Couldn't figure out the chart type
-  
+
   public ChartResult validateChartDocument(ChartDocument chartDocument);
+
   public ChartResult renderChartDocument(ChartDocument chartDocument, ChartTableModel data, IOutput output);
+
   public void setChartCallback(IChartCallback callback);
+
   public IChartCallback getChartCallback();
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008 Pentaho Corporation.  All rights reserved. 
+ * Copyright 2007 Pentaho Corporation.  All rights reserved. 
  * This software was developed by Pentaho Corporation and is provided under the terms 
  * of the Mozilla Public License, Version 1.1, or any later version. You may not use 
  * this file except in compliance with the license. If you need a copy of the license, 
@@ -10,296 +10,219 @@
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or  implied. Please refer to 
  * the license for the specific language governing your rights and limitations.
  *
- * Created  
- * @Ravi Hasija
+ * Created 3/26/2008 
+ * @author David Kincade 
  */
 package org.pentaho.experimental.chart.data;
 
-import javax.swing.table.AbstractTableModel;
-
-import org.apache.commons.collections.map.HashedMap;
-import org.apache.commons.collections.map.MultiKeyMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.pentaho.util.messages.Messages;
-
 
 /**
- * @author Ravi hasija
- * Assumptions:
- * 1. We have data in a 2D array.
- * 2. None of the data row should be null. If we are passed a null object array then we 
- *    would re-initialize the data to null.
- * 3. Metadata is implemented using MultiKey HashMap. This provides us the flexibility 
- *    of supporting cell level metadata. If in the future we decide that we do not need 
- *    cell level support, then we can use simple hash map instead of multi-key hash map.
- * 4. Metadata supports only one level of key. 
+ * Contains the data and metadata using with the charting API.
+ *
+ * @author David Kincade
  */
-public class ChartTableModel extends AbstractTableModel {
-  
-  private static final long serialVersionUID = -3841939975394981180L;
-
-  private static final Log logger = LogFactory.getLog(ChartTableModel.class);
-  
-  /** Row data indicator */
-	private static final String ROW = "row"; //$NON-NLS-1$
-  /** Col data indicator */
-  private static final String COL = "col"; //$NON-NLS-1$
-  /** Cell data indicator */
-  private static final String CELL = "cell";//$NON-NLS-1$
-  /** Holds the name of the attribute */
-	private static final String NAME = "ChartTableModel.CoulumnName"; //$NON-NLS-1$
-  /** Metadata multi key hash map */
-	private MultiKeyMap metadataMap = MultiKeyMap.decorate(new HashedMap());
-  /** Data array */
-	private Object[][]data = null;
-	private int rowCount = 0;
-  private int colCount = 0;
-
-	
-	/*
-	 * (non-Javadoc)
-	 * @see javax.swing.table.TableModel#getColumnCount()
-	 * Each row can have different number of elements. We are simply returning 
-	 * column count as the max number of elements in the entire array
-	 */
-	public int getColumnCount() {
-		return colCount;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see javax.swing.table.TableModel#getRowCount()
-	 * Gets the row count of the data
-	 */
-	public int getRowCount() {
-		return rowCount;
-	}
-	
-	/**
-	 * (non-Javadoc)
-	 * @see javax.swing.table.AbstractTableModel#getColumnName(int)
-	 * Column name is ofcourse column specific, so we use COL as a placeholder to get Column specific data
-	 */
-	public String getColumnName(int col) {
-		String colName = null;
-		
-		if ( col >= 0) {
-			colName = (String)metadataMap.get(COL, col, NAME); 
-		} else {
-			logger.error(Messages.getErrorString("ChartTableModel.ERROR_0001_COLUMN_NUM_LOWER_THAN_ZERO")); //$NON-NLS-1$ 
-		}
-		return colName;
-	}
+public class ChartTableModel extends BaseChartTableModel {
+  /**
+   * Logger for this class
+   */
+  private static final Log log = LogFactory.getLog(ChartTableModel.class);
 
   /**
-   * Set the name of a particular column
-   * @param col Column number to be 
+   * Flag indicating is this table model should be rotated (row accessed as columns and columns accessed as rows)
    */
-  public void setColumnName(int col, String name) {    
-    if ( col < 0) {
-      logger.error(Messages.getErrorString("ChartTableModel.ERROR_0001_COLUMN_NUM_LOWER_THAN_ZERO")); //$NON-NLS-1$
-    } else if (null == name || name.trim().length() == 0 ){
-      logger.warn(Messages.getErrorString("ChartTableModel.WARN_NAME_SHOULD_NOT_BE_NULL")); //$NON-NLS-1$
+  private boolean rotated = false;
+
+  /**
+   * Creats an empty ChartTableModel
+   */
+  public ChartTableModel() {
+  }
+
+  /**
+   * Creats an empty ChartTableModel
+   */
+  public ChartTableModel(boolean rotation) {
+    setRotated(rotation);
+  }
+
+  /**
+   * Returns the current rotation
+   */
+  public boolean isRotated() {
+    return rotated;
+  }
+
+  /**
+   * Sets the rotation. If the rotation is <code>true</code>, then the rows will be accessed as columns
+   * and the columns will be accessed as rows. If the rotation is <code>false</code>, then the table will be
+   * accessed as normal.
+   */
+  public void setRotated(boolean rotated) {
+    this.rotated = rotated;
+  }
+
+  /**
+   * Returns the number of columns in the table
+   */
+  public int getColumnCount() {
+    return (rotated ? super.getRowCount() : super.getColumnCount());
+  }
+
+  /**
+   * Returns the number of rows in the table
+   */
+  public int getRowCount() {
+    return (rotated ? super.getColumnCount() : super.getRowCount());
+  }
+
+  /**
+   * Returns the name of the specified 0-based column number
+   */
+  public String getColumnName(int col) {
+    return (rotated ? super.getRowName(col) : super.getColumnName(col));
+  }
+
+  /**
+   * Sets the name of the column for the specified 0-based column number
+   *
+   * @param col  the 0-based column number
+   * @param name the name for the specified column
+   */
+  public void setColumnName(int col, final String name) {
+    if (rotated) {
+      super.setRowName(col, name);
     } else {
-      metadataMap.put(COL, col, NAME, name);       
-    }    
-  }
-
-	/**
-	 * (non-Javadoc)
-	 * @see javax.swing.table.TableModel#getValueAt(int, int)
-	 */
-	public Object getValueAt(int row, int col) {
-		Object retData = null;
-		
-		if (null == data) {
-			logger.error(Messages.getErrorString("ChartTableModel.ERROR_0005_NO_DATA_AVAILABLE")); //$NON-NLS-1$
-		} else if (row < 0 || row > getRowCount()) {
-			logger.error(Messages.getErrorString("ChartTableModel.ERROR_0004_ROW_NUM_OUT_OF_BOUNDS")); //$NON-NLS-1$	
-		} else if (col < 0 || col > data[row].length) {
-      logger.error(Messages.getErrorString("ChartTableModel.ERROR_0002_COLUMN_NUM_OUT_OF_BOUNDS")); //$NON-NLS-1$
-    } else {			
-			retData = data[row][col];
-		}
-			
-		return retData;
-	}
-	
-	/** 
-  * Set the value of the data array.
-  * @param value The value to be set
-  * @param row The row number to be used
-  * @param col The col number to be used
-	* @throws ArrayIndexOutOfBoundsException if the row or column number are out of bounds
-  * @throws IllegalStateException if the data array is not initialized 
-	*/
-	public void setValueAt(Object value, int row, int col) throws ArrayIndexOutOfBoundsException, IllegalStateException {
-		if (row > getRowCount() || row < 0) {
-			throw new ArrayIndexOutOfBoundsException(Messages.getErrorString("ChartTableModel.ERROR_0004_ROW_NUM_OUT_OF_BOUNDS")); //$NON-NLS-1$
-		} else if (col > getColumnCount() || col < 0) {
-			throw new ArrayIndexOutOfBoundsException(Messages.getErrorString("ChartTableModel.ERROR_0002_COLUMN_NUM_OUT_OF_BOUNDS")); //$NON-NLS-1$
-		} else if (null == data) {
-			throw new IllegalStateException("Data array not initialized."); //$NON-NLS-1$
-		}		
-		data[row][col] = value;	
-	}
-
-	/**
-	 * Sets the data based on the input Object array passed.
-   * 
-   * @param inData The input data
-   * @throws IllegalStateExcepion if any data element within the array is null.
-	 */
-	public void setData(Object[][] inData) throws IllegalStateException{
-    // Reinitialize before setting new data
-    rowCount = 0;
-    colCount = 0;
-    data = null;
-    
-	  /*
-     * If we are passed null array then we reinitialize the data to null.
-     * Else we would read each element to check for null. If entire row is null 
-     * then throw an IllegalStateException else initialize the data appropriately.
-     */
-     if (null != inData) {
-      for (int i = 0; i < inData.length; i++) {
-        // If the entire row is null, we throw an exception
-        if (null != inData[i] ) {
-          // Update the colCount if this row has more columns
-          if (inData[i].length > colCount) {
-            colCount = inData[i].length;
-          }
-        } else {
-          throw new IllegalStateException(Messages.getErrorString("ChartTableModel.ERROR_0008_DATA_HAS_NULL_ELEMENTS")); //$NON-NLS-1$
-        }
-      } 
-      // We are copying the entire data set here. This takes care of the initialization issue.
-      data = inData;
-      // Finally set the row count
-      rowCount = inData.length;
+      super.setColumnName(col, name);
     }
-	}
-	
-  /** 
-   * Sets row specific information/metadata.
-   * @param row Row #
-   * @param key Object key  
-   * @param value Data to be set
-   * @throws IllegalArgumentException when the row number is less than zero or when the key is null
-   */
-  public void setRowMetadata(int row, Object key, Object value) throws IllegalArgumentException {
-    if (row < 0) {
-      throw new IllegalArgumentException("Row number cannot be less than zero."); //$NON-NLS-1$
-    } else if (null == key) {
-      throw new IllegalArgumentException(Messages.getErrorString("ChartTableModel.ERROR_0006_KEY_IS_NULL")); //$NON-NLS-1$
-    } 
-    
-    metadataMap.put(ROW, row, key, value);  
   }
 
   /**
-   * Return row specific metadata. row positions are expected to be int.
-   * @param row Row number for which we want the metadata
-   * @param key Attribute for which we want the metadata 
-   * @return The actual metadata
-   * @throws IllegalArgumentException when the row number is less than zero or when the key is null
+   * Returns the data at the specified (row, col)
    */
-  public Object getRowMetadata(int row, Object key) 
-  throws IllegalArgumentException {
-    Object metadata = null;
-    
-    if (row < 0) {
-      throw new IllegalArgumentException(Messages.getErrorString("ChartTableModel.ERROR_0003_ROW_NUM_LOWER_THAN_ZERO")); //$NON-NLS-1$
-    } else if (null == key) {
-      throw new IllegalArgumentException(Messages.getErrorString("ChartTableModel.ERROR_0005_KEY_IS_NULL"));//$NON-NLS-1$
+  public Object getValueAt(int row, int col) {
+    return (rotated ? super.getValueAt(col, row) : super.getValueAt(row, col));
+  }
+
+  /**
+   * Sets the data at the specified (row, col)
+   *
+   * @throws ArrayIndexOutOfBoundsException indicates the row or column are invalid
+   * @throws IllegalStateException          indicates there is no data in the table
+   */
+  public void setValueAt(final Object value, int row, int col) throws ArrayIndexOutOfBoundsException, IllegalStateException {
+    if (rotated) {
+      super.setValueAt(value, col, row);
     } else {
-      // Row specific
-      metadata = metadataMap.get(ROW, row, key);
+      super.setValueAt(value, row, col);
     }
-      
-    return metadata;
-  }
-  
-  /** 
-   * Sets column specific information/metadata.
-   * @param col Column #
-   * @param key Object key  
-   * @param value Data to be set
-   * @throws IllegalArgumentException when the column number is less than zero or when the key is null
-   */
-  public void setColMetadata(int col, Object key, Object value) 
-  throws IllegalArgumentException {
-    if (col < 0) {
-      throw new IllegalArgumentException(Messages.getErrorString("ChartTableModel.ERROR_0001_COLUMN_NUM_LOWER_THAN_ZERO")); //$NON-NLS-1$
-    } else if (null == key) {
-      throw new IllegalArgumentException(Messages.getErrorString("ChartTableModel.ERROR_0006_KEY_IS_NULL")); //$NON-NLS-1$
-    } 
-    
-    metadataMap.put(COL, col, key, value);  
   }
 
   /**
-   * Return column specific metadata. Column positions are expected to be int.
-   * @param col Column number for which we want the metadata
-   * @param key Attribute for which we want the metadata 
-   * @return The actual metadata
-   * @throws IllegalArgumentException when the column number is less than zero or when the key is null
+   * Sets a piece of metadata for the specified row
+   *
+   * @param row   the 0-based row number upon which to set the metadata
+   * @param key   the key for the metadata
+   * @param value the value of the metadata
+   * @throws IllegalArgumentException indicates an invalid parameter value
    */
-  public Object getColMetadata(int col, Object key) 
-  throws IllegalArgumentException {
-    Object metadata = null;
-    
-    if (col < 0) {
-      throw new IllegalArgumentException(Messages.getErrorString("ChartTableModel.ERROR_0001_COLUMN_NUM_LOWER_THAN_ZERO")); //$NON-NLS-1$
-    } else if (null == key) {
-      throw new IllegalArgumentException(Messages.getErrorString("ChartTableModel.ERROR_0006_KEY_IS_NULL"));//$NON-NLS-1$
+  public void setRowMetadata(int row, final Object key, final Object value) throws IllegalArgumentException {
+    if (rotated) {
+      super.setColMetadata(row, key, value);
     } else {
-      // Column specific
-      metadata = metadataMap.get(COL, col, key);
+      super.setRowMetadata(row, key, value);
     }
-      
-    return metadata;
-  }
-  
-  /** 
-   * Sets cell specific information/metadata.
-   * @param row Row #
-   * @param col Column #
-   * @param key Object key
-   * @param value Data to be set
-   * @throws IllegalArgumentException when the row number or column number is less than zero or when the key is null
-   */
-  public void setCellMetadata(int row, int col, Object key, Object value) 
-  throws IllegalArgumentException {
-    if (col < 0 || row < 0) {
-      throw new IllegalArgumentException(Messages.getErrorString("ChartTableModel.ERROR_0007_ROW_COL_IS_OUT_OF_BOUNDS")); //$NON-NLS-1$
-    } else if (null == key) {
-      throw new IllegalArgumentException(Messages.getErrorString("ChartTableModel.ERROR_0006_KEY_IS_NULL")); //$NON-NLS-1$
-    } 
-    
-    metadataMap.put(CELL, row, col, key, value);  
   }
 
   /**
-   * Returns cell specific metadata. row and column positions are expected to be int.
-   * @param row Row number for which we want the metadata
-   * @param col Column number for which we want the metadata
-   * @param key Attribute for which we want the metadata 
-   * @return The actual metadata
+   * Retrieves the metadata for the specified row and key.
+   *
+   * @param row the 0-based row number to check for the metadata
+   * @param key the metadata key used to retrieve the metadata value
+   * @return the metadata value for the specified row and key. This method will return <code>null</code> if the metadata
+   *         or row do not exist.
+   * @throws IllegalArgumentException indicates an invalid row number or key
+   */
+  public Object getRowMetadata(int row, final Object key) throws IllegalArgumentException {
+    return (rotated ? super.getColMetadata(row, key) : super.getRowMetadata(row, key));
+  }
+
+  /**
+   * Sets a pieces of metadata for the specified column
+   *
+   * @param col   the 0-based column number upon which the metadata will be set
+   * @param key   the metadata key
+   * @param value the metadata value
+   * @throws IllegalArgumentException indicates an invalid parameter value
+   */
+  public void setColMetadata(int col, Object key, Object value) throws IllegalArgumentException {
+    if (rotated) {
+      super.setRowMetadata(col, key, value);
+    } else {
+      super.setColMetadata(col, key, value);
+    }
+  }
+
+  /**
+   * Retrieves the metadata for the specified key and column
+   *
+   * @param col the 0-based column from which the metadata will be retrieved
+   * @param key the key used to retrieve the metadata
+   * @return the value of the metadata. If the data does not exist, <code>null</code> will be returned
+   * @throws IllegalArgumentException indicates an invalid patameter
+   */
+  public Object getColMetadata(int col, Object key) throws IllegalArgumentException {
+    return (rotated ? super.getRowMetadata(col, key) : super.getColMetadata(col, key));
+  }
+
+  /**
+   * Sets a piece of metadata for a specified cell
+   *
+   * @param row   the 0-based row of the cell for which the metadata will be set
+   * @param col   the 0-based column of the cell for which the metadata will be set
+   * @param key   the key of the metadata
+   * @param value the value of the metadata
+   * @throws IllegalArgumentException indicates an invalid parameter
+   */
+  public void setCellMetadata(int row, int col, Object key, Object value) throws IllegalArgumentException {
+    if (rotated) {
+      super.setCellMetadata(col, row, key, value);
+    } else {
+      super.setCellMetadata(row, col, key, value);
+    }
+  }
+
+  /**
+   * Retrieves the valid of the metadata for the specified cell and key
+   *
+   * @param row the 0-based row for the cell
+   * @param col the 0-based column for the cell
+   * @param key the metadata key
+   * @return the value of the metadata
    */
   public Object getCellMetadata(int row, int col, Object key) {
-    Object metadata = null;
-    
-    if (row < 0 || col < 0) {
-      throw new IllegalArgumentException(Messages.getErrorString("ChartTableModel.ERROR_0007_ROW_COL_IS_OUT_OF_BOUNDS")); //$NON-NLS-1$
-    } else if (null == key) {
-      throw new IllegalArgumentException(Messages.getErrorString("ChartTableModel.ERROR_0006_KEY_IS_NULL"));//$NON-NLS-1$
+    return (rotated ? super.getCellMetadata(col, row, key) : super.getCellMetadata(row, col, key));
+  }
+
+  /**
+   * Returns the name of the specified 0-based row
+   */
+  public String getRowName(int row) {
+    return (rotated ? super.getColumnName(row) : super.getRowName(row));
+  }
+
+  /**
+   * Sets the name of the specified row
+   *
+   * @param row  the 0-based row index
+   * @param name the name to assign to the specified row
+   */
+  public void setRowName(int row, String name) {
+    if (rotated) {
+      super.setColumnName(row, name);
     } else {
-      // Cell specific
-      metadata = metadataMap.get(CELL, row, col, key);
+      super.setRowName(row, name);
     }
-      
-    return metadata;
-  }	
+  }
 }

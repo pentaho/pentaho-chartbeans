@@ -31,16 +31,17 @@ import org.pentaho.util.messages.Messages;
 
 /**
  * @author wseyler
- *
  */
 public class JFreeChartPlugin extends AbstractChartPlugin {
-  public enum ChartTypes {UNDETERMINED, AREA, BAR, BAR_LINE, BUBBLE, DIAL, DIFFERENCE, LINE, MULTI_PIE, PIE, SCATTER, STEP_AREA, STEP, WATERFALL }
-  
+  public enum ChartTypes {
+    UNDETERMINED, AREA, BAR, BAR_LINE, BUBBLE, DIAL, DIFFERENCE, LINE, MULTI_PIE, PIE, SCATTER, STEP_AREA, STEP, WATERFALL
+  }
+
   ChartTypes currentChartType = ChartTypes.UNDETERMINED;
-  
+
   public ChartResult renderChartDocument(ChartDocument chartDocument, ChartTableModel data, IOutput output) {
     ChartResult chartResult = super.renderChartDocument(chartDocument, data, output);
-    
+
     if (chartResult.getErrorCode() == IChartPlugin.RESULT_VALIDATED) {  // The superclass so now we'll render
       currentChartType = determineChartType(chartDocument);
       if (currentChartType == ChartTypes.UNDETERMINED) {
@@ -64,16 +65,16 @@ public class JFreeChartPlugin extends AbstractChartPlugin {
           chartResult.setDescription(e.getLocalizedMessage());
         }
       }
-      
+
     }
-    
+
     return chartResult;
   }
-  
+
   public ChartResult validateChartDocument(ChartDocument chartDocument) {
     return super.validateChartDocument(chartDocument);
   }
-  
+
   public ChartTypes determineChartType(ChartDocument chartDocument) {
     ChartElement[] elements = chartDocument.getRootElement().findChildrenByName("series");
     for (ChartElement element : elements) {

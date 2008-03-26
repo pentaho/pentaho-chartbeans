@@ -25,7 +25,6 @@ import org.pentaho.experimental.chart.plugin.api.IOutput;
 
 /**
  * @author wseyler
- *
  */
 public abstract class AbstractChartPlugin implements IChartPlugin {
   protected IChartCallback callback = null;
@@ -54,7 +53,7 @@ public abstract class AbstractChartPlugin implements IChartPlugin {
 //    if (axisElement == null || axisElement.length < 1) {
 //      return new ChartResult(ERROR_MISSING_REQUIRED_DATA, "axis", "Missing the axis element");
 //    }
-    
+
     // Validate the series
     ChartElement[] seriesElement = chartDocument.getRootElement().findChildrenByName("series");
     if (seriesElement == null || seriesElement.length < 1) {
@@ -63,11 +62,11 @@ public abstract class AbstractChartPlugin implements IChartPlugin {
 
     return new ChartResult();
   }
-  
+
   public void setChartCallback(IChartCallback callback) {
     this.callback = callback;
   }
-  
+
   public IChartCallback getChartCallback() {
     return callback;
   }
