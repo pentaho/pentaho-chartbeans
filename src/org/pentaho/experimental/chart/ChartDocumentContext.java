@@ -149,7 +149,7 @@ public class ChartDocumentContext implements DocumentContext {
    */
   protected StyleReference[] createStyleReferences(ChartDocument chartDocument) {
     // Get the set of top-level document items which contain style sheet information
-    final ChartElement[] styleSheetElements = chartDocument.getRootElement().findChildrenByName(ChartElement.STYLESHEET_TAGNAME);
+    final ChartElement[] styleSheetElements = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_STYLESHEET);
 
     // The list of StyleReferences created from the styleSheetElements
     final ArrayList<StyleReference> styleReferenceList = new ArrayList<StyleReference>(styleSheetElements.length);

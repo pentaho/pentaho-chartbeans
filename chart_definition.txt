@@ -1,6 +1,8 @@
 <chart>
 Description:    This element is the root element of the chart definition.
-Attributes:     none
+Attributes:     categorical - optional - indicates that the chart is a categorical chart (if omitted, indicates regular)
+                byrow       - optional - indicates if the data for the chart should be rendered by rows instead of
+                                         by columns (by columns is the default)
 Text:           none
 Child Elements: Any (all are acceptable, none are required)
 
@@ -15,35 +17,46 @@ Attributes:     href     - optional - specifies an external style sheet file (cs
 Text:           interpreted as a style sheet fragment (optional)
 Child Elements: none
 
+
 <title>
 Description:    Defines the main title of the chart
 Attributes:     none
 Text:           The title of the chart
 Child Elements: none
 
+
 <plot>
 Description:    Defines the plot element of the chart
-Attributes:     id       - optional - defines an id that allows other objects to reference this plot
+Attributes:     id       - optional - defines an id that allows other tags to reference this plot
 Text:           none
 Child Elements: none
 
+
 <axis>
 Description:    Defines an axis to be applied to the plot
-Attributes:     id       - optional - defines an id that allows other objects to refeence this axis
+Attributes:     id       - optional - defines an id that allows other tags to refeence this axis
                 plot-id  - optional - defines the plot to which this axis will be applied
-                type     - optional - defines the type of axis (numeric, datetime, etc.)
-                position - optional - defines where on the plot this axis is located (left, right, top, bottom)
-                order    - optional - defines the order of axis on the same position of the same plot
-                                      EXAMPLE: if there are 2 axis defined with position="left", the axis with the
-                                               lower order value will be closest to the plot.
+
 
 <series>
 Description:    Defines one series to be plotted on the chart
-Attributes:     id           - optional - defines an id that allows other objects to reference this plot
-                position-ref - optional - defines the column position in the data to which this series is related
+Attributes:     id           - optional - defines an id that allows other tags to reference this plot
+                column-pos   - optional - defines the column position in the data to which this series is related
                                           (overrides the name-ref attribute if valid)
-                name-ref     - optional - defines the column name in the data to which this series is related
+                column-name  - optional - defines the column name in the data to which this series is related
                 plot-id      - optional - defines which plot this series should be plotted upon
                 axis-id      - optional - defines which axis this series should be plotted against
 Text:           none
 Child Elements: none
+
+
+<group>
+Description:    Defines what data is used for grouping with categorical charting
+Attributes:     id           - optional - defines an id that allows other tags to reference this group
+                stacked      - optional - defines the level at which stacking will occur if the data series is
+                                          being charted with a stacking option enabled
+                column-pos   - optional - defines the column position in the data which  is used for this level of grouping
+                                          (overrides the column-name attribute if valid)
+                column-name  - optional - defines the column name in the data which is used for this level of grouping
+Text:           none
+Child Elements: group        - optional - defines sub-grouping under this group

@@ -32,12 +32,6 @@ public class ChartStyleKeys {
       createKey("-x-pentaho-chart-series-type", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
 
   /**
-   * "true" if the chart is categorical, "false" if value based.
-   */ 
-  public static final StyleKey CATEGORICAL = StyleKeyRegistry.getRegistry().
-      createKey("-x-pentaho-chart-categorical", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
-
-  /**
    * The orientation of the charts: vertical or horizontal.
    */
   public static final StyleKey ORIENTATION = StyleKeyRegistry.getRegistry().
@@ -57,7 +51,7 @@ public class ChartStyleKeys {
 
   /**
    * Bar width specified in terms of percentage
-   */ 
+   */
   public static final StyleKey BAR_MAX_WIDTH = StyleKeyRegistry.getRegistry().
       createKey("-x-pentaho-chart-bar-max-width", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
 
@@ -65,30 +59,30 @@ public class ChartStyleKeys {
    * The Drill-Through URL
    */
   public static final StyleKey DRILL_URL = StyleKeyRegistry.getRegistry().
-    createKey("-x-pentaho-chart-drill-url", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
-  
+      createKey("-x-pentaho-chart-drill-url", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+
   /**
    * The axis type dimention (auto, range, domain)
    */
   public static final StyleKey AXIS_DIMENSION = StyleKeyRegistry.getRegistry().
-    createKey("-x-pentaho-chart-axis-type-dimension", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+      createKey("-x-pentaho-chart-axis-type-dimension", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
 
   /**
    * The axis position (primary, secondary)
    */
   public static final StyleKey AXIS_POSITION = StyleKeyRegistry.getRegistry().
-    createKey("-x-pentaho-chart-axis-type-position", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
-  
+      createKey("-x-pentaho-chart-axis-type-position", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+
   /**
    * The axis order (1, 2)
    */
   public static final StyleKey AXIS_ORDER = StyleKeyRegistry.getRegistry().
-    createKey("-x-pentaho-chart-axis-type-order", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
-  
+      createKey("-x-pentaho-chart-axis-type-order", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+
   /**
    * The label text with it's formatting information
    */
   public static final StyleKey LABEL_TEXT = StyleKeyRegistry.getRegistry().
-    createKey("-x-pentaho-chart-label-text", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$ 
+      createKey("-x-pentaho-chart-label-text", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
 }
 

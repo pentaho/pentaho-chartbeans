@@ -45,6 +45,76 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
   public static final String NAMESPACE = "charting-rulez"; //$NON-NLS-1$
 
   /**
+   * Chart Definition tag for the base chart
+   */
+  public static final String TAG_NAME_CHART = "chart"; //$NON-NLS-1$
+
+  /**
+   * The name of the XML tag which represents the CSS information
+   */
+  public static final String TAG_NAME_STYLESHEET = "stylesheet"; //$NON-NLS-1$
+
+  /**
+   * The name of the XML tag which represents the chart title
+   */
+  public static final String TAG_NAME_TITLE = "title"; //$NON-NLS-1$
+
+  /**
+   * The name of the XML tag which represents the chart legend
+   */
+  public static final String TAG_NAME_LEGEND = "legend"; //$NON-NLS-1$
+
+  /**
+   * The name of the XML tag which represents the chart axis
+   */
+  public static final String TAG_NAME_AXIS = "axis"; //$NON-NLS-1$
+
+  /**
+   * The name of the XML tag which represents the chart plot
+   */
+  public static final String TAG_NAME_PLOT = "plot"; //$NON-NLS-1$
+
+  /**
+   * The name of the XML tag which represents a series in the chart
+   */
+  public static final String TAG_NAME_SERIES = "series"; //$NON-NLS-1$
+
+  /**
+   * The name of the XML tag which represents a data grouping for the chart
+   */
+  public static final String TAG_NAME_GROUP = "group"; //$NON-NLS-1$
+
+  /**
+   * Attribute name for specifying a chart's data should be represented categorically
+   */
+  public static final String CATEGORICAL = "categorical"; //$NON-NLS-1$
+
+  /**
+   * Attribute name for specifying a chart's data should be interpreted "byrow"
+   */
+  public static final String BYROW = "byrow"; //$NON-NLS-1$
+
+  /**
+   * Attributes nam for specifying a taq's user specified id (used in referencing one tag from another tag)
+   */
+  public static final String ID = "id"; //$NON-NLS-1$
+
+  /**
+   * Attribute name for making an external reference
+   */
+  public static final String HREF = "href"; //$NON-NLS-1$
+
+  /**
+   * Attribute name used to refer to a column in the data positionally (starting with column 0)
+   */
+  public static final String COLUMN_POSITION = "column-pos"; //$NON-NLS-1$
+
+  /**
+   * Attributes name used to refer to a column in the data by column name
+   */
+  public static final String COLUMN_NAME = "column-name"; //$NON-NLS-1$
+
+  /**
    * The attributes of this element. These attributes are namespaced, therefore
    */
   private AttributeMap attributes;
@@ -68,8 +138,6 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
    * Constant used when generating the deep <code>toString</code> representation
    */
   private static final String TO_STRING_PREFIX = "  ";
-  public static final String STYLESHEET_TAGNAME = "stylesheet";
-  public static final String CHART_TAGNAME = "chart";
 
   /**
    * Constructs an element.

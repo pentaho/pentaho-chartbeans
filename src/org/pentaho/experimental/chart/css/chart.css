@@ -1,10 +1,28 @@
-@namespace url(http://reporting.pentaho.org/namespaces/charting/1.0);
+@namespace
+url
+(
+http
+:
+/
+/
+reporting
+.
+pentaho
+.
+org
+/
+namespaces
+/
+charting
+/
+1.0
+)
+;
 /* set default namespace to Pentaho Charts */
 
 /* blocks */
 
 chart {
-	  -x-pentaho-chart-categorical: false;	
 }
 
 stylesheet {
@@ -26,7 +44,7 @@ plot {
 axis {
   -x-pentaho-chart-axis-type-dimension: auto;
   -x-pentaho-chart-axis-type-position: primary;
-  -x-pentaho-chart-axis-type-order: 1;		
+  -x-pentaho-chart-axis-type-order: 1;
 }
 
 series {

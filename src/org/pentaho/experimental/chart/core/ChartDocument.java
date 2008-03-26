@@ -15,6 +15,7 @@
  */
 package org.pentaho.experimental.chart.core;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.jfree.resourceloader.ResourceKey;
 import org.jfree.resourceloader.ResourceManager;
 
@@ -95,5 +96,55 @@ public class ChartDocument {
       sb.append("\n").append(rootElement.toString("  "));
     }
     return sb.toString();
+  }
+
+  /**
+   * Indicates if the chart is a categorical chart. For this to be true, the chart element tag
+   * must have the categorical attribute set to true.
+   */
+  public boolean isCategorical() {
+    boolean result = false;
+    final ChartElement root = getRootElement();
+    if (root != null) {
+      if (ChartElement.TAG_NAME_CHART.equals(root.getTagName())) {
+        result = booleanAttributeValue(root, ChartElement.CATEGORICAL, false);
+      }
+    }
+    return result;
+  }
+
+  /**
+   * Indicates if the chart is a categorical chart. For this to be true, the chart element tag
+   * must have the categorical attribute set to true.
+   */
+  public boolean isByRow() {
+    boolean result = false;
+    final ChartElement root = getRootElement();
+    if (root != null) {
+      if (ChartElement.TAG_NAME_CHART.equals(root.getTagName())) {
+        result = booleanAttributeValue(root, ChartElement.BYROW, false);
+      }
+    }
+    return result;
+  }
+
+  /**
+   * Tests the specified chart element has the specified attribute AND if the value of that
+   * attribute evalutates to <code>true</code>. If the attribute does not exist, the default value is used.
+   * NOTE: this method is protected for testing purposes only.
+   *
+   * @param element       the element to test for the attribute
+   * @param attributeName the name of the attribute to test for existance AND value
+   * @param defaultResult the result that will be returned if the attribute does not exist for the element
+   */
+  protected static boolean booleanAttributeValue(final ChartElement element, final String attributeName, final boolean defaultResult) {
+    boolean result = defaultResult;
+    if (element != null) {
+      final Object value = element.getAttribute(attributeName);
+      if (value != null) {
+        result = BooleanUtils.toBoolean(value.toString());
+      }
+    }
+    return result;
   }
 }

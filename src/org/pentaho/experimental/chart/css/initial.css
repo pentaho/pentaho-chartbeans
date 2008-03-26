@@ -7,8 +7,7 @@
 
 /** Series Styles */
 * {
-	-x-pentaho-chart-series-type: bar;
-  -x-pentaho-chart-categorical: false;
+  -x-pentaho-chart-series-type: bar;
   -x-pentaho-chart-orientation: vertical;
   -x-pentaho-chart-line-style: solid;
   -x-pentaho-chart-bar-style: bar;
@@ -16,7 +15,7 @@
   -x-pentaho-chart-drill-url: none;
   -x-pentaho-chart-axis-type-dimension: auto;
   -x-pentaho-chart-axis-type-position: primary;
-  -x-pentaho-chart-axis-type-order: 1;  
+  -x-pentaho-chart-axis-type-order: 1;
   -x-pentaho-chart-label-text: '{0}';
 }
 
