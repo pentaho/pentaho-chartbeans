@@ -110,9 +110,14 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
   public static final String COLUMN_POSITION = "column-pos"; //$NON-NLS-1$
 
   /**
-   * Attributes name used to refer to a column in the data by column name
+   * Attribute name used to refer to a column in the data by column name
    */
   public static final String COLUMN_NAME = "column-name"; //$NON-NLS-1$
+
+  /**
+   * Attribute name used to mark a group as stacked instead of a normal groupingmv 
+   */
+  public static final String STACKED = "stacked"; //$NON-NLS-1$
 
   /**
    * The attributes of this element. These attributes are namespaced, therefore

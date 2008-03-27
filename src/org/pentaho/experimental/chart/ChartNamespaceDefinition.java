@@ -28,31 +28,29 @@ import org.pentaho.reporting.libraries.css.namespace.NamespaceDefinition;
  * @author David Kincade
  */
 public class ChartNamespaceDefinition implements NamespaceDefinition {
-  private final ResourceManager resourceManager;
   private ResourceKey chartStyleSheetKey;
   private String preferredPrefix;
   private String uri;
   private String[] classAttributeNames;
   private String[] styleAttributeNames;
 
-  private static final String PREFERRED_PREFIX = "org.pentaho.experimental.chart.namespace.prefix";
-  private static final String URI = "org.pentaho.experimental.chart.namespace.uri";
-  private static final String CLASS_ATTRIBUTES = "org.pentaho.experimental.chart.namespace.class_attributes";
-  private static final String STYLE_ATTRIBUTES = "org.pentaho.experimental.chart.namespace.style_attributes";
-  private static final String CHART_STYLE_LOCATION = "org.pentaho.experimental.chart.namespace.style";
+  private static final String PREFERRED_PREFIX = "org.pentaho.experimental.chart.namespace.prefix"; //$NON-NLS-1$
+  private static final String URI = "org.pentaho.experimental.chart.namespace.uri"; //$NON-NLS-1$
+  private static final String CLASS_ATTRIBUTES = "org.pentaho.experimental.chart.namespace.class_attributes"; //$NON-NLS-1$
+  private static final String STYLE_ATTRIBUTES = "org.pentaho.experimental.chart.namespace.style_attributes"; //$NON-NLS-1$
+  private static final String CHART_STYLE_LOCATION = "org.pentaho.experimental.chart.namespace.style"; //$NON-NLS-1$
 
   private static final String DEFAULT_PREFERRED_PREFIX = "";
-  private static final String DEFAULT_URI = "http://reporting.pentaho.org/namespaces/charting/1.0";
-  private static final String DEFAULT_CLASS_ATTRIBUTE_NAMES = "class";
-  private static final String DEFAULT_STYLE_ATTRIBUTE_NAMES = "style";
-  private static final String DEFAULT_CHART_STYLE_LOCATION = "res://org/pentaho/experimental/chart/css/chart.css";
+  private static final String DEFAULT_URI = "http://reporting.pentaho.org/namespaces/charting/1.0"; //$NON-NLS-1$
+  private static final String DEFAULT_CLASS_ATTRIBUTE_NAMES = "class"; //$NON-NLS-1$
+  private static final String DEFAULT_STYLE_ATTRIBUTE_NAMES = "style"; //$NON-NLS-1$
+  private static final String DEFAULT_CHART_STYLE_LOCATION = "res://org/pentaho/experimental/chart/css/chart.css"; //$NON-NLS-1$
 
   public ChartNamespaceDefinition(final ResourceManager resourceManager) throws ResourceKeyCreationException {
     // Save the resource manager
     if (resourceManager == null) {
       throw new IllegalArgumentException();
     }
-    this.resourceManager = resourceManager;
 
     // Load the information from the chart properties file
     Configuration config = ChartBoot.getInstance().getGlobalConfig();

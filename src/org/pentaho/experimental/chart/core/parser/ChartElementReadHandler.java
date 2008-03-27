@@ -34,12 +34,6 @@ public class ChartElementReadHandler extends StringReadHandler {
   private ChartElement chartElement;
 
   /**
-   * The parent <code>ChartElement</code> to which the element belongs. Only a top-level chart element
-   * will not have a parent.
-   */
-  private ChartElement parentChartElement;
-
-  /**
    * Constructs a new chart element parser that does not have a parent chart element
    */
   public ChartElementReadHandler() {
@@ -54,7 +48,6 @@ public class ChartElementReadHandler extends StringReadHandler {
    */
   public ChartElementReadHandler(ChartElement parentChartElement) {
     this.chartElement = new ChartElement();
-    this.parentChartElement = parentChartElement;
     parentChartElement.addChildElement(this.chartElement);
   }
 
