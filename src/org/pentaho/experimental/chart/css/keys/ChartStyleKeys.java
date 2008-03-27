@@ -86,6 +86,12 @@ public class ChartStyleKeys {
       createKey("-x-pentaho-chart-label-text", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
 
   /**
+   * The gradient type (for eg: none, VERTICAL, CENTER_VERTICAL, HORIZONTAL, CENTER_HORIZONTAL, POINTS)
+   */
+  public static final StyleKey GRADIENT_TYPE = StyleKeyRegistry.getRegistry().
+      createKey("-x-pentaho-chart-gradient-type", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+
+  /**
    * The gradient start position indicator (for eg: 1,1)
    */
   public static final StyleKey GRADIENT_START = StyleKeyRegistry.getRegistry().
