@@ -17,5 +17,7 @@
   -x-pentaho-chart-axis-type-position: primary;
   -x-pentaho-chart-axis-type-order: 1;
   -x-pentaho-chart-label-text: '{0}';
+  -x-pentaho-chart-gradient-start: 0, 0;  
+  -x-pentaho-chart-gradient-end: 1, 1;  
 }
 

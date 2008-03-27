@@ -84,5 +84,18 @@ public class ChartStyleKeys {
    */
   public static final StyleKey LABEL_TEXT = StyleKeyRegistry.getRegistry().
       createKey("-x-pentaho-chart-label-text", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+
+  /**
+   * The gradient start position indicator (for eg: 1,1)
+   */
+  public static final StyleKey GRADIENT_START = StyleKeyRegistry.getRegistry().
+      createKey("-x-pentaho-chart-gradient-start", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+  
+  /**
+   * The gradient end position indicator (eg: 12,10)
+   */
+  public static final StyleKey GRADIENT_END = StyleKeyRegistry.getRegistry().
+      createKey("-x-pentaho-chart-gradient-end", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+  
 }
 

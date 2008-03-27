@@ -36,4 +36,6 @@ series {
   -x-pentaho-chart-bar-max-width: 50%;
   -x-pentaho-chart-drill-url: none;
   -x-pentaho-chart-label-text: '{0}';
+  -x-pentaho-chart-gradient-start: 0, 0;
+  -x-pentaho-chart-gradient-end: 1, 1;
 }
