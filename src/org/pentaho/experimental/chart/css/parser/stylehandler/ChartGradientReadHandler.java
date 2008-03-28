@@ -65,9 +65,7 @@ public class ChartGradientReadHandler implements CSSCompoundValueReadHandler {
      * @param value
      * @return
      */
-    public Map createValues(LexicalUnit unit) 
-    throws IllegalStateException
-    {
+    public Map createValues(LexicalUnit unit) {
       Map<StyleKey, CSSValue> map = new HashMap<StyleKey, CSSValue>();
 
       // Gradient Color
