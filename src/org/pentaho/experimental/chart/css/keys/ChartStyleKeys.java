@@ -92,6 +92,12 @@ public class ChartStyleKeys {
       createKey("-x-pentaho-chart-gradient-type", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
 
   /**
+   * The gradient color style
+   */
+  public static final StyleKey GRADIENT_COLOR = StyleKeyRegistry.getRegistry().
+      createKey("-x-pentaho-chart-gradient-color", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+  
+  /**
    * The gradient start position indicator (for eg: 1,1)
    */
   public static final StyleKey GRADIENT_START = StyleKeyRegistry.getRegistry().
