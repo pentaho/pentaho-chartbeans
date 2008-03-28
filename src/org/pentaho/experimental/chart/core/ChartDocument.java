@@ -19,6 +19,9 @@ import org.apache.commons.lang.BooleanUtils;
 import org.jfree.resourceloader.ResourceKey;
 import org.jfree.resourceloader.ResourceManager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This is the object that contains the root element of the parsed chart defintion
  */
@@ -39,6 +42,7 @@ public class ChartDocument {
    * The resource key that servers as the base location for loading relative infomraiton
    */
   private ResourceKey resourceKey;
+  private List seriesTags;
 
   /**
    * Constructor that creats the chart document.
@@ -46,6 +50,9 @@ public class ChartDocument {
    * @param rootElement the parsed root element of the chart document
    */
   public ChartDocument(ChartElement rootElement) {
+    if (rootElement == null) {
+      throw new IllegalArgumentException("Root Element can not be null"); //$NON-NLS-1$
+    }
     this.rootElement = rootElement;
   }
 
@@ -146,5 +153,39 @@ public class ChartDocument {
       }
     }
     return result;
+  }
+
+  /**
+   * Creates a list of all the <code>series</code> ChartElements that are the children of the <code>chart</code> tag.
+   * @return a list of <code>ChartElements</code> which represent the <code>series</code> tags. If there are none,
+   * the list will be empty.
+   */
+  public List getSeriesChartElements() {
+    return getChartLevelElements(ChartElement.TAG_NAME_SERIES);
+  }
+
+  /**
+   * Creates a list of all the <code>series</code> ChartElements that are the children of the <code>chart</code> tag.
+   * @return a list of <code>ChartElements</code> which represent the <code>series</code> tags. If there are none,
+   * the list will be empty.
+   */
+  public List getGroupChartElements() {
+    return getChartLevelElements(ChartElement.TAG_NAME_GROUP);
+  }
+
+  /**
+   * Creats a list of chart elements with the specified tag name that are child elements of the root level (chart) element
+   * @param tagname the tagname used in selecting elements
+   */
+  private List getChartLevelElements(String tagname) {
+    List elements = new ArrayList();
+    ChartElement element = rootElement.getFirstChildItem();
+    while (element != null) {
+      if (tagname.equals(element.getTagName())) {
+        elements.add(element);
+      }
+      element = element.getNextItem();
+    }
+    return elements;
   }
 }

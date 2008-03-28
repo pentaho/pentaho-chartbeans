@@ -20,6 +20,8 @@ import org.jfree.resourceloader.ResourceException;
 import org.pentaho.experimental.chart.ChartDocumentContext;
 import org.pentaho.experimental.chart.ChartFactory;
 
+import java.util.List;
+
 /**
  * Tests for the ChartDocument class
  *
@@ -101,6 +103,58 @@ public class ChartDocumentTest extends TestCase {
     // Load a chart where the chart tag is the top-most tag, but byrow is not set at all
     cdc = ChartFactory.generateChart(this.getClass().getResource("ChartDocumentTest3.xml"));
     assertEquals(false, cdc.getChartDocument().isCategorical());
+  }
+
+  /**
+   * Tests for the <code>getSeriesTags()</code> helper methods
+   */
+  public void testGetSeriesTags() {
+    ChartElement rootElement = new ChartElement();
+    rootElement.setTagName(ChartElement.TAG_NAME_CHART);
+    ChartElement series1 = new ChartElement(); series1.setTagName(ChartElement.TAG_NAME_SERIES);
+    ChartElement series2 = new ChartElement(); series2.setTagName(ChartElement.TAG_NAME_SERIES);
+    ChartElement series3 = new ChartElement(); series3.setTagName(ChartElement.TAG_NAME_SERIES);
+    ChartElement series4 = new ChartElement(); series4.setTagName(ChartElement.TAG_NAME_SERIES);
+    ChartDocument doc = new ChartDocument(rootElement);
+    rootElement.addChildElement(new ChartElement());
+    rootElement.addChildElement(series1);
+    rootElement.addChildElement(new ChartElement());
+    rootElement.addChildElement(series2);
+    series2.addChildElement(series3);
+    rootElement.addChildElement(series4);
+
+    List elements = doc.getSeriesChartElements();
+    assertNotNull(elements);
+    assertEquals(3, elements.size());
+    assertEquals(series1, elements.get(0));
+    assertEquals(series2, elements.get(1));
+    assertEquals(series4, elements.get(2));
+  }
+
+  /**
+   * Tests for the <code>getSeriesTags()</code> helper methods
+   */
+  public void testGetGroupTags() {
+    ChartElement rootElement = new ChartElement();
+    rootElement.setTagName(ChartElement.TAG_NAME_CHART);
+    ChartElement series1 = new ChartElement(); series1.setTagName(ChartElement.TAG_NAME_GROUP);
+    ChartElement series2 = new ChartElement(); series2.setTagName(ChartElement.TAG_NAME_GROUP);
+    ChartElement series3 = new ChartElement(); series3.setTagName(ChartElement.TAG_NAME_GROUP);
+    ChartElement series4 = new ChartElement(); series4.setTagName(ChartElement.TAG_NAME_GROUP);
+    ChartDocument doc = new ChartDocument(rootElement);
+    rootElement.addChildElement(series1);
+    rootElement.addChildElement(new ChartElement());
+    rootElement.addChildElement(series2);
+    series2.addChildElement(series3);
+    rootElement.addChildElement(series4);
+    rootElement.addChildElement(new ChartElement());
+
+    List elements = doc.getGroupChartElements();
+    assertNotNull(elements);
+    assertEquals(3, elements.size());
+    assertEquals(series1, elements.get(0));
+    assertEquals(series2, elements.get(1));
+    assertEquals(series4, elements.get(2));
   }
 
 }
