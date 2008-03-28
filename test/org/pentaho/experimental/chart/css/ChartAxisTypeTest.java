@@ -44,7 +44,7 @@ public class ChartAxisTypeTest extends TestCase {
         new CSSValue[] {ChartAxisDimension.AUTO, ChartAxisPosition.PRIMARY, new CSSConstant("1")}, //$NON-NLS-1$        
         new CSSValue[] {ChartAxisDimension.AUTO, ChartAxisPosition.PRIMARY, new CSSConstant("1")}, //$NON-NLS-1$        
         new CSSValue[] {ChartAxisDimension.AUTO, ChartAxisPosition.PRIMARY, new CSSConstant("1")}, //$NON-NLS-1$
-        new CSSValue[] {ChartAxisDimension.DOMAIN, ChartAxisPosition.SECONDARY, new CSSConstant("1")}, //$NON-NLS-1$
+        new CSSValue[] {ChartAxisDimension.AUTO, ChartAxisPosition.PRIMARY, new CSSConstant("1")}, //$NON-NLS-1$
     };
     
     int counter = 0;
@@ -56,9 +56,9 @@ public class ChartAxisTypeTest extends TestCase {
       assertNotNull(layoutStyle);
       System.out.print("Counter#: " + counter + " Expecting: " + passValues[counter][0] + "," + passValues[counter][1] + "," + passValues[counter][2]); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
       System.out.println(" -- Got: " + layoutStyle.getValue(ChartStyleKeys.AXIS_DIMENSION) + "," + layoutStyle.getValue(ChartStyleKeys.AXIS_POSITION) + "," + layoutStyle.getValue(ChartStyleKeys.AXIS_ORDER).getCSSText()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-      assertEquals(passValues[counter][0], layoutStyle.getValue(ChartStyleKeys.AXIS_DIMENSION));
-      assertEquals(passValues[counter][1], layoutStyle.getValue(ChartStyleKeys.AXIS_POSITION));
-      assertEquals(passValues[counter][2].getCSSText(), layoutStyle.getValue(ChartStyleKeys.AXIS_ORDER).getCSSText());
+      assertEquals("Counter# " + counter + " DIMENSION: ", passValues[counter][0], layoutStyle.getValue(ChartStyleKeys.AXIS_DIMENSION)); //$NON-NLS-1$ //$NON-NLS-2$ 
+      assertEquals("Counter# " + counter + " POSITION: ", passValues[counter][1], layoutStyle.getValue(ChartStyleKeys.AXIS_POSITION)); //$NON-NLS-1$ //$NON-NLS-2$ 
+      assertEquals("Counter# " + counter + " ORDER: ", passValues[counter][2].getCSSText(), layoutStyle.getValue(ChartStyleKeys.AXIS_ORDER).getCSSText()); //$NON-NLS-1$ //$NON-NLS-2$ 
       
       child = child.getNextItem();
       counter++;

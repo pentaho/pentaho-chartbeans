@@ -9,5 +9,5 @@
 		<axis style="-x-pentaho-chart-axis-type: "/> <!-- is null, so should fall back to default -->						
 		<axis style="-x-pentaho-chart-axis-type: secondary 1"/> <!-- no dimension specified, will default everything -->
 		<axis style="-x-pentaho-chart-axis-type: domain  1"/> <!-- no position specified, will default everything (auto, primary, 1)-->
-		<axis style="-x-pentaho-chart-axis-type: domain secondary "/> <!-- no order specified, will default order to 1 -->
+		<axis style="-x-pentaho-chart-axis-type: domain secondary "/> <!-- no order specified, will get defaults for all -->
 </chart>

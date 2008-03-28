@@ -61,19 +61,15 @@ public class ChartAxisTypeReadHandler implements CSSCompoundValueReadHandler {
      * @param value
      * @return
      */
-    public Map createValues(LexicalUnit unit) 
-    throws IllegalStateException
-    {
-      final Map<StyleKey, CSSValue> map = new HashMap<StyleKey, CSSValue>();
+    public Map createValues(LexicalUnit unit) {  
+      Map<StyleKey, CSSValue> map = new HashMap<StyleKey, CSSValue>();
 
       CSSValue dimension = null;
       if (unit != null) {
         dimension = axisDimension.createValue(null, unit);
         if (dimension != null) {
           unit = unit.getNextLexicalUnit(); 
-        } else {
-          throw new IllegalStateException("Dimension value should never be null."); //$NON-NLS-1$ 
-        }
+        } 
       }  
       
       //System.out.println("" + dimension);
@@ -83,9 +79,7 @@ public class ChartAxisTypeReadHandler implements CSSCompoundValueReadHandler {
         
         if (position != null) {
           unit = unit.getNextLexicalUnit();
-        } else {
-          throw new IllegalStateException("Axis Position value should never be null."); //$NON-NLS-1$ 
-        }
+        } 
       }
 
       //System.out.println("," + position);
@@ -93,18 +87,17 @@ public class ChartAxisTypeReadHandler implements CSSCompoundValueReadHandler {
       CSSValue order = null;
       if (unit != null) {
         order = axisOrder.createValue(null, unit);
-        
-        if (order == null) {
-          throw new IllegalStateException("Axis Order should never come out be null."); //$NON-NLS-1$ 
-        }
       }
       
       //System.out.println("," + order);
-      
-      map.put(ChartStyleKeys.AXIS_DIMENSION, dimension);      
-      map.put(ChartStyleKeys.AXIS_POSITION, position);
-      map.put(ChartStyleKeys.AXIS_ORDER, order);
-      
+
+      if (dimension != null && position != null && order != null) {
+        map.put(ChartStyleKeys.AXIS_DIMENSION, dimension);      
+        map.put(ChartStyleKeys.AXIS_POSITION, position);
+        map.put(ChartStyleKeys.AXIS_ORDER, order);
+      } else {
+        map = null;
+      }
       return map;
     }
   }
