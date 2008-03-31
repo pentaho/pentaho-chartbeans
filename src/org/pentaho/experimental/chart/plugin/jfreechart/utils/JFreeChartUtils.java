@@ -89,17 +89,17 @@ public class JFreeChartUtils {
     return -1;
   }
 
-  /**
-   * @param chartDocument
-   * @return
+  /** 
+   * Gets the plot orientation from the chart document
+   * @param chartDocument The chart document definition
+   * @return PlotOrientation The plot orientation i.e. vertical or horizontal
    */
   public static PlotOrientation getPlotOrientation(ChartDocument chartDocument) {
     PlotOrientation plotOrient = null;
     ChartElement plotElement   = chartDocument.getPlotElement();
     
     if (plotElement != null) {
-      LayoutStyle layoutStyle  = plotElement.getLayoutStyle();
-      CSSValue value = layoutStyle.getValue(ChartStyleKeys.ORIENTATION);
+      CSSValue value = plotElement.getStyle(ChartStyleKeys.ORIENTATION);
       
       if (value != null) {
         String orientatValue = value.toString();
