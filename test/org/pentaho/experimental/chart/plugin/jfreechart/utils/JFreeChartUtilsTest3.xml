@@ -1,5 +1,5 @@
 <chart>
   <stylesheet/>
   <series/>
-  <plot style="-x-pentaho-chart-orientation: vertical"/>
+  <plot style="-x-pentaho-chart-orientation: vertical; -x-pentaho-chart-drill-url-template:none"/>
 </chart>

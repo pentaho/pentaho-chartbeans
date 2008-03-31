@@ -21,6 +21,13 @@ import org.pentaho.experimental.chart.core.ChartElement;
  */
 public class JFreeChartUtilsTest extends TestCase {
 
+  String[] testFileNames = {
+      "JFreeChartUtilsTest1.xml", //$NON-NLS-1$
+      "JFreeChartUtilsTest2.xml", //$NON-NLS-1$
+      "JFreeChartUtilsTest3.xml", //$NON-NLS-1$
+      "JFreeChartUtilsTest4.xml", //$NON-NLS-1$
+  };
+
   /**
    * @throws java.lang.Exception
    */
@@ -36,13 +43,6 @@ public class JFreeChartUtilsTest extends TestCase {
   }
   
   public void testGetOrientation() throws ResourceException {
-    String[] testFileNames = {
-        "JFreeChartUtilsTest1.xml", //$NON-NLS-1$
-        "JFreeChartUtilsTest2.xml", //$NON-NLS-1$
-        "JFreeChartUtilsTest3.xml", //$NON-NLS-1$
-        "JFreeChartUtilsTest4.xml", //$NON-NLS-1$
-    };
-
     PlotOrientation[] expectedValues = {
          PlotOrientation.VERTICAL,
          PlotOrientation.HORIZONTAL,
@@ -61,6 +61,30 @@ public class JFreeChartUtilsTest extends TestCase {
         assertEquals(null, plotElement);
       } else {  
         assertEquals(expectedValues[i], JFreeChartUtils.getPlotOrientation(cd));
+      }
+    }
+  }
+
+  public void testShowURLs() throws ResourceException {
+
+    boolean[] expectedValues = {
+         false,
+         true,
+         false,
+         false,
+    };
+
+    for (int i = 0; i < testFileNames.length; i++) {
+      ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource(testFileNames[i])); 
+      assertNotNull(cdc);
+      ChartDocument cd = cdc.getChartDocument();
+      assertNotNull(cd);    
+
+      ChartElement plotElement = cd.getPlotElement();
+      if (i == 0) {
+        assertEquals(null, plotElement);
+      } else {  
+        assertEquals("Counter# " + i, expectedValues[i], JFreeChartUtils.getShowUrls(cd));
       }
     }
   }

@@ -123,13 +123,24 @@ public class JFreeChartUtils {
     return true;
   }
 
-  /**
+  /** 
+   * If the chart URL template is defined in the plot tag with url value, then return true. False otherwise.
    * @param chartDocument
-   * @return
+   * @return true if chart url templates are defined in the plot tag with url value.
    */
   public static boolean getShowUrls(ChartDocument chartDocument) {
-    // TODO determine this from the chartDocument
-    return false;
+    ChartElement plotElement = chartDocument.getPlotElement();
+    boolean showURL = false;
+    
+    if (plotElement != null) {
+      LayoutStyle layoutStyle = plotElement.getLayoutStyle();
+      CSSValue value = layoutStyle.getValue(ChartStyleKeys.DRILL_URL);
+      
+      if (value != null && !value.getCSSText().equalsIgnoreCase("none")) { //$NON-NLS-1$
+        showURL = true;
+      }
+    }    
+    return showURL;
   }
 
   /**
