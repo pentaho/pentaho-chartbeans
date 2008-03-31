@@ -124,7 +124,7 @@ public class JFreeChartUtils {
   /**
    * @return
    */
-  public static String getTitle() {
+  public static String getTitle(ChartDocument chartDocument) {
     // TODO determine this from the chartDocument
     return "Chart Title";
   }
@@ -132,7 +132,7 @@ public class JFreeChartUtils {
   /**
    * @return
    */
-  public static String getValueCategoryLabel() {
+  public static String getValueCategoryLabel(ChartDocument chartDocument) {
     // TODO determine this from the chartDocument
     return "Category Label";
   }
@@ -140,7 +140,7 @@ public class JFreeChartUtils {
   /**
    * @return
    */
-  public static String getValueAxisLabel() {
+  public static String getValueAxisLabel(ChartDocument chartDocument) {
     // TODO determine this from the chartDocument
     return "Axis Label";
   }

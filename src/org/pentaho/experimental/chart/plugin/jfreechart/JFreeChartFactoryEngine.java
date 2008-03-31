@@ -28,9 +28,9 @@ public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable
   }
 
   public void makeBarChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler) throws Exception {
-    String title = JFreeChartUtils.getTitle();
-    String valueCategoryLabel = JFreeChartUtils.getValueCategoryLabel();
-    String valueAxisLabel = JFreeChartUtils.getValueAxisLabel();
+    String title = JFreeChartUtils.getTitle(chartDocument);
+    String valueCategoryLabel = JFreeChartUtils.getValueCategoryLabel(chartDocument);
+    String valueAxisLabel = JFreeChartUtils.getValueAxisLabel(chartDocument);
     PlotOrientation orientation = JFreeChartUtils.getPlotOrientation(chartDocument);
     boolean legend = JFreeChartUtils.getShowLegend(chartDocument);
     boolean toolTips = JFreeChartUtils.getShowToolTips(chartDocument);
