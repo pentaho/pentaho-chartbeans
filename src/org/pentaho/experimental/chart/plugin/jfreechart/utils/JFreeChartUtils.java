@@ -24,9 +24,13 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
+import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
+import org.pentaho.experimental.chart.css.styles.ChartOrientationStyle;
 import org.pentaho.experimental.chart.data.ChartTableModel;
+import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
 import org.pentaho.reporting.libraries.css.model.StyleKey;
 import org.pentaho.reporting.libraries.css.model.StyleKeyRegistry;
+import org.pentaho.reporting.libraries.css.values.CSSValue;
 
 /**
  * @author wseyler
@@ -90,8 +94,24 @@ public class JFreeChartUtils {
    * @return
    */
   public static PlotOrientation getPlotOrientation(ChartDocument chartDocument) {
-    // TODO determine this from the chartDocument
-    return PlotOrientation.HORIZONTAL;
+    PlotOrientation plotOrient = null;
+    ChartElement plotElement   = chartDocument.getPlotElement();
+    
+    if (plotElement != null) {
+      LayoutStyle layoutStyle  = plotElement.getLayoutStyle();
+      CSSValue value = layoutStyle.getValue(ChartStyleKeys.ORIENTATION);
+      
+      if (value != null) {
+        String orientatValue = value.toString();
+        
+        if (orientatValue.equalsIgnoreCase(ChartOrientationStyle.VERTICAL.getCSSText())) {
+          plotOrient = PlotOrientation.VERTICAL;
+        } else if (orientatValue.equalsIgnoreCase(ChartOrientationStyle.HORIZONTAL.getCSSText())) {
+          plotOrient = PlotOrientation.HORIZONTAL;
+        }      
+      }
+    }
+    return plotOrient;
   }
 
   /**
