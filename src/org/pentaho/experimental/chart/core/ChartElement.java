@@ -21,6 +21,8 @@ import org.jfree.xmlns.common.AttributeMap;
 import org.pentaho.reporting.libraries.css.dom.DefaultLayoutStyle;
 import org.pentaho.reporting.libraries.css.dom.LayoutElement;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
+import org.pentaho.reporting.libraries.css.model.StyleKey;
+import org.pentaho.reporting.libraries.css.values.CSSValue;
 import org.pentaho.util.Empty;
 import org.pentaho.util.collections.HeirarchicalLinkedListItem;
 
@@ -479,5 +481,18 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
     // Return the list as an array
     return matchList.toArray(new ChartElement[matchList.size()]);
   }
+
+  /**
+   * Quick accessor method to return the style value for the style key for this chart element
+   */
+  public CSSValue getStyle(final StyleKey key) {
+    CSSValue result = null;
+    if (key != null) {
+      result = getLayoutStyle().getValue(key);
+    }
+    return result;
+  }
+
+
 }
 
