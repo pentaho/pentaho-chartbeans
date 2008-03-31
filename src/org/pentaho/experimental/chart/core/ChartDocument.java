@@ -103,9 +103,9 @@ public class ChartDocument {
     final StringBuffer sb = new StringBuffer();
     sb.append(getClass().getName());
     if (rootElement == null) {
-      sb.append(" [null]");
+      sb.append(" [null]");  //$NON-NLS-1$
     } else {
-      sb.append("\n").append(rootElement.toString("  "));
+      sb.append("\n").append(rootElement.toString("  "));  //$NON-NLS-1$ //$NON-NLS-2$
     }
     return sb.toString();
   }
@@ -170,9 +170,11 @@ public class ChartDocument {
   }
   
   /**
-   * 
-   * @param tagName
-   * @return
+   * Gets the specified element from the chart document (at one level deeper than the chart element). 
+   * Returns the first occurrence of the given tag.
+   * @param tagName The tagName to be looked up in the chart document at one level 
+   *                deeper than the chart tag.
+   * @return ChartElement Returns the chart element.
    */
   private ChartElement getChartLevelElement(String tagName) {
     ChartElement returnValue = null;
@@ -218,12 +220,11 @@ public class ChartDocument {
   }
   
   /**
-   * Provides the plot orientation for the given chart document.
+   * Provides the plot element in the given chart document. Returns null if not found.
    * @return PlotOrientation  Returns the plot orientation for the given chart document.
    */
   public ChartElement getPlotElement(){
     ChartElement plotElement = getChartLevelElement(ChartElement.TAG_NAME_PLOT);
     return plotElement;
-  }
-  
+  }  
 }
