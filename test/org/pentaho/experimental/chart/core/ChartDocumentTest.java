@@ -15,12 +15,16 @@
  */
 package org.pentaho.experimental.chart.core;
 
+import java.util.List;
 import junit.framework.TestCase;
+import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.resourceloader.ResourceException;
 import org.pentaho.experimental.chart.ChartDocumentContext;
 import org.pentaho.experimental.chart.ChartFactory;
-
-import java.util.List;
+import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
+import org.pentaho.experimental.chart.css.styles.ChartOrientationStyle;
+import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
+import org.pentaho.reporting.libraries.css.values.CSSValue;
 
 /**
  * Tests for the ChartDocument class
@@ -157,4 +161,26 @@ public class ChartDocumentTest extends TestCase {
     assertEquals(series4, elements.get(2));
   }
 
+  public void testGetPlotElement() throws ResourceException {
+    String[] testFileNames = {
+        "ChartDocumentTest1.xml", //$NON-NLS-1$
+        "ChartDocumentTest2.xml", //$NON-NLS-1$
+        "ChartDocumentTest3.xml", //$NON-NLS-1$
+        "ChartDocumentTest4.xml", //$NON-NLS-1$
+    };
+
+    for (int i = 0; i < testFileNames.length; i++) {
+      ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource(testFileNames[i])); 
+      assertNotNull(cdc);
+      ChartDocument cd = cdc.getChartDocument();
+      assertNotNull(cd);    
+
+      ChartElement plotElement = cd.getPlotElement();
+      if (i == 0) {
+        assertEquals(null, plotElement);
+      } else {
+        assertNotNull(plotElement);
+      }
+    }
+  }
 }

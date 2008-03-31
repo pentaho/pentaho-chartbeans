@@ -1,4 +1,5 @@
 <chart categorical="true" byrow="on">
-  <stylesheet/>
+	<stylesheet/>
+	<plot style="-x-pentaho-chart-orientation: horizontal"/>
   <junk/>
 </chart>

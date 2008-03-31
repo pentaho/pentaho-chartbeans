@@ -15,12 +15,17 @@
  */
 package org.pentaho.experimental.chart.core;
 
-import org.apache.commons.lang.BooleanUtils;
-import org.jfree.resourceloader.ResourceKey;
-import org.jfree.resourceloader.ResourceManager;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang.BooleanUtils;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.resourceloader.ResourceKey;
+import org.jfree.resourceloader.ResourceManager;
+import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
+import org.pentaho.experimental.chart.css.styles.ChartOrientationStyle;
+import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
+import org.pentaho.reporting.libraries.css.model.StyleKey;
+import org.pentaho.reporting.libraries.css.values.CSSValue;
 
 /**
  * This is the object that contains the root element of the parsed chart defintion
@@ -163,6 +168,29 @@ public class ChartDocument {
   public List getSeriesChartElements() {
     return getChartLevelElements(ChartElement.TAG_NAME_SERIES);
   }
+  
+  /**
+   * 
+   * @param tagName
+   * @return
+   */
+  private ChartElement getChartLevelElement(String tagName) {
+    ChartElement returnValue = null;
+
+    if (rootElement != null && ChartElement.TAG_NAME_CHART.equals(rootElement.getTagName())) {
+      ChartElement element = rootElement.getFirstChildItem();  
+      
+      while (element != null) {
+        if (tagName.equals(element.getTagName())) {
+          returnValue = element;
+          break;
+        }
+        element = element.getNextItem();
+      }
+    }    
+    
+    return returnValue;
+  }
 
   /**
    * Creates a list of all the <code>series</code> ChartElements that are the children of the <code>chart</code> tag.
@@ -188,4 +216,14 @@ public class ChartDocument {
     }
     return elements;
   }
+  
+  /**
+   * Provides the plot orientation for the given chart document.
+   * @return PlotOrientation  Returns the plot orientation for the given chart document.
+   */
+  public ChartElement getPlotElement(){
+    ChartElement plotElement = getChartLevelElement(ChartElement.TAG_NAME_PLOT);
+    return plotElement;
+  }
+  
 }
