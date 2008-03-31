@@ -28,7 +28,7 @@ public class ChartOrientationReadHandler extends OneOfConstantsReadHandler {
   
   public ChartOrientationReadHandler() {
     super(false);
-    addValue(ChartOrientationStyle.VERICAL);
+    addValue(ChartOrientationStyle.VERTICAL);
     addValue(ChartOrientationStyle.HORIZONTAL);
   }
 }

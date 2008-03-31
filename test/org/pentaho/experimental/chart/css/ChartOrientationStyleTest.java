@@ -29,10 +29,10 @@ public class ChartOrientationStyleTest extends TestCase {
     assertNotNull(element);
 
     CSSConstant[] passValues = new CSSConstant[]{ 
-        ChartOrientationStyle.VERICAL,
+        ChartOrientationStyle.VERTICAL,
         ChartOrientationStyle.HORIZONTAL,
-        ChartOrientationStyle.VERICAL,
-        ChartOrientationStyle.VERICAL
+        ChartOrientationStyle.VERTICAL,
+        ChartOrientationStyle.VERTICAL
     };
     
     int counter = 0;

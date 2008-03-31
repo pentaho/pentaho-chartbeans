@@ -23,6 +23,6 @@ import org.pentaho.reporting.libraries.css.values.CSSConstant;
  * @author Ravi Hasija
  */
 public class ChartOrientationStyle {
-  public static final CSSConstant VERICAL = new CSSConstant("vertical"); //$NON-NLS-1$
+  public static final CSSConstant VERTICAL = new CSSConstant("vertical"); //$NON-NLS-1$
   public static final CSSConstant HORIZONTAL = new CSSConstant("horizontal"); //$NON-NLS-1$  
 }

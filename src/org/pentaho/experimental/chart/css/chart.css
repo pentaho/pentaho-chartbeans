@@ -20,6 +20,7 @@ title {
 }
 
 plot {
+	-x-pentaho-chart-orientation: vertical;
 }
 
 axis {
@@ -31,7 +32,6 @@ axis {
 series {
   -x-pentaho-chart-series-type: bar;
   -x-pentaho-chart-line-style: solid;
-  -x-pentaho-chart-orientation: vertical;
   -x-pentaho-chart-bar-style: bar;
   -x-pentaho-chart-bar-max-width: 50%;
   -x-pentaho-chart-drill-url: none;
