@@ -37,8 +37,9 @@ public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable
     boolean urls = JFreeChartUtils.getShowUrls(chartDocument);
     JFreeChart chart = ChartFactory.createBarChart(title, valueCategoryLabel, valueAxisLabel, null, orientation, legend, toolTips, urls);
 
+    JFreeChartUtils.setPlotAttributes(chart.getCategoryPlot(), chartDocument, data);
+
     chart.getCategoryPlot().setDataset(JFreeChartUtils.createCategoryDataset(data));
-    JFreeChartUtils.setSeriesColor(chart, chartDocument, data);
     outHandler.setChart(chart);
     outHandler.persist();
   }

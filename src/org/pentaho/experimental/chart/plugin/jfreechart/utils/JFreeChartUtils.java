@@ -19,7 +19,7 @@ package org.pentaho.experimental.chart.plugin.jfreechart.utils;
 
 import java.awt.Color;
 
-import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.pentaho.experimental.chart.core.ChartDocument;
@@ -48,7 +48,7 @@ public class JFreeChartUtils {
     return dataset;
   }
 
-  public static void setSeriesColor(JFreeChart chart, ChartDocument chartDocument, ChartTableModel data) {
+  public static void setSeriesColor(CategoryPlot categoryPlot, ChartDocument chartDocument, ChartTableModel data) {
     StyleKey colorKey = StyleKeyRegistry.getRegistry().createKey("color", false, true, StyleKey.All_ELEMENTS);
     ChartElement[] seriesElements = chartDocument.getRootElement().findChildrenByName("series");
     for (int i=0; i<seriesElements.length; i++) {
@@ -67,7 +67,7 @@ public class JFreeChartUtils {
       }
       Color color = (Color) seriesElement.getLayoutStyle().getValue(colorKey);
       if (color != null) {
-        chart.getCategoryPlot().getRenderer(0).setSeriesPaint(column, color);
+        categoryPlot.getRenderer(0).setSeriesPaint(column, color);
       }    
     }
   }
@@ -91,7 +91,7 @@ public class JFreeChartUtils {
    */
   public static PlotOrientation getPlotOrientation(ChartDocument chartDocument) {
     // TODO determine this from the chartDocument
-    return PlotOrientation.VERTICAL;
+    return PlotOrientation.HORIZONTAL;
   }
 
   /**
@@ -125,8 +125,11 @@ public class JFreeChartUtils {
    * @return
    */
   public static String getTitle(ChartDocument chartDocument) {
-    // TODO determine this from the chartDocument
-    return "Chart Title";
+    ChartElement[] children = chartDocument.getRootElement().findChildrenByName("title");
+    if (children != null && children.length > 0) {
+      return children[0].getText();
+    }
+    return null;
   }
 
   /**
@@ -141,8 +144,28 @@ public class JFreeChartUtils {
    * @return
    */
   public static String getValueAxisLabel(ChartDocument chartDocument) {
-    // TODO determine this from the chartDocument
-    return "Axis Label";
+ // TODO determine this from the chartDocument
+    return "Value Axis Label";
+  }
+
+  /**
+   * @param categoryPlot
+   * @param chartDocument
+   * @param data
+   */
+  public static void setPlotAttributes(CategoryPlot categoryPlot, ChartDocument chartDocument, ChartTableModel data) {
+    // TODO set other stuff beside the series stuff
+    setSeriesAttributes(categoryPlot, chartDocument, data);
+  }
+
+  /**
+   * @param chart
+   * @param chartDocument
+   * @param data
+   */
+  public static void setSeriesAttributes(CategoryPlot categoryPlot, ChartDocument chartDocument, ChartTableModel data) {
+    // TODO set other stuff about the series.
+    setSeriesColor(categoryPlot, chartDocument, data);
   }
 
 }
