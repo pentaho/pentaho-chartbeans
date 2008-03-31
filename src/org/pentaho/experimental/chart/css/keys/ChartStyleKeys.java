@@ -59,7 +59,7 @@ public class ChartStyleKeys {
    * The Drill-Through URL
    */
   public static final StyleKey DRILL_URL = StyleKeyRegistry.getRegistry().
-      createKey("-x-pentaho-chart-drill-url", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+      createKey("-x-pentaho-chart-drill-url-template", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
 
   /**
    * The axis type dimention (auto, range, domain)

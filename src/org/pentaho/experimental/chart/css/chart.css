@@ -21,6 +21,7 @@ title {
 
 plot {
 	-x-pentaho-chart-orientation: vertical;
+  -x-pentaho-chart-drill-url-template: none;	
 }
 
 axis {
@@ -34,7 +35,7 @@ series {
   -x-pentaho-chart-line-style: solid;
   -x-pentaho-chart-bar-style: bar;
   -x-pentaho-chart-bar-max-width: 50%;
-  -x-pentaho-chart-drill-url: none;
+  -x-pentaho-chart-drill-url-template: none;
   -x-pentaho-chart-label-text: '{0}';
   -x-pentaho-chart-gradient-type: none;  
   -x-pentaho-chart-gradient-color: black, white;  

@@ -12,7 +12,7 @@
   -x-pentaho-chart-line-style: solid;
   -x-pentaho-chart-bar-style: bar;
   -x-pentaho-chart-bar-max-width: 50%;
-  -x-pentaho-chart-drill-url: none;
+  -x-pentaho-chart-drill-url-template: none;
   -x-pentaho-chart-axis-type-dimension: auto;
   -x-pentaho-chart-axis-type-position: primary;
   -x-pentaho-chart-axis-type-order: 1;

@@ -13,7 +13,7 @@ import org.pentaho.reporting.libraries.css.values.CSSStringValue;
 import org.pentaho.reporting.libraries.css.values.CSSValue;
 
 /**
- * Tests the -x-pentaho-chart-drill-url style
+ * Tests the -x-pentaho-chart-drill-url-template style
  */
 public class DrillUrlStyleTest extends TestCase {
   protected void setUp() throws Exception {
