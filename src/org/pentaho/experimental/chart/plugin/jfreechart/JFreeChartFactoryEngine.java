@@ -22,11 +22,17 @@ public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable
     return this;
   }
 
+  /* (non-Javadoc)
+   * @see org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine#makeAreaChart(org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.api.IOutput)
+   */
   public void makeAreaChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler) {
     // TODO Auto-generated method stub
 
   }
 
+  /* (non-Javadoc)
+   * @see org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine#makeBarChart(org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.api.IOutput)
+   */
   public void makeBarChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler) throws Exception {
     String title = JFreeChartUtils.getTitle(chartDocument);
     String valueCategoryLabel = JFreeChartUtils.getValueCategoryLabel(chartDocument);
@@ -45,46 +51,79 @@ public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable
   }
 
 
+  /* (non-Javadoc)
+   * @see org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine#makeBarLineChart(org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.api.IOutput)
+   */
   public void makeBarLineChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler) {
 
   }
 
+  /* (non-Javadoc)
+   * @see org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine#makeBubbleChart(org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.api.IOutput)
+   */
   public void makeBubbleChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler) {
 
   }
 
+  /* (non-Javadoc)
+   * @see org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine#makeDialChart(org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.api.IOutput)
+   */
   public void makeDialChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler) {
 
   }
 
+  /* (non-Javadoc)
+   * @see org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine#makeDifferenceChart(org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.api.IOutput)
+   */
   public void makeDifferenceChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler) {
 
   }
 
+  /* (non-Javadoc)
+   * @see org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine#makeLineChart(org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.api.IOutput)
+   */
   public void makeLineChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler) {
 
   }
 
+  /* (non-Javadoc)
+   * @see org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine#makeMultiPieChart(org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.api.IOutput)
+   */
   public void makeMultiPieChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler) {
 
   }
 
+  /* (non-Javadoc)
+   * @see org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine#makePieChart(org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.api.IOutput)
+   */
   public void makePieChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler) {
 
   }
 
+  /* (non-Javadoc)
+   * @see org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine#makeScatterPlotChart(org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.api.IOutput)
+   */
   public void makeScatterPlotChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler) {
 
   }
 
+  /* (non-Javadoc)
+   * @see org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine#makeStepAreaChart(org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.api.IOutput)
+   */
   public void makeStepAreaChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler) {
 
   }
 
+  /* (non-Javadoc)
+   * @see org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine#makeStepChart(org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.api.IOutput)
+   */
   public void makeStepChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler) {
 
   }
 
+  /* (non-Javadoc)
+   * @see org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine#makeWaterfallChart(org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.api.IOutput)
+   */
   public void makeWaterfallChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler) {
 
   }

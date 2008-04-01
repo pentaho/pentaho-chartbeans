@@ -26,17 +26,25 @@ import org.pentaho.reporting.libraries.base.config.Configuration;
 /**
  * @author wseyler
  *
+ * This is a factory class that returns the desired implementation of IChartPlugin based either
+ * on the chart.properties document or on the requested class.
  */
 public class ChartPluginFactory  {
   private static final Log logger = LogFactory.getLog(ChartPluginFactory.class);
   static IChartPlugin chartPlugin = null;
   
+  /**
+   * Creates an instance of the IChartPlugin as defined in the chart.properties document if one
+   * doesn't already exist.  If one exists it will return that one.
+   * 
+   * @return an implementation of the IChartPlugin
+   */
   public static synchronized IChartPlugin getChartPlugin() {
     Configuration config = ChartBoot.getInstance().loadConfiguration();
     String className = config.getConfigProperty("IChartPlugin"); //$NON-NLS-1$
-    Class pluginClass = null;
+    Class<IChartPlugin> pluginClass = null;
     try {
-      pluginClass = Class.forName(className);
+      pluginClass = (Class<IChartPlugin>) Class.forName(className);
     } catch (ClassNotFoundException e) {
       logger.error(e);
     }
@@ -47,6 +55,9 @@ public class ChartPluginFactory  {
   }
 
   /**
+   * Returns an instance of the IChartPlugin from the className.  Logs errors and
+   * returns null if the class couldn't be created.
+   * 
    * @param className
    * @return
    */
@@ -63,16 +74,32 @@ public class ChartPluginFactory  {
     return null;
   }
   
+  /**
+   * Creates an new instance of IOutput as defined in the chart.properties document.
+   * 
+   * @return an implementation of IOutput
+   */
   public static IOutput getChartOutput() {
     Configuration config = ChartBoot.getInstance().loadConfiguration();
-    String className = config.getConfigProperty("IOutput");
+    String className = config.getConfigProperty("IOutput"); //$NON-NLS-1$
+    return getChartOutput(className);
+  }
+
+  /**
+   * Creates an new instance of IOutput as defined by the classname parameter.  Logs 
+   * any errors and returns null of class couldn't be created.
+   * 
+   * @param className
+   * @return an implementation of IOutput
+   */
+  public static IOutput getChartOutput(String className) {
     try {
-      return  (IOutput) Class.forName(className).newInstance();
+      return (IOutput) Class.forName(className).newInstance();
+    } catch (ClassNotFoundException e) {
+      logger.error(e);
     } catch (InstantiationException e) {
       logger.error(e);
     } catch (IllegalAccessException e) {
-      logger.error(e);
-    } catch (ClassNotFoundException e) {
       logger.error(e);
     }
     return null;

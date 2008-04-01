@@ -122,10 +122,16 @@ public class JFreeChartOutput implements IOutput {
     this.filename = filename;
   }
   
+  /* (non-Javadoc)
+   * @see org.pentaho.experimental.chart.plugin.api.IOutput#getFilename()
+   */
   public String getFilename() {
     return filename;
   }
 
+  /* (non-Javadoc)
+   * @see org.pentaho.experimental.chart.plugin.api.IOutput#setOutputStream(java.io.OutputStream)
+   */
   public void setOutputStream(OutputStream outputStream) {
     this.outputStream = outputStream;
   }

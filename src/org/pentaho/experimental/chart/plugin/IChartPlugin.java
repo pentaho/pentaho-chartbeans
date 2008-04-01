@@ -33,8 +33,24 @@ public interface IChartPlugin {
   public static final int ERROR_DUPLICATE_SINGLETON = 4;    // One item was expected but more than one was found
   public static final int ERROR_INDETERMINATE_CHART_TYPE = 5; // Couldn't figure out the chart type
 
+  /**
+   * Validates the current chart document.  AbstractChartPlugin implements the validations that are
+   * NOT plugin specific.  The plugin should override and call the super before doing it's validation
+   * 
+   * @param chartDocument
+   * @return
+   */
   public ChartResult validateChartDocument(ChartDocument chartDocument);
 
+  /**
+   * Renders the chart based on the chartDocument and data.  Chart can be accessed via the output parameter
+   * which gets completed during the rendering of the chart
+   * 
+   * @param chartDocument
+   * @param data
+   * @param output
+   * @return
+   */
   public ChartResult renderChartDocument(ChartDocument chartDocument, ChartTableModel data, IOutput output);
 
   public void setChartCallback(IChartCallback callback);

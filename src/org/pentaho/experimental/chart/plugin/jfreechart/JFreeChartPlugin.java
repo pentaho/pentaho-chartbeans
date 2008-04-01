@@ -39,6 +39,11 @@ public class JFreeChartPlugin extends AbstractChartPlugin {
 
   ChartTypes currentChartType = ChartTypes.UNDETERMINED;
 
+  /* (non-Javadoc)
+   * @see org.pentaho.experimental.chart.plugin.AbstractChartPlugin#renderChartDocument(org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.plugin.api.IOutput)
+   * 
+   * This method determines what type of chart to render and then calls the correct method in the ChartFactoryEngine.
+   */
   public ChartResult renderChartDocument(ChartDocument chartDocument, ChartTableModel data, IOutput output) {
     ChartResult chartResult = super.renderChartDocument(chartDocument, data, output);
 
@@ -71,10 +76,20 @@ public class JFreeChartPlugin extends AbstractChartPlugin {
     return chartResult;
   }
 
+  /* (non-Javadoc)
+   * @see org.pentaho.experimental.chart.plugin.AbstractChartPlugin#validateChartDocument(org.pentaho.experimental.chart.core.ChartDocument)
+   */
   public ChartResult validateChartDocument(ChartDocument chartDocument) {
     return super.validateChartDocument(chartDocument);
   }
 
+  /**
+   * This method uses the chartDocument to determine what type of chart that should be rendered.  It is possible that this method
+   * could somehow be moved up into the AbstractChartPlugin
+   * 
+   * @param chartDocument
+   * @return a ChartType that represents the type of chart the chartDocument is requesting.
+   */
   public ChartTypes determineChartType(ChartDocument chartDocument) {
     ChartElement[] elements = chartDocument.getRootElement().findChildrenByName("series");
     for (ChartElement element : elements) {

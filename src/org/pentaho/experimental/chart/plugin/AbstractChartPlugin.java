@@ -22,9 +22,13 @@ import org.pentaho.experimental.chart.core.ChartElement;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.api.ChartResult;
 import org.pentaho.experimental.chart.plugin.api.IOutput;
+import org.pentaho.util.messages.Messages;
 
 /**
  * @author wseyler
+ * 
+ * This class is a Abstract implementation of the IChartPlugin.  As such it contains implementations
+ * that should be common across all chart plugin implementations.
  */
 public abstract class AbstractChartPlugin implements IChartPlugin {
   protected IChartCallback callback = null;
@@ -41,32 +45,26 @@ public abstract class AbstractChartPlugin implements IChartPlugin {
    * @see org.pentaho.experimental.chart.plugin.IChartPlugin#validateChartDocument(org.pentaho.experimental.chart.core.ChartDocument)
    */
   public ChartResult validateChartDocument(ChartDocument chartDocument) {
-//    
-//    // Validate the plot
-//    ChartElement[] plotElement = chartDocument.getRootElement().findChildrenByName("plot");
-//    if (plotElement == null || plotElement.length < 1) {
-//      return new ChartResult(ERROR_MISSING_REQUIRED_DATA, "plot", "Missing the plot element");
-//    }
-//    
-//    // Validate the axis
-//    ChartElement[] axisElement = chartDocument.getRootElement().findChildrenByName("axis");
-//    if (axisElement == null || axisElement.length < 1) {
-//      return new ChartResult(ERROR_MISSING_REQUIRED_DATA, "axis", "Missing the axis element");
-//    }
 
     // Validate the series
-    ChartElement[] seriesElement = chartDocument.getRootElement().findChildrenByName("series");
+    ChartElement[] seriesElement = chartDocument.getRootElement().findChildrenByName("series"); //$NON-NLS-1$
     if (seriesElement == null || seriesElement.length < 1) {
-      return new ChartResult(ERROR_MISSING_REQUIRED_DATA, "chart-series", "Missing the series element");
+      return new ChartResult(ERROR_MISSING_REQUIRED_DATA, Messages.getErrorString("AbstractChartPlugin.ERROR_0001_NO_ELEMENT", "series"));  //$NON-NLS-1$//$NON-NLS-2$
     }
 
     return new ChartResult();
   }
 
+  /* (non-Javadoc)
+   * @see org.pentaho.experimental.chart.plugin.IChartPlugin#setChartCallback(org.pentaho.experimental.chart.plugin.IChartCallback)
+   */
   public void setChartCallback(IChartCallback callback) {
     this.callback = callback;
   }
 
+  /* (non-Javadoc)
+   * @see org.pentaho.experimental.chart.plugin.IChartPlugin#getChartCallback()
+   */
   public IChartCallback getChartCallback() {
     return callback;
   }

@@ -4,6 +4,12 @@ import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.api.IOutput;
 
+/**
+ * @author wseyler
+ * 
+ * This class contains all the possible charts that can be created by an implementing plugin.
+ */
+
 public interface ChartFactoryEngine {
 
   public ChartFactoryEngine getInstance();

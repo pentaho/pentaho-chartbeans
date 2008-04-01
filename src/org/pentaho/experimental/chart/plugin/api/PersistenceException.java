@@ -1,5 +1,10 @@
 package org.pentaho.experimental.chart.plugin.api;
 
+/**
+ * @author wseyler
+ * 
+ * Defines a Persistence Exception to be used by IOutput
+ */
 public class PersistenceException extends Exception {
 
   private static final long serialVersionUID = -5922555902251829661L;

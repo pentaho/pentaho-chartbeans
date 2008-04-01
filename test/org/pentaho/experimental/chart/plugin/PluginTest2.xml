@@ -2,7 +2,7 @@
 
   <stylesheet>
     .bar1 {
-    color: yellow;
+    color: blue;
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
     -x-pentaho-chart-categorical: true;
@@ -26,10 +26,13 @@
     }
   </stylesheet>
 
+  <title>My Test Chart Name</title>
+  
   <series name="budget" class="bar1" column-pos="2"/>
 
   <series name="sales" class="bar2" column-name="sales"/>
 
   <series name="forecast" class="bar3" column-pos="0"/>
 
+  <plot style="-x-pentaho-chart-orientation: horizontal"/>
 </chart>
