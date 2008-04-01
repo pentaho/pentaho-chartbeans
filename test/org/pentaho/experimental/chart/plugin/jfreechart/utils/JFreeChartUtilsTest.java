@@ -99,6 +99,8 @@ public class JFreeChartUtilsTest extends TestCase {
   public void testGradientPaint() throws ResourceException {
     
     GradientPaint[] expectedValues = new GradientPaint[] {
+      null,
+      new GradientPaint(0,0, Color.black, 1,1, Color.white),
       new GradientPaint(0.5f,99.90f, Color.black, 1,1, Color.white),  
       new GradientPaint(1f,2f, Color.black, 1,1, Color.white),  
       new GradientPaint(0,0, Color.black, 1.5f,8.5f, Color.white),  
@@ -131,19 +133,22 @@ public class JFreeChartUtilsTest extends TestCase {
       assertNotNull(cd);
       
       List seriesList = cd.getSeriesChartElements();
-      if (seriesList.size() == 0) {
-        System.out.println("No series element found."); //$NON-NLS-1$
-        continue;
+      if (seriesList.size() == 0) {        
+        fail("The Series list should never be empty."); //$NON-NLS-1$       
       }
       
-      for (int j = 0; j < seriesList.size(); j++) {
-        ChartElement currElement = (ChartElement)seriesList.get(j);
+      for (int seriesCounter = 0; seriesCounter < seriesList.size(); seriesCounter++) {
+        ChartElement currElement = (ChartElement)seriesList.get(seriesCounter);
         GradientPaint gotGradientPaint = JFreeChartUtils.getGradientPaint(currElement);
-        assertNotNull(gotGradientPaint);
-        assertEquals("Counter# "+j+" Color#1:", expectedValues[j].getColor1(), gotGradientPaint.getColor1()); //$NON-NLS-1$//$NON-NLS-2$
-        assertEquals("Counter# "+j+" Color#2:", expectedValues[j].getColor2(), gotGradientPaint.getColor2()); //$NON-NLS-1$//$NON-NLS-2$
-        assertEquals("Counter# "+j+" Pos#1:", gotGradientPaint.getPoint1(), expectedValues[j].getPoint1()); //$NON-NLS-1$//$NON-NLS-2$
-        assertEquals("Counter# "+j+" Pos#2:", gotGradientPaint.getPoint2(), expectedValues[j].getPoint2()); //$NON-NLS-1$//$NON-NLS-2$
+        if (seriesCounter==0) {
+          assertNull(gotGradientPaint);
+        } else {
+          assertNotNull(gotGradientPaint);
+          assertEquals("Counter# "+seriesCounter+" Color#1:", expectedValues[seriesCounter].getColor1(), gotGradientPaint.getColor1()); //$NON-NLS-1$//$NON-NLS-2$
+          assertEquals("Counter# "+seriesCounter+" Color#2:", expectedValues[seriesCounter].getColor2(), gotGradientPaint.getColor2()); //$NON-NLS-1$//$NON-NLS-2$
+          assertEquals("Counter# "+seriesCounter+" Pos#1:", gotGradientPaint.getPoint1(), expectedValues[seriesCounter].getPoint1()); //$NON-NLS-1$//$NON-NLS-2$
+          assertEquals("Counter# "+seriesCounter+" Pos#2:", gotGradientPaint.getPoint2(), expectedValues[seriesCounter].getPoint2()); //$NON-NLS-1$//$NON-NLS-2$
+        }
       }
     }
   }

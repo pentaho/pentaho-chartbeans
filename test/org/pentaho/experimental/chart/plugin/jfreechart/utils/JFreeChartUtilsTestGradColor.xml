@@ -2,6 +2,8 @@
 	<stylesheet/>
 	<plot style="-x-pentaho-chart-orientation: horizontal; -x-pentaho-chart-drill-url-template: url(DrillUrlTest.xml)"/>
   <junk/>
+  <series/>
+  <series style="-x-pentaho-chart-gradient-type: points;"/>
 	<series style="-x-pentaho-chart-gradient-type: points; -x-pentaho-chart-gradient-start: 0.5, 99.90"/> 
 	<series style="-x-pentaho-chart-gradient-type: points; -x-pentaho-chart-gradient-start: 1, 2"/> 
 	<series style="-x-pentaho-chart-gradient-type: points; -x-pentaho-chart-gradient-end: 1.5, 8.5"/> 
