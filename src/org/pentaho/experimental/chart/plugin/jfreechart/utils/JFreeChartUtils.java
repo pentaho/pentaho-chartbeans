@@ -52,35 +52,40 @@ public class JFreeChartUtils {
     return dataset;
   }
 
-  public static void setSeriesColor(CategoryPlot categoryPlot, ChartDocument chartDocument, ChartTableModel data) {
+  public static void setSeriesPaint(CategoryPlot categoryPlot, ChartDocument chartDocument, ChartTableModel data) {
     StyleKey colorKey = StyleKeyRegistry.getRegistry().createKey("color", false, true, StyleKey.All_ELEMENTS);
     ChartElement[] seriesElements = chartDocument.getRootElement().findChildrenByName("series");
     for (int i=0; i<seriesElements.length; i++) {
       ChartElement seriesElement = seriesElements[i];
-      Object positionAttr = seriesElement.getAttribute("column-pos");
-      int column = 0;
-      if (positionAttr != null) {
-        column = Integer.parseInt(positionAttr.toString());
-      } else {
-        positionAttr = seriesElement.getAttribute("column-name");
-        if (positionAttr != null) {
-          column = lookupPosition(data, positionAttr.toString());
-        } else {
-          column = i;
-        }
-      }
+      int column = getSeriesColumn(seriesElement, data, i);
       Color color = (Color) seriesElement.getLayoutStyle().getValue(colorKey);
       if (color != null) {
         categoryPlot.getRenderer(0).setSeriesPaint(column, color);
       }    
     }
   }
+  
+  private static int getSeriesColumn(ChartElement seriesElement, ChartTableModel data, int columnDefault) {
+    Object positionAttr = seriesElement.getAttribute("column-pos");
+    int column = 0;
+    if (positionAttr != null) {
+      column = Integer.parseInt(positionAttr.toString());
+    } else {
+      positionAttr = seriesElement.getAttribute("column-name");
+      if (positionAttr != null) {
+        column = lookupPosition(data, positionAttr.toString());
+      } else {
+        column = columnDefault;
+      }
+    }
+    return column;
+  }
 
   /**
    * @param string
    * @return
    */
-  public static int lookupPosition(ChartTableModel data, String columnName) {
+  private static int lookupPosition(ChartTableModel data, String columnName) {
     for (int i=0; i<data.getColumnCount(); i++) {
       if (data.getColumnName(i).equalsIgnoreCase(columnName)) {
         return i;
@@ -88,25 +93,29 @@ public class JFreeChartUtils {
     }
     return -1;
   }
-
-  /** 
-   * Gets the plot orientation from the chart document
-   * @param chartDocument The chart document definition
-   * @return PlotOrientation The plot orientation i.e. vertical or horizontal
+  
+  /**
+   * @param chartDocument
+   * @return
    */
   public static PlotOrientation getPlotOrientation(ChartDocument chartDocument) {
-    CSSValue value = chartDocument.getPlotOrientation();
     PlotOrientation plotOrient = null;
+    ChartElement plotElement   = chartDocument.getPlotElement();
     
-    if (value != null) {
-      String orientatValue = value.toString();
+    if (plotElement != null) {
+      LayoutStyle layoutStyle  = plotElement.getLayoutStyle();
+      CSSValue value = layoutStyle.getValue(ChartStyleKeys.ORIENTATION);
       
-      if (orientatValue.equalsIgnoreCase(ChartOrientationStyle.VERTICAL.getCSSText())) {
-        plotOrient = PlotOrientation.VERTICAL;
-      } else if (orientatValue.equalsIgnoreCase(ChartOrientationStyle.HORIZONTAL.getCSSText())) {
-        plotOrient = PlotOrientation.HORIZONTAL;
-      }      
-    }    
+      if (value != null) {
+        String orientatValue = value.toString();
+        
+        if (orientatValue.equalsIgnoreCase(ChartOrientationStyle.VERTICAL.getCSSText())) {
+          plotOrient = PlotOrientation.VERTICAL;
+        } else if (orientatValue.equalsIgnoreCase(ChartOrientationStyle.HORIZONTAL.getCSSText())) {
+          plotOrient = PlotOrientation.HORIZONTAL;
+        }      
+      }
+    }
     return plotOrient;
   }
 
@@ -119,7 +128,7 @@ public class JFreeChartUtils {
     return true;
   }
 
-  /** 
+  /**
    * If the chart URL template is defined in the plot tag with url value, then return true. False otherwise.
    * @param chartDocument
    * @return true if chart url templates are defined in the plot tag with url value.
@@ -192,7 +201,7 @@ public class JFreeChartUtils {
    */
   public static void setSeriesAttributes(CategoryPlot categoryPlot, ChartDocument chartDocument, ChartTableModel data) {
     // TODO set other stuff about the series.
-    setSeriesColor(categoryPlot, chartDocument, data);
+    setSeriesPaint(categoryPlot, chartDocument, data);
   }
 
 }
