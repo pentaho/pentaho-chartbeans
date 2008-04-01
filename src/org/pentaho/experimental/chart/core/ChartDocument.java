@@ -189,8 +189,7 @@ public class ChartDocument {
         }
         element = element.getNextItem();
       }
-    }    
-    
+    }        
     return returnValue;
   }
 
@@ -223,8 +222,21 @@ public class ChartDocument {
    * Provides the plot element in the given chart document. Returns null if not found.
    * @return PlotOrientation  Returns the plot orientation for the given chart document.
    */
-  public ChartElement getPlotElement(){
+  public ChartElement getPlotElement() {
+    return getChartLevelElement(ChartElement.TAG_NAME_PLOT);
+  }
+  
+  /**
+   * Provides the CSSValue for Plot Orientation eg: horizontal or vertical
+   * @return CSSValue Represents the value for Plot Orientation. 
+   */
+  public CSSValue getPlotOrientation(){
     ChartElement plotElement = getChartLevelElement(ChartElement.TAG_NAME_PLOT);
-    return plotElement;
+    CSSValue value = null;
+    
+    if (plotElement != null) {
+      value = plotElement.getStyle(ChartStyleKeys.ORIENTATION);
+    }    
+    return value;
   }  
 }

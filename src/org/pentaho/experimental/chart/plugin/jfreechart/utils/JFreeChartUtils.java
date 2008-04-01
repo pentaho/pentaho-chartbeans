@@ -95,22 +95,18 @@ public class JFreeChartUtils {
    * @return PlotOrientation The plot orientation i.e. vertical or horizontal
    */
   public static PlotOrientation getPlotOrientation(ChartDocument chartDocument) {
+    CSSValue value = chartDocument.getPlotOrientation();
     PlotOrientation plotOrient = null;
-    ChartElement plotElement   = chartDocument.getPlotElement();
     
-    if (plotElement != null) {
-      CSSValue value = plotElement.getStyle(ChartStyleKeys.ORIENTATION);
+    if (value != null) {
+      String orientatValue = value.toString();
       
-      if (value != null) {
-        String orientatValue = value.toString();
-        
-        if (orientatValue.equalsIgnoreCase(ChartOrientationStyle.VERTICAL.getCSSText())) {
-          plotOrient = PlotOrientation.VERTICAL;
-        } else if (orientatValue.equalsIgnoreCase(ChartOrientationStyle.HORIZONTAL.getCSSText())) {
-          plotOrient = PlotOrientation.HORIZONTAL;
-        }      
-      }
-    }
+      if (orientatValue.equalsIgnoreCase(ChartOrientationStyle.VERTICAL.getCSSText())) {
+        plotOrient = PlotOrientation.VERTICAL;
+      } else if (orientatValue.equalsIgnoreCase(ChartOrientationStyle.HORIZONTAL.getCSSText())) {
+        plotOrient = PlotOrientation.HORIZONTAL;
+      }      
+    }    
     return plotOrient;
   }
 
