@@ -17,7 +17,7 @@
 
 package org.pentaho.experimental.chart.plugin.jfreechart.utils;
 
-import java.awt.Color;
+import java.awt.Paint;
 
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
@@ -53,16 +53,26 @@ public class JFreeChartUtils {
   }
 
   public static void setSeriesPaint(CategoryPlot categoryPlot, ChartDocument chartDocument, ChartTableModel data) {
-    StyleKey colorKey = StyleKeyRegistry.getRegistry().createKey("color", false, true, StyleKey.All_ELEMENTS);
     ChartElement[] seriesElements = chartDocument.getRootElement().findChildrenByName("series");
     for (int i=0; i<seriesElements.length; i++) {
       ChartElement seriesElement = seriesElements[i];
-      int column = getSeriesColumn(seriesElement, data, i);
-      Color color = (Color) seriesElement.getLayoutStyle().getValue(colorKey);
-      if (color != null) {
-        categoryPlot.getRenderer(0).setSeriesPaint(column, color);
+      Paint paint = getPaintFromSeries(seriesElement);
+      if (paint != null) {
+        int column = getSeriesColumn(seriesElement, data, i);
+        categoryPlot.getRenderer(0).setSeriesPaint(column, paint);
       }    
     }
+  }
+  
+  private static Paint getPaintFromSeries(ChartElement seriesElement) {
+    String gradientType = seriesElement.getLayoutStyle().getValue(ChartStyleKeys.GRADIENT_TYPE).getCSSText();
+    Paint paint = null;
+    if (gradientType != null && !gradientType.equalsIgnoreCase("none")) {
+      
+    } else {
+      paint = (Paint) seriesElement.getLayoutStyle().getValue(ChartStyleKeys.CSS_COLOR);
+    }
+    return paint;
   }
   
   private static int getSeriesColumn(ChartElement seriesElement, ChartTableModel data, int columnDefault) {
