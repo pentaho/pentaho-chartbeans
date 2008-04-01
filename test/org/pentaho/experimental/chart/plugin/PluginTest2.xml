@@ -2,7 +2,7 @@
 
   <stylesheet>
     .bar1 {
-    color: blue;
+    -x-pentaho-chart-gradient: white, red POINTS 1,10 2,20;
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
     -x-pentaho-chart-categorical: true;
@@ -10,7 +10,7 @@
     }
 
     .bar2 {
-    color: orange;
+    -x-pentaho-chart-gradient: black, white POINTS 1,10 2,20;
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
     -x-pentaho-chart-categorical: true;
@@ -34,5 +34,5 @@
 
   <series name="forecast" class="bar3" column-pos="0"/>
 
-  <plot style="-x-pentaho-chart-orientation: horizontal"/>
+  <plot style="-x-pentaho-chart-orientation: vertical"/>
 </chart>

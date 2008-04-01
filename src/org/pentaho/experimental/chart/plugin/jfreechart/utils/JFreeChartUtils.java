@@ -96,7 +96,7 @@ public class JFreeChartUtils {
     String gradientType = seriesElement.getLayoutStyle().getValue(ChartStyleKeys.GRADIENT_TYPE).getCSSText();
     Paint paint = null;
     if (gradientType != null && !gradientType.equalsIgnoreCase("none")) {
-//      paint = getGradientPaint(seriesElement);
+      paint = getGradientPaint(seriesElement);
     } else {
       paint = (Paint) seriesElement.getLayoutStyle().getValue(ChartStyleKeys.CSS_COLOR);
     }
