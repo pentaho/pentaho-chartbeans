@@ -17,6 +17,8 @@
 
 package org.pentaho.experimental.chart.plugin.jfreechart.utils;
 
+import java.awt.Color;
+import java.awt.GradientPaint;
 import java.awt.Paint;
 
 import org.jfree.chart.plot.CategoryPlot;
@@ -25,17 +27,20 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
 import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
+import org.pentaho.experimental.chart.css.styles.ChartGradientType;
 import org.pentaho.experimental.chart.css.styles.ChartOrientationStyle;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
+import org.pentaho.reporting.libraries.css.values.CSSColorValue;
+import org.pentaho.reporting.libraries.css.values.CSSFunctionValue;
 import org.pentaho.reporting.libraries.css.values.CSSValue;
+import org.pentaho.reporting.libraries.css.values.CSSValuePair;
 
 /**
  * @author wseyler
  *
  */
 public class JFreeChartUtils {
-
   /**
    * This method iterates through the rows and columns to populate a DefaultCategoryDataset.
    * Since a CategoryDataset stores values based on a multikey hash we supply as the keys
@@ -106,20 +111,20 @@ public class JFreeChartUtils {
    * @return int value of the real column in the data.
    */
   private static int getSeriesColumn(ChartElement seriesElement, ChartTableModel data, int columnDefault) {
-    Object positionAttr = seriesElement.getAttribute("column-pos");
-    int column = 0;
-    if (positionAttr != null) {
-      column = Integer.parseInt(positionAttr.toString());
-    } else {
-      positionAttr = seriesElement.getAttribute("column-name");
+      Object positionAttr = seriesElement.getAttribute("column-pos");
+      int column = 0;
       if (positionAttr != null) {
-        column = lookupPosition(data, positionAttr.toString());
+        column = Integer.parseInt(positionAttr.toString());
       } else {
+        positionAttr = seriesElement.getAttribute("column-name");
+        if (positionAttr != null) {
+          column = lookupPosition(data, positionAttr.toString());
+        } else {
         column = columnDefault;
+        }
       }
-    }
     return column;
-  }
+      }    
 
   /**
    * @param columnName - Name of the column to look for
@@ -135,8 +140,8 @@ public class JFreeChartUtils {
     }
     return -1;
   }
-  
-  /**
+
+  /** 
    * @param chartDocument that contains a orientation on the Plot element
    * @return PlotOrientation.VERTICAL or .HORIZONTAL or Null if not defined.
    */
@@ -148,15 +153,15 @@ public class JFreeChartUtils {
       LayoutStyle layoutStyle  = plotElement.getLayoutStyle();
       CSSValue value = layoutStyle.getValue(ChartStyleKeys.ORIENTATION);
       
-      if (value != null) {
-        String orientatValue = value.toString();
-        
-        if (orientatValue.equalsIgnoreCase(ChartOrientationStyle.VERTICAL.getCSSText())) {
-          plotOrient = PlotOrientation.VERTICAL;
-        } else if (orientatValue.equalsIgnoreCase(ChartOrientationStyle.HORIZONTAL.getCSSText())) {
-          plotOrient = PlotOrientation.HORIZONTAL;
-        }      
-      }
+    if (value != null) {
+      String orientatValue = value.toString();
+      
+      if (orientatValue.equalsIgnoreCase(ChartOrientationStyle.VERTICAL.getCSSText())) {
+        plotOrient = PlotOrientation.VERTICAL;
+      } else if (orientatValue.equalsIgnoreCase(ChartOrientationStyle.HORIZONTAL.getCSSText())) {
+        plotOrient = PlotOrientation.HORIZONTAL;
+      }      
+    }    
     }
     return plotOrient;
   }
@@ -170,7 +175,7 @@ public class JFreeChartUtils {
     return true;
   }
 
-  /**
+  /** 
    * If the chart URL template is defined in the plot tag with url value, then return true. False otherwise.
    * @param chartDocument
    * @return true if chart url templates are defined in the plot tag with url value.
@@ -263,4 +268,81 @@ public class JFreeChartUtils {
     setSeriesPaint(categoryPlot, chartDocument, data);
   }
 
+  /**
+   * Creates a GradientPaint object from the current chart element using 
+   * the gradient pertinent information.
+   * If the required information from the chart element was not available then returns a null.
+   * @param ce  The ChartElement to be used to create the GradientPaint object.
+   * @return GradientPaint Returns the newly created GradientPaint object. 
+   */
+  public static GradientPaint getGradientPaint(ChartElement ce) {
+    GradientPaint gradPaint = null;
+    LayoutStyle layoutStyle = ce.getLayoutStyle();
+    
+    if (layoutStyle != null) {
+      CSSValue gradType = layoutStyle.getValue(ChartStyleKeys.GRADIENT_TYPE);
+      
+      if (gradType.getCSSText().equalsIgnoreCase((ChartGradientType.POINTS).getCSSText())) {
+        CSSValuePair gradStart = (CSSValuePair) layoutStyle.getValue(ChartStyleKeys.GRADIENT_START);
+        CSSValuePair gradEnd = (CSSValuePair) layoutStyle.getValue(ChartStyleKeys.GRADIENT_END);
+        
+        float x1 = Float.valueOf(gradStart.getFirstValue().getCSSText()).floatValue();
+        float y1 = Float.valueOf(gradStart.getSecondValue().getCSSText()).floatValue();
+        float x2 = Float.valueOf(gradEnd.getFirstValue().getCSSText()).floatValue();
+        float y2 = Float.valueOf(gradEnd.getSecondValue().getCSSText()).floatValue();
+        
+        Color[] gradColors = getGradientColors(ce);
+        
+        gradPaint = new GradientPaint(x1, y1, gradColors[0], x2, y2, gradColors[1]);
+      } 
+      // TODO:Need to write the code for if it's not points or none
+    }
+    return gradPaint;
+  }  
+  
+  /**
+   * Returns an array that contains two colors; color1 and color2 for the gradient 
+   * @param element Current series element.
+   * @return Color[] Contains 2 elements: color1 and color2 for the GradientPaint class.
+   */
+  private static Color[] getGradientColors(ChartElement element) {
+    Color[] gradientColor = null;
+    LayoutStyle layoutStyle = element.getLayoutStyle();
+    
+    if (layoutStyle != null) {
+      CSSValuePair valuePair = (CSSValuePair)layoutStyle.getValue(ChartStyleKeys.GRADIENT_COLOR);
+      CSSValue colorValue1 = valuePair.getFirstValue();
+      CSSValue colorValue2 = valuePair.getSecondValue();
+      Color color1 = getColorFromCSSValue(colorValue1);
+      Color color2 = getColorFromCSSValue(colorValue2);
+      
+      gradientColor = new Color[] { color1, color2 };
+    }
+    
+    return gradientColor;
+  }
+  
+  /**
+   * Retrieves the color information from the CSSValue parameter, creates a Color object and returns the same.
+   * @param value   CSSValue that has the color information.
+   * @return Color  Returns a Color object created from the color information in the value parameter
+   *                If the CSSValue does not contain any color information then returns a null.
+   */
+  private static Color getColorFromCSSValue(CSSValue value) {
+    Color gradientColor = null;
+    
+    if (value instanceof CSSFunctionValue) {
+      CSSFunctionValue func1 = (CSSFunctionValue)value;
+      CSSValue[] rgbArr = func1.getParameters();
+      int red   = Integer.valueOf(rgbArr[0].toString()).intValue();
+      int green = Integer.valueOf(rgbArr[1].toString()).intValue();
+      int blue  = Integer.valueOf(rgbArr[2].toString()).intValue();
+      gradientColor = new Color(red, green, blue);
+    } else if (value instanceof CSSColorValue) {
+      CSSColorValue colorValue = (CSSColorValue)value;
+      gradientColor = new Color(colorValue.getRed(), colorValue.getGreen(), colorValue.getBlue());
+    }
+
+    return gradientColor;
+  }
 }
