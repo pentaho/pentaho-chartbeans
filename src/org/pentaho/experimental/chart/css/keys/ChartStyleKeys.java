@@ -109,5 +109,10 @@ public class ChartStyleKeys {
   public static final StyleKey GRADIENT_END = StyleKeyRegistry.getRegistry().
       createKey("-x-pentaho-chart-gradient-end", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
   
+  /**
+   * A css color
+   */
+  public static final StyleKey CSS_COLOR = StyleKeyRegistry.getRegistry().
+      createKey("color", false, true, StyleKey.All_ELEMENTS);
 }
 

@@ -28,8 +28,6 @@ import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
 import org.pentaho.experimental.chart.css.styles.ChartOrientationStyle;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
-import org.pentaho.reporting.libraries.css.model.StyleKey;
-import org.pentaho.reporting.libraries.css.model.StyleKeyRegistry;
 import org.pentaho.reporting.libraries.css.values.CSSValue;
 
 /**
@@ -37,8 +35,16 @@ import org.pentaho.reporting.libraries.css.values.CSSValue;
  *
  */
 public class JFreeChartUtils {
+
   /**
-   * @return
+   * This method iterates through the rows and columns to populate a DefaultCategoryDataset.
+   * Since a CategoryDataset stores values based on a multikey hash we supply as the keys
+   * either the metadata column name or the column number and the metadata row name or row number
+   * as the keys.
+   *
+   * @param data - ChartTablemodel that represents the data that will be charted
+   * @return DefaultCategoryDataset that can be used as a source for JFreeChart
+   * 
    */
   public static DefaultCategoryDataset createCategoryDataset(ChartTableModel data) {
     DefaultCategoryDataset dataset = new DefaultCategoryDataset();
@@ -52,6 +58,14 @@ public class JFreeChartUtils {
     return dataset;
   }
 
+  /**
+   * This method sets the paint (color or gradient) on all the series listed by the 
+   * chartDocument.
+   * 
+   * @param categoryPlot - the active plot
+   * @param chartDocument - ChartDocument that defines what the series should look like
+   * @param data - The actual chart data
+   */
   public static void setSeriesPaint(CategoryPlot categoryPlot, ChartDocument chartDocument, ChartTableModel data) {
     ChartElement[] seriesElements = chartDocument.getRootElement().findChildrenByName("series");
     for (int i=0; i<seriesElements.length; i++) {
@@ -64,17 +78,33 @@ public class JFreeChartUtils {
     }
   }
   
+  /**
+   * This method checks to see if there is a gradient type other than "none" set on seriesElement.
+   * If the series element has a gradient set on it then it returns that.  Otherwise if a color
+   * is defined then that is returned.  If no color or gradient is set then this method returns
+   * a null
+   *
+   * @param seriesElement
+   * @return a Paint object defined by the seriesElement
+   */
   private static Paint getPaintFromSeries(ChartElement seriesElement) {
     String gradientType = seriesElement.getLayoutStyle().getValue(ChartStyleKeys.GRADIENT_TYPE).getCSSText();
     Paint paint = null;
     if (gradientType != null && !gradientType.equalsIgnoreCase("none")) {
-      
+//      paint = getGradientPaint(seriesElement);
     } else {
       paint = (Paint) seriesElement.getLayoutStyle().getValue(ChartStyleKeys.CSS_COLOR);
     }
     return paint;
   }
   
+  /**
+   * @param seriesElement - series definition that has column-pos or column-name style
+   * @param data - the actual data (needed to locate the correct columns)
+   * @param columnDefault - default column to return if either column-pos or column-name are
+   * not defined or not found
+   * @return int value of the real column in the data.
+   */
   private static int getSeriesColumn(ChartElement seriesElement, ChartTableModel data, int columnDefault) {
     Object positionAttr = seriesElement.getAttribute("column-pos");
     int column = 0;
@@ -92,8 +122,10 @@ public class JFreeChartUtils {
   }
 
   /**
-   * @param string
-   * @return
+   * @param columnName - Name of the column to look for
+   * @param ChartTableModel - data that contains the column
+   * @return and integer that represent the column indicated by columnName.
+   * Returns -1 if columnName not found
    */
   private static int lookupPosition(ChartTableModel data, String columnName) {
     for (int i=0; i<data.getColumnCount(); i++) {
@@ -105,8 +137,8 @@ public class JFreeChartUtils {
   }
   
   /**
-   * @param chartDocument
-   * @return
+   * @param chartDocument that contains a orientation on the Plot element
+   * @return PlotOrientation.VERTICAL or .HORIZONTAL or Null if not defined.
    */
   public static PlotOrientation getPlotOrientation(ChartDocument chartDocument) {
     PlotOrientation plotOrient = null;
@@ -131,7 +163,7 @@ public class JFreeChartUtils {
 
   /**
    * @param chartDocument
-   * @return
+   * @return a boolean that indicates of if a legend should be included in the chart
    */
   public static boolean getShowLegend(ChartDocument chartDocument) {
     // TODO determine this from the chartDocument
@@ -159,6 +191,8 @@ public class JFreeChartUtils {
   }
 
   /**
+   * Returns a boolean value that indicates if the chart should generate tooltips
+   * 
    * @param chartDocument
    * @return
    */
@@ -168,7 +202,10 @@ public class JFreeChartUtils {
   }
 
   /**
-   * @return
+   * Gets the title of the chart defined in the chartDocument
+   * 
+   * @param chartDocument
+   * @return String - the title
    */
   public static String getTitle(ChartDocument chartDocument) {
     ChartElement[] children = chartDocument.getRootElement().findChildrenByName("title");
@@ -179,7 +216,10 @@ public class JFreeChartUtils {
   }
 
   /**
-   * @return
+   * Returns the ValueCategoryLabel of the chart.
+   * 
+   * @param chartDocument
+   * @return String - the value category label
    */
   public static String getValueCategoryLabel(ChartDocument chartDocument) {
     // TODO determine this from the chartDocument
@@ -187,7 +227,10 @@ public class JFreeChartUtils {
   }
 
   /**
-   * @return
+   * Returns the ValueAxisLabel of the chart.
+   * 
+   * @param chartDocument
+   * @return String - the value axis label
    */
   public static String getValueAxisLabel(ChartDocument chartDocument) {
  // TODO determine this from the chartDocument
@@ -195,9 +238,12 @@ public class JFreeChartUtils {
   }
 
   /**
-   * @param categoryPlot
-   * @param chartDocument
-   * @param data
+   * Main method for setting ALL the plot attributes.  This method is a staging
+   * method for calling all the other helper methods.
+   * 
+   * @param categoryPlot - a CategoryPlot to manipulate
+   * @param chartDocument - ChartDocument that contains the information for manipulating the plot
+   * @param data - The actual data
    */
   public static void setPlotAttributes(CategoryPlot categoryPlot, ChartDocument chartDocument, ChartTableModel data) {
     // TODO set other stuff beside the series stuff
@@ -205,6 +251,9 @@ public class JFreeChartUtils {
   }
 
   /**
+   * Main method for setting ALL the series attributes.  This method is a stating
+   * method for calling all the other helper methods.
+   * 
    * @param chart
    * @param chartDocument
    * @param data
