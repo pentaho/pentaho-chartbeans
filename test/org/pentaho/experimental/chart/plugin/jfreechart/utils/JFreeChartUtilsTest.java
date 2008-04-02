@@ -12,6 +12,8 @@ import junit.framework.TestCase;
 
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.resourceloader.ResourceException;
+import org.jfree.ui.GradientPaintTransformType;
+import org.jfree.ui.StandardGradientPaintTransformer;
 import org.junit.After;
 import org.junit.Before;
 import org.pentaho.experimental.chart.ChartDocumentContext;
@@ -152,4 +154,41 @@ public class JFreeChartUtilsTest extends TestCase {
       }
     }
   }
+  
+  public void testGetStandardGradientPaint() throws ResourceException {
+    String[] testGradFileNames = { 
+        "StandardGradientPaint.xml", //$NON-NLS-1$
+    };
+    
+    GradientPaintTransformType[] expectedValues = new GradientPaintTransformType[] {
+      null,
+      null,
+      null,
+      GradientPaintTransformType.HORIZONTAL,
+      GradientPaintTransformType.VERTICAL,
+      GradientPaintTransformType.CENTER_HORIZONTAL,
+      GradientPaintTransformType.CENTER_VERTICAL,
+    };
+    
+    for (String fileName : testGradFileNames) {
+      ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource(fileName)); 
+      assertNotNull(cdc);
+      ChartDocument cd = cdc.getChartDocument();
+      assertNotNull(cd);
+      
+      List seriesList = cd.getSeriesChartElements();
+      if (seriesList.size() == 0) {        
+        fail("The Series list should never be empty."); //$NON-NLS-1$       
+      }
+      
+      for (int i=0; i< seriesList.size(); i++){
+        ChartElement ce = (ChartElement)seriesList.get(i);
+        if (i == 0 || i == 1 || i == 2) {
+          assertNull(JFreeChartUtils.getStandardGradientPaintTrans(ce));
+        } else {          
+          assertEquals(expectedValues[i], JFreeChartUtils.getStandardGradientPaintTrans(ce).getType());
+        }
+      }      
+    }    
+  }    
 }
