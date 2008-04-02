@@ -23,7 +23,10 @@ import java.awt.Paint;
 
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.ui.GradientPaintTransformType;
+import org.jfree.ui.StandardGradientPaintTransformer;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
 import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
@@ -56,7 +59,7 @@ public class JFreeChartUtils {
     for(int row=0; row<data.getRowCount(); row++) {
       for(int column=0; column<data.getColumnCount(); column++) {
         Comparable<?> columnName = data.getColumnName(column) == null ? column : data.getColumnName(column);
-        Comparable<?> rowName = (Comparable<?>) (data.getRowMetadata(row, "row-name") == null ? row : data.getRowMetadata(row, "row-name"));
+        Comparable<?> rowName = (Comparable<?>) (data.getRowMetadata(row, "row-name") == null ? row : data.getRowMetadata(row, "row-name")); //$NON-NLS-1$  //$NON-NLS-2$ 
         dataset.setValue((Number) data.getValueAt(row, column), rowName, columnName);
       }
     }
@@ -72,13 +75,39 @@ public class JFreeChartUtils {
    * @param data - The actual chart data
    */
   public static void setSeriesPaint(CategoryPlot categoryPlot, ChartDocument chartDocument, ChartTableModel data) {
-    ChartElement[] seriesElements = chartDocument.getRootElement().findChildrenByName("series");
+    ChartElement[] seriesElements = chartDocument.getRootElement().findChildrenByName("series"); //$NON-NLS-1$
+    StandardGradientPaintTransformer st = null;
     for (int i=0; i<seriesElements.length; i++) {
       ChartElement seriesElement = seriesElements[i];
       Paint paint = getPaintFromSeries(seriesElement);
       if (paint != null) {
         int column = getSeriesColumn(seriesElement, data, i);
         categoryPlot.getRenderer(0).setSeriesPaint(column, paint);
+        
+        /*
+         * JFreeChart engine cannot currently implement more than one gradient type except 
+         * when it's none. For example: 
+         *    series1: none
+         *    series2: VERTICAL
+         *    series3: none
+         *    series4: HORIZONTAL
+         * JfreeChart can render none as none, but can implement only one of the gradient 
+         * styles defined for bar2 and bar4. In our implementation we are accepting the first 
+         * not-none gradient type and then rendering bar2 and bar4 with VERTICAL. 
+         */
+        if (st == null) {
+          st = getStandardGradientPaintTrans(seriesElements[i]);
+        }
+        /*
+         * If the renderer is BarRenderer and the StandardGradientPaintTransformer is 
+         * horizontal/vertical/center-horizontal/center-vertical then render the series
+         * bar using specific renderer (since only specific renderers implement 
+         * StandardGradientPaintTransformer types correctly.
+         */
+        if (st != null && categoryPlot.getRenderer(0) instanceof BarRenderer) {
+          BarRenderer barRender = (BarRenderer)categoryPlot.getRenderer(0);  
+          barRender.setGradientPaintTransformer(st);  
+        }
       }    
     }
   }
@@ -95,7 +124,7 @@ public class JFreeChartUtils {
   private static Paint getPaintFromSeries(ChartElement seriesElement) {
     String gradientType = seriesElement.getLayoutStyle().getValue(ChartStyleKeys.GRADIENT_TYPE).getCSSText();
     Paint paint = null;
-    if (gradientType != null && !gradientType.equalsIgnoreCase("none")) {
+    if (gradientType != null && !gradientType.equalsIgnoreCase("none")) { //$NON-NLS-1$ 
       paint = getGradientPaint(seriesElement);
     } else {
       paint = (Paint) seriesElement.getLayoutStyle().getValue(ChartStyleKeys.CSS_COLOR);
@@ -111,12 +140,12 @@ public class JFreeChartUtils {
    * @return int value of the real column in the data.
    */
   private static int getSeriesColumn(ChartElement seriesElement, ChartTableModel data, int columnDefault) {
-      Object positionAttr = seriesElement.getAttribute("column-pos");
+      Object positionAttr = seriesElement.getAttribute("column-pos"); //$NON-NLS-1$ 
       int column = 0;
       if (positionAttr != null) {
         column = Integer.parseInt(positionAttr.toString());
       } else {
-        positionAttr = seriesElement.getAttribute("column-name");
+        positionAttr = seriesElement.getAttribute("column-name"); //$NON-NLS-1$ 
         if (positionAttr != null) {
           column = lookupPosition(data, positionAttr.toString());
         } else {
@@ -213,7 +242,7 @@ public class JFreeChartUtils {
    * @return String - the title
    */
   public static String getTitle(ChartDocument chartDocument) {
-    ChartElement[] children = chartDocument.getRootElement().findChildrenByName("title");
+    ChartElement[] children = chartDocument.getRootElement().findChildrenByName("title"); //$NON-NLS-1$ 
     if (children != null && children.length > 0) {
       return children[0].getText();
     }
@@ -228,7 +257,7 @@ public class JFreeChartUtils {
    */
   public static String getValueCategoryLabel(ChartDocument chartDocument) {
     // TODO determine this from the chartDocument
-    return "Category Label";
+    return "Category Label"; //$NON-NLS-1$ 
   }
 
   /**
@@ -239,7 +268,7 @@ public class JFreeChartUtils {
    */
   public static String getValueAxisLabel(ChartDocument chartDocument) {
  // TODO determine this from the chartDocument
-    return "Value Axis Label";
+    return "Value Axis Label"; //$NON-NLS-1$ 
   }
 
   /**
@@ -269,8 +298,13 @@ public class JFreeChartUtils {
   }
 
   /**
-   * Creates a GradientPaint object from the current chart element using 
-   * the gradient pertinent information.
+   * Creates a GradientPaint object from the current series element using 
+   * the gradient pertinent information. 
+   * 
+   * The gradient paint contains color and start and end co-ordinates for the 
+   * gradient. If the gradient type is not none and not points, then the 
+   * gradient paint simply contains color information.
+   * 
    * If the required information from the chart element was not available then returns a null.
    * @param ce  The ChartElement to be used to create the GradientPaint object.
    * @return GradientPaint Returns the newly created GradientPaint object. 
@@ -281,21 +315,25 @@ public class JFreeChartUtils {
     
     if (layoutStyle != null) {
       CSSValue gradType = layoutStyle.getValue(ChartStyleKeys.GRADIENT_TYPE);
-      
+      Color[] gradColors = getGradientColors(ce);
       if (gradType.getCSSText().equalsIgnoreCase((ChartGradientType.POINTS).getCSSText())) {
         CSSValuePair gradStart = (CSSValuePair) layoutStyle.getValue(ChartStyleKeys.GRADIENT_START);
         CSSValuePair gradEnd = (CSSValuePair) layoutStyle.getValue(ChartStyleKeys.GRADIENT_END);
-        
+        // Get the start and end co-ordinates for the gradient start and end.
         float x1 = Float.valueOf(gradStart.getFirstValue().getCSSText()).floatValue();
         float y1 = Float.valueOf(gradStart.getSecondValue().getCSSText()).floatValue();
         float x2 = Float.valueOf(gradEnd.getFirstValue().getCSSText()).floatValue();
         float y2 = Float.valueOf(gradEnd.getSecondValue().getCSSText()).floatValue();
-        
-        Color[] gradColors = getGradientColors(ce);
-        
+
         gradPaint = new GradientPaint(x1, y1, gradColors[0], x2, y2, gradColors[1]);
-      } 
-      // TODO:Need to write the code for if it's not points or none
+      } else if (!gradType.getCSSText().equalsIgnoreCase((ChartGradientType.NONE).getCSSText())) {
+        /*
+         * For gradient types like HORIZONTAL, VERTICAL, etc we do not consider x1, y1 
+         * and x2, y2 as start and end points since the renderer would figure that out
+         * on it's own. So we have static 0's for start and end co-ordinates.
+         */  
+        gradPaint = new GradientPaint(0f, 0f, gradColors[0], 0f, 0f, gradColors[1]);
+      }  
     }
     return gradPaint;
   }  
@@ -344,5 +382,35 @@ public class JFreeChartUtils {
     }
 
     return gradientColor;
+  }
+
+  /**
+   * Returns a new StandardGradientPaintTransformer object if the series element has gradient type
+   * of horizontal, vertical, center-horizontal and center-vertical.
+   * @param   ce  Current series element
+   * @return  StandardGradientPaintTransformer  New StandardGradientPaintTransformer with 
+   *                                            appropriate gradient paint transform type. 
+   */
+  public static StandardGradientPaintTransformer getStandardGradientPaintTrans(ChartElement ce) {
+    StandardGradientPaintTransformer trans = null;
+
+    LayoutStyle layoutStyle = ce.getLayoutStyle();
+    if (layoutStyle != null) {
+      String gradType = layoutStyle.getValue(ChartStyleKeys.GRADIENT_TYPE).getCSSText();
+
+      if (!gradType.equalsIgnoreCase((ChartGradientType.NONE).getCSSText()) &&
+          !gradType.equalsIgnoreCase((ChartGradientType.POINTS).getCSSText())) {
+        if (gradType.equalsIgnoreCase((ChartGradientType.HORIZONTAL).getCSSText())) {
+          trans = new StandardGradientPaintTransformer(GradientPaintTransformType.HORIZONTAL);  
+        } else if (gradType.equalsIgnoreCase((ChartGradientType.VERTICAL).getCSSText())) {
+          trans = new StandardGradientPaintTransformer(GradientPaintTransformType.VERTICAL);  
+        } else if (gradType.equalsIgnoreCase((ChartGradientType.CENTER_HORIZONTAL).getCSSText())) {
+          trans = new StandardGradientPaintTransformer(GradientPaintTransformType.CENTER_HORIZONTAL);  
+        } else if (gradType.equalsIgnoreCase((ChartGradientType.CENTER_VERTICAL).getCSSText())) {
+          trans = new StandardGradientPaintTransformer(GradientPaintTransformType.CENTER_VERTICAL);  
+        }      
+      }
+    }
+    return trans;
   }
 }
