@@ -5,6 +5,7 @@ import java.io.Serializable;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.CategoryDataset;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.api.IOutput;
@@ -43,7 +44,8 @@ public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable
     boolean urls = JFreeChartUtils.getShowUrls(chartDocument);
     JFreeChart chart = ChartFactory.createBarChart(title, valueCategoryLabel, valueAxisLabel, null, orientation, legend, toolTips, urls);
 
-    JFreeChartUtils.setPlotAttributes(chart.getCategoryPlot(), chartDocument, data);
+    CategoryDataset categoryDataset = JFreeChartUtils.createCategoryDataset(data);
+    JFreeChartUtils.setPlotAttributes(chart.getCategoryPlot(), chartDocument, data, categoryDataset);
 
     chart.getCategoryPlot().setDataset(JFreeChartUtils.createCategoryDataset(data));
     outHandler.setChart(chart);

@@ -24,6 +24,7 @@ import java.awt.Paint;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.ui.GradientPaintTransformType;
 import org.jfree.ui.StandardGradientPaintTransformer;
@@ -33,6 +34,7 @@ import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
 import org.pentaho.experimental.chart.css.styles.ChartGradientType;
 import org.pentaho.experimental.chart.css.styles.ChartOrientationStyle;
 import org.pentaho.experimental.chart.data.ChartTableModel;
+import org.pentaho.experimental.chart.plugin.api.ChartItemLabelGenerator;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
 import org.pentaho.reporting.libraries.css.values.CSSColorValue;
 import org.pentaho.reporting.libraries.css.values.CSSFunctionValue;
@@ -66,6 +68,11 @@ public class JFreeChartUtils {
     return dataset;
   }
 
+  public static void setSeriesLabel(CategoryPlot plot, ChartDocument chartDocument, ChartTableModel data, CategoryDataset categoryDataset) {
+    ChartElement[] seriesElements = chartDocument.getRootElement().findChildrenByName("series"); //$NON-NLS-1$
+    plot.getRenderer().setBaseItemLabelGenerator(new ChartItemLabelGenerator(seriesElements, data));
+    plot.getRenderer().setBaseItemLabelsVisible(true);
+  }
   /**
    * This method sets the paint (color or gradient) on all the series listed by the 
    * chartDocument.
@@ -279,9 +286,9 @@ public class JFreeChartUtils {
    * @param chartDocument - ChartDocument that contains the information for manipulating the plot
    * @param data - The actual data
    */
-  public static void setPlotAttributes(CategoryPlot categoryPlot, ChartDocument chartDocument, ChartTableModel data) {
+  public static void setPlotAttributes(CategoryPlot categoryPlot, ChartDocument chartDocument, ChartTableModel data, CategoryDataset categoryDataset) {
     // TODO set other stuff beside the series stuff
-    setSeriesAttributes(categoryPlot, chartDocument, data);
+    setSeriesAttributes(categoryPlot, chartDocument, data, categoryDataset);
   }
 
   /**
@@ -292,9 +299,10 @@ public class JFreeChartUtils {
    * @param chartDocument
    * @param data
    */
-  public static void setSeriesAttributes(CategoryPlot categoryPlot, ChartDocument chartDocument, ChartTableModel data) {
+  public static void setSeriesAttributes(CategoryPlot categoryPlot, ChartDocument chartDocument, ChartTableModel data, CategoryDataset categoryDataset) {
     // TODO set other stuff about the series.
-    setSeriesPaint(categoryPlot, chartDocument, data);
+    setSeriesLabel(categoryPlot, chartDocument, data, categoryDataset);
+    setSeriesPaint(categoryPlot, chartDocument, data);    
   }
 
   /**

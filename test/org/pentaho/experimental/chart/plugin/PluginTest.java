@@ -17,7 +17,12 @@
 
 package org.pentaho.experimental.chart.plugin;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.net.URL;
+
 import junit.framework.TestCase;
+
 import org.pentaho.experimental.chart.ChartBoot;
 import org.pentaho.experimental.chart.ChartDocumentContext;
 import org.pentaho.experimental.chart.ChartFactory;
@@ -27,15 +32,11 @@ import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.api.ChartResult;
 import org.pentaho.experimental.chart.plugin.api.IOutput;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.net.URL;
-
 /**
  * @author wseyler
  */
 public class PluginTest extends TestCase {
-  private static final Object[][] dataArray = {{30, 20, 17}, {20, 40, 35}, {46, 35, 86}};
+  private static final Object[][] dataArray = {{30.75, 20, 17}, {20, 40, 35}, {46.95, 35, 86}};
 
   private static final String PNG_SUFFIX = ".png"; //$NON-NLS-1$
   private static final String JPG_SUFFIX = ".jpeg"; //$NON-NLS-1$
@@ -72,7 +73,7 @@ public class PluginTest extends TestCase {
 
     // Now lets create some data
     ChartTableModel data = createChartTableModel();
-    output.setFilename(TEST_FILE_PATH + fileName.substring(0, fileName.indexOf('.')) + "_" + (CHART_COUNT++) + PNG_SUFFIX); //$NON-NLS-1$
+    output.setFilename(TEST_FILE_PATH + fileName.substring(0, fileName.indexOf('.')) + PNG_SUFFIX); 
     output.setFileType(IOutput.FILE_TYPE_PNG);
 
     // Load / parse the chart document
@@ -98,7 +99,7 @@ public class PluginTest extends TestCase {
 
     // Now lets create some data
     ChartTableModel data = createChartTableModel();
-    output.setFilename(TEST_FILE_PATH + fileName.substring(0, fileName.indexOf('.')) + "_" +(CHART_COUNT++) + JPG_SUFFIX); //$NON-NLS-1$
+    output.setFilename(TEST_FILE_PATH + fileName.substring(0, fileName.indexOf('.')) + JPG_SUFFIX); 
     output.setFileType(IOutput.FILE_TYPE_JPEG);
 
     // Load / parse the chart document
