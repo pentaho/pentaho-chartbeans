@@ -30,7 +30,7 @@ public class ChartLabelTextTest extends TestCase {
     assertNotNull(element);
 
     CSSStringValue[] passValues = new CSSStringValue[] {
-      new CSSStringValue(CSSStringType.STRING, "{0} this is a label {1, format}"), //$NON-NLS-1$  
+      new CSSStringValue(CSSStringType.STRING, "{0,$###,###.##} this is a label {1, format}"), //$NON-NLS-1$  
       new CSSStringValue(CSSStringType.STRING, "{0}"), //$NON-NLS-1$
       new CSSStringValue(CSSStringType.STRING, ""), //$NON-NLS-1$
       new CSSStringValue(CSSStringType.STRING, "{0}") //$NON-NLS-1$
