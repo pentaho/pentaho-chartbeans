@@ -18,6 +18,7 @@
 package org.pentaho.experimental.chart.plugin.jfreechart.utils;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Paint;
 
@@ -31,12 +32,16 @@ import org.jfree.ui.StandardGradientPaintTransformer;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
 import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
+import org.pentaho.experimental.chart.css.styles.ChartCSSFontSizeMapping;
 import org.pentaho.experimental.chart.css.styles.ChartGradientType;
 import org.pentaho.experimental.chart.css.styles.ChartOrientationStyle;
 import org.pentaho.experimental.chart.css.styles.ChartSeriesType;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.api.ChartItemLabelGenerator;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
+import org.pentaho.reporting.libraries.css.keys.font.FontSizeConstant;
+import org.pentaho.reporting.libraries.css.keys.font.FontStyle;
+import org.pentaho.reporting.libraries.css.keys.font.FontStyleKeys;
 import org.pentaho.reporting.libraries.css.values.CSSColorValue;
 import org.pentaho.reporting.libraries.css.values.CSSConstant;
 import org.pentaho.reporting.libraries.css.values.CSSFunctionValue;
@@ -126,6 +131,7 @@ public class JFreeChartUtils {
   public static void setSeriesPaint(CategoryPlot categoryPlot, ChartDocument chartDocument, ChartTableModel data) {
     ChartElement[] seriesElements = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_SERIES);
     StandardGradientPaintTransformer st = null;
+    Font font = null;
     for (int i=0; i<seriesElements.length; i++) {
       ChartElement seriesElement = seriesElements[i];
       Paint paint = getPaintFromSeries(seriesElement);
@@ -145,7 +151,11 @@ public class JFreeChartUtils {
          * not-none gradient type and then rendering bar2 and bar4 with VERTICAL. 
          */
         if (st == null) {
-          st = getStandardGradientPaintTrans(seriesElements[i]);
+          st = getStandardGradientPaintTrans(seriesElements[i]);          
+        }
+        if (font == null) {
+          font = getFont(seriesElements[i]);
+          categoryPlot.getRenderer().setBaseItemLabelFont(font);          
         }
         /*
          * If the renderer is BarRenderer and the StandardGradientPaintTransformer is 
@@ -154,8 +164,8 @@ public class JFreeChartUtils {
          * StandardGradientPaintTransformer types correctly.
          */
         if (st != null && categoryPlot.getRenderer() instanceof BarRenderer) {
-          BarRenderer barRender = (BarRenderer)categoryPlot.getRenderer();  
-          barRender.setGradientPaintTransformer(st);
+          BarRenderer barRender = (BarRenderer)categoryPlot.getRenderer();
+          barRender.setGradientPaintTransformer(st);          
         }
       }    
     }
@@ -463,5 +473,99 @@ public class JFreeChartUtils {
     }
     return trans;
   }
-
+  
+  /**
+   * 
+   * @param currentSeries
+   * @return
+   */
+  public static Font getFont(ChartElement currentSeries) {
+    Font font = null;
+    if (currentSeries != null) {
+      LayoutStyle layoutStyle = currentSeries.getLayoutStyle();
+      String fontFamily = layoutStyle.getValue(FontStyleKeys.FONT_FAMILY).getCSSText();
+      int fontStyle = getFontStyle(layoutStyle);
+      // Creating the requisite font and setting the default size of 10. This will be overwritten below.
+      font = new Font(fontFamily, fontStyle, 10);
+      
+      float fontSize = getFontSize(currentSeries);
+      
+      // Modifying the size of the font since we cannot create a Font with size of type float. 
+      // We can only modify it's size to float value and not create it with float value.
+      font = font.deriveFont(fontSize);
+    }
+    return font;
+  }
+  
+  /**
+   * 
+   * @param layoutStyle
+   * @return
+   */
+  private static int getFontStyle(LayoutStyle layoutStyle) {
+    String fontStyleStr = layoutStyle.getValue(FontStyleKeys.FONT_STYLE).getCSSText();      
+    // Font Style default
+    int fontStyle = Font.PLAIN;
+    if (fontStyleStr.equalsIgnoreCase((FontStyle.ITALIC).getCSSText())) {
+      fontStyle = Font.ITALIC;
+    } else if (fontStyleStr.equalsIgnoreCase((FontStyle.NORMAL).getCSSText())) {
+      fontStyle = Font.BOLD;
+    } 
+    return fontStyle;
+  }
+  /**
+   * 
+   * @param element
+   * @return
+   */
+  private static float getFontSize(ChartElement element) {
+    LayoutStyle layoutStyle = element.getLayoutStyle();
+    String fontSize =  layoutStyle.getValue(FontStyleKeys.FONT_SIZE).getCSSText();
+    float size = ChartCSSFontSizeMapping.MEDIUM;
+    // We are assuming the smallest size to be 6. We can change it 
+    // latter to be a property so that the code does not need to be modified.
+    if (fontSize.equals((FontSizeConstant.XX_SMALL).getCSSText())) {
+      size = ChartCSSFontSizeMapping.XX_SMALL;
+    } else if (fontSize.equals((FontSizeConstant.X_SMALL).getCSSText())) {
+      size = ChartCSSFontSizeMapping.X_SMALL;
+    } else if (fontSize.equals((FontSizeConstant.SMALL).getCSSText())) {
+      size = ChartCSSFontSizeMapping.SMALL;
+    } else if (fontSize.equals((FontSizeConstant.MEDIUM).getCSSText())) {
+      size = ChartCSSFontSizeMapping.MEDIUM;
+    } else if (fontSize.equals((FontSizeConstant.LARGE).getCSSText())) {
+      size = ChartCSSFontSizeMapping.LARGE;
+    } else if (fontSize.equals((FontSizeConstant.X_LARGE).getCSSText())) {
+      size = ChartCSSFontSizeMapping.X_LARGE;
+    } else if (fontSize.equals((FontSizeConstant.XX_LARGE).getCSSText())) {
+      size = ChartCSSFontSizeMapping.XX_LARGE;
+    } else if (fontSize.equals("smaller")) { //$NON-NLS-1$
+      ChartElement parentSeriesElement = element.getParentItem();
+      float parentSize = getFontSize(parentSeriesElement);
+      if (parentSize >= ChartCSSFontSizeMapping.XX_SMALL && parentSize <= ChartCSSFontSizeMapping.XX_LARGE ) {
+        return (parentSize-2);
+      } else {
+        return ChartCSSFontSizeMapping.SMALLER;
+      }
+    } else if (fontSize.equals("larger")) { //$NON-NLS-1$
+      ChartElement parentElement = element.getParentItem();
+      float parentSize = getFontSize(parentElement);
+      if (parentSize >= ChartCSSFontSizeMapping.XX_SMALL && parentSize <= ChartCSSFontSizeMapping.XX_LARGE ) {
+        return (parentSize+2);
+      } else {
+        return ChartCSSFontSizeMapping.LARGER;
+      }
+    } else if (fontSize.endsWith("%")) { //$NON-NLS-1$
+      fontSize = fontSize.substring(0, fontSize.indexOf('%'));
+      ChartElement parentElement = element.getParentItem();
+      float parentSize = getFontSize(parentElement);
+      if (parentSize >= ChartCSSFontSizeMapping.XX_SMALL && parentSize <= ChartCSSFontSizeMapping.XX_LARGE ) {
+        return (parentSize * Float.parseFloat(fontSize)/100);
+      } 
+    } else if(fontSize.endsWith("pt")) { //$NON-NLS-1$
+      fontSize = fontSize.substring(0, fontSize.indexOf("p")-1); //$NON-NLS-1$
+      size = Float.parseFloat(fontSize);
+    }
+    
+    return size;
+  }
 }

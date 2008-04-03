@@ -3,7 +3,11 @@
   <stylesheet>
     .bar1 {
     color: blue;
-    -x-pentaho-chart-label-text: '{0,number,##.##} cms';
+    font-family: cursive;
+    font-variant: small-caps;
+    font-size: 14pt;
+    font-style: normal;
+    -x-pentaho-chart-label-text: '{0,number,$##.##} cms';
     -x-pentaho-chart-gradient: red, white CENTER_HORIZONTAL 1,10 2,20;		
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
@@ -13,7 +17,10 @@
 
     .bar2 {
     color: orange;
-    -x-pentaho-chart-label-text: '{0,number,##.##} ms';
+    font-size: 10pt;    
+    font-variant: normal;
+    font-style: normal;
+    -x-pentaho-chart-label-text: '{0,number,$##.##} ms';
     -x-pentaho-chart-gradient: red, white CENTER_HORIZONTAL 1,10 2,20;		
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
@@ -23,7 +30,10 @@
 
     .bar3 {
     color: green;
-    -x-pentaho-chart-label-text: '{0,number,##.##} kms';
+    font-size: smaller;
+    font-style: normal;    
+    font-variant: small-caps;
+    -x-pentaho-chart-label-text: '{0,number,$##.##} kms';
     -x-pentaho-chart-gradient: red, white CENTER_HORIZONTAL 1,10 2,20;		    
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
