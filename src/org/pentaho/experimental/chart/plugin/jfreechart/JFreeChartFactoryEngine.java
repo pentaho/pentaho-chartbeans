@@ -49,14 +49,14 @@ public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable
     boolean legend = JFreeChartUtils.getShowLegend(chartDocument);
     boolean toolTips = JFreeChartUtils.getShowToolTips(chartDocument);
     boolean urls = JFreeChartUtils.getShowUrls(chartDocument);
-    JFreeChart chart = createBarChartSubType(chartDocument, data, title, valueCategoryLabel, valueAxisLabel, orientation, legend, toolTips, urls);
+    JFreeChart chart = createBarChartSubtype(chartDocument, data, title, valueCategoryLabel, valueAxisLabel, orientation, legend, toolTips, urls);
     JFreeChartUtils.setPlotAttributes(chart.getCategoryPlot(), chartDocument, data);
 
     outHandler.setChart(chart);
     outHandler.persist();
   }
   
-  private JFreeChart createBarChartSubType(ChartDocument chartDocument, ChartTableModel data, String title, String valueCategoryLabel, String valueAxisLabel, PlotOrientation orientation, boolean legend, boolean toolTips, boolean urls) {
+  private JFreeChart createBarChartSubtype(ChartDocument chartDocument, ChartTableModel data, String title, String valueCategoryLabel, String valueAxisLabel, PlotOrientation orientation, boolean legend, boolean toolTips, boolean urls) {
     boolean stacked = false;
     boolean stackedPct = false;
     boolean cylinder = false;
@@ -75,13 +75,11 @@ public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable
     if (stacked || stackedPct) {
       chart = ChartFactory.createStackedBarChart(title, valueAxisLabel, valueAxisLabel, JFreeChartUtils.createDefaultCategoryDataset(data), orientation, legend, toolTips, urls);
       ((StackedBarRenderer)chart.getCategoryPlot().getRenderer()).setRenderAsPercentages(stackedPct);
-      return chart;
     } else {   
       if (cylinder) {
         chart = ChartFactory.createBarChart(title, valueCategoryLabel, valueAxisLabel, JFreeChartUtils.createDefaultCategoryDataset(data), orientation, legend, toolTips, urls);
         CylinderRenderer renderer = new CylinderRenderer();
         chart.getCategoryPlot().setRenderer(renderer);
-        return chart;
       } else if (interval) {
         chart = ChartFactory.createBarChart(title, valueCategoryLabel, valueAxisLabel, JFreeChartUtils.createDefaultIntervalCategoryDataset(data), orientation, legend, toolTips, urls);
         chart.getCategoryPlot().setRenderer(new IntervalBarRenderer());
