@@ -4,7 +4,7 @@
     .bar1 {
     -x-pentaho-chart-gradient: white, red POINTS 1,10 2,20;
     -x-pentaho-chart-series-type: bar;
-    -x-pentaho-chart-bar-style: cylinder;
+    -x-pentaho-chart-bar-style: stacked;
     -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-bar-max-width: 10%;
     }
@@ -12,7 +12,7 @@
     .bar2 {
     -x-pentaho-chart-gradient: black, white POINTS 1,10 2,20;
     -x-pentaho-chart-series-type: bar;
-    -x-pentaho-chart-bar-style: cylinder;
+    -x-pentaho-chart-bar-style: stacked;
     -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-bar-max-width: 10%;
     }
@@ -20,7 +20,7 @@
     .bar3 {
     color: green;
     -x-pentaho-chart-series-type: bar;
-    -x-pentaho-chart-bar-style: cylinder;
+    -x-pentaho-chart-bar-style: stacked;
     -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-bar-max-width: 10%;
     }

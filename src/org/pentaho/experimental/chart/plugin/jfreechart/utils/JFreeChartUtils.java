@@ -24,8 +24,8 @@ import java.awt.Paint;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
-import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.category.DefaultIntervalCategoryDataset;
 import org.jfree.ui.GradientPaintTransformType;
 import org.jfree.ui.StandardGradientPaintTransformer;
 import org.pentaho.experimental.chart.core.ChartDocument;
@@ -33,10 +33,12 @@ import org.pentaho.experimental.chart.core.ChartElement;
 import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
 import org.pentaho.experimental.chart.css.styles.ChartGradientType;
 import org.pentaho.experimental.chart.css.styles.ChartOrientationStyle;
+import org.pentaho.experimental.chart.css.styles.ChartSeriesType;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.api.ChartItemLabelGenerator;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
 import org.pentaho.reporting.libraries.css.values.CSSColorValue;
+import org.pentaho.reporting.libraries.css.values.CSSConstant;
 import org.pentaho.reporting.libraries.css.values.CSSFunctionValue;
 import org.pentaho.reporting.libraries.css.values.CSSValue;
 import org.pentaho.reporting.libraries.css.values.CSSValuePair;
@@ -46,6 +48,7 @@ import org.pentaho.reporting.libraries.css.values.CSSValuePair;
  *
  */
 public class JFreeChartUtils {
+
   /**
    * This method iterates through the rows and columns to populate a DefaultCategoryDataset.
    * Since a CategoryDataset stores values based on a multikey hash we supply as the keys
@@ -56,7 +59,7 @@ public class JFreeChartUtils {
    * @return DefaultCategoryDataset that can be used as a source for JFreeChart
    * 
    */
-  public static DefaultCategoryDataset createCategoryDataset(ChartTableModel data) {
+  public static DefaultCategoryDataset createDefaultCategoryDataset(ChartTableModel data) {
     DefaultCategoryDataset dataset = new DefaultCategoryDataset();
     for(int row=0; row<data.getRowCount(); row++) {
       for(int column=0; column<data.getColumnCount(); column++) {
@@ -68,13 +71,52 @@ public class JFreeChartUtils {
     return dataset;
   }
 
-  public static void setSeriesLabel(CategoryPlot plot, ChartDocument chartDocument, ChartTableModel data, CategoryDataset categoryDataset) {
-    ChartElement[] seriesElements = chartDocument.getRootElement().findChildrenByName("series"); //$NON-NLS-1$
+  /**
+   * @param data
+   * @return
+   */
+  public static DefaultIntervalCategoryDataset createDefaultIntervalCategoryDataset(ChartTableModel data) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+  
+  /**
+   * Determines what type of chart that should be rendered.  It is possible that this method
+   * could somehow be moved up into the AbstractChartPlugin
+   * 
+   * @param chartDocument that defines what type of chart to use
+   * @return a ChartType that represents the type of chart the chartDocument is requesting.
+   */
+  public static CSSConstant determineChartType(ChartDocument chartDocument) {
+    ChartElement[] elements = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_SERIES);
+    for (ChartElement element : elements) {
+      CSSValue value = element.getLayoutStyle().getValue(ChartStyleKeys.CHART_TYPE);
+      if (value != null) {
+        if (value.equals(ChartSeriesType.BAR)) {
+          return ChartSeriesType.BAR;
+        } else if (value.equals(ChartSeriesType.LINE)) {
+          return ChartSeriesType.LINE;
+        }
+      }
+    }
+    return ChartSeriesType.UNDEFINED;
+  }
+
+  /**
+   * Sets the series labels defined in the chartDocument
+   * 
+   * @param plot the plot to set the series labels on
+   * @param chartDocument the document that contains the label information
+   * @param data the data
+   */
+  public static void setSeriesLabel(CategoryPlot plot, ChartDocument chartDocument, ChartTableModel data) {
+    ChartElement[] seriesElements = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_SERIES);
     plot.getRenderer().setBaseItemLabelGenerator(new ChartItemLabelGenerator(seriesElements, data));
     plot.getRenderer().setBaseItemLabelsVisible(true);
   }
+  
   /**
-   * This method sets the paint (color or gradient) on all the series listed by the 
+   * Sets the paint (color or gradient) on all the series listed by the 
    * chartDocument.
    * 
    * @param categoryPlot - the active plot
@@ -82,14 +124,14 @@ public class JFreeChartUtils {
    * @param data - The actual chart data
    */
   public static void setSeriesPaint(CategoryPlot categoryPlot, ChartDocument chartDocument, ChartTableModel data) {
-    ChartElement[] seriesElements = chartDocument.getRootElement().findChildrenByName("series"); //$NON-NLS-1$
+    ChartElement[] seriesElements = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_SERIES);
     StandardGradientPaintTransformer st = null;
     for (int i=0; i<seriesElements.length; i++) {
       ChartElement seriesElement = seriesElements[i];
       Paint paint = getPaintFromSeries(seriesElement);
       if (paint != null) {
         int column = getSeriesColumn(seriesElement, data, i);
-        categoryPlot.getRenderer(0).setSeriesPaint(column, paint);
+        categoryPlot.getRenderer().setSeriesPaint(column, paint);
         
         /*
          * JFreeChart engine cannot currently implement more than one gradient type except 
@@ -111,9 +153,9 @@ public class JFreeChartUtils {
          * bar using specific renderer (since only specific renderers implement 
          * StandardGradientPaintTransformer types correctly.
          */
-        if (st != null && categoryPlot.getRenderer(0) instanceof BarRenderer) {
-          BarRenderer barRender = (BarRenderer)categoryPlot.getRenderer(0);  
-          barRender.setGradientPaintTransformer(st);  
+        if (st != null && categoryPlot.getRenderer() instanceof BarRenderer) {
+          BarRenderer barRender = (BarRenderer)categoryPlot.getRenderer();  
+          barRender.setGradientPaintTransformer(st);
         }
       }    
     }
@@ -147,12 +189,12 @@ public class JFreeChartUtils {
    * @return int value of the real column in the data.
    */
   private static int getSeriesColumn(ChartElement seriesElement, ChartTableModel data, int columnDefault) {
-      Object positionAttr = seriesElement.getAttribute("column-pos"); //$NON-NLS-1$ 
+      Object positionAttr = seriesElement.getAttribute(ChartElement.COLUMN_POSITION);
       int column = 0;
       if (positionAttr != null) {
         column = Integer.parseInt(positionAttr.toString());
       } else {
-        positionAttr = seriesElement.getAttribute("column-name"); //$NON-NLS-1$ 
+        positionAttr = seriesElement.getAttribute(ChartElement.COLUMN_NAME);
         if (positionAttr != null) {
           column = lookupPosition(data, positionAttr.toString());
         } else {
@@ -286,9 +328,9 @@ public class JFreeChartUtils {
    * @param chartDocument - ChartDocument that contains the information for manipulating the plot
    * @param data - The actual data
    */
-  public static void setPlotAttributes(CategoryPlot categoryPlot, ChartDocument chartDocument, ChartTableModel data, CategoryDataset categoryDataset) {
+  public static void setPlotAttributes(CategoryPlot categoryPlot, ChartDocument chartDocument, ChartTableModel data) {
     // TODO set other stuff beside the series stuff
-    setSeriesAttributes(categoryPlot, chartDocument, data, categoryDataset);
+    setSeriesAttributes(categoryPlot, chartDocument, data);
   }
 
   /**
@@ -299,15 +341,15 @@ public class JFreeChartUtils {
    * @param chartDocument
    * @param data
    */
-  public static void setSeriesAttributes(CategoryPlot categoryPlot, ChartDocument chartDocument, ChartTableModel data, CategoryDataset categoryDataset) {
+  public static void setSeriesAttributes(CategoryPlot categoryPlot, ChartDocument chartDocument, ChartTableModel data) {
     // TODO set other stuff about the series.
-    setSeriesLabel(categoryPlot, chartDocument, data, categoryDataset);
-    setSeriesPaint(categoryPlot, chartDocument, data);    
+    setSeriesLabel(categoryPlot, chartDocument, data);
+    setSeriesPaint(categoryPlot, chartDocument, data);
   }
 
   /**
    * Creates a GradientPaint object from the current series element using 
-   * the gradient pertinent information. 
+   * the gradient pertinent information.
    * 
    * The gradient paint contains color and start and end co-ordinates for the 
    * gradient. If the gradient type is not none and not points, then the 
@@ -332,7 +374,7 @@ public class JFreeChartUtils {
         float y1 = Float.valueOf(gradStart.getSecondValue().getCSSText()).floatValue();
         float x2 = Float.valueOf(gradEnd.getFirstValue().getCSSText()).floatValue();
         float y2 = Float.valueOf(gradEnd.getSecondValue().getCSSText()).floatValue();
-
+        
         gradPaint = new GradientPaint(x1, y1, gradColors[0], x2, y2, gradColors[1]);
       } else if (!gradType.getCSSText().equalsIgnoreCase((ChartGradientType.NONE).getCSSText())) {
         /*
@@ -341,7 +383,7 @@ public class JFreeChartUtils {
          * on it's own. So we have static 0's for start and end co-ordinates.
          */  
         gradPaint = new GradientPaint(0f, 0f, gradColors[0], 0f, 0f, gradColors[1]);
-      }  
+      } 
     }
     return gradPaint;
   }  
@@ -421,4 +463,5 @@ public class JFreeChartUtils {
     }
     return trans;
   }
+
 }

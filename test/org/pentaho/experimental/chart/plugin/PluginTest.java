@@ -17,12 +17,7 @@
 
 package org.pentaho.experimental.chart.plugin;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.net.URL;
-
 import junit.framework.TestCase;
-
 import org.pentaho.experimental.chart.ChartBoot;
 import org.pentaho.experimental.chart.ChartDocumentContext;
 import org.pentaho.experimental.chart.ChartFactory;
@@ -31,6 +26,10 @@ import org.pentaho.experimental.chart.core.parser.ChartXMLParser;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.api.ChartResult;
 import org.pentaho.experimental.chart.plugin.api.IOutput;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.net.URL;
 
 /**
  * @author wseyler
@@ -73,7 +72,7 @@ public class PluginTest extends TestCase {
 
     // Now lets create some data
     ChartTableModel data = createChartTableModel();
-    output.setFilename(TEST_FILE_PATH + fileName.substring(0, fileName.indexOf('.')) + PNG_SUFFIX); 
+    output.setFilename(TEST_FILE_PATH + fileName.substring(0, fileName.indexOf('.')) + "_" + (CHART_COUNT++) + PNG_SUFFIX); //$NON-NLS-1$
     output.setFileType(IOutput.FILE_TYPE_PNG);
 
     // Load / parse the chart document
@@ -99,7 +98,7 @@ public class PluginTest extends TestCase {
 
     // Now lets create some data
     ChartTableModel data = createChartTableModel();
-    output.setFilename(TEST_FILE_PATH + fileName.substring(0, fileName.indexOf('.')) + JPG_SUFFIX); 
+    output.setFilename(TEST_FILE_PATH + fileName.substring(0, fileName.indexOf('.')) + "_" +(CHART_COUNT++) + JPG_SUFFIX); //$NON-NLS-1$
     output.setFileType(IOutput.FILE_TYPE_JPEG);
 
     // Load / parse the chart document
@@ -167,26 +166,26 @@ public class PluginTest extends TestCase {
     assertTrue(newOutputStream.toByteArray().length > 5000);
   }
 
-  private void testRenderWithStyles(String fileName) throws Exception {
-    IChartPlugin plugin = ChartPluginFactory.getChartPlugin("org.pentaho.experimental.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
-    IOutput output = ChartPluginFactory.getChartOutput();
-
-    output.setFilename(TEST_FILE_PATH + (CHART_COUNT++) + PNG_SUFFIX);
-    output.setFileType(IOutput.FILE_TYPE_PNG);
-
-    // Create the test table model
-    final ChartTableModel tableModel = createChartTableModel();
-
-    // Load / parse the chart document
-    final URL chartURL = this.getClass().getResource(fileName);
-    ChartDocumentContext cdc = ChartFactory.generateChart(chartURL, tableModel); 
-    assertNotNull(cdc);
-    assertNotNull(cdc.getChartDocument());
-    assertNotNull(cdc.getDataLinkInfo());
-
-    plugin.renderChartDocument(cdc.getChartDocument(), tableModel, output);
-    File chartFile = new File(output.getFilename());
-  }
+//  private void testRenderWithStyles(String fileName) throws Exception {
+//    IChartPlugin plugin = ChartPluginFactory.getChartPlugin("org.pentaho.experimental.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
+//    IOutput output = ChartPluginFactory.getChartOutput();
+//
+//    output.setFilename(TEST_FILE_PATH + fileName.substring(0, fileName.indexOf('.')) + "_" + (CHART_COUNT++) + PNG_SUFFIX); //$NON-NLS-1$
+//    output.setFileType(IOutput.FILE_TYPE_PNG);
+//
+//    // Create the test table model
+//    final ChartTableModel tableModel = createChartTableModel();
+//
+//    // Load / parse the chart document
+//    final URL chartURL = this.getClass().getResource(fileName);
+//    ChartDocumentContext cdc = ChartFactory.generateChart(chartURL, tableModel); 
+//    assertNotNull(cdc);
+//    assertNotNull(cdc.getChartDocument());
+//    assertNotNull(cdc.getDataLinkInfo());
+//
+//    plugin.renderChartDocument(cdc.getChartDocument(), tableModel, output);
+//    File chartFile = new File(output.getFilename());
+//  }
 
   private static final ChartTableModel createChartTableModel() {
     ChartTableModel data = new ChartTableModel();
@@ -209,6 +208,7 @@ public class PluginTest extends TestCase {
       "PluginTest4.xml", //$NON-NLS-1$
       "PluginTest5.xml", //$NON-NLS-1$
       "PluginTest6.xml", //$NON-NLS-1$
+      "PluginTest7.xml", //$NON-NLS-1$
     };
     
     for (int i = 0; i < fileNames.length; i++) {
@@ -232,11 +232,11 @@ public class PluginTest extends TestCase {
       } catch (Exception e) {
         fail("Failed parsing "+fileNames[i]+ " file in method testRenderAsPngStream"); //$NON-NLS-1$ //$NON-NLS-2$
       }
-      try {
-        testRenderWithStyles(fileNames[i]);  
-      } catch (Exception e) {
-        fail("Failed parsing "+fileNames[i]+ " file in method testRenderWithStyles"); //$NON-NLS-1$ //$NON-NLS-2$ 
-      }
+//      try {
+//        testRenderWithStyles(fileNames[i]);  
+//      } catch (Exception e) {
+//        fail("Failed parsing "+fileNames[i]+ " file in method testRenderWithStyles"); //$NON-NLS-1$ //$NON-NLS-2$ 
+//      }
     }
   }
 }

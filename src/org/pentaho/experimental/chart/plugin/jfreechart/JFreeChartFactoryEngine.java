@@ -5,12 +5,19 @@ import java.io.Serializable;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.IntervalBarRenderer;
+import org.jfree.chart.renderer.category.StackedBarRenderer;
 import org.jfree.data.category.CategoryDataset;
 import org.pentaho.experimental.chart.core.ChartDocument;
+import org.pentaho.experimental.chart.core.ChartElement;
+import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
+import org.pentaho.experimental.chart.css.styles.ChartBarStyle;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.api.IOutput;
 import org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine;
+import org.pentaho.experimental.chart.plugin.jfreechart.utils.CylinderRenderer;
 import org.pentaho.experimental.chart.plugin.jfreechart.utils.JFreeChartUtils;
+import org.pentaho.reporting.libraries.css.values.CSSValue;
 
 public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable {
   
@@ -42,14 +49,47 @@ public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable
     boolean legend = JFreeChartUtils.getShowLegend(chartDocument);
     boolean toolTips = JFreeChartUtils.getShowToolTips(chartDocument);
     boolean urls = JFreeChartUtils.getShowUrls(chartDocument);
-    JFreeChart chart = ChartFactory.createBarChart(title, valueCategoryLabel, valueAxisLabel, null, orientation, legend, toolTips, urls);
+    JFreeChart chart = createBarChartSubType(chartDocument, data, title, valueCategoryLabel, valueAxisLabel, orientation, legend, toolTips, urls);
+    JFreeChartUtils.setPlotAttributes(chart.getCategoryPlot(), chartDocument, data);
 
-    CategoryDataset categoryDataset = JFreeChartUtils.createCategoryDataset(data);
-    JFreeChartUtils.setPlotAttributes(chart.getCategoryPlot(), chartDocument, data, categoryDataset);
-
-    chart.getCategoryPlot().setDataset(JFreeChartUtils.createCategoryDataset(data));
     outHandler.setChart(chart);
     outHandler.persist();
+  }
+  
+  private JFreeChart createBarChartSubType(ChartDocument chartDocument, ChartTableModel data, String title, String valueCategoryLabel, String valueAxisLabel, PlotOrientation orientation, boolean legend, boolean toolTips, boolean urls) {
+    boolean stacked = false;
+    boolean stackedPct = false;
+    boolean cylinder = false;
+    boolean interval = false;
+
+    ChartElement[] elements = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_SERIES);
+    for (ChartElement element : elements) {
+      CSSValue value = element.getLayoutStyle().getValue(ChartStyleKeys.BAR_STYLE);
+      stacked = value.equals(ChartBarStyle.STACKED) ? true : stacked;
+      stackedPct = value.equals(ChartBarStyle.STACK_PERCENT) ? true : stackedPct;
+      cylinder = value.equals(ChartBarStyle.CYLINDER) ? true : cylinder;
+      interval = value.equals(ChartBarStyle.INTERVAL) ? true : interval;
+    }
+    
+    JFreeChart chart = null;
+    if (stacked || stackedPct) {
+      chart = ChartFactory.createStackedBarChart(title, valueAxisLabel, valueAxisLabel, JFreeChartUtils.createDefaultCategoryDataset(data), orientation, legend, toolTips, urls);
+      ((StackedBarRenderer)chart.getCategoryPlot().getRenderer()).setRenderAsPercentages(stackedPct);
+      return chart;
+    } else {   
+      if (cylinder) {
+        chart = ChartFactory.createBarChart(title, valueCategoryLabel, valueAxisLabel, JFreeChartUtils.createDefaultCategoryDataset(data), orientation, legend, toolTips, urls);
+        CylinderRenderer renderer = new CylinderRenderer();
+        chart.getCategoryPlot().setRenderer(renderer);
+        return chart;
+      } else if (interval) {
+        chart = ChartFactory.createBarChart(title, valueCategoryLabel, valueAxisLabel, JFreeChartUtils.createDefaultIntervalCategoryDataset(data), orientation, legend, toolTips, urls);
+        chart.getCategoryPlot().setRenderer(new IntervalBarRenderer());
+      } else {
+        chart = ChartFactory.createBarChart(title, valueCategoryLabel, valueAxisLabel, JFreeChartUtils.createDefaultCategoryDataset(data), orientation, legend, toolTips, urls);
+      }
+    }
+    return chart;
   }
 
 
