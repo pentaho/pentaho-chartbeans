@@ -35,7 +35,7 @@ import java.net.URL;
  * @author wseyler
  */
 public class PluginTest extends TestCase {
-  private static final Object[][] dataArray = {{30.75, 20, 17}, {20, 40, 35}, {46.95, 35, 86}};
+  private static final Object[][] dataArray = {{5.55, 10.11, 20.22}, {30.33, 40.44, 50.55}, {60.66, 70.77, 80.88}};
 
   private static final String PNG_SUFFIX = ".png"; //$NON-NLS-1$
   private static final String JPG_SUFFIX = ".jpeg"; //$NON-NLS-1$
@@ -166,27 +166,6 @@ public class PluginTest extends TestCase {
     assertTrue(newOutputStream.toByteArray().length > 5000);
   }
 
-//  private void testRenderWithStyles(String fileName) throws Exception {
-//    IChartPlugin plugin = ChartPluginFactory.getChartPlugin("org.pentaho.experimental.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
-//    IOutput output = ChartPluginFactory.getChartOutput();
-//
-//    output.setFilename(TEST_FILE_PATH + fileName.substring(0, fileName.indexOf('.')) + "_" + (CHART_COUNT++) + PNG_SUFFIX); //$NON-NLS-1$
-//    output.setFileType(IOutput.FILE_TYPE_PNG);
-//
-//    // Create the test table model
-//    final ChartTableModel tableModel = createChartTableModel();
-//
-//    // Load / parse the chart document
-//    final URL chartURL = this.getClass().getResource(fileName);
-//    ChartDocumentContext cdc = ChartFactory.generateChart(chartURL, tableModel); 
-//    assertNotNull(cdc);
-//    assertNotNull(cdc.getChartDocument());
-//    assertNotNull(cdc.getDataLinkInfo());
-//
-//    plugin.renderChartDocument(cdc.getChartDocument(), tableModel, output);
-//    File chartFile = new File(output.getFilename());
-//  }
-
   private static final ChartTableModel createChartTableModel() {
     ChartTableModel data = new ChartTableModel();
     data.setData(dataArray);
@@ -232,11 +211,6 @@ public class PluginTest extends TestCase {
       } catch (Exception e) {
         fail("Failed parsing "+fileNames[i]+ " file in method testRenderAsPngStream"); //$NON-NLS-1$ //$NON-NLS-2$
       }
-//      try {
-//        testRenderWithStyles(fileNames[i]);  
-//      } catch (Exception e) {
-//        fail("Failed parsing "+fileNames[i]+ " file in method testRenderWithStyles"); //$NON-NLS-1$ //$NON-NLS-2$ 
-//      }
     }
   }
 }
