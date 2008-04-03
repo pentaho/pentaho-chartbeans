@@ -7,7 +7,6 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.IntervalBarRenderer;
 import org.jfree.chart.renderer.category.StackedBarRenderer;
-import org.jfree.data.category.CategoryDataset;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
 import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
