@@ -25,6 +25,7 @@ import org.pentaho.experimental.chart.core.ChartElement;
 import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
+import org.pentaho.reporting.libraries.css.values.CSSStringValue;
 
 /** 
  * This class handles the ItemLabel generation and numeric formatting.
@@ -69,7 +70,7 @@ public class ChartItemLabelGenerator extends StandardCategoryItemLabelGenerator 
           ChartElement ce = map.get(Integer.valueOf(column));
           if (ce != null) {
             LayoutStyle layoutStyle = ce.getLayoutStyle();
-            messageFormat = layoutStyle.getValue(ChartStyleKeys.LABEL_TEXT).getCSSText();
+            messageFormat = ((CSSStringValue)layoutStyle.getValue(ChartStyleKeys.LABEL_TEXT)).getValue();
               result = MessageFormat.format(messageFormat, data, dataset.getColumnKey(column));  
           }
         }      
