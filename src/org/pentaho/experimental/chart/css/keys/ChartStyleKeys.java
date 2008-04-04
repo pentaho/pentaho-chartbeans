@@ -80,9 +80,15 @@ public class ChartStyleKeys {
       createKey("-x-pentaho-chart-axis-type-order", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
 
   /**
+   * Controls whether item label is visible or not
+   */
+  public static final StyleKey ITEM_LABEL_VISIBLE = StyleKeyRegistry.getRegistry().
+      createKey("-x-pentaho-chart-item-label-visible", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+
+  /**
    * The label text with it's formatting information
    */
-  public static final StyleKey LABEL_TEXT = StyleKeyRegistry.getRegistry().
+  public static final StyleKey ITEM_LABEL_TEXT = StyleKeyRegistry.getRegistry().
       createKey("-x-pentaho-chart-item-label-text", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
 
   /**

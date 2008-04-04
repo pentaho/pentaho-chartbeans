@@ -27,7 +27,6 @@ import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
 import org.pentaho.reporting.libraries.css.keys.font.FontStyleKeys;
 import org.pentaho.reporting.libraries.css.keys.font.FontVariant;
-import org.pentaho.reporting.libraries.css.keys.font.FontWeight;
 import org.pentaho.reporting.libraries.css.values.CSSStringValue;
 
 /** 
@@ -73,7 +72,7 @@ public class ChartItemLabelGenerator extends StandardCategoryItemLabelGenerator 
           ChartElement ce = map.get(Integer.valueOf(column));
           if (ce != null) {
             LayoutStyle layoutStyle = ce.getLayoutStyle();
-            messageFormat = ((CSSStringValue)layoutStyle.getValue(ChartStyleKeys.LABEL_TEXT)).getValue();
+            messageFormat = ((CSSStringValue)layoutStyle.getValue(ChartStyleKeys.ITEM_LABEL_TEXT)).getValue();
             result = MessageFormat.format(messageFormat, data, dataset.getColumnKey(column));
             
             // Get the font variant to convert the label text to upper case if the font variant is set to small-caps
