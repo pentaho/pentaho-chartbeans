@@ -24,13 +24,13 @@ import org.pentaho.reporting.libraries.css.values.CSSValue;
 import org.w3c.css.sac.LexicalUnit;
 
 /**
- *  The style parser for the <code>-x-pentaho-chart-label-text</code> style.
+ *  The style parser for the <code>-x-pentaho-chart-item-label-text</code> style.
  * 
  * @author Ravi Hasija
  */
-public class ChartLabelTextReadHandler implements CSSValueReadHandler
+public class ChartItemLabelTextReadHandler implements CSSValueReadHandler
 {
-  public ChartLabelTextReadHandler()
+  public ChartItemLabelTextReadHandler()
   {
   }
 

@@ -12,7 +12,7 @@ import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
 import org.pentaho.reporting.libraries.css.values.CSSStringType;
 import org.pentaho.reporting.libraries.css.values.CSSStringValue;
 
-public class ChartLabelTextTest extends TestCase {
+public class ChartItemLabelTextTest extends TestCase {
 
   @Override
   protected void setUp() throws Exception {    
@@ -23,7 +23,7 @@ public class ChartLabelTextTest extends TestCase {
   }
   
   public void testChartLabelText() throws Exception {
-    ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource("ChartLabelTextTest.xml")); //$NON-NLS-1$
+    ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource("ChartItemLabelTextTest.xml")); //$NON-NLS-1$
     ChartDocument cd = cdc.getChartDocument();
     assertNotNull(cd);
     ChartElement element = cd.getRootElement();

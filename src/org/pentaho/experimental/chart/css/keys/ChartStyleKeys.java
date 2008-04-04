@@ -83,7 +83,7 @@ public class ChartStyleKeys {
    * The label text with it's formatting information
    */
   public static final StyleKey LABEL_TEXT = StyleKeyRegistry.getRegistry().
-      createKey("-x-pentaho-chart-label-text", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+      createKey("-x-pentaho-chart-item-label-text", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
 
   /**
    * The gradient type (for eg: none, VERTICAL, CENTER_VERTICAL, HORIZONTAL, CENTER_HORIZONTAL, POINTS)
@@ -113,6 +113,6 @@ public class ChartStyleKeys {
    * A css color
    */
   public static final StyleKey CSS_COLOR = StyleKeyRegistry.getRegistry().
-      createKey("color", false, true, StyleKey.All_ELEMENTS);
+      createKey("color", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
 }
 
