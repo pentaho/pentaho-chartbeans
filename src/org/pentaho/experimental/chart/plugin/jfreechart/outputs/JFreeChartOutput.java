@@ -17,15 +17,22 @@
 
 package org.pentaho.experimental.chart.plugin.jfreechart.outputs;
 
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.jfree.chart.ChartRenderingInfo;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.entity.StandardEntityCollection;
+import org.jfree.chart.imagemap.ImageMapUtilities;
+import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.plugin.api.IOutput;
 import org.pentaho.experimental.chart.plugin.api.PersistenceException;
+import org.pentaho.experimental.chart.plugin.jfreechart.utils.JFreeChartUtils;
 
   
 /**
@@ -33,6 +40,8 @@ import org.pentaho.experimental.chart.plugin.api.PersistenceException;
  *
  */
 public class JFreeChartOutput implements IOutput {
+  private static final String MAP_EXTENSION = ".map"; //$NON-NLS-1$
+  
   JFreeChart chart;
   int fileType;
   String filename;
@@ -42,6 +51,8 @@ public class JFreeChartOutput implements IOutput {
    * @see org.pentaho.experimental.chart.plugin.api.IOutput#getAsStream()
    */
   public OutputStream getChartAsStream() throws PersistenceException {
+    ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
+    
     if (outputStream == null) {
       outputStream = new ByteArrayOutputStream();
     }
@@ -52,13 +63,13 @@ public class JFreeChartOutput implements IOutput {
     }
     if (fileType == IOutput.FILE_TYPE_JPEG) {
       try {
-        ChartUtilities.writeChartAsJPEG(outputStream, chart, 400, 400);
+        ChartUtilities.writeChartAsJPEG(outputStream, chart, 400, 400, info);
       } catch (IOException e) {
         throw new PersistenceException(e);
       }
     } else if (fileType == IOutput.FILE_TYPE_PNG) {
       try {
-        ChartUtilities.writeChartAsPNG(outputStream, chart, 400, 400);
+        ChartUtilities.writeChartAsPNG(outputStream, chart, 400, 400, info);
       } catch (IOException e) {
         throw new PersistenceException(e);
       }
@@ -84,20 +95,39 @@ public class JFreeChartOutput implements IOutput {
    * @see org.pentaho.experimental.chart.plugin.api.IOutput#persist()
    */
   public void persist() throws PersistenceException {
+    ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
+    
     if (filename != null && filename.length() > 0) {
       if (fileType == IOutput.FILE_TYPE_JPEG) {
         try {
-          ChartUtilities.saveChartAsJPEG(new File(filename), chart, 400, 400);
+          ChartUtilities.saveChartAsJPEG(new File(filename), chart, 400, 400, info);
         } catch (IOException e) {
           throw new PersistenceException(e);
         }
       } else if (fileType == IOutput.FILE_TYPE_PNG) {
         try {
-          ChartUtilities.saveChartAsPNG(new File(filename), chart, 400, 400);
+          ChartUtilities.saveChartAsPNG(new File(filename), chart, 400, 400, info);
         } catch (IOException e) {
           throw new PersistenceException(e);
         }
       }
+      try {
+        writeImageMap(info);
+      } catch (IOException e) {
+        throw new PersistenceException(e);
+      }
+    }
+    
+  }
+  
+  private void writeImageMap(ChartRenderingInfo info) throws IOException {
+    if (chart.getCategoryPlot().getRenderer().getBaseItemURLGenerator() != null) {
+      String mapFileName = filename + MAP_EXTENSION;
+      String mapString = ImageMapUtilities.getImageMap(mapFileName, info);
+      BufferedWriter out = new BufferedWriter(new FileWriter(mapFileName));
+      out.write(mapString);
+      out.flush();
+      out.close();
     }
   }
 

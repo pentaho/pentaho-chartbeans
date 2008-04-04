@@ -7,6 +7,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.IntervalBarRenderer;
 import org.jfree.chart.renderer.category.StackedBarRenderer;
+import org.jfree.chart.urls.StandardCategoryURLGenerator;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
 import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
@@ -78,6 +79,9 @@ public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable
       if (cylinder) {
         chart = ChartFactory.createBarChart(title, valueCategoryLabel, valueAxisLabel, JFreeChartUtils.createDefaultCategoryDataset(data), orientation, legend, toolTips, urls);
         CylinderRenderer renderer = new CylinderRenderer();
+        if (urls) { // since we're replacing the renderer here we still need to respect the
+          renderer.setBaseItemURLGenerator(new StandardCategoryURLGenerator());
+        }
         chart.getCategoryPlot().setRenderer(renderer);
       } else if (interval) {
         chart = ChartFactory.createBarChart(title, valueCategoryLabel, valueAxisLabel, JFreeChartUtils.createDefaultIntervalCategoryDataset(data), orientation, legend, toolTips, urls);
