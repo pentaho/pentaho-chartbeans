@@ -146,7 +146,7 @@
   <target name="test" depends="compile-tests" description="Runs the unit tests">
     <mkdir dir="${test.output.dir}"/>
     
-    <junit printsummary="yes" haltonfailure="yes">
+    <junit printsummary="yes">
       <classpath refid="test.run.classpath">
       </classpath>
       <formatter type="plain"/>
