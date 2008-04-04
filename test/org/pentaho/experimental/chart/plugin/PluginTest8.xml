@@ -7,6 +7,8 @@
     font-variant: small-caps;
     font-size: 10pt;
     font-style: italic;
+    -x-pentaho-chart-item-label-text: '{0,number,$##.##}';
+    -x-pentaho-chart-item-label-visible: no;
     -x-pentaho-chart-gradient: red, white CENTER_HORIZONTAL 1,10 2,20;		
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
@@ -19,6 +21,8 @@
     font-size: 10pt;    
     font-variant: normal;
     font-style: normal;
+    -x-pentaho-chart-item-label-text: '{0,number,$##.##}';
+    -x-pentaho-chart-item-label-visible: yes;
     -x-pentaho-chart-gradient: red, white CENTER_HORIZONTAL 1,10 2,20;		
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
@@ -31,6 +35,8 @@
     font-size: smaller;
     font-style: normal;    
     font-variant: small-caps;
+    -x-pentaho-chart-item-label-text: '{0,number,$##.##}';
+    -x-pentaho-chart-item-label-visible: yes;
     -x-pentaho-chart-gradient: red, white CENTER_HORIZONTAL 1,10 2,20;		    
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;

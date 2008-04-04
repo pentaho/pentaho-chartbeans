@@ -17,7 +17,14 @@
 
 package org.pentaho.experimental.chart.plugin;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.net.URL;
+import java.text.MessageFormat;
+import java.util.Date;
+
 import junit.framework.TestCase;
+
 import org.pentaho.experimental.chart.ChartBoot;
 import org.pentaho.experimental.chart.ChartDocumentContext;
 import org.pentaho.experimental.chart.ChartFactory;
@@ -26,10 +33,6 @@ import org.pentaho.experimental.chart.core.parser.ChartXMLParser;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.api.ChartResult;
 import org.pentaho.experimental.chart.plugin.api.IOutput;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.net.URL;
 
 /**
  * @author wseyler
@@ -188,6 +191,7 @@ public class PluginTest extends TestCase {
       "PluginTest5.xml", //$NON-NLS-1$
       "PluginTest6.xml", //$NON-NLS-1$
       "PluginTest7.xml", //$NON-NLS-1$
+      "PluginTest8.xml", //$NON-NLS-1$
     };
     
     for (int i = 0; i < fileNames.length; i++) {
