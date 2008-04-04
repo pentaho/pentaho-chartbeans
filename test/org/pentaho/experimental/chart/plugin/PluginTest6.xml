@@ -3,10 +3,10 @@
   <stylesheet>
     .bar1 {
     color: blue;
-    font-family: cursive;
+    font-family: sans-serif;
     font-variant: small-caps;
-    font-size: 14pt;
-    font-style: normal;
+    font-size: 10pt;
+    font-style: italic;
     -x-pentaho-chart-label-text: '{0,number,$##.##} cms';
     -x-pentaho-chart-gradient: red, white CENTER_HORIZONTAL 1,10 2,20;		
     -x-pentaho-chart-series-type: bar;

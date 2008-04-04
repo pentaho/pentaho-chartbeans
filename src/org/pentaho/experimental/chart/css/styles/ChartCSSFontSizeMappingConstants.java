@@ -1,6 +1,6 @@
 package org.pentaho.experimental.chart.css.styles;
 
-public class ChartCSSFontSizeMapping {
+public class ChartCSSFontSizeMappingConstants {
   
   public static final float XX_SMALL = 7;
   public static final float X_SMALL = 8;

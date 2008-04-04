@@ -32,7 +32,7 @@ import org.jfree.ui.StandardGradientPaintTransformer;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
 import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
-import org.pentaho.experimental.chart.css.styles.ChartCSSFontSizeMapping;
+import org.pentaho.experimental.chart.css.styles.ChartCSSFontSizeMappingConstants;
 import org.pentaho.experimental.chart.css.styles.ChartGradientType;
 import org.pentaho.experimental.chart.css.styles.ChartOrientationStyle;
 import org.pentaho.experimental.chart.css.styles.ChartSeriesType;
@@ -42,9 +42,11 @@ import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
 import org.pentaho.reporting.libraries.css.keys.font.FontSizeConstant;
 import org.pentaho.reporting.libraries.css.keys.font.FontStyle;
 import org.pentaho.reporting.libraries.css.keys.font.FontStyleKeys;
+import org.pentaho.reporting.libraries.css.keys.font.RelativeFontSize;
 import org.pentaho.reporting.libraries.css.values.CSSColorValue;
 import org.pentaho.reporting.libraries.css.values.CSSConstant;
 import org.pentaho.reporting.libraries.css.values.CSSFunctionValue;
+import org.pentaho.reporting.libraries.css.values.CSSNumericType;
 import org.pentaho.reporting.libraries.css.values.CSSValue;
 import org.pentaho.reporting.libraries.css.values.CSSValuePair;
 
@@ -475,9 +477,11 @@ public class JFreeChartUtils {
   }
   
   /**
+   * This method creates a Font object based on the font-family, font-size, and 
+   * font-style defined in the chart xml doc for the current series
    * 
-   * @param currentSeries
-   * @return
+   * @param currentSeries  Current series element 
+   * @return Font  The font object created based on the current series font css style 
    */
   public static Font getFont(ChartElement currentSeries) {
     Font font = null;
@@ -487,20 +491,19 @@ public class JFreeChartUtils {
       int fontStyle = getFontStyle(layoutStyle);
       // Creating the requisite font and setting the default size of 10. This will be overwritten below.
       font = new Font(fontFamily, fontStyle, 10);
-      
-      float fontSize = getFontSize(currentSeries);
-      
+
       // Modifying the size of the font since we cannot create a Font with size of type float. 
       // We can only modify it's size to float value and not create it with float value.
-      font = font.deriveFont(fontSize);
+      font = font.deriveFont(getFontSize(currentSeries));
     }
     return font;
   }
   
   /**
-   * 
-   * @param layoutStyle
-   * @return
+   * This method maps the CSS font-style to Font styles allowed by Java Font Style.
+   * We default to css font style value "oblique".  
+   * @param layoutStyle The layout style for the current series element.
+   * @return int  Represents Java based font style.
    */
   private static int getFontStyle(LayoutStyle layoutStyle) {
     String fontStyleStr = layoutStyle.getValue(FontStyleKeys.FONT_STYLE).getCSSText();      
@@ -513,55 +516,63 @@ public class JFreeChartUtils {
     } 
     return fontStyle;
   }
+  
   /**
+   * CSSFontSize values: xx-small, x-small, small, medium, large, x-large, xx-large
+   * are mapped to certain integer values based on ChartCSSFontSizeMappingConstants file.
+   * CSSFontSize values: smaller, larger, and % are based on parent values. Hence for that 
+   * we establish the current series font size based on the parent font size value.
    * 
-   * @param element
-   * @return
+   * @param element  The current series element that would be looked for the font style
+   * @return float   The font size for the current series element.
    */
   private static float getFontSize(ChartElement element) {
     LayoutStyle layoutStyle = element.getLayoutStyle();
     String fontSize =  layoutStyle.getValue(FontStyleKeys.FONT_SIZE).getCSSText();
-    float size = ChartCSSFontSizeMapping.MEDIUM;
+    float size = ChartCSSFontSizeMappingConstants.MEDIUM;
     // We are assuming the smallest size to be 6. We can change it 
     // latter to be a property so that the code does not need to be modified.
     if (fontSize.equals((FontSizeConstant.XX_SMALL).getCSSText())) {
-      size = ChartCSSFontSizeMapping.XX_SMALL;
+      size = ChartCSSFontSizeMappingConstants.XX_SMALL;
     } else if (fontSize.equals((FontSizeConstant.X_SMALL).getCSSText())) {
-      size = ChartCSSFontSizeMapping.X_SMALL;
+      size = ChartCSSFontSizeMappingConstants.X_SMALL;
     } else if (fontSize.equals((FontSizeConstant.SMALL).getCSSText())) {
-      size = ChartCSSFontSizeMapping.SMALL;
+      size = ChartCSSFontSizeMappingConstants.SMALL;
     } else if (fontSize.equals((FontSizeConstant.MEDIUM).getCSSText())) {
-      size = ChartCSSFontSizeMapping.MEDIUM;
+      size = ChartCSSFontSizeMappingConstants.MEDIUM;
     } else if (fontSize.equals((FontSizeConstant.LARGE).getCSSText())) {
-      size = ChartCSSFontSizeMapping.LARGE;
+      size = ChartCSSFontSizeMappingConstants.LARGE;
     } else if (fontSize.equals((FontSizeConstant.X_LARGE).getCSSText())) {
-      size = ChartCSSFontSizeMapping.X_LARGE;
+      size = ChartCSSFontSizeMappingConstants.X_LARGE;
     } else if (fontSize.equals((FontSizeConstant.XX_LARGE).getCSSText())) {
-      size = ChartCSSFontSizeMapping.XX_LARGE;
-    } else if (fontSize.equals("smaller")) { //$NON-NLS-1$
+      size = ChartCSSFontSizeMappingConstants.XX_LARGE;
+    } else if (fontSize.equals(RelativeFontSize.SMALLER)) { 
       ChartElement parentSeriesElement = element.getParentItem();
       float parentSize = getFontSize(parentSeriesElement);
-      if (parentSize >= ChartCSSFontSizeMapping.XX_SMALL && parentSize <= ChartCSSFontSizeMapping.XX_LARGE ) {
+      if (parentSize >= ChartCSSFontSizeMappingConstants.XX_SMALL && 
+          parentSize <= ChartCSSFontSizeMappingConstants.XX_LARGE ) {
         return (parentSize-2);
       } else {
-        return ChartCSSFontSizeMapping.SMALLER;
+        return ChartCSSFontSizeMappingConstants.SMALLER;
       }
-    } else if (fontSize.equals("larger")) { //$NON-NLS-1$
+    } else if (fontSize.equals(RelativeFontSize.LARGER)) {
       ChartElement parentElement = element.getParentItem();
       float parentSize = getFontSize(parentElement);
-      if (parentSize >= ChartCSSFontSizeMapping.XX_SMALL && parentSize <= ChartCSSFontSizeMapping.XX_LARGE ) {
+      if (parentSize >= ChartCSSFontSizeMappingConstants.XX_SMALL && 
+          parentSize <= ChartCSSFontSizeMappingConstants.XX_LARGE ) {
         return (parentSize+2);
       } else {
-        return ChartCSSFontSizeMapping.LARGER;
+        return ChartCSSFontSizeMappingConstants.LARGER;
       }
-    } else if (fontSize.endsWith("%")) { //$NON-NLS-1$
-      fontSize = fontSize.substring(0, fontSize.indexOf('%'));
+    } else if (fontSize.endsWith(CSSNumericType.PERCENTAGE.toString())) { 
+      String fontPercent = fontSize.substring(0, fontSize.indexOf(CSSNumericType.PERCENTAGE.toString()));
       ChartElement parentElement = element.getParentItem();
       float parentSize = getFontSize(parentElement);
-      if (parentSize >= ChartCSSFontSizeMapping.XX_SMALL && parentSize <= ChartCSSFontSizeMapping.XX_LARGE ) {
-        return (parentSize * Float.parseFloat(fontSize)/100);
+      if (parentSize >= ChartCSSFontSizeMappingConstants.XX_SMALL && 
+          parentSize <= ChartCSSFontSizeMappingConstants.XX_LARGE ) {
+        return (parentSize * Float.parseFloat(fontPercent)/100);
       } 
-    } else if(fontSize.endsWith("pt")) { //$NON-NLS-1$
+    } else if(fontSize.endsWith(CSSNumericType.PT.toString())) { 
       fontSize = fontSize.substring(0, fontSize.indexOf("p")-1); //$NON-NLS-1$
       size = Float.parseFloat(fontSize);
     }
