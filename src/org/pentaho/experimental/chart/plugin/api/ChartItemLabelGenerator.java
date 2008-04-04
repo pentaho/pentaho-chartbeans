@@ -23,7 +23,6 @@ import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.data.category.CategoryDataset;
 import org.pentaho.experimental.chart.core.ChartElement;
 import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
-import org.pentaho.experimental.chart.css.styles.ChartItemLabelVisibleType;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
 import org.pentaho.reporting.libraries.css.keys.font.FontStyleKeys;
@@ -55,8 +54,8 @@ public class ChartItemLabelGenerator extends StandardCategoryItemLabelGenerator 
   /**
    * This method is over-ridden to get the actual data value into the item label along with 
    * custom formatting defined for the series in the chart definition document. 
-   * {0} maps data value
-   * {1} maps column name
+   * {0} maps to data value
+   * {1} maps to column name
    * @param dataset   category dataset
    *        row       Row number
    *        column    Column number
@@ -73,18 +72,17 @@ public class ChartItemLabelGenerator extends StandardCategoryItemLabelGenerator 
           ChartElement ce = map.get(Integer.valueOf(column));
           if (ce != null) {
             LayoutStyle layoutStyle = ce.getLayoutStyle();
-            String itemLabelVisible = layoutStyle.getValue(ChartStyleKeys.ITEM_LABEL_VISIBLE).getCSSText();
-            // Format the item label text only if we are displaying the item label 
-            if (itemLabelVisible.equalsIgnoreCase(ChartItemLabelVisibleType.YES.getCSSText())) {
-              messageFormat = ((CSSStringValue)layoutStyle.getValue(ChartStyleKeys.ITEM_LABEL_TEXT)).getValue();
-              result = MessageFormat.format(messageFormat, data, dataset.getColumnKey(column));
-              
-              // Get the font variant to convert the label text to upper case if the font variant is set to small-caps
-              String variant = layoutStyle.getValue(FontStyleKeys.FONT_VARIANT).getCSSText();
-              if (variant.equals(FontVariant.SMALL_CAPS.getCSSText())) {
-                result = result.toUpperCase();
-              }
-            }             
+          
+            //Format the item label text 
+            messageFormat = ((CSSStringValue)layoutStyle.getValue(ChartStyleKeys.ITEM_LABEL_TEXT)).getValue();
+            result = MessageFormat.format(messageFormat, data, dataset.getColumnKey(column));
+            
+            //Get the font variant to convert the label text to upper case if the 
+            //font variant is set to small-caps
+            String variant = layoutStyle.getValue(FontStyleKeys.FONT_VARIANT).getCSSText();
+            if (variant.equals(FontVariant.SMALL_CAPS.getCSSText())) {
+              result = result.toUpperCase();
+            }
           }
         }      
       } catch (IndexOutOfBoundsException ignore) {

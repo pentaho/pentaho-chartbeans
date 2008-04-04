@@ -34,6 +34,7 @@ import org.pentaho.experimental.chart.core.ChartElement;
 import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
 import org.pentaho.experimental.chart.css.styles.ChartCSSFontSizeMappingConstants;
 import org.pentaho.experimental.chart.css.styles.ChartGradientType;
+import org.pentaho.experimental.chart.css.styles.ChartItemLabelVisibleType;
 import org.pentaho.experimental.chart.css.styles.ChartOrientationStyle;
 import org.pentaho.experimental.chart.css.styles.ChartSeriesType;
 import org.pentaho.experimental.chart.data.ChartTableModel;
@@ -116,10 +117,19 @@ public class JFreeChartUtils {
    * @param chartDocument the document that contains the label information
    * @param data the data
    */
-  public static void setSeriesLabel(CategoryPlot plot, ChartDocument chartDocument, ChartTableModel data) {
+  public static void setSeriesItemLabel(CategoryPlot categoryPlot, ChartDocument chartDocument, ChartTableModel data) {
     ChartElement[] seriesElements = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_SERIES);
-    plot.getRenderer().setBaseItemLabelGenerator(new ChartItemLabelGenerator(seriesElements, data));
-    plot.getRenderer().setBaseItemLabelsVisible(true);
+    categoryPlot.getRenderer().setBaseItemLabelGenerator(new ChartItemLabelGenerator(seriesElements, data));
+    
+    for (int i=0; i<seriesElements.length; i++) {
+      // Get and set font information only if the item label's visibility is set to true 
+      if (showItemLabel(seriesElements[i])) {
+        BarRenderer barRender = (BarRenderer)categoryPlot.getRenderer();
+        Font font = getFont(seriesElements[i]);
+        barRender.setSeriesItemLabelFont(i, font, true);
+        barRender.setSeriesItemLabelsVisible(i, true, true);
+      }
+    }
   }
   
   /**
@@ -133,7 +143,7 @@ public class JFreeChartUtils {
   public static void setSeriesPaint(CategoryPlot categoryPlot, ChartDocument chartDocument, ChartTableModel data) {
     ChartElement[] seriesElements = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_SERIES);
     StandardGradientPaintTransformer st = null;
-    Font font = null;
+    
     for (int i=0; i<seriesElements.length; i++) {
       ChartElement seriesElement = seriesElements[i];
       Paint paint = getPaintFromSeries(seriesElement);
@@ -155,10 +165,6 @@ public class JFreeChartUtils {
         if (st == null) {
           st = getStandardGradientPaintTrans(seriesElements[i]);          
         }
-        if (font == null) {
-          font = getFont(seriesElements[i]);
-          categoryPlot.getRenderer().setBaseItemLabelFont(font);          
-        }
         /*
          * If the renderer is BarRenderer and the StandardGradientPaintTransformer is 
          * horizontal/vertical/center-horizontal/center-vertical then render the series
@@ -167,7 +173,7 @@ public class JFreeChartUtils {
          */
         if (st != null && categoryPlot.getRenderer() instanceof BarRenderer) {
           BarRenderer barRender = (BarRenderer)categoryPlot.getRenderer();
-          barRender.setGradientPaintTransformer(st);          
+          barRender.setGradientPaintTransformer(st);
         }
       }    
     }
@@ -342,7 +348,7 @@ public class JFreeChartUtils {
    */
   public static void setPlotAttributes(CategoryPlot categoryPlot, ChartDocument chartDocument, ChartTableModel data) {
     // TODO set other stuff beside the series stuff
-    setSeriesAttributes(categoryPlot, chartDocument, data);
+    setSeriesAttributes(categoryPlot, chartDocument, data);    
   }
 
   /**
@@ -355,7 +361,7 @@ public class JFreeChartUtils {
    */
   public static void setSeriesAttributes(CategoryPlot categoryPlot, ChartDocument chartDocument, ChartTableModel data) {
     // TODO set other stuff about the series.
-    setSeriesLabel(categoryPlot, chartDocument, data);
+    setSeriesItemLabel(categoryPlot, chartDocument, data);
     setSeriesPaint(categoryPlot, chartDocument, data);
   }
 
@@ -578,5 +584,22 @@ public class JFreeChartUtils {
     }
     
     return size;
+  }
+  
+  /**
+   * Returns true if the item label visibility is set to true for the given element
+   *  
+   * @param element      Current series element.
+   * @return true/false
+   */
+  public static boolean showItemLabel(ChartElement element) {
+    boolean showItemLabel = false;
+    
+    String itemLabelVisible = element.getLayoutStyle().getValue(ChartStyleKeys.ITEM_LABEL_VISIBLE).getCSSText();
+    
+    if (itemLabelVisible.equals(ChartItemLabelVisibleType.YES.getCSSText())) {
+      showItemLabel = true; 
+    }
+    return showItemLabel;
   }
 }
