@@ -17,6 +17,7 @@
 
 package org.pentaho.experimental.chart.plugin.jfreechart.utils;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GradientPaint;
@@ -40,6 +41,9 @@ import org.pentaho.experimental.chart.css.styles.ChartSeriesType;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.api.ChartItemLabelGenerator;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
+import org.pentaho.reporting.libraries.css.keys.border.BorderStyle;
+import org.pentaho.reporting.libraries.css.keys.border.BorderStyleKeys;
+import org.pentaho.reporting.libraries.css.keys.border.BorderWidth;
 import org.pentaho.reporting.libraries.css.keys.font.FontSizeConstant;
 import org.pentaho.reporting.libraries.css.keys.font.FontStyle;
 import org.pentaho.reporting.libraries.css.keys.font.FontStyleKeys;
@@ -111,21 +115,123 @@ public class JFreeChartUtils {
   }
 
   /**
+   * 
+   * @param categoryPlot
+   * @param seriesElements
+   * @param data
+   */
+  public static void setSeriesBarOutline(CategoryPlot categoryPlot, ChartElement[] seriesElements, ChartTableModel data) {
+    for (int i=0; i<seriesElements.length; i++) {
+      ChartElement currElement = seriesElements[i];
+      
+      if (categoryPlot.getRenderer() instanceof BarRenderer) {
+        BarRenderer barRender = (BarRenderer)categoryPlot.getRenderer();
+        BasicStroke borderStyle = getBorderStyle(currElement);
+        if (borderStyle != null) {
+          Color borderColor = getBorderColor(currElement);
+          if (borderColor != null) {
+            barRender.setSeriesOutlinePaint(i, borderColor, true);  
+          }
+          barRender.setSeriesOutlineStroke(i, borderStyle, true);
+          barRender.setDrawBarOutline(true);
+        }
+      }
+    }
+  }
+  
+  /**
+   * 
+   * @param element
+   * @return
+   */
+  private static Color getBorderColor(ChartElement element) {
+    Color borderColor = null;
+    CSSValue borderColorValue = element.getLayoutStyle().getValue(BorderStyleKeys.BORDER_TOP_COLOR);
+    
+    if (borderColorValue != null) {
+      if (borderColorValue instanceof CSSFunctionValue){
+        CSSValue[] values = ((CSSFunctionValue)borderColorValue).getParameters();
+        int r = Integer.valueOf(values[0].getCSSText());
+        int g = Integer.valueOf(values[1].getCSSText());
+        int b = Integer.valueOf(values[2].getCSSText());
+        borderColor = new Color(r, g, b);        
+      } else if (borderColorValue instanceof CSSColorValue) {
+        CSSColorValue colorValue = (CSSColorValue)borderColorValue;
+        int r = colorValue.getRed();
+        int g = colorValue.getGreen();
+        int b = colorValue.getBlue();
+        borderColor = new Color(r,g,b);
+      }
+    }
+    
+    return borderColor;
+  }
+  
+  /**
+   * 
+   * @param element
+   * @return
+   */
+  private static BasicStroke getBorderStyle(ChartElement element) {
+    String borderStyle = element.getLayoutStyle().getValue(BorderStyleKeys.BORDER_TOP_STYLE).getCSSText();
+    String borderWidth = element.getLayoutStyle().getValue(BorderStyleKeys.BORDER_TOP_WIDTH).getCSSText();
+    
+    float width = 0f;
+    if (borderWidth != null) {
+      if (borderWidth.equalsIgnoreCase(BorderWidth.THIN.toString())) {
+        width = 1f;
+      } else if (borderWidth.equalsIgnoreCase(BorderWidth.MEDIUM.toString())) {
+        width = 2f;
+      } else if (borderWidth.equalsIgnoreCase(BorderWidth.THICK.toString())) {
+        width = 4f;
+      } 
+    }
+    
+    BasicStroke stroke = null;
+    if (!borderStyle.equalsIgnoreCase(BorderStyle.NONE.toString()) &&
+        !borderStyle.equalsIgnoreCase(BorderStyle.HIDDEN.toString())) {
+      
+      if (borderStyle.equalsIgnoreCase(BorderStyle.SOLID.toString())) {
+        stroke = new BasicStroke (width);
+      } else if (borderStyle.equalsIgnoreCase(BorderStyle.DASHED.toString())) {
+        stroke = new BasicStroke (width, BasicStroke.CAP_BUTT, 
+                                         BasicStroke.JOIN_MITER, 
+                                         10.0F, 
+                                         new float[] {10.0F,3.0F}, 
+                                         0.F);
+      } else if (borderStyle.equalsIgnoreCase(BorderStyle.DOT_DASH.toString())) {
+        stroke = new BasicStroke (width, BasicStroke.CAP_BUTT, 
+                                         BasicStroke.JOIN_MITER, 
+                                         10.0F, 
+                                         new float[] {10.0F, 3.0F, 2.0F, 2.0F}, 
+                                         0.F);
+      } else if (borderStyle.equalsIgnoreCase(BorderStyle.DOTTED.toString())) {
+        stroke = new BasicStroke(width, BasicStroke.CAP_ROUND, 
+                                        BasicStroke.JOIN_ROUND, 
+                                        0, 
+                                        new float[]{0,6,0,6}, 
+                                        0); 
+      }
+    }
+
+    return stroke;
+  }
+  
+  /**
    * Sets the series labels defined in the chartDocument
    * 
    * @param plot the plot to set the series labels on
    * @param chartDocument the document that contains the label information
    * @param data the data
    */
-  public static void setSeriesItemLabel(CategoryPlot categoryPlot, ChartDocument chartDocument, ChartTableModel data) {
-    ChartElement[] seriesElements = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_SERIES);
+  public static void setSeriesItemLabel(CategoryPlot categoryPlot, ChartElement[] seriesElements, ChartTableModel data) {
     categoryPlot.getRenderer().setBaseItemLabelGenerator(new ChartItemLabelGenerator(seriesElements, data));
     
     for (int i=0; i<seriesElements.length; i++) {
       // Get and set font information only if the item label's visibility is set to true 
       if (showItemLabel(seriesElements[i])) {
         BarRenderer barRender = (BarRenderer)categoryPlot.getRenderer();
-        Font font = getFont(seriesElements[i]);
+        Font font = getFont(seriesElements[i]);        
         barRender.setSeriesItemLabelFont(i, font, true);
         barRender.setSeriesItemLabelsVisible(i, true, true);
       }
@@ -140,8 +246,7 @@ public class JFreeChartUtils {
    * @param chartDocument - ChartDocument that defines what the series should look like
    * @param data - The actual chart data
    */
-  public static void setSeriesPaint(CategoryPlot categoryPlot, ChartDocument chartDocument, ChartTableModel data) {
-    ChartElement[] seriesElements = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_SERIES);
+  public static void setSeriesPaint(CategoryPlot categoryPlot, ChartElement[] seriesElements, ChartTableModel data) {
     StandardGradientPaintTransformer st = null;
     
     for (int i=0; i<seriesElements.length; i++) {
@@ -153,25 +258,23 @@ public class JFreeChartUtils {
         
         /*
          * JFreeChart engine cannot currently implement more than one gradient type except 
-         * when it's none. For example: 
+         * when it's none. That is we cannot have one gradient as CENTER_VERTICAL and another
+         * one as CENTER_HORIZONTAL. 
+         * 
+         * For example: 
          *    series1: none
          *    series2: VERTICAL
          *    series3: none
          *    series4: HORIZONTAL
          * JfreeChart can render none as none, but can implement only one of the gradient 
          * styles defined for bar2 and bar4. In our implementation we are accepting the first 
-         * not-none gradient type and then rendering bar2 and bar4 with VERTICAL. 
+         * not-none gradient type and then rendering bar2 and bar4 with VERTICAL.
+         * 
+         *  Check for specific renderer instances since only certain specific renderers allow 
+         *  setting gradient paint transform.
          */
         if (st == null) {
           st = getStandardGradientPaintTrans(seriesElements[i]);          
-        }
-        /*
-         * If the renderer is BarRenderer and the StandardGradientPaintTransformer is 
-         * horizontal/vertical/center-horizontal/center-vertical then render the series
-         * bar using specific renderer (since only specific renderers implement 
-         * StandardGradientPaintTransformer types correctly.
-         */
-        if (st != null && categoryPlot.getRenderer() instanceof BarRenderer) {
           BarRenderer barRender = (BarRenderer)categoryPlot.getRenderer();
           barRender.setGradientPaintTransformer(st);
         }
@@ -361,8 +464,10 @@ public class JFreeChartUtils {
    */
   public static void setSeriesAttributes(CategoryPlot categoryPlot, ChartDocument chartDocument, ChartTableModel data) {
     // TODO set other stuff about the series.
-    setSeriesItemLabel(categoryPlot, chartDocument, data);
-    setSeriesPaint(categoryPlot, chartDocument, data);
+    ChartElement[] seriesElements = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_SERIES);
+    setSeriesItemLabel(categoryPlot, seriesElements, data);
+    setSeriesPaint(categoryPlot, seriesElements, data);
+    setSeriesBarOutline(categoryPlot, seriesElements, data);
   }
 
   /**
