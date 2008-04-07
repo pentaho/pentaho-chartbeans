@@ -22,6 +22,7 @@ title {
 plot {
 	-x-pentaho-chart-orientation: vertical;
   -x-pentaho-chart-drill-url-template: none;	
+  -x-pentaho-chart-scale: 1;	
 }
 
 axis {

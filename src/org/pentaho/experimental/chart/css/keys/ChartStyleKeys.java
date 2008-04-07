@@ -120,5 +120,11 @@ public class ChartStyleKeys {
    */
   public static final StyleKey CSS_COLOR = StyleKeyRegistry.getRegistry().
       createKey("color", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+
+  /**
+   * The scale for the plot for eg: a scale of 1000 means data will be divided by 1000
+   */
+  public static final StyleKey SCALE_NUM = StyleKeyRegistry.getRegistry().
+      createKey("-x-pentaho-chart-scale", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
 }
 

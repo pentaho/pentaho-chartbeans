@@ -22,5 +22,6 @@
   -x-pentaho-chart-gradient-color: black, white;  
   -x-pentaho-chart-gradient-start: 0, 0;  
   -x-pentaho-chart-gradient-end: 1, 1;  
+  -x-pentaho-chart-scale: 1;  
 }
 
