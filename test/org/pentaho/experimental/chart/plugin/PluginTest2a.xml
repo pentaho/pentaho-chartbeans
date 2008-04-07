@@ -32,5 +32,5 @@
 
   <series name="forecast" class="bar3" column-pos="0"/>
 
-  <plot style="-x-pentaho-chart-orientation: vertical; -x-pentaho-chart-drill-url-template: url(http://localhost:8080/MyUrl)"/>
+  <plot style="-x-pentaho-chart-orientation: vertical; -x-pentaho-chart-drill-url-template: url(http://localhost:8080/Pentaho/JPivot)"/>
 </chart>

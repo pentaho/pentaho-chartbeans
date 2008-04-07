@@ -26,6 +26,8 @@ import java.awt.Paint;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.chart.renderer.category.CategoryItemRenderer;
+import org.jfree.chart.urls.StandardCategoryURLGenerator;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.category.DefaultIntervalCategoryDataset;
 import org.jfree.ui.GradientPaintTransformType;
@@ -435,8 +437,36 @@ public class JFreeChartUtils {
    * @param data - The actual data
    */
   public static void setPlotAttributes(CategoryPlot categoryPlot, ChartDocument chartDocument, ChartTableModel data) {
-    // TODO set other stuff beside the series stuff
-    setSeriesAttributes(categoryPlot, chartDocument, data);    
+    setURLGeneration(categoryPlot.getRenderer(), chartDocument);
+    setSeriesAttributes(categoryPlot, chartDocument, data);   
+  }
+
+  /**
+   * @param renderer
+   */
+  public static void setURLGeneration(CategoryItemRenderer renderer, ChartDocument chartDocument) {
+    if (getShowUrls(chartDocument)) {
+      String URLPrefix = getURLText(chartDocument);
+      renderer.setBaseItemURLGenerator(new StandardCategoryURLGenerator(URLPrefix));
+    }
+  }
+
+  /**
+   * @param chartDocument
+   * @return
+   */
+  public static String getURLText(ChartDocument chartDocument) {
+    ChartElement plotElement = chartDocument.getPlotElement();
+    
+    if (plotElement != null) {
+      LayoutStyle layoutStyle = plotElement.getLayoutStyle();
+      CSSValue value = layoutStyle.getValue(ChartStyleKeys.DRILL_URL);
+      
+      if (value != null && !value.getCSSText().equalsIgnoreCase("none")) { //$NON-NLS-1$
+        return value.getCSSText();
+      }
+    }    
+    return null;
   }
 
   /**
