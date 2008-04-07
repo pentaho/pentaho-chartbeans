@@ -91,7 +91,7 @@ public class JFreeChartUtils {
    * @param data
    * @return
    */
-  public static Double getScale(ChartTableModel data) {
+  public static double getScale(ChartTableModel data) {
     // TODO Auto-generated method stub
     return 1.0;
   }
