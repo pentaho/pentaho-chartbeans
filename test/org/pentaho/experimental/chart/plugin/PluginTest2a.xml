@@ -2,7 +2,6 @@
 
   <stylesheet>
     .bar1 {
-    -x-pentaho-chart-gradient: white, red POINTS 1,10 2,20;
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: cylinder;
     -x-pentaho-chart-categorical: true;
@@ -10,7 +9,6 @@
     }
 
     .bar2 {
-    -x-pentaho-chart-gradient: black, white POINTS 1,10 2,20;
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: cylinder;
     -x-pentaho-chart-categorical: true;

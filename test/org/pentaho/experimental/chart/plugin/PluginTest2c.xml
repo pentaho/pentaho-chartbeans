@@ -4,15 +4,15 @@
     .bar1 {
     color: blue;
     -x-pentaho-chart-series-type: bar;
-    -x-pentaho-chart-bar-style: bar;
+    -x-pentaho-chart-bar-style: stacked;
     -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-bar-max-width: 10%;
     }
 
     .bar2 {
-    color: orange;
+		color: yellow;
     -x-pentaho-chart-series-type: bar;
-    -x-pentaho-chart-bar-style: bar;
+    -x-pentaho-chart-bar-style: stacked;
     -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-bar-max-width: 10%;
     }
@@ -20,7 +20,7 @@
     .bar3 {
     color: green;
     -x-pentaho-chart-series-type: bar;
-    -x-pentaho-chart-bar-style: bar;
+    -x-pentaho-chart-bar-style: stacked;
     -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-bar-max-width: 10%;
     }
@@ -34,5 +34,5 @@
 
   <series name="forecast" class="bar3" column-pos="0"/>
 
-  <plot style="-x-pentaho-chart-orientation: horizontal"/>
+  <plot style="-x-pentaho-chart-orientation: vertical; -x-pentaho-chart-drill-url-template: url(http://localhost:8080/MyUrl)"/>
 </chart>

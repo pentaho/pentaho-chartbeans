@@ -115,12 +115,13 @@ public class JFreeChartUtils {
   }
 
   /**
+   * Paints the series border/outline.
    * 
-   * @param categoryPlot
-   * @param seriesElements
-   * @param data
+   * @param rhasija
+   * @param categoryPlot    The plot that has the renderer object
+   * @param seriesElements  The series elements from the chart document
    */
-  public static void setSeriesBarOutline(CategoryPlot categoryPlot, ChartElement[] seriesElements, ChartTableModel data) {
+  public static void setSeriesBarOutline(CategoryPlot categoryPlot, ChartElement[] seriesElements) {
     for (int i=0; i<seriesElements.length; i++) {
       ChartElement currElement = seriesElements[i];
       
@@ -128,7 +129,8 @@ public class JFreeChartUtils {
         BarRenderer barRender = (BarRenderer)categoryPlot.getRenderer();
         BasicStroke borderStyle = getBorderStyle(currElement);
         if (borderStyle != null) {
-          Color borderColor = getBorderColor(currElement);
+          CSSValue borderColorValue = currElement.getLayoutStyle().getValue(BorderStyleKeys.BORDER_TOP_COLOR);
+          Color borderColor = getColorFromCSSValue(borderColorValue);
           if (borderColor != null) {
             barRender.setSeriesOutlinePaint(i, borderColor, true);  
           }
@@ -140,37 +142,18 @@ public class JFreeChartUtils {
   }
   
   /**
+   * This method creates a BasicStroke object for border-style like dotted, solid etc
+   * It also incorporates border-width for the border. 
    * 
-   * @param element
-   * @return
-   */
-  private static Color getBorderColor(ChartElement element) {
-    Color borderColor = null;
-    CSSValue borderColorValue = element.getLayoutStyle().getValue(BorderStyleKeys.BORDER_TOP_COLOR);
-    
-    if (borderColorValue != null) {
-      if (borderColorValue instanceof CSSFunctionValue){
-        CSSValue[] values = ((CSSFunctionValue)borderColorValue).getParameters();
-        int r = Integer.valueOf(values[0].getCSSText());
-        int g = Integer.valueOf(values[1].getCSSText());
-        int b = Integer.valueOf(values[2].getCSSText());
-        borderColor = new Color(r, g, b);        
-      } else if (borderColorValue instanceof CSSColorValue) {
-        CSSColorValue colorValue = (CSSColorValue)borderColorValue;
-        int r = colorValue.getRed();
-        int g = colorValue.getGreen();
-        int b = colorValue.getBlue();
-        borderColor = new Color(r,g,b);
-      }
-    }
-    
-    return borderColor;
-  }
-  
-  /**
+   * Currently we only support NONE, HIDDEN, SOLID, DASHED, DOT-DASH and DOTTED.
+   * The border-width: thin, medium and thick have been mapped to static widths.
+   * We do not support separate borders for top, bottom, left and right side of 
+   * the bar. So we accept the first value and implement it for border-style and 
+   * border-width.
    * 
-   * @param element
-   * @return
+   * @author rhasija
+   * @param element The current series element
+   * @return BasicStroke  The basic stroke object that would implement border-style and border-width
    */
   private static BasicStroke getBorderStyle(ChartElement element) {
     String borderStyle = element.getLayoutStyle().getValue(BorderStyleKeys.BORDER_TOP_STYLE).getCSSText();
@@ -218,8 +201,8 @@ public class JFreeChartUtils {
   }
   
   /**
-   * Sets the series labels defined in the chartDocument
-   * 
+   * Sets the series item label(s) defined in the chartDocument
+   * @author rhasija
    * @param plot the plot to set the series labels on
    * @param chartDocument the document that contains the label information
    * @param data the data
@@ -239,9 +222,10 @@ public class JFreeChartUtils {
   }
   
   /**
-   * Sets the paint (color or gradient) on all the series listed by the 
+   * Sets the paint(gradient color) on all the series listed by the 
    * chartDocument.
    * 
+   * @author rhasija
    * @param categoryPlot - the active plot
    * @param chartDocument - ChartDocument that defines what the series should look like
    * @param data - The actual chart data
@@ -288,6 +272,7 @@ public class JFreeChartUtils {
    * is defined then that is returned.  If no color or gradient is set then this method returns
    * a null
    *
+   * @author rhasija
    * @param seriesElement
    * @return a Paint object defined by the seriesElement
    */
@@ -467,7 +452,7 @@ public class JFreeChartUtils {
     ChartElement[] seriesElements = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_SERIES);
     setSeriesItemLabel(categoryPlot, seriesElements, data);
     setSeriesPaint(categoryPlot, seriesElements, data);
-    setSeriesBarOutline(categoryPlot, seriesElements, data);
+    setSeriesBarOutline(categoryPlot, seriesElements);
   }
 
   /**
@@ -512,7 +497,8 @@ public class JFreeChartUtils {
   }  
   
   /**
-   * Returns an array that contains two colors; color1 and color2 for the gradient 
+   * Returns an array that contains two colors; color1 and color2 for the gradient
+   * @author rhasija 
    * @param element Current series element.
    * @return Color[] Contains 2 elements: color1 and color2 for the GradientPaint class.
    */
@@ -535,6 +521,7 @@ public class JFreeChartUtils {
   
   /**
    * Retrieves the color information from the CSSValue parameter, creates a Color object and returns the same.
+   * @author rhasija
    * @param value   CSSValue that has the color information.
    * @return Color  Returns a Color object created from the color information in the value parameter
    *                If the CSSValue does not contain any color information then returns a null.
@@ -560,6 +547,8 @@ public class JFreeChartUtils {
   /**
    * Returns a new StandardGradientPaintTransformer object if the series element has gradient type
    * of horizontal, vertical, center-horizontal and center-vertical.
+   * 
+   * @author rhasija
    * @param   ce  Current series element
    * @return  StandardGradientPaintTransformer  New StandardGradientPaintTransformer with 
    *                                            appropriate gradient paint transform type. 
@@ -693,7 +682,8 @@ public class JFreeChartUtils {
   
   /**
    * Returns true if the item label visibility is set to true for the given element
-   *  
+   * 
+   * @author rhasija  
    * @param element      Current series element.
    * @return true/false
    */
