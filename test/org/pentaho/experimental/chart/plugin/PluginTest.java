@@ -202,12 +202,12 @@ public class PluginTest extends TestCase {
     
     for (int i = 0; i < fileNames.length; i++) {
       try {
-        //testRenderAsJpeg(fileNames[i]);    
+        testRenderAsJpeg(fileNames[i]);    
       } catch (Exception e) {
         fail("Failed parsing "+fileNames[i]+ " file in method testRenderAsJpeg"); //$NON-NLS-1$ //$NON-NLS-2$
       }
       try {
-        //testRenderAsJpegStream(fileNames[i]);
+        testRenderAsJpegStream(fileNames[i]);
       } catch (Exception e) {
         fail("Failed parsing "+fileNames[i]+ " file in method testRenderAsJpegStream"); //$NON-NLS-1$ //$NON-NLS-2$
       }
@@ -217,7 +217,7 @@ public class PluginTest extends TestCase {
         fail("Failed parsing "+fileNames[i]+ " file in method testRenderAsPng"); //$NON-NLS-1$ //$NON-NLS-2$
       }
       try {
-        //testRenderAsPngStream(fileNames[i]);
+        testRenderAsPngStream(fileNames[i]);
       } catch (Exception e) {
         fail("Failed parsing "+fileNames[i]+ " file in method testRenderAsPngStream"); //$NON-NLS-1$ //$NON-NLS-2$
       }
