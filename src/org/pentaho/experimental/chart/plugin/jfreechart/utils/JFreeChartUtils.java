@@ -68,19 +68,22 @@ public class JFreeChartUtils {
    * Since a CategoryDataset stores values based on a multikey hash we supply as the keys
    * either the metadata column name or the column number and the metadata row name or row number
    * as the keys.
+   * 
+   * As it's processing the data from the ChartTableModel into the DefaultCategoryDataset it
+   * applies the scale specified in the 
    *
    * @param data - ChartTablemodel that represents the data that will be charted
    * @return DefaultCategoryDataset that can be used as a source for JFreeChart
    * 
    */
-  public static DefaultCategoryDataset createDefaultCategoryDataset(ChartTableModel data) {
+  public static DefaultCategoryDataset createDefaultCategoryDataset(ChartTableModel data, ChartDocument chartDocument) {
     DefaultCategoryDataset dataset = new DefaultCategoryDataset();
     for(int row=0; row<data.getRowCount(); row++) {
       for(int column=0; column<data.getColumnCount(); column++) {
         Comparable<?> columnName = data.getColumnName(column) == null ? column : data.getColumnName(column);
         Comparable<?> rowName = (Comparable<?>) (data.getRowMetadata(row, "row-name") == null ? row : data.getRowMetadata(row, "row-name")); //$NON-NLS-1$  //$NON-NLS-2$
         double value = ((Number)data.getValueAt(row, column)).doubleValue();
-        value /= getScale(data);
+        value *= getScale(chartDocument);
         dataset.setValue(value, rowName, columnName);
       }
     }
@@ -88,19 +91,20 @@ public class JFreeChartUtils {
   }
 
   /**
+   * Get the scale of the chart from the ChartTableModel.
+   * 
    * @param data
    * @return
    */
-  public static double getScale(ChartTableModel data) {
-    // TODO Auto-generated method stub
-    return 1.0;
+  public static double getScale(ChartDocument chartDocument) {
+    return Float.valueOf(chartDocument.getPlotElement().getLayoutStyle().getValue(ChartStyleKeys.SCALE_NUM).getCSSText());
   }
 
   /**
    * @param data
    * @return
    */
-  public static DefaultIntervalCategoryDataset createDefaultIntervalCategoryDataset(ChartTableModel data) {
+  public static DefaultIntervalCategoryDataset createDefaultIntervalCategoryDataset(ChartTableModel data, ChartDocument chartDocument) {
     // TODO Auto-generated method stub
     return null;
   }

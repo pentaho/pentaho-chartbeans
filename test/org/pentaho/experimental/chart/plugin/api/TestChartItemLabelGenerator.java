@@ -44,7 +44,7 @@ public class TestChartItemLabelGenerator extends TestCase {
     labelGen = new ChartItemLabelGenerator(seriesElements, chartData);
     assertNotNull(labelGen);
     
-    CategoryDataset categoryDataset = JFreeChartUtils.createDefaultCategoryDataset(chartData);
+    CategoryDataset categoryDataset = JFreeChartUtils.createDefaultCategoryDataset(chartData, cd);
     
     for(int i=0; i< dataArray.length; i++) {
       for (int j=0; j<dataArray[i].length; j++) {
