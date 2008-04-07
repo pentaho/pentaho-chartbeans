@@ -78,11 +78,22 @@ public class JFreeChartUtils {
     for(int row=0; row<data.getRowCount(); row++) {
       for(int column=0; column<data.getColumnCount(); column++) {
         Comparable<?> columnName = data.getColumnName(column) == null ? column : data.getColumnName(column);
-        Comparable<?> rowName = (Comparable<?>) (data.getRowMetadata(row, "row-name") == null ? row : data.getRowMetadata(row, "row-name")); //$NON-NLS-1$  //$NON-NLS-2$ 
-        dataset.setValue((Number) data.getValueAt(row, column), rowName, columnName);
+        Comparable<?> rowName = (Comparable<?>) (data.getRowMetadata(row, "row-name") == null ? row : data.getRowMetadata(row, "row-name")); //$NON-NLS-1$  //$NON-NLS-2$
+        double value = ((Number)data.getValueAt(row, column)).doubleValue();
+        value /= getScale(data);
+        dataset.setValue(value, rowName, columnName);
       }
     }
     return dataset;
+  }
+
+  /**
+   * @param data
+   * @return
+   */
+  public static Double getScale(ChartTableModel data) {
+    // TODO Auto-generated method stub
+    return 1.0;
   }
 
   /**
