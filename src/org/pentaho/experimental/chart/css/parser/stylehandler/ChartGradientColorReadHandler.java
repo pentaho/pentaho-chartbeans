@@ -33,8 +33,8 @@ public class ChartGradientColorReadHandler implements CSSValueReadHandler {
   public ChartGradientColorReadHandler() {
   }
   
-  public CSSValue createValue(StyleKey name, LexicalUnit unit) {
-    CSSValue firstValue = ColorReadHandler.createColorValue(unit);
+  public CSSValue createValue(final StyleKey name, LexicalUnit unit) {
+    final CSSValue firstValue = ColorReadHandler.createColorValue(unit);
     CSSValue secondValue = null;
     
     if (firstValue != null) {

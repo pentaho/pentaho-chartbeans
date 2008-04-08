@@ -39,7 +39,7 @@ public class ChartAxisOrderReadHandler implements CSSValueReadHandler
    * @param value
    * @return
    */
-  public CSSValue createValue(StyleKey name, LexicalUnit value)
+  public CSSValue createValue(final StyleKey name, final LexicalUnit value)
   {
     CSSNumericValue numValue = null;
     

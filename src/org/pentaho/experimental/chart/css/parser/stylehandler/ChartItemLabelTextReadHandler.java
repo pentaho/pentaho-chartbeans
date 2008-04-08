@@ -40,7 +40,7 @@ public class ChartItemLabelTextReadHandler implements CSSValueReadHandler
    * @param value
    * @return
    */
-  public CSSValue createValue(StyleKey name, LexicalUnit value)
+  public CSSValue createValue(final StyleKey name, final LexicalUnit value)
   {
     CSSValue labelText = null;
     

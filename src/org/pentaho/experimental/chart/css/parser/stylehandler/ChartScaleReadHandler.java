@@ -32,7 +32,7 @@ public class ChartScaleReadHandler implements CSSValueReadHandler {
   public ChartScaleReadHandler() {
   }
   
-  public CSSValue createValue(StyleKey name, LexicalUnit value)
+  public CSSValue createValue(final StyleKey name, final LexicalUnit value)
   {
     CSSNumericValue result = null;
     

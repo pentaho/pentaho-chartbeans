@@ -33,7 +33,7 @@ public class ChartGradientPositionReadHandler implements CSSValueReadHandler {
   public ChartGradientPositionReadHandler() {
   }
   
-  public CSSValue createValue(StyleKey name, LexicalUnit value)
+  public CSSValue createValue(final StyleKey name, LexicalUnit value)
   {
     CSSNumericValue firstValue = null;
     CSSNumericValue secondValue = null;

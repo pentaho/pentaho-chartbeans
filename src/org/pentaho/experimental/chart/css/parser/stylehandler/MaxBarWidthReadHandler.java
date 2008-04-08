@@ -22,7 +22,7 @@ public class MaxBarWidthReadHandler extends AbstractWidthReadHandler
    * @param value
    * @return
    */
-  public CSSValue createValue(LexicalUnit value)
+  public CSSValue createValue(final LexicalUnit value)
   {
     // TODO: Please uncomment the code below if we do not want to extend the abstact class 
     // and implement a simple one ourself
@@ -35,7 +35,7 @@ public class MaxBarWidthReadHandler extends AbstractWidthReadHandler
     }
     return maxWidth;*/
     
-    CSSValue maxWidth = parseWidth(value);
+    final CSSValue maxWidth = parseWidth(value);
     return maxWidth;
   }
 }
