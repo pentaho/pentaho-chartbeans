@@ -46,7 +46,7 @@
     }
   </stylesheet>
 
-  <title>My Test Chart Name</title>
+  <title>Label on bars, formatting, scale#1</title>
   
   <series name="budget" class="bar1" column-pos="2"/>
 

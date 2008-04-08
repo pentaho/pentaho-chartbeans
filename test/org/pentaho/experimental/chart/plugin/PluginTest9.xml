@@ -16,7 +16,6 @@
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
     -x-pentaho-chart-categorical: true;
-    -x-pentaho-chart-bar-max-width: 10%;
     }
 
     .bar2 {
@@ -34,7 +33,6 @@
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
     -x-pentaho-chart-categorical: true;
-    -x-pentaho-chart-bar-max-width: 10%;
     }
 
     .bar3 {
@@ -51,11 +49,10 @@
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
     -x-pentaho-chart-categorical: true;
-    -x-pentaho-chart-bar-max-width: 10%;
     }
   </stylesheet>
 
-  <title>My Test Chart Name</title>
+  <title>Border Style and Border Size Test</title>
   
   <series name="budget" class="bar1" column-pos="2"/>
 

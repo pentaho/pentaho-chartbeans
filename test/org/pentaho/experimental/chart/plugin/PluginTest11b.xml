@@ -52,7 +52,7 @@
     }
   </stylesheet>
 
-  <title>My Test Chart Name</title>
+  <title>Bar width control through controlling upper-margin</title>
   
   <series name="budget" class="bar1" column-pos="2"/>
 

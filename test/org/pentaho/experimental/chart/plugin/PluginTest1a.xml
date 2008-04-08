@@ -23,7 +23,7 @@
     }
   </stylesheet>
 
-  <title>My Test Chart Name</title>
+  <title>Test for Vertical charts</title>
   
   <series name="budget" class="bar1" column-pos="2"/>
 

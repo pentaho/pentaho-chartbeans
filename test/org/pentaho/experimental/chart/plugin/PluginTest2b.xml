@@ -2,17 +2,17 @@
 
   <stylesheet>
     .bar1 {
-    color: red;
+    color: blue;
     -x-pentaho-chart-series-type: bar;
-    -x-pentaho-chart-bar-style: interval;
+    -x-pentaho-chart-bar-style: stacked;
     -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-bar-max-width: 10%;
     }
 
     .bar2 {
-    color: cyan;
+		color: yellow;
     -x-pentaho-chart-series-type: bar;
-    -x-pentaho-chart-bar-style: interval;
+    -x-pentaho-chart-bar-style: stacked;
     -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-bar-max-width: 10%;
     }
@@ -20,13 +20,13 @@
     .bar3 {
     color: green;
     -x-pentaho-chart-series-type: bar;
-    -x-pentaho-chart-bar-style: interval;
+    -x-pentaho-chart-bar-style: stacked;
     -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-bar-max-width: 10%;
     }
   </stylesheet>
 
-  <title>My Test Chart Name</title>
+  <title>Stacked bars</title>
   
   <series name="budget" class="bar1" column-pos="2"/>
 

@@ -42,7 +42,7 @@ public class PluginTest extends TestCase {
   private static final String JPG_SUFFIX = ".jpeg"; //$NON-NLS-1$
   private static final String TEST_FILE_PATH = "test/test-output/TestChart"; //$NON-NLS-1$
   private static final String ROW_NAME = "row-name"; //$NON-NLS-1$
-  private static int CHART_COUNT = 0;
+  //private static int CHART_COUNT = 0;
 
   protected void setUp() throws Exception {
     super.setUp();
@@ -73,7 +73,7 @@ public class PluginTest extends TestCase {
 
     // Now lets create some data
     ChartTableModel data = createChartTableModel();
-    output.setFilename(TEST_FILE_PATH + fileName.substring(0, fileName.indexOf('.')) + "_" + (CHART_COUNT++) + PNG_SUFFIX); //$NON-NLS-1$
+    output.setFilename(TEST_FILE_PATH + fileName.substring(0, fileName.indexOf('.')) + PNG_SUFFIX); //$NON-NLS-1$
     output.setFileType(IOutput.FILE_TYPE_PNG);
 
     // Load / parse the chart document
@@ -99,7 +99,7 @@ public class PluginTest extends TestCase {
 
     // Now lets create some data
     ChartTableModel data = createChartTableModel();
-    output.setFilename(TEST_FILE_PATH + fileName.substring(0, fileName.indexOf('.')) + "_" +(CHART_COUNT++) + JPG_SUFFIX); //$NON-NLS-1$
+    output.setFilename(TEST_FILE_PATH + fileName.substring(0, fileName.indexOf('.')) + JPG_SUFFIX); //$NON-NLS-1$
     output.setFileType(IOutput.FILE_TYPE_JPEG);
 
     // Load / parse the chart document
@@ -190,13 +190,13 @@ public class PluginTest extends TestCase {
       "PluginTest2c.xml", //$NON-NLS-1$
       "PluginTest2d.xml", //$NON-NLS-1$
       "PluginTest2e.xml", //$NON-NLS-1$
-      "PluginTest2f.xml", //$NON-NLS-1$
       "PluginTest3.xml", //$NON-NLS-1$
       "PluginTest4.xml", //$NON-NLS-1$
       "PluginTest5.xml", //$NON-NLS-1$
       "PluginTest6.xml", //$NON-NLS-1$
       "PluginTest7.xml", //$NON-NLS-1$
-      "PluginTest8.xml", //$NON-NLS-1$      
+      "PluginTest8a.xml", //$NON-NLS-1$      
+      "PluginTest8b.xml", //$NON-NLS-1$      
       "PluginTest9.xml", //$NON-NLS-1$
       "PluginTest10a.xml", //$NON-NLS-1$
       "PluginTest11a.xml", //$NON-NLS-1$

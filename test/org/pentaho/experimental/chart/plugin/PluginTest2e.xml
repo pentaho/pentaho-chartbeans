@@ -4,7 +4,7 @@
     .bar1 {
     color: red;
     -x-pentaho-chart-series-type: bar;
-    -x-pentaho-chart-bar-style: stack-percent;
+    -x-pentaho-chart-bar-style: stack-100percent;
     -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-bar-max-width: 10%;
     }
@@ -12,7 +12,7 @@
     .bar2 {
     color: black;
     -x-pentaho-chart-series-type: bar;
-    -x-pentaho-chart-bar-style: stack-percent;
+    -x-pentaho-chart-bar-style: stack-100percent;
     -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-bar-max-width: 10%;
     }
@@ -20,13 +20,13 @@
     .bar3 {
     color: green;
     -x-pentaho-chart-series-type: bar;
-    -x-pentaho-chart-bar-style: stack-percent;
+    -x-pentaho-chart-bar-style: stack-100percent;
     -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-bar-max-width: 10%;
     }
   </stylesheet>
 
-  <title>My Test Chart Name</title>
+  <title>Stack 100% Bars</title>
   
   <series name="budget" class="bar1" column-pos="2"/>
 

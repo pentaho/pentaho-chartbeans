@@ -2,7 +2,8 @@
 
   <stylesheet>
     .bar1 {
-    -x-pentaho-chart-gradient: white, red POINTS 1,10 2,20;
+    color: black;
+    -x-pentaho-chart-gradient: blue, red POINTS 1,10 2,20;
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: stacked;
     -x-pentaho-chart-categorical: true;
@@ -10,7 +11,8 @@
     }
 
     .bar2 {
-    -x-pentaho-chart-gradient: black, white POINTS 1,10 2,20;
+    color: blue;
+    -x-pentaho-chart-gradient: black, blue POINTS 1,10 2,20;
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: stacked;
     -x-pentaho-chart-categorical: true;
@@ -26,7 +28,7 @@
     }
   </stylesheet>
 
-  <title>My Test Chart Name</title>
+  <title>Stacked Bars</title>
   
   <series name="budget" class="bar1" column-pos="2"/>
 

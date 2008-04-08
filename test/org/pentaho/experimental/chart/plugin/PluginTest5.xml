@@ -29,7 +29,7 @@
     }
   </stylesheet>
 
-  <title>My Test Chart Name</title>
+  <title>Gradient Demo#2</title>
   
   <series name="budget" class="bar1" column-pos="2"/>
 
