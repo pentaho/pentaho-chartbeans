@@ -23,5 +23,9 @@
   -x-pentaho-chart-gradient-start: 0, 0;  
   -x-pentaho-chart-gradient-end: 1, 1;  
   -x-pentaho-chart-scale: 1;  
+  -x-pentaho-chart-axis-lower-margin: 5%;
+  -x-pentaho-chart-axis-upper-margin: 5%;
+  -x-pentaho-chart-axis-category-margin: 20%;
+  -x-pentaho-chart-axis-item-margin: 20%;    
 }
 

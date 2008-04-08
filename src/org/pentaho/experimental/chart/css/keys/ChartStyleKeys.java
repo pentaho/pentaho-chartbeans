@@ -126,5 +126,29 @@ public class ChartStyleKeys {
    */
   public static final StyleKey SCALE_NUM = StyleKeyRegistry.getRegistry().
       createKey("-x-pentaho-chart-scale", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+
+  /**
+   * The category margin for the axis
+   */
+  public static final StyleKey MARGIN_CATEGORY = StyleKeyRegistry.getRegistry().
+      createKey("-x-pentaho-chart-axis-category-margin", false, false, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+ 
+  /**
+   * The lower margin for the axis
+   */
+  public static final StyleKey MARGIN_LOWER = StyleKeyRegistry.getRegistry().
+      createKey("-x-pentaho-chart-axis-lower-margin", false, false, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+
+  /**
+   * The upper Margin for the axis
+   */
+  public static final StyleKey MARGIN_UPPER = StyleKeyRegistry.getRegistry().
+      createKey("-x-pentaho-chart-axis-upper-margin", false, false, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+
+  /**
+   * The item margin for the axis
+   */
+  public static final StyleKey MARGIN_ITEM = StyleKeyRegistry.getRegistry().
+      createKey("-x-pentaho-chart-axis-item-margin", false, false, StyleKey.All_ELEMENTS); //$NON-NLS-1$
 }
 
