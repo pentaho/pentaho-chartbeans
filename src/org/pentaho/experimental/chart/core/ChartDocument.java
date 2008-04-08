@@ -220,11 +220,20 @@ public class ChartDocument {
   
   /**
    * Provides the plot element in the given chart document. Returns null if not found.
-   * @return PlotOrientation  Returns the plot orientation for the given chart document.
+   * @return ChartElement Returns the plot element for the given chart document.
    */
   public ChartElement getPlotElement() {
     return getChartLevelElement(ChartElement.TAG_NAME_PLOT);
   }
+  
+  /**
+   * Provides the axis element in the given chart document. Returns null if not found.
+   * @return ChartElement Returns the axis element for the given chart document.
+   */
+  public ChartElement getAxisElement() {
+    return getChartLevelElement(ChartElement.TAG_NAME_AXIS);
+  }
+  
   
   /**
    * Provides the CSSValue for Plot Orientation eg: horizontal or vertical

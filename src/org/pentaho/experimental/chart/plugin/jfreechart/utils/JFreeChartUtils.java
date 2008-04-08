@@ -28,6 +28,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.urls.StandardCategoryURLGenerator;
+import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.category.DefaultIntervalCategoryDataset;
 import org.jfree.ui.GradientPaintTransformType;
@@ -54,6 +55,7 @@ import org.pentaho.reporting.libraries.css.values.CSSColorValue;
 import org.pentaho.reporting.libraries.css.values.CSSConstant;
 import org.pentaho.reporting.libraries.css.values.CSSFunctionValue;
 import org.pentaho.reporting.libraries.css.values.CSSNumericType;
+import org.pentaho.reporting.libraries.css.values.CSSNumericValue;
 import org.pentaho.reporting.libraries.css.values.CSSValue;
 import org.pentaho.reporting.libraries.css.values.CSSValuePair;
 
@@ -68,11 +70,12 @@ public class JFreeChartUtils {
    * Since a CategoryDataset stores values based on a multikey hash we supply as the keys
    * either the metadata column name or the column number and the metadata row name or row number
    * as the keys.
-   * 
+   *
    * As it's processing the data from the ChartTableModel into the DefaultCategoryDataset it
    * applies the scale specified in the 
    *
    * @param data - ChartTablemodel that represents the data that will be charted
+   * @param chartDocument
    * @return DefaultCategoryDataset that can be used as a source for JFreeChart
    * 
    */
@@ -85,10 +88,10 @@ public class JFreeChartUtils {
         Number number = (Number) data.getValueAt(row, column);
         if (number != null) {
           double value = number.doubleValue();
-          value *= getScale(chartDocument);
-          dataset.setValue(value, rowName, columnName);
-        }
+        value *= getScale(chartDocument);
+        dataset.setValue(value, rowName, columnName);
       }
+    }
     }
     return dataset;
   }
@@ -96,8 +99,8 @@ public class JFreeChartUtils {
   /**
    * Get the scale of the chart from the ChartTableModel.
    * 
-   * @param data
    * @return
+   * @param chartDocument
    */
   public static double getScale(ChartDocument chartDocument) {
     return Float.valueOf(chartDocument.getPlotElement().getLayoutStyle().getValue(ChartStyleKeys.SCALE_NUM).getCSSText());
@@ -137,7 +140,6 @@ public class JFreeChartUtils {
   /**
    * Paints the series border/outline.
    * 
-   * @param rhasija
    * @param categoryPlot    The plot that has the renderer object
    * @param seriesElements  The series elements from the chart document
    */
@@ -236,7 +238,7 @@ public class JFreeChartUtils {
         BarRenderer barRender = (BarRenderer)categoryPlot.getRenderer();
         Font font = getFont(seriesElements[i]);        
         barRender.setSeriesItemLabelFont(i, font, true);
-        barRender.setSeriesItemLabelsVisible(i, true, true);
+        barRender.setSeriesItemLabelsVisible(i, true, true);        
       }
     }
   }
@@ -281,6 +283,10 @@ public class JFreeChartUtils {
           st = getStandardGradientPaintTrans(seriesElements[i]);          
           BarRenderer barRender = (BarRenderer)categoryPlot.getRenderer();
           barRender.setGradientPaintTransformer(st);
+          final float barWidthPercent = getMaximumBarWidth(seriesElements[i]);
+          if (barWidthPercent > 0) {            
+            barRender.setMaximumBarWidth(barWidthPercent);
+          }
         }
       }    
     }
@@ -324,15 +330,15 @@ public class JFreeChartUtils {
         if (positionAttr != null) {
           column = lookupPosition(data, positionAttr.toString());
         } else {
-        column = columnDefault;
+          column = columnDefault;
         }
       }
     return column;
       }    
 
   /**
+   * @param data   data that contains the column
    * @param columnName - Name of the column to look for
-   * @param ChartTableModel - data that contains the column
    * @return and integer that represent the column indicated by columnName.
    * Returns -1 if columnName not found
    */
@@ -371,7 +377,7 @@ public class JFreeChartUtils {
   }
 
   /**
-   * @param chartDocument
+   * @param chartDocument - ChartDocument that defines what the series should look like
    * @return a boolean that indicates of if a legend should be included in the chart
    */
   public static boolean getShowLegend(ChartDocument chartDocument) {
@@ -381,7 +387,7 @@ public class JFreeChartUtils {
 
   /** 
    * If the chart URL template is defined in the plot tag with url value, then return true. False otherwise.
-   * @param chartDocument
+   * @param chartDocument - ChartDocument that defines what the series should look like
    * @return true if chart url templates are defined in the plot tag with url value.
    */
   public static boolean getShowUrls(ChartDocument chartDocument) {
@@ -402,7 +408,7 @@ public class JFreeChartUtils {
   /**
    * Returns a boolean value that indicates if the chart should generate tooltips
    * 
-   * @param chartDocument
+   * @param chartDocument - ChartDocument that defines what the series should look like
    * @return
    */
   public static boolean getShowToolTips(ChartDocument chartDocument) {
@@ -413,7 +419,7 @@ public class JFreeChartUtils {
   /**
    * Gets the title of the chart defined in the chartDocument
    * 
-   * @param chartDocument
+   * @param chartDocument - ChartDocument that defines what the series should look like
    * @return String - the title
    */
   public static String getTitle(ChartDocument chartDocument) {
@@ -427,7 +433,7 @@ public class JFreeChartUtils {
   /**
    * Returns the ValueCategoryLabel of the chart.
    * 
-   * @param chartDocument
+   * @param chartDocument - ChartDocument that defines what the series should look like
    * @return String - the value category label
    */
   public static String getValueCategoryLabel(ChartDocument chartDocument) {
@@ -438,7 +444,7 @@ public class JFreeChartUtils {
   /**
    * Returns the ValueAxisLabel of the chart.
    * 
-   * @param chartDocument
+   * @param chartDocument - ChartDocument that defines what the series should look like
    * @return String - the value axis label
    */
   public static String getValueAxisLabel(ChartDocument chartDocument) {
@@ -456,11 +462,55 @@ public class JFreeChartUtils {
    */
   public static void setPlotAttributes(CategoryPlot categoryPlot, ChartDocument chartDocument, ChartTableModel data) {
     setURLGeneration(categoryPlot.getRenderer(), chartDocument);
+    setAxisMargins(categoryPlot, chartDocument);
     setSeriesAttributes(categoryPlot, chartDocument, data);   
+  }
+
+ /**
+  * This method allows to manipulate bar width indirectly by sepecifying percentages for lower margin,
+  * upper margin, category margin and item margin. Definitions of these margins and how they effect bar width
+  * are available in the JFreeChart documentation.
+  * 
+  * @param categoryPlot    The plot object for the current chart
+  * @param chartDocument   Current chart defintion
+  */
+  private static void setAxisMargins(CategoryPlot categoryPlot, ChartDocument chartDocument) {
+    ChartElement axisElement = chartDocument.getAxisElement();
+    if (axisElement != null) {
+      LayoutStyle layoutStyle =  axisElement.getLayoutStyle();
+      CSSValue lowerMarginValue = layoutStyle.getValue(ChartStyleKeys.MARGIN_LOWER);
+      CSSValue upperMarginValue = layoutStyle.getValue(ChartStyleKeys.MARGIN_UPPER);
+      CSSValue itemMarginValue = layoutStyle.getValue(ChartStyleKeys.MARGIN_ITEM);
+      CSSValue categoryMarginValue = layoutStyle.getValue(ChartStyleKeys.MARGIN_CATEGORY);
+
+      // The lower, upper and category margins can be controlled through category axis
+      CategoryAxis categoryAxis = categoryPlot.getDomainAxis();
+      if (lowerMarginValue != null) {
+        double lowerMargin = ((CSSNumericValue)lowerMarginValue).getValue()/100;
+        categoryAxis.setLowerMargin(lowerMargin);
+      }
+      if (upperMarginValue != null) {
+        double upperMargin = ((CSSNumericValue)upperMarginValue).getValue()/100;
+        categoryAxis.setUpperMargin(upperMargin);
+      }
+      if (categoryMarginValue != null) {
+        double categoryMargin = ((CSSNumericValue)categoryMarginValue).getValue()/100;
+        categoryAxis.setCategoryMargin(categoryMargin);
+      }
+
+      if (itemMarginValue != null) {
+        double itemMargin = ((CSSNumericValue)itemMarginValue).getValue()/100;
+        if (categoryPlot.getRenderer() instanceof BarRenderer) {
+            BarRenderer barRenderer = (BarRenderer)categoryPlot.getRenderer();
+            barRenderer.setItemMargin(itemMargin);
+        }
+      }
+    }
   }
 
   /**
    * @param renderer
+   * @param chartDocument - ChartDocument that defines what the series should look like
    */
   public static void setURLGeneration(CategoryItemRenderer renderer, ChartDocument chartDocument) {
     if (getShowUrls(chartDocument)) {
@@ -470,7 +520,7 @@ public class JFreeChartUtils {
   }
 
   /**
-   * @param chartDocument
+   * @param chartDocument - ChartDocument that defines what the series should look like
    * @return
    */
   public static String getURLText(ChartDocument chartDocument) {
@@ -491,8 +541,8 @@ public class JFreeChartUtils {
    * Main method for setting ALL the series attributes.  This method is a stating
    * method for calling all the other helper methods.
    * 
-   * @param chart
-   * @param chartDocument
+   * @param categoryPlot
+   * @param chartDocument - ChartDocument that defines what the series should look like
    * @param data
    */
   public static void setSeriesAttributes(CategoryPlot categoryPlot, ChartDocument chartDocument, ChartTableModel data) {
@@ -676,34 +726,48 @@ public class JFreeChartUtils {
    */
   private static float getFontSize(ChartElement element) {
     LayoutStyle layoutStyle = element.getLayoutStyle();
-    String fontSize =  layoutStyle.getValue(FontStyleKeys.FONT_SIZE).getCSSText();
-    float size = ChartCSSFontSizeMappingConstants.MEDIUM;
-    // We are assuming the smallest size to be 6. We can change it 
-    // latter to be a property so that the code does not need to be modified.
-    if (fontSize.equals((FontSizeConstant.XX_SMALL).getCSSText())) {
-      size = ChartCSSFontSizeMappingConstants.XX_SMALL;
-    } else if (fontSize.equals((FontSizeConstant.X_SMALL).getCSSText())) {
-      size = ChartCSSFontSizeMappingConstants.X_SMALL;
-    } else if (fontSize.equals((FontSizeConstant.SMALL).getCSSText())) {
-      size = ChartCSSFontSizeMappingConstants.SMALL;
-    } else if (fontSize.equals((FontSizeConstant.MEDIUM).getCSSText())) {
-      size = ChartCSSFontSizeMappingConstants.MEDIUM;
-    } else if (fontSize.equals((FontSizeConstant.LARGE).getCSSText())) {
-      size = ChartCSSFontSizeMappingConstants.LARGE;
-    } else if (fontSize.equals((FontSizeConstant.X_LARGE).getCSSText())) {
-      size = ChartCSSFontSizeMappingConstants.X_LARGE;
-    } else if (fontSize.equals((FontSizeConstant.XX_LARGE).getCSSText())) {
-      size = ChartCSSFontSizeMappingConstants.XX_LARGE;
-    } else if (fontSize.equals(RelativeFontSize.SMALLER)) { 
-      ChartElement parentSeriesElement = element.getParentItem();
-      float parentSize = getFontSize(parentSeriesElement);
+    CSSValue fontSizeValue =  layoutStyle.getValue(FontStyleKeys.FONT_SIZE);
+    
+    if (FontSizeConstant.XX_SMALL.equals(fontSizeValue)) {
+      return ChartCSSFontSizeMappingConstants.XX_SMALL;
+    } 
+    if (FontSizeConstant.X_SMALL.equals(fontSizeValue)) {
+      return ChartCSSFontSizeMappingConstants.X_SMALL;
+    } 
+    if (FontSizeConstant.SMALL.equals(fontSizeValue)) {
+      return ChartCSSFontSizeMappingConstants.SMALL;
+    } 
+    if (FontSizeConstant.MEDIUM.equals(fontSizeValue)) {
+      return ChartCSSFontSizeMappingConstants.MEDIUM;
+    } 
+    if (FontSizeConstant.LARGE.equals(fontSizeValue)) {
+      return ChartCSSFontSizeMappingConstants.LARGE;
+    } 
+    if (FontSizeConstant.X_LARGE.equals(fontSizeValue)) {
+      return ChartCSSFontSizeMappingConstants.X_LARGE;
+    } 
+    if (FontSizeConstant.XX_LARGE.equals(fontSizeValue)) {
+      return ChartCSSFontSizeMappingConstants.XX_LARGE;
+    } 
+    
+    /*
+     * If you encounter SMALLER/LARGER/PERCENT value for the parent
+     * then that is an error because at this point the parent defined
+     * in the layout style should have absolute values. To overcome that
+     * we are returning static value here
+     */ 
+    if (fontSizeValue.equals(RelativeFontSize.SMALLER)) {
+      ChartElement parentElement = element.getParentItem();
+      float parentSize = getFontSize(parentElement);
       if (parentSize >= ChartCSSFontSizeMappingConstants.XX_SMALL && 
           parentSize <= ChartCSSFontSizeMappingConstants.XX_LARGE ) {
         return (parentSize-2);
       } else {
         return ChartCSSFontSizeMappingConstants.SMALLER;
       }
-    } else if (fontSize.equals(RelativeFontSize.LARGER)) {
+    }
+    
+    if (fontSizeValue.equals(RelativeFontSize.LARGER)) { 
       ChartElement parentElement = element.getParentItem();
       float parentSize = getFontSize(parentElement);
       if (parentSize >= ChartCSSFontSizeMappingConstants.XX_SMALL && 
@@ -712,20 +776,28 @@ public class JFreeChartUtils {
       } else {
         return ChartCSSFontSizeMappingConstants.LARGER;
       }
-    } else if (fontSize.endsWith(CSSNumericType.PERCENTAGE.toString())) { 
-      String fontPercent = fontSize.substring(0, fontSize.indexOf(CSSNumericType.PERCENTAGE.toString()));
-      ChartElement parentElement = element.getParentItem();
-      float parentSize = getFontSize(parentElement);
-      if (parentSize >= ChartCSSFontSizeMappingConstants.XX_SMALL && 
-          parentSize <= ChartCSSFontSizeMappingConstants.XX_LARGE ) {
-        return (parentSize * Float.parseFloat(fontPercent)/100);
-      } 
-    } else if(fontSize.endsWith(CSSNumericType.PT.toString())) { 
-      fontSize = fontSize.substring(0, fontSize.indexOf("p")-1); //$NON-NLS-1$
-      size = Float.parseFloat(fontSize);
+    }
+    // We will hit the code below only in case of percent or pt
+    if (fontSizeValue instanceof CSSNumericValue) {
+      CSSNumericValue fontSize = (CSSNumericValue) fontSizeValue;
+      final CSSNumericType fontSizeType = fontSize.getType();
+      if (CSSNumericType.PERCENTAGE.equals(fontSizeType)) {
+        ChartElement parentElement = element.getParentItem();
+        float parentSize = getFontSize(parentElement);
+        if (parentSize >= ChartCSSFontSizeMappingConstants.XX_SMALL && 
+            parentSize <= ChartCSSFontSizeMappingConstants.XX_LARGE ) {
+          return (parentSize * ((float)fontSize.getValue())/100);
+        }
+      }
+      if (CSSNumericType.PT.equals(fontSizeType)) {
+        return (float)fontSize.getValue();
+      }
     }
     
-    return size;
+    //If we do not have a font defined at current level 
+    // then we return the parent font size
+    ChartElement parentElement = element.getParentItem();
+    return getFontSize(parentElement);
   }
   
   /**
@@ -744,5 +816,26 @@ public class JFreeChartUtils {
       showItemLabel = true; 
     }
     return showItemLabel;
+  }
+  
+  /**
+   * Controls what the maximum bar width can be.
+   *
+   * @param seriesElement Maximum bar width setting for current series element
+   * @return Returns the current maximum bar width setting
+   */
+  public static float getMaximumBarWidth(ChartElement seriesElement) {
+    float maxWidth = 0;
+    LayoutStyle layoutStyle = seriesElement.getLayoutStyle();
+    CSSValue maxWidthValue = layoutStyle.getValue(ChartStyleKeys.BAR_MAX_WIDTH);
+    
+    //TODO: need to handle auto and length value probably
+    if (maxWidthValue instanceof CSSNumericValue) {
+      CSSNumericValue maxWidthNumValue = (CSSNumericValue)maxWidthValue;
+      if (CSSNumericType.PERCENTAGE.equals(maxWidthNumValue.getType())) {
+        maxWidth = (float)(maxWidthNumValue.getValue()/100);  
+      }
+    }
+    return maxWidth;
   }
 }

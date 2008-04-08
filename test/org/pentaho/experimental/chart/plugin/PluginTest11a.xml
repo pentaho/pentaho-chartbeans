@@ -2,24 +2,33 @@
 
   <stylesheet>
     .bar1 {
+    border-style: solid;
+    border-width: thick;
+    border-color: black;
     color: blue;
     font-family: sans-serif;
     font-variant: small-caps;
-    font-size: 10pt;
+    font-size: 8pt;
     font-style: italic;
-    -x-pentaho-chart-gradient: blue, yellow HORIZONTAL 1,10 2,20;		
+    -x-pentaho-chart-item-label-text: '{0,number,$##.##}';
+    -x-pentaho-chart-item-label-visible: yes;
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
     -x-pentaho-chart-categorical: true;
-    -x-pentaho-chart-bar-max-width: 10%;
+    -x-pentaho-chart-bar-max-width: 1%;
     }
 
     .bar2 {
     color: orange;
-    font-size: 10pt;    
+    border-style: solid;
+    border-width: medium;
+    border-color: rgb(250,0,255);
+    font-family: cursive;
+    font-size: 16pt;    
     font-variant: normal;
     font-style: normal;
-    -x-pentaho-chart-gradient: blue, yellow HORIZONTAL 1,10 2,20;		
+    -x-pentaho-chart-item-label-text: '{0,number,$##.##}';
+    -x-pentaho-chart-item-label-visible: yes;
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
     -x-pentaho-chart-categorical: true;
@@ -28,14 +37,18 @@
 
     .bar3 {
     color: green;
+		border-style: dashed;
+    border-width: thick;    
+    border-color: #FF0000;
     font-size: smaller;
-    font-style: normal;    
+    font-style: oblique;    
     font-variant: small-caps;
-    -x-pentaho-chart-gradient: blue, yellow HORIZONTAL 1,10 2,20;		    
+    -x-pentaho-chart-item-label-text: '{0,number,$##.##}';
+    -x-pentaho-chart-item-label-visible: yes;
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
     -x-pentaho-chart-categorical: true;
-    -x-pentaho-chart-bar-max-width: 10%;
+    -x-pentaho-chart-bar-max-width: 5%;
     }
   </stylesheet>
 
@@ -47,5 +60,7 @@
 
   <series name="forecast" class="bar3" column-pos="0"/>
 
-  <plot style="-x-pentaho-chart-orientation: horizontal"/>
+  <plot style="-x-pentaho-chart-orientation: horizontal; -x-pentaho-chart-axis-lower-margin: 5%;"/>
+  
+	<axis style="-x-pentaho-chart-axis-lower-margin: 30%;"/>	
 </chart>

@@ -198,6 +198,11 @@ public class PluginTest extends TestCase {
       "PluginTest7.xml", //$NON-NLS-1$
       "PluginTest8.xml", //$NON-NLS-1$      
       "PluginTest9.xml", //$NON-NLS-1$
+      "PluginTest10a.xml", //$NON-NLS-1$
+      "PluginTest11a.xml", //$NON-NLS-1$
+      "PluginTest11b.xml", //$NON-NLS-1$
+      "PluginTest11c.xml", //$NON-NLS-1$
+      "PluginTest11d.xml", //$NON-NLS-1$
     };
     
     for (int i = 0; i < fileNames.length; i++) {
