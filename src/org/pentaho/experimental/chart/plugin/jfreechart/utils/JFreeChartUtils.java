@@ -82,9 +82,12 @@ public class JFreeChartUtils {
       for(int column=0; column<data.getColumnCount(); column++) {
         Comparable<?> columnName = data.getColumnName(column) == null ? column : data.getColumnName(column);
         Comparable<?> rowName = (Comparable<?>) (data.getRowMetadata(row, "row-name") == null ? row : data.getRowMetadata(row, "row-name")); //$NON-NLS-1$  //$NON-NLS-2$
-        double value = ((Number)data.getValueAt(row, column)).doubleValue();
-        value *= getScale(chartDocument);
-        dataset.setValue(value, rowName, columnName);
+        Number number = (Number) data.getValueAt(row, column);
+        if (number != null) {
+          double value = number.doubleValue();
+          value *= getScale(chartDocument);
+          dataset.setValue(value, rowName, columnName);
+        }
       }
     }
     return dataset;

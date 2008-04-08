@@ -1,14 +1,15 @@
 package org.pentaho.experimental.chart.plugin.jfreechart;
 
 import java.io.Serializable;
+import java.text.NumberFormat;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.IntervalBarRenderer;
 import org.jfree.chart.renderer.category.LayeredBarRenderer;
 import org.jfree.chart.renderer.category.StackedBarRenderer;
-import org.jfree.chart.urls.StandardCategoryURLGenerator;
 import org.jfree.util.SortOrder;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
@@ -63,6 +64,7 @@ public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable
     boolean cylinder = false;
     boolean interval = false;
     boolean layered = false;
+    boolean stacked100Pct = false;
 
     ChartElement[] elements = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_SERIES);
     for (ChartElement element : elements) {
@@ -72,13 +74,18 @@ public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable
       cylinder = value.equals(ChartBarStyle.CYLINDER) ? true : cylinder;
       interval = value.equals(ChartBarStyle.INTERVAL) ? true : interval;
       layered = value.equals(ChartBarStyle.LAYERED) ? true : layered;
+      stacked100Pct = value.equals(ChartBarStyle.STACK_100_PERCENT) ? true : stacked100Pct;
     }
     
     JFreeChart chart = null;
     // Note:  We'll handle url generator when we update the plot info
-    if (stacked || stackedPct) {
+    if (stacked || stackedPct || stacked100Pct) {
       chart = ChartFactory.createStackedBarChart(title, valueAxisLabel, valueAxisLabel, JFreeChartUtils.createDefaultCategoryDataset(data, chartDocument), orientation, legend, toolTips, false);
-      ((StackedBarRenderer)chart.getCategoryPlot().getRenderer()).setRenderAsPercentages(stackedPct);
+      ((StackedBarRenderer)chart.getCategoryPlot().getRenderer()).setRenderAsPercentages(stackedPct || stacked100Pct);
+      if (stacked100Pct) {
+        NumberAxis rangeAxis = (NumberAxis) chart.getCategoryPlot().getRangeAxis();
+        rangeAxis.setNumberFormatOverride(NumberFormat.getPercentInstance());
+      }
     } else {   
       if (cylinder) {
         chart = ChartFactory.createBarChart(title, valueCategoryLabel, valueAxisLabel, JFreeChartUtils.createDefaultCategoryDataset(data, chartDocument), orientation, legend, toolTips, false);
