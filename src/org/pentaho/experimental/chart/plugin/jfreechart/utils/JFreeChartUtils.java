@@ -75,7 +75,7 @@ public class JFreeChartUtils {
    * applies the scale specified in the 
    *
    * @param data - ChartTablemodel that represents the data that will be charted
-   * @param chartDocument
+   * @param chartDocument - Contains actual chart definition
    * @return DefaultCategoryDataset that can be used as a source for JFreeChart
    * 
    */
@@ -99,15 +99,16 @@ public class JFreeChartUtils {
   /**
    * Get the scale of the chart from the ChartTableModel.
    * 
-   * @return
-   * @param chartDocument
+   * @return Returns the scale for the current plot
+   * @param chartDocument Contains actual chart definition
    */
   public static double getScale(ChartDocument chartDocument) {
     return Float.valueOf(chartDocument.getPlotElement().getLayoutStyle().getValue(ChartStyleKeys.SCALE_NUM).getCSSText());
   }
 
   /**
-   * @param data
+   * @param data - Data for the chart
+   * @param chartDocument - Actual chart definiton
    * @return
    */
   public static DefaultIntervalCategoryDataset createDefaultIntervalCategoryDataset(ChartTableModel data, ChartDocument chartDocument) {
@@ -173,7 +174,6 @@ public class JFreeChartUtils {
    * the bar. So we accept the first value and implement it for border-style and 
    * border-width.
    * 
-   * @author rhasija
    * @param element The current series element
    * @return BasicStroke  The basic stroke object that would implement border-style and border-width
    */
@@ -224,10 +224,9 @@ public class JFreeChartUtils {
   
   /**
    * Sets the series item label(s) defined in the chartDocument
-   * @author rhasija
-   * @param plot the plot to set the series labels on
-   * @param chartDocument the document that contains the label information
-   * @param data the data
+   * @param categoryPlot   - Plot for the current chart
+   * @param seriesElements - Array of Series elements
+   * @param data - the data
    */
   public static void setSeriesItemLabel(CategoryPlot categoryPlot, ChartElement[] seriesElements, ChartTableModel data) {
     categoryPlot.getRenderer().setBaseItemLabelGenerator(new ChartItemLabelGenerator(seriesElements, data));
@@ -247,9 +246,8 @@ public class JFreeChartUtils {
    * Sets the paint(gradient color) on all the series listed by the 
    * chartDocument.
    * 
-   * @author rhasija
    * @param categoryPlot - the active plot
-   * @param chartDocument - ChartDocument that defines what the series should look like
+   * @param seriesElements - Array of series elements that contains series tags
    * @param data - The actual chart data
    */
   public static void setSeriesPaint(CategoryPlot categoryPlot, ChartElement[] seriesElements, ChartTableModel data) {
@@ -298,13 +296,12 @@ public class JFreeChartUtils {
    * is defined then that is returned.  If no color or gradient is set then this method returns
    * a null
    *
-   * @author rhasija
-   * @param seriesElement
+   * @param seriesElement - Current series element
    * @return a Paint object defined by the seriesElement
    */
   private static Paint getPaintFromSeries(ChartElement seriesElement) {
     String gradientType = seriesElement.getLayoutStyle().getValue(ChartStyleKeys.GRADIENT_TYPE).getCSSText();
-    Paint paint = null;
+    Paint paint;
     if (gradientType != null && !gradientType.equalsIgnoreCase("none")) { //$NON-NLS-1$ 
       paint = getGradientPaint(seriesElement);
     } else {
@@ -322,7 +319,7 @@ public class JFreeChartUtils {
    */
   private static int getSeriesColumn(ChartElement seriesElement, ChartTableModel data, int columnDefault) {
       Object positionAttr = seriesElement.getAttribute(ChartElement.COLUMN_POSITION);
-      int column = 0;
+      int column;
       if (positionAttr != null) {
         column = Integer.parseInt(positionAttr.toString());
       } else {
@@ -409,7 +406,7 @@ public class JFreeChartUtils {
    * Returns a boolean value that indicates if the chart should generate tooltips
    * 
    * @param chartDocument - ChartDocument that defines what the series should look like
-   * @return
+   * @return true if we want to show tool tips
    */
   public static boolean getShowToolTips(ChartDocument chartDocument) {
     // TODO determine this from the chartDocument
@@ -509,7 +506,7 @@ public class JFreeChartUtils {
   }
 
   /**
-   * @param renderer
+   * @param renderer - Renderer for the current chart
    * @param chartDocument - ChartDocument that defines what the series should look like
    */
   public static void setURLGeneration(CategoryItemRenderer renderer, ChartDocument chartDocument) {
@@ -521,7 +518,7 @@ public class JFreeChartUtils {
 
   /**
    * @param chartDocument - ChartDocument that defines what the series should look like
-   * @return
+   * @return URL text
    */
   public static String getURLText(ChartDocument chartDocument) {
     ChartElement plotElement = chartDocument.getPlotElement();
@@ -541,9 +538,9 @@ public class JFreeChartUtils {
    * Main method for setting ALL the series attributes.  This method is a stating
    * method for calling all the other helper methods.
    * 
-   * @param categoryPlot
+   * @param categoryPlot - Plot for the current chart
    * @param chartDocument - ChartDocument that defines what the series should look like
-   * @param data
+   * @param data - Actual data
    */
   public static void setSeriesAttributes(CategoryPlot categoryPlot, ChartDocument chartDocument, ChartTableModel data) {
     // TODO set other stuff about the series.
@@ -576,10 +573,10 @@ public class JFreeChartUtils {
         CSSValuePair gradStart = (CSSValuePair) layoutStyle.getValue(ChartStyleKeys.GRADIENT_START);
         CSSValuePair gradEnd = (CSSValuePair) layoutStyle.getValue(ChartStyleKeys.GRADIENT_END);
         // Get the start and end co-ordinates for the gradient start and end.
-        float x1 = Float.valueOf(gradStart.getFirstValue().getCSSText()).floatValue();
-        float y1 = Float.valueOf(gradStart.getSecondValue().getCSSText()).floatValue();
-        float x2 = Float.valueOf(gradEnd.getFirstValue().getCSSText()).floatValue();
-        float y2 = Float.valueOf(gradEnd.getSecondValue().getCSSText()).floatValue();
+        float x1 = Float.valueOf(gradStart.getFirstValue().getCSSText());
+        float y1 = Float.valueOf(gradStart.getSecondValue().getCSSText());
+        float x2 = Float.valueOf(gradEnd.getFirstValue().getCSSText());
+        float y2 = Float.valueOf(gradEnd.getSecondValue().getCSSText());
         
         gradPaint = new GradientPaint(x1, y1, gradColors[0], x2, y2, gradColors[1]);
       } else if (!gradType.getCSSText().equalsIgnoreCase((ChartGradientType.NONE).getCSSText())) {
@@ -596,7 +593,6 @@ public class JFreeChartUtils {
   
   /**
    * Returns an array that contains two colors; color1 and color2 for the gradient
-   * @author rhasija 
    * @param element Current series element.
    * @return Color[] Contains 2 elements: color1 and color2 for the GradientPaint class.
    */
@@ -619,7 +615,6 @@ public class JFreeChartUtils {
   
   /**
    * Retrieves the color information from the CSSValue parameter, creates a Color object and returns the same.
-   * @author rhasija
    * @param value   CSSValue that has the color information.
    * @return Color  Returns a Color object created from the color information in the value parameter
    *                If the CSSValue does not contain any color information then returns a null.
@@ -630,9 +625,9 @@ public class JFreeChartUtils {
     if (value instanceof CSSFunctionValue) {
       CSSFunctionValue func1 = (CSSFunctionValue)value;
       CSSValue[] rgbArr = func1.getParameters();
-      int red   = Integer.valueOf(rgbArr[0].toString()).intValue();
-      int green = Integer.valueOf(rgbArr[1].toString()).intValue();
-      int blue  = Integer.valueOf(rgbArr[2].toString()).intValue();
+      int red   = Integer.valueOf(rgbArr[0].toString());
+      int green = Integer.valueOf(rgbArr[1].toString());
+      int blue  = Integer.valueOf(rgbArr[2].toString());
       gradientColor = new Color(red, green, blue);
     } else if (value instanceof CSSColorValue) {
       CSSColorValue colorValue = (CSSColorValue)value;
@@ -646,7 +641,6 @@ public class JFreeChartUtils {
    * Returns a new StandardGradientPaintTransformer object if the series element has gradient type
    * of horizontal, vertical, center-horizontal and center-vertical.
    * 
-   * @author rhasija
    * @param   ce  Current series element
    * @return  StandardGradientPaintTransformer  New StandardGradientPaintTransformer with 
    *                                            appropriate gradient paint transform type. 
@@ -802,8 +796,7 @@ public class JFreeChartUtils {
   
   /**
    * Returns true if the item label visibility is set to true for the given element
-   * 
-   * @author rhasija  
+   *   
    * @param element      Current series element.
    * @return true/false
    */
