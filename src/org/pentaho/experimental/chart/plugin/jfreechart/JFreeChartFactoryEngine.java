@@ -91,7 +91,7 @@ public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable
         chart = ChartFactory.createBarChart(title, valueCategoryLabel, valueAxisLabel, JFreeChartUtils.createDefaultCategoryDataset(data, chartDocument), orientation, legend, toolTips, false);
         CylinderRenderer renderer = new CylinderRenderer();
         chart.getCategoryPlot().setRenderer(renderer);
-      } if (layered) { 
+      } else if (layered) { 
         chart = ChartFactory.createBarChart(title, valueCategoryLabel, valueAxisLabel, JFreeChartUtils.createDefaultCategoryDataset(data, chartDocument), orientation, legend, toolTips, false);
         LayeredBarRenderer renderer = new LayeredBarRenderer();
         renderer.setDrawBarOutline(false);
