@@ -16,18 +16,20 @@ import org.pentaho.experimental.chart.data.ChartTableModel;
  *
  */
 public class ChartSeriesDataLinkInfoTest extends TestCase {
-  
+  Boolean nay = new Boolean(false);
+  Boolean yay = new Boolean(true);
+
   final Object[][] dataSample = {
       {"Mary", "Campione",//$NON-NLS-1$ //$NON-NLS-2$
-      "Snowboarding", new Integer(5), new Boolean(false)}, //$NON-NLS-1$  
+      "Snowboarding", new Integer(5), nay}, //$NON-NLS-1$
       {"Alison", "Huml",//$NON-NLS-1$ //$NON-NLS-2$
-      "Rowing", new Integer(3), new Boolean(true)}, //$NON-NLS-1$ 
+      "Rowing", new Integer(3), yay}, //$NON-NLS-1$
       {"Kathy", "Walrath",//$NON-NLS-1$ //$NON-NLS-2$
-      "Knitting", new Integer(2), new Boolean(false)}, //$NON-NLS-1$ 
+      "Knitting", new Integer(2), nay}, //$NON-NLS-1$
       {"Sharon", "Zakhour",//$NON-NLS-1$ //$NON-NLS-2$
-      "Speed reading", new Integer(20), new Boolean(true)}, //$NON-NLS-1$ 
+      "Speed reading", new Integer(20), yay}, //$NON-NLS-1$
       {"Philip", "Milne", //$NON-NLS-1$ //$NON-NLS-2$
-      "Pool", new Integer(10), new Boolean(false)}, //$NON-NLS-1$ 
+      "Pool", new Integer(10), nay}, //$NON-NLS-1$ 
     };
 
   /**

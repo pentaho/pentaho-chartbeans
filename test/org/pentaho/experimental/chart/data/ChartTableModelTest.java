@@ -6,18 +6,21 @@ import org.junit.Test;
 /**
  * This class tests ChartTableModel class
  */
+@SuppressWarnings({"AssertEqualsBetweenInconvertibleTypes"})
 public class ChartTableModelTest extends TestCase {
+  boolean yay = new Boolean(true);
+  boolean nay = new Boolean(false);
   final Object[][] dataSample = {
       {"Mary", "Campione",//$NON-NLS-1$ //$NON-NLS-2$
-          "Snowboarding", new Integer(5), new Boolean(false)}, //$NON-NLS-1$
+          "Snowboarding", new Integer(5), nay}, //$NON-NLS-1$
       {"Alison", "Huml",//$NON-NLS-1$ //$NON-NLS-2$
-          "Rowing", new Integer(3), new Boolean(true)}, //$NON-NLS-1$
+          "Rowing", new Integer(3), yay}, //$NON-NLS-1$
       {"Kathy", "Walrath",//$NON-NLS-1$ //$NON-NLS-2$
-          "Knitting", new Integer(2), new Boolean(false)}, //$NON-NLS-1$
+          "Knitting", new Integer(2),nay}, //$NON-NLS-1$
       {"Sharon", "Zakhour",//$NON-NLS-1$ //$NON-NLS-2$
-          "Speed reading", new Integer(20), new Boolean(true)}, //$NON-NLS-1$
+          "Speed reading", new Integer(20), yay}, //$NON-NLS-1$
       {"Philip", "Milne", //$NON-NLS-1$ //$NON-NLS-2$
-          "Pool", new Integer(10), new Boolean(false)}, //$NON-NLS-1$
+          "Pool", new Integer(10), nay}, //$NON-NLS-1$
   };
 
   @Test
