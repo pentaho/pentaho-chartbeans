@@ -34,8 +34,7 @@ public class MaxBarWidthReadHandler extends AbstractWidthReadHandler
               value.getFloatValue());
     }
     return maxWidth;*/
-    
-    final CSSValue maxWidth = parseWidth(value);
-    return maxWidth;
+
+    return parseWidth(value);
   }
 }

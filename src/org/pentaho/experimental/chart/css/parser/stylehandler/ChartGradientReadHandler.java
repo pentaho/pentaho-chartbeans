@@ -41,9 +41,9 @@ import org.w3c.css.sac.LexicalUnit;
  */
 public class ChartGradientReadHandler implements CSSCompoundValueReadHandler {
 
-    private ChartGradientColorReadHandler gradientColor;
-    private ChartGradientTypeReadHandler gradientType;
-    private ChartGradientPositionReadHandler gradientPos;
+    private final ChartGradientColorReadHandler gradientColor;
+    private final ChartGradientTypeReadHandler gradientType;
+    private final ChartGradientPositionReadHandler gradientPos;
     
     public ChartGradientReadHandler() {
       gradientColor = new ChartGradientColorReadHandler();
@@ -66,8 +66,6 @@ public class ChartGradientReadHandler implements CSSCompoundValueReadHandler {
      * @return
      */
     public Map createValues(LexicalUnit unit) {
-      Map<StyleKey, CSSValue> map = new HashMap<StyleKey, CSSValue>();
-
       // Gradient Color
       CSSValue color = null;
       if (unit != null) {
@@ -107,8 +105,10 @@ public class ChartGradientReadHandler implements CSSCompoundValueReadHandler {
       if (unit != null) {
         end = gradientPos.createValue(null, unit);
       }
-      
+
+      final Map<StyleKey, CSSValue> map;
       if (color != null && type != null && start != null && end != null) {
+        map = new HashMap<StyleKey, CSSValue>();
         map.put(ChartStyleKeys.GRADIENT_COLOR, color);      
         map.put(ChartStyleKeys.GRADIENT_TYPE, type);
         map.put(ChartStyleKeys.GRADIENT_START, start);

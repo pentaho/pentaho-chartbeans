@@ -38,9 +38,9 @@ import org.w3c.css.sac.LexicalUnit;
  */
 public class ChartAxisTypeReadHandler implements CSSCompoundValueReadHandler {
 
-    private ChartAxisDimensionReadHandler axisDimension;
-    private ChartAxisPositionReadHandler axisPosition;
-    private ChartAxisOrderReadHandler axisOrder;
+    private final ChartAxisDimensionReadHandler axisDimension;
+    private final ChartAxisPositionReadHandler axisPosition;
+    private final ChartAxisOrderReadHandler axisOrder;
 
     public ChartAxisTypeReadHandler() {
       axisDimension = new ChartAxisDimensionReadHandler();
@@ -61,37 +61,38 @@ public class ChartAxisTypeReadHandler implements CSSCompoundValueReadHandler {
      * @param value
      * @return
      */
-    public Map createValues(LexicalUnit unit) {  
-      Map<StyleKey, CSSValue> map = new HashMap<StyleKey, CSSValue>();
-
+    public Map createValues(final LexicalUnit unit) {
       CSSValue dimension = null;
+      LexicalUnit positionUnit = null;
       if (unit != null) {
         dimension = axisDimension.createValue(null, unit);
         if (dimension != null) {
-          unit = unit.getNextLexicalUnit(); 
+          positionUnit = unit.getNextLexicalUnit();
         } 
       }  
       
       //System.out.println("" + dimension);
+      LexicalUnit orderUnit = null;
       CSSValue position = null;
-      if (unit != null) {
-        position = axisPosition.createValue(null, unit);
+      if (positionUnit != null) {
+        position = axisPosition.createValue(null, positionUnit);
         
         if (position != null) {
-          unit = unit.getNextLexicalUnit();
+          orderUnit = positionUnit.getNextLexicalUnit();
         } 
       }
 
       //System.out.println("," + position);
       
       CSSValue order = null;
-      if (unit != null) {
-        order = axisOrder.createValue(null, unit);
+      if (orderUnit != null) {
+        order = axisOrder.createValue(null, orderUnit);
       }
       
       //System.out.println("," + order);
-
+      final Map<StyleKey, CSSValue> map;
       if (dimension != null && position != null && order != null) {
+        map = new HashMap<StyleKey, CSSValue>();
         map.put(ChartStyleKeys.AXIS_DIMENSION, dimension);      
         map.put(ChartStyleKeys.AXIS_POSITION, position);
         map.put(ChartStyleKeys.AXIS_ORDER, order);
