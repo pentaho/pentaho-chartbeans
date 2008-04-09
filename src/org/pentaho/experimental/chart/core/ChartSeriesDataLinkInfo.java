@@ -27,7 +27,7 @@ import java.util.HashMap;
  */
 public class ChartSeriesDataLinkInfo {
 
-  private HashMap<ChartElement, Integer> seriesDataLinkHashMap = new HashMap<ChartElement, Integer>();
+  private final HashMap<ChartElement, Integer> seriesDataLinkHashMap = new HashMap<ChartElement, Integer>();
 
   ChartSeriesDataLinkInfo(final ChartTableModel data) {
     final ChartTableModel chartTableModelObj = data;
@@ -50,8 +50,7 @@ public class ChartSeriesDataLinkInfo {
    * @return columnPosition Returns the column number based on the series element.
    */
   public Integer getColumnNum(final ChartElement seriesElement) {
-    final Integer columnPos = seriesDataLinkHashMap.get(seriesElement);
-    return columnPos;
+    return seriesDataLinkHashMap.get(seriesElement);
   }
 
   /**

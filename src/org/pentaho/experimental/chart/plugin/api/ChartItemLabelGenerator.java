@@ -36,8 +36,8 @@ import org.pentaho.reporting.libraries.css.values.CSSStringValue;
  */
 public class ChartItemLabelGenerator extends StandardCategoryItemLabelGenerator {
   
-  ChartElement[] chartElements;
-  ChartTableModel chartData;
+  final ChartElement[] chartElements;
+  final ChartTableModel chartData;
   Map<Integer, ChartElement> map = new HashMap<Integer, ChartElement>();
   
   public ChartItemLabelGenerator(final ChartElement[] chartElements, final ChartTableModel chartData) {
@@ -63,8 +63,7 @@ public class ChartItemLabelGenerator extends StandardCategoryItemLabelGenerator 
    */
   public String generateLabel(final CategoryDataset dataset, final int row, final int column) {
     String result = null;
-    String messageFormat = "";//$NON-NLS-1$
-    
+
     if (dataset != null) {
       try {
         final Object data = dataset.getValue(row, column);
@@ -74,7 +73,7 @@ public class ChartItemLabelGenerator extends StandardCategoryItemLabelGenerator 
             final LayoutStyle layoutStyle = ce.getLayoutStyle();
           
             //Format the item label text 
-            messageFormat = ((CSSStringValue)layoutStyle.getValue(ChartStyleKeys.ITEM_LABEL_TEXT)).getValue();
+            String messageFormat = ((CSSStringValue) layoutStyle.getValue(ChartStyleKeys.ITEM_LABEL_TEXT)).getValue();//$NON-NLS-1$
             result = MessageFormat.format(messageFormat, data, dataset.getColumnKey(column));
             
             //Get the font variant to convert the label text to upper case if the 
@@ -100,8 +99,8 @@ public class ChartItemLabelGenerator extends StandardCategoryItemLabelGenerator 
    *  were copied to this class. We need to move these methods to a commons class.
    */    
   private void mapSeriesToColumnNumber() {
-    int i = 0;
     if (chartElements != null) {
+      int i = 0;
       for (final ChartElement seriesElement : chartElements) {
         final int columnNum = getSeriesColumn(seriesElement, i);
         map.put(Integer.valueOf(columnNum), seriesElement);

@@ -7,7 +7,7 @@ import org.junit.Test;
  * This class tests ChartTableModel class
  */
 public class ChartTableModelTest extends TestCase {
-  Object[][] dataSample = {
+  final Object[][] dataSample = {
       {"Mary", "Campione",//$NON-NLS-1$ //$NON-NLS-2$
           "Snowboarding", new Integer(5), new Boolean(false)}, //$NON-NLS-1$
       {"Alison", "Huml",//$NON-NLS-1$ //$NON-NLS-2$
@@ -44,66 +44,65 @@ public class ChartTableModelTest extends TestCase {
    */
   public final void testNullMetaData() {
     final ChartTableModel ct = new ChartTableModel();
-    Object data = null;
 
     try {
       // Row -> Incorrect Key1 -> Incorrect
-      data = ct.getRowMetadata(-10, null);
+      ct.getRowMetadata(-10, null);
       fail("Shouldn't reach here"); //$NON-NLS-1$
     } catch (IllegalArgumentException iae) {
     }
 
     try {
       // Col -> Incorrect Key1 -> Incorrect
-      data = ct.getColMetadata(-10, null);
+      ct.getColMetadata(-10, null);
       fail("Shouldn't reach here"); //$NON-NLS-1$
     } catch (IllegalArgumentException iae) {
     }
 
     try {
       // Cell -> Incorrect Key1 -> Correct
-      data = ct.getCellMetadata(-1, -10, 0);
+      ct.getCellMetadata(-1, -10, 0);
       fail("Shouldn't reach here"); //$NON-NLS-1$
     } catch (IllegalArgumentException iae) {
     }
 
     try {
       // Row -> Incorrect Key1 -> Correct
-      data = ct.getRowMetadata(-10, 0);
+      ct.getRowMetadata(-10, 0);
       fail("Shouldn't reach here"); //$NON-NLS-1$
     } catch (IllegalArgumentException iae) {
     }
 
     try {
       // Col -> Incorrect Key1 -> Correct
-      data = ct.getColMetadata(-10, 0);
+      ct.getColMetadata(-10, 0);
       fail("Shouldn't reach here"); //$NON-NLS-1$
     } catch (IllegalArgumentException iae) {
     }
 
     try {
       // Cell -> Incorrect Key1 -> Correct
-      data = ct.getCellMetadata(-10, -10, 0);
+      ct.getCellMetadata(-10, -10, 0);
       fail("Shouldn't reach here"); //$NON-NLS-1$
     } catch (IllegalArgumentException iae) {
     }
 
     try {
       // Cell -> Incorrect Key1 -> Correct
-      data = ct.getCellMetadata(0, -10, 0);
+      ct.getCellMetadata(0, -10, 0);
       fail("Shouldn't reach here"); //$NON-NLS-1$
     } catch (IllegalArgumentException iae) {
     }
 
     try {
       // Cell -> Incorrect Key1 -> Correct
-      data = ct.getCellMetadata(-10, 0, 0);
+      ct.getCellMetadata(-10, 0, 0);
       fail("Shouldn't reach here"); //$NON-NLS-1$
     } catch (IllegalArgumentException iae) {
     }
 
     // Row -> Correct Key1 -> Correct
-    data = ct.getRowMetadata(0, 0);
+    Object data = ct.getRowMetadata(0, 0);
     assertNull(data);
 
     // Col -> Correct Key1 -> Correct
@@ -226,9 +225,7 @@ public class ChartTableModelTest extends TestCase {
    */
   public void testMetaDataInit() {
     final String COLOR = "color";//$NON-NLS-1$
-    final String NAME = "ChartTableModel.Name";//$NON-NLS-1$
     final ChartTableModel ct = new ChartTableModel();
-    Object data = null;
 
     // Some row level stuff
     ct.setRowMetadata(0, COLOR, "red"); //$NON-NLS-1$
@@ -256,10 +253,12 @@ public class ChartTableModelTest extends TestCase {
     ct.setColumnName(1, "Last Name"); //$NON-NLS-1$
     ct.setColumnName(2, "Favorite Sport"); //$NON-NLS-1$
     ct.setColumnName(3, "Number of Years"); //$NON-NLS-1$
+    final String NAME = "ChartTableModel.Name";//$NON-NLS-1$
     ct.setColMetadata(4, NAME, "Professional"); //$NON-NLS-1$
     ct.setColMetadata(5, "Width", null); //$NON-NLS-1$
     ct.setColMetadata(6, "Width", null); //$NON-NLS-1$
 
+    Object data = null;
     try {
       // Row -> Incorrect Key1 -> Incorrect
       data = ct.getRowMetadata(-10, null);

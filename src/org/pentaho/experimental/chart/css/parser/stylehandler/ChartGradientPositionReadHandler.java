@@ -36,9 +36,7 @@ public class ChartGradientPositionReadHandler implements CSSValueReadHandler {
   public CSSValue createValue(final StyleKey name, LexicalUnit value)
   {
     CSSNumericValue firstValue = null;
-    CSSNumericValue secondValue = null;
-    CSSValuePair result = null;
-    
+
     if (value != null) {
       firstValue = CSSValueFactory.createNumericValue(value);  
     }
@@ -47,12 +45,14 @@ public class ChartGradientPositionReadHandler implements CSSValueReadHandler {
       // Parse the comma and move to next value
       value = CSSValueFactory.parseComma(value);  
     }
-    
+
+    CSSNumericValue secondValue = null;
     if (value != null) {
       secondValue = CSSValueFactory.createNumericValue(value);
     }
-    
-    
+
+
+    CSSValuePair result = null;
     if (firstValue != null && secondValue != null) {
       result = new CSSValuePair(firstValue, secondValue);
       //System.out.println("Values: " + firstValue.getCSSText() + ", "+ secondValue.getCSSText());

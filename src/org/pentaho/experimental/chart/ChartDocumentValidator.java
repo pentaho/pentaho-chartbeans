@@ -69,8 +69,6 @@ public class ChartDocumentValidator {
   }
 
   private void validateSeriesTags() {
-    final ChartElement chart = chartDoc.getRootElement();
-
     // Make sure there are one or more series elements
     final List seriesElements = chartDoc.getSeriesChartElements();
     if (seriesElements.size() == 0) {

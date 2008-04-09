@@ -17,7 +17,7 @@ import org.pentaho.experimental.chart.data.ChartTableModel;
  */
 public class ChartSeriesDataLinkInfoTest extends TestCase {
   
-  Object[][] dataSample = {
+  final Object[][] dataSample = {
       {"Mary", "Campione",//$NON-NLS-1$ //$NON-NLS-2$
       "Snowboarding", new Integer(5), new Boolean(false)}, //$NON-NLS-1$  
       {"Alison", "Huml",//$NON-NLS-1$ //$NON-NLS-2$
@@ -71,11 +71,9 @@ public class ChartSeriesDataLinkInfoTest extends TestCase {
   public final void testColumnPositonsOnly() {
     ChartDocument chartDoc = getChartDoc("NoSeriesTag.xml"); //$NON-NLS-1$
     final ChartTableModel chartTableModel = new ChartTableModel();
-    ChartSeriesDataLinkInfo seriesDataLinkInfo = null;
-    
 
     // No data
-    seriesDataLinkInfo = ChartSeriesDataLinkInfoFactory.generateSeriesDataLinkInfo(chartDoc, chartTableModel);
+    ChartSeriesDataLinkInfo seriesDataLinkInfo = ChartSeriesDataLinkInfoFactory.generateSeriesDataLinkInfo(chartDoc, chartTableModel);
     assertEquals(0, seriesDataLinkInfo.getDataSize());
     
     chartTableModel.setData(dataSample);
@@ -126,10 +124,9 @@ public class ChartSeriesDataLinkInfoTest extends TestCase {
   public final void testColumnNamesOnly() {
     final ChartDocument chartDoc = getChartDoc("SeriesTagWithColumnNames.xml"); //$NON-NLS-1$
     final ChartTableModel chartTableModel = new ChartTableModel();
-    ChartSeriesDataLinkInfo seriesDataLinkInfo = null;
 
     // No data and meta data
-    seriesDataLinkInfo = ChartSeriesDataLinkInfoFactory.generateSeriesDataLinkInfo(chartDoc, chartTableModel);
+    ChartSeriesDataLinkInfo seriesDataLinkInfo = ChartSeriesDataLinkInfoFactory.generateSeriesDataLinkInfo(chartDoc, chartTableModel);
     assertEquals(0, seriesDataLinkInfo.getDataSize());
 
     // We have data and metadata now.
@@ -161,10 +158,9 @@ public class ChartSeriesDataLinkInfoTest extends TestCase {
   public final void testSeriesPosOnly() {
     final ChartDocument chartDoc = getChartDoc("SeriesTagWith_NoColPos_NoColName.xml"); //$NON-NLS-1$
     final ChartTableModel chartTableModel = new ChartTableModel();
-    ChartSeriesDataLinkInfo seriesDataLinkInfo = null;
-    
+
     // No data and meta data
-    seriesDataLinkInfo = ChartSeriesDataLinkInfoFactory.generateSeriesDataLinkInfo(chartDoc, chartTableModel);
+    ChartSeriesDataLinkInfo seriesDataLinkInfo = ChartSeriesDataLinkInfoFactory.generateSeriesDataLinkInfo(chartDoc, chartTableModel);
     assertEquals(0, seriesDataLinkInfo.getDataSize());
 
     // We have data and metadata now.
@@ -188,8 +184,7 @@ public class ChartSeriesDataLinkInfoTest extends TestCase {
   public final void testSeriesMixed() {
     final ChartDocument chartDoc = getChartDoc("SeriesTagMixed.xml"); //$NON-NLS-1$
     final ChartTableModel chartTableModel = new ChartTableModel();
-    ChartSeriesDataLinkInfo seriesDataLinkInfo = null;
-    
+
     // We have data and metadata now.
     chartTableModel.setData(dataSample);
     chartTableModel.setColumnName(0, "First Name"); //$NON-NLS-1$
@@ -198,9 +193,9 @@ public class ChartSeriesDataLinkInfoTest extends TestCase {
     chartTableModel.setColumnName(3, "Num of Years"); //$NON-NLS-1$
     chartTableModel.setColumnName(4, "Proffesional"); //$NON-NLS-1$
     chartTableModel.setColumnName(8, "Budget"); //$NON-NLS-1$
-    
-    seriesDataLinkInfo = ChartSeriesDataLinkInfoFactory.generateSeriesDataLinkInfo(chartDoc, chartTableModel); 
-    
+
+    ChartSeriesDataLinkInfo seriesDataLinkInfo = ChartSeriesDataLinkInfoFactory.generateSeriesDataLinkInfo(chartDoc, chartTableModel);
+
     // 5 is the number of columns in data array, we would ignore any 
     // chart element with column number greater than that    
     assertEquals(5, seriesDataLinkInfo.getDataSize());     

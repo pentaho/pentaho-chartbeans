@@ -36,20 +36,5 @@ public class LineStyleReadHandler extends OneOfConstantsReadHandler {
     addValue(ChartLineStyle.DOTTED);
     addValue(ChartLineStyle.DOT_DASH);
     addValue(ChartLineStyle.DOT_DOT_DASH);
-  }
-
-  protected CSSValue lookupValue(final LexicalUnit value)
-  {
-    return super.lookupValue(value);    //To change body of overridden methods use File | Settings | File Templates.
-  }
-
-  public CSSValue createValue(final StyleKey name, final LexicalUnit value)
-  {
-    return super.createValue(name, value);    //To change body of overridden methods use File | Settings | File Templates.
-  }
-
-  protected void addValue(final CSSConstant constant)
-  {
-    super.addValue(constant);    //To change body of overridden methods use File | Settings | File Templates.
-  }
+  }  
 }

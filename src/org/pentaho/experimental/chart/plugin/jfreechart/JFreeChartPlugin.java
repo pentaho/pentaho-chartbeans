@@ -33,7 +33,7 @@ import org.pentaho.util.messages.Messages;
  * @author wseyler
  */
 public class JFreeChartPlugin extends AbstractChartPlugin {
-  ChartFactoryEngine chartFactory = new JFreeChartFactoryEngine();
+  final ChartFactoryEngine chartFactory = new JFreeChartFactoryEngine();
   CSSConstant currentChartType = ChartSeriesType.UNDEFINED;
 
   /* (non-Javadoc)

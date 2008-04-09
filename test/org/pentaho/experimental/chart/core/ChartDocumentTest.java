@@ -78,8 +78,7 @@ public class ChartDocumentTest extends TestCase {
    */
   public void testIsCategorical() throws ResourceException {
     // Load a chart where the chart element is not the root, but categorical is true
-    ChartDocumentContext cdc = null;
-    cdc = ChartFactory.generateChart(this.getClass().getResource("ChartDocumentTest1.xml"));
+    ChartDocumentContext cdc = ChartFactory.generateChart(this.getClass().getResource("ChartDocumentTest1.xml"));
     assertEquals(false, cdc.getChartDocument().isCategorical());
 
     // Load a chart where categorical is specified correctly in the root element
@@ -96,8 +95,7 @@ public class ChartDocumentTest extends TestCase {
    */
   public void testIsByRow() throws ResourceException {
     // Load a chart where the chart element is not the root, but byrow is true
-    ChartDocumentContext cdc = null;
-    cdc = ChartFactory.generateChart(this.getClass().getResource("ChartDocumentTest1.xml"));
+    ChartDocumentContext cdc = ChartFactory.generateChart(this.getClass().getResource("ChartDocumentTest1.xml"));
     assertEquals(false, cdc.getChartDocument().isCategorical());
 
     // Load a chart where byrow is specified correctly in the root element

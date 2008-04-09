@@ -256,7 +256,7 @@ class BaseChartTableModel extends AbstractTableModel {
    */
   public Object getRowMetadata(final int row, final Object key)
       throws IllegalArgumentException {
-    Object metadata = null;
+    Object metadata;
 
     if (row < 0) {
       throw new IllegalArgumentException(Messages.getErrorString("ChartTableModel.ERROR_0003_ROW_NUM_LOWER_THAN_ZERO")); //$NON-NLS-1$
@@ -299,7 +299,7 @@ class BaseChartTableModel extends AbstractTableModel {
    */
   public Object getColMetadata(final int col, final Object key)
       throws IllegalArgumentException {
-    Object metadata = null;
+    Object metadata;
 
     if (col < 0) {
       throw new IllegalArgumentException(Messages.getErrorString("ChartTableModel.ERROR_0001_COLUMN_NUM_LOWER_THAN_ZERO")); //$NON-NLS-1$
@@ -342,7 +342,7 @@ class BaseChartTableModel extends AbstractTableModel {
    * @return The actual metadata
    */
   public Object getCellMetadata(final int row, final int col, final Object key) {
-    Object metadata = null;
+    Object metadata;
 
     if (row < 0 || col < 0) {
       throw new IllegalArgumentException(Messages.getErrorString("ChartTableModel.ERROR_0007_ROW_COL_IS_OUT_OF_BOUNDS")); //$NON-NLS-1$

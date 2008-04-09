@@ -139,7 +139,7 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
   /**
    * The layout style for this element
    */
-  private DefaultLayoutStyle layoutStyle;
+  private final DefaultLayoutStyle layoutStyle;
 
   /**
    * Constant used when generating the deep <code>toString</code> representation

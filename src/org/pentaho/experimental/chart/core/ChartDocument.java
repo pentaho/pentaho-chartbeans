@@ -46,8 +46,7 @@ public class ChartDocument {
   /**
    * The resource key that servers as the base location for loading relative infomraiton
    */
-  private ResourceKey resourceKey;
-  private List seriesTags;
+  private ResourceKey resourceKey;  
 
   /**
    * Constructor that creats the chart document.

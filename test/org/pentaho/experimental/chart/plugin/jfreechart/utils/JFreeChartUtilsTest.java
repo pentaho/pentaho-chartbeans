@@ -27,7 +27,7 @@ import org.pentaho.experimental.chart.core.ChartElement;
  */
 public class JFreeChartUtilsTest extends TestCase {
 
-  String[] testFileNames = {
+  final String[] testFileNames = {
       "JFreeChartUtilsTest1.xml", //$NON-NLS-1$
       "JFreeChartUtilsTest2.xml", //$NON-NLS-1$
       "JFreeChartUtilsTest3.xml", //$NON-NLS-1$

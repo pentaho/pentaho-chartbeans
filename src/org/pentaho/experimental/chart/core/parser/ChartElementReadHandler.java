@@ -31,7 +31,7 @@ public class ChartElementReadHandler extends StringReadHandler {
   /**
    * The chart element to be created / initialized during the reading of this tag
    */
-  private ChartElement chartElement;
+  private final ChartElement chartElement;
 
   /**
    * Constructs a new chart element parser that does not have a parent chart element

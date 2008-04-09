@@ -158,10 +158,9 @@ public class ChartSeriesDataLinkInfoFactory {
   private static boolean processColumnPos(final Object currentColumnNum, final ChartElement currentChartElement,
                                           final ChartTableModel chartTableModel, final ChartSeriesDataLinkInfo seriesDataLinkInfo)
       throws NumberFormatException {
-    int columnNum = 0;
     boolean foundColumn = false;
 
-    columnNum = Integer.parseInt(((String) currentColumnNum).trim());
+    int columnNum = Integer.parseInt(((String) currentColumnNum).trim());
 
     // Check if it is a valid column number. The column number(s) are zero based.   
     if (columnNum >= 0 && columnNum < chartTableModel.getColumnCount()) {
