@@ -36,18 +36,17 @@ public abstract class AbstractChartPlugin implements IChartPlugin {
   /* (non-Javadoc)
    * @see org.pentaho.experimental.chart.plugin.IChartPlugin#renderChartDocument(org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.IOutput)
    */
-  public ChartResult renderChartDocument(ChartDocument chartDocument, ChartTableModel data, IOutput output) {
-    ChartResult validated = validateChartDocument(chartDocument);
-    return validated;
+  public ChartResult renderChartDocument(final ChartDocument chartDocument, final ChartTableModel data, final IOutput output) {
+    return validateChartDocument(chartDocument);
   }
 
   /* (non-Javadoc)
    * @see org.pentaho.experimental.chart.plugin.IChartPlugin#validateChartDocument(org.pentaho.experimental.chart.core.ChartDocument)
    */
-  public ChartResult validateChartDocument(ChartDocument chartDocument) {
+  public ChartResult validateChartDocument(final ChartDocument chartDocument) {
 
     // Validate the series
-    ChartElement[] seriesElement = chartDocument.getRootElement().findChildrenByName("series"); //$NON-NLS-1$
+    final ChartElement[] seriesElement = chartDocument.getRootElement().findChildrenByName("series"); //$NON-NLS-1$
     if (seriesElement == null || seriesElement.length < 1) {
       return new ChartResult(ERROR_MISSING_REQUIRED_DATA, Messages.getErrorString("AbstractChartPlugin.ERROR_0001_NO_ELEMENT", "series"));  //$NON-NLS-1$//$NON-NLS-2$
     }
@@ -58,7 +57,7 @@ public abstract class AbstractChartPlugin implements IChartPlugin {
   /* (non-Javadoc)
    * @see org.pentaho.experimental.chart.plugin.IChartPlugin#setChartCallback(org.pentaho.experimental.chart.plugin.IChartCallback)
    */
-  public void setChartCallback(IChartCallback callback) {
+  public void setChartCallback(final IChartCallback callback) {
     this.callback = callback;
   }
 

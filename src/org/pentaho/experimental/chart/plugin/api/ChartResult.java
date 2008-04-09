@@ -32,18 +32,18 @@ public class ChartResult {
     super();
   }
 
-  public ChartResult(int errorCode, String missingOrInvalidTagName, String description) {
+  public ChartResult(final int errorCode, final String missingOrInvalidTagName, final String description) {
     this();
     this.errorCode = errorCode;
     this.missingOrInvalidTagName = missingOrInvalidTagName;
     this.description = description;
   }
   
-  public ChartResult(int errorCode, String missingOrInvalidTagName) {
+  public ChartResult(final int errorCode, final String missingOrInvalidTagName) {
     this(errorCode, missingOrInvalidTagName, null);
   }
   
-  public ChartResult(int errorCode) {
+  public ChartResult(final int errorCode) {
     this(errorCode, null);
   }
   
@@ -52,7 +52,7 @@ public class ChartResult {
     return errorCode;
   }
   
-  public void setErrorCode(int errorCode) {
+  public void setErrorCode(final int errorCode) {
     this.errorCode = errorCode;
   }
   
@@ -60,7 +60,7 @@ public class ChartResult {
     return missingOrInvalidTagName;
   }
   
-  public void setMissingOrInvalidTagName(String missingOrInvalidTagName) {
+  public void setMissingOrInvalidTagName(final String missingOrInvalidTagName) {
     this.missingOrInvalidTagName = missingOrInvalidTagName;
   }
   
@@ -68,7 +68,7 @@ public class ChartResult {
     return description;
   }
   
-  public void setDescription(String description) {
+  public void setDescription(final String description) {
     this.description = description;
   }
 

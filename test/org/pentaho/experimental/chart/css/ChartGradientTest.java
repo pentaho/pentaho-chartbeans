@@ -31,13 +31,13 @@ public class ChartGradientTest extends TestCase {
   }
   
   public void testGradient() throws IllegalStateException, ResourceException {
-    ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource("ChartGradientTest.xml")); //$NON-NLS-1$
-    ChartDocument cd = cdc.getChartDocument();
+    final ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource("ChartGradientTest.xml")); //$NON-NLS-1$
+    final ChartDocument cd = cdc.getChartDocument();
     assertNotNull(cd);
-    ChartElement element = cd.getRootElement();
+    final ChartElement element = cd.getRootElement();
     assertNotNull(element);
 
-    CSSValuePair[][] passValues = new CSSValuePair[][] {
+    final CSSValuePair[][] passValues = new CSSValuePair[][] {
         getCSSValuePair(Color.RED, Color.WHITE, ChartGradientType.HORIZONTAL, 1,10, 2,20),
         getCSSValuePair(Color.BLACK, Color.WHITE, ChartGradientType.NONE, 0,0, 1,1),
         getCSSValuePair(Color.BLACK, Color.WHITE, ChartGradientType.NONE, 0,0, 1,1),
@@ -47,11 +47,11 @@ public class ChartGradientTest extends TestCase {
     };
     
     int counter = 0;
-    int lenArray = passValues.length;
+    final int lenArray = passValues.length;
     ChartElement child = element.getFirstChildItem();
     
     while(child != null) {
-      LayoutStyle layoutStyle = child.getLayoutStyle();
+      final LayoutStyle layoutStyle = child.getLayoutStyle();
       assertNotNull(layoutStyle);
       
       CSSValuePair valuePair = (CSSValuePair) layoutStyle.getValue(ChartStyleKeys.GRADIENT_COLOR);
@@ -91,14 +91,14 @@ public class ChartGradientTest extends TestCase {
     }
   }
   
-  private CSSValuePair[] getCSSValuePair(Color color1, 
-      Color color2, 
-      CSSConstant type, 
-      double start1, 
-      double start2, 
-      double end1, 
-      double end2) {
-      CSSValuePair[] result = new CSSValuePair[] {
+  private CSSValuePair[] getCSSValuePair(final Color color1,
+      final Color color2,
+      final CSSConstant type,
+      final double start1,
+      final double start2,
+      final double end1,
+      final double end2) {
+      return new CSSValuePair[] {
           new CSSValuePair(new CSSColorValue(color1), new CSSColorValue(color2)), 
           new CSSValuePair(type),
           new CSSValuePair( CSSNumericValue.createValue(CSSNumericType.NUMBER,start1), 
@@ -106,7 +106,5 @@ public class ChartGradientTest extends TestCase {
               new CSSValuePair( CSSNumericValue.createValue(CSSNumericType.NUMBER,end1), 
                   CSSNumericValue.createValue(CSSNumericType.NUMBER,end2))
       };
-
-      return result;           
   }
 }

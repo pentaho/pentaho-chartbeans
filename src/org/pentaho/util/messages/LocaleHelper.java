@@ -41,7 +41,7 @@ public class LocaleHelper {
 
   private static String textDirection = LEFT_TO_RIGHT;
 
-  public static void setDefaultLocale(Locale newLocale) {
+  public static void setDefaultLocale(final Locale newLocale) {
     defaultLocale = newLocale;
   }
 
@@ -49,12 +49,12 @@ public class LocaleHelper {
     return defaultLocale;
   }
 
-  public static void setLocale(Locale newLocale) {
+  public static void setLocale(final Locale newLocale) {
     threadLocales.set(newLocale);
   }
 
   public static Locale getLocale() {
-    Locale rtn = (Locale) threadLocales.get();
+    final Locale rtn = (Locale) threadLocales.get();
     if (rtn != null) {
       return rtn;
     }
@@ -63,11 +63,11 @@ public class LocaleHelper {
     return defaultLocale;
   }
 
-  public static void setSystemEncoding(String encoding) {
+  public static void setSystemEncoding(final String encoding) {
     LocaleHelper.encoding = encoding;
   }
 
-  public static void setTextDirection(String textDirection) {
+  public static void setTextDirection(final String textDirection) {
     // TODO make this ThreadLocal
     LocaleHelper.textDirection = textDirection;
   }
@@ -81,7 +81,7 @@ public class LocaleHelper {
     return textDirection;
   }
 
-  public static DateFormat getDateFormat(int dateFormat, int timeFormat) {
+  public static DateFormat getDateFormat(final int dateFormat, final int timeFormat) {
 
     if (dateFormat != FORMAT_IGNORE && timeFormat != FORMAT_IGNORE) {
       return DateFormat.getDateTimeInstance(dateFormat, timeFormat, getLocale());
@@ -95,7 +95,7 @@ public class LocaleHelper {
 
   }
 
-  public static DateFormat getShortDateFormat(boolean date, boolean time) {
+  public static DateFormat getShortDateFormat(final boolean date, final boolean time) {
     if (date && time) {
       return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, getLocale());
     } else if (date) {
@@ -107,7 +107,7 @@ public class LocaleHelper {
     }
   }
 
-  public static DateFormat getMediumDateFormat(boolean date, boolean time) {
+  public static DateFormat getMediumDateFormat(final boolean date, final boolean time) {
     if (date && time) {
       return DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, getLocale());
     } else if (date) {
@@ -119,7 +119,7 @@ public class LocaleHelper {
     }
   }
 
-  public static DateFormat getLongDateFormat(boolean date, boolean time) {
+  public static DateFormat getLongDateFormat(final boolean date, final boolean time) {
     if (date && time) {
       return DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, getLocale());
     } else if (date) {
@@ -131,7 +131,7 @@ public class LocaleHelper {
     }
   }
 
-  public static DateFormat getFullDateFormat(boolean date, boolean time) {
+  public static DateFormat getFullDateFormat(final boolean date, final boolean time) {
     if (date && time) {
       return DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL, getLocale());
     } else if (date) {

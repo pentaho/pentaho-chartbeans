@@ -23,7 +23,7 @@ public class HeirarchicalLinkedListItemTest extends TestCase {
    */
   @SuppressWarnings("nls")
   public void testAddChild() {
-    HeirarchicalLinkedListItem parent = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem parent = new HeirarchicalLinkedListItem();
     try {
       parent.addChildItem(null);
       fail("Should not be able to add a null child");
@@ -31,7 +31,7 @@ public class HeirarchicalLinkedListItemTest extends TestCase {
       // correct
     }
 
-    HeirarchicalLinkedListItem child1 = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem child1 = new HeirarchicalLinkedListItem();
     parent.addChildItem(child1);
     assertEquals("child should have the parent set automatically", parent, child1.getParentItem());
     assertEquals("parent's first child should be the only child", child1, parent.getFirstChildItem());
@@ -39,7 +39,7 @@ public class HeirarchicalLinkedListItemTest extends TestCase {
     assertNull("endpoint problem", child1.getPreviousItem());
     assertNull("endpoint problem", child1.getNextItem());
 
-    HeirarchicalLinkedListItem child2 = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem child2 = new HeirarchicalLinkedListItem();
     parent.addChildItem(child2);
     assertEquals("parent's first child should not have changed", child1, parent.getFirstChildItem());
     assertEquals("parent's last child should be the new child", child2, parent.getLastChildItem());
@@ -49,7 +49,7 @@ public class HeirarchicalLinkedListItemTest extends TestCase {
     assertEquals("incorrect child order", child1, child2.getPreviousItem());
     assertNull("endpoint problem", child2.getNextItem());
 
-    HeirarchicalLinkedListItem child3 = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem child3 = new HeirarchicalLinkedListItem();
     parent.addChildItem(child3);
     assertEquals("parent's first child should not have changed", child1, parent.getFirstChildItem());
     assertEquals("parent's last child should be the new child", child3, parent.getLastChildItem());
@@ -61,7 +61,7 @@ public class HeirarchicalLinkedListItemTest extends TestCase {
     assertEquals("incorrect child order", child2, child3.getPreviousItem());
     assertNull("endpoint problem", child3.getNextItem());
 
-    HeirarchicalLinkedListItem badChild = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem badChild = new HeirarchicalLinkedListItem();
     child3.addChildItem(badChild);
     try {
       parent.addChildItem(badChild);
@@ -94,11 +94,11 @@ public class HeirarchicalLinkedListItemTest extends TestCase {
    */
   @SuppressWarnings("nls")
   public void testInsertBefore() {
-    HeirarchicalLinkedListItem parent = new HeirarchicalLinkedListItem();
-    HeirarchicalLinkedListItem child1 = new HeirarchicalLinkedListItem();
-    HeirarchicalLinkedListItem child2 = new HeirarchicalLinkedListItem();
-    HeirarchicalLinkedListItem child3 = new HeirarchicalLinkedListItem();
-    HeirarchicalLinkedListItem badChild = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem parent = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem child1 = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem child2 = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem child3 = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem badChild = new HeirarchicalLinkedListItem();
 
     try {
       parent.insertBefore(null, child1);
@@ -168,11 +168,11 @@ public class HeirarchicalLinkedListItemTest extends TestCase {
    */
   @SuppressWarnings("nls")
   public void testInsertAfter() {
-    HeirarchicalLinkedListItem parent = new HeirarchicalLinkedListItem();
-    HeirarchicalLinkedListItem child1 = new HeirarchicalLinkedListItem();
-    HeirarchicalLinkedListItem child2 = new HeirarchicalLinkedListItem();
-    HeirarchicalLinkedListItem child3 = new HeirarchicalLinkedListItem();
-    HeirarchicalLinkedListItem badChild = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem parent = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem child1 = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem child2 = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem child3 = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem badChild = new HeirarchicalLinkedListItem();
 
     try {
       parent.insertAfter(null, child1);
@@ -242,11 +242,11 @@ public class HeirarchicalLinkedListItemTest extends TestCase {
    */
   @SuppressWarnings("nls")
   public void testAddFirstChild() {
-    HeirarchicalLinkedListItem parent = new HeirarchicalLinkedListItem();
-    HeirarchicalLinkedListItem child1 = new HeirarchicalLinkedListItem();
-    HeirarchicalLinkedListItem child2 = new HeirarchicalLinkedListItem();
-    HeirarchicalLinkedListItem child3 = new HeirarchicalLinkedListItem();
-    HeirarchicalLinkedListItem badChild = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem parent = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem child1 = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem child2 = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem child3 = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem badChild = new HeirarchicalLinkedListItem();
 
     try {
       parent.addFirstChildItem(null);
@@ -307,11 +307,11 @@ public class HeirarchicalLinkedListItemTest extends TestCase {
    */
   @SuppressWarnings("nls")
   public void testAddLastChild() {
-    HeirarchicalLinkedListItem parent = new HeirarchicalLinkedListItem();
-    HeirarchicalLinkedListItem child1 = new HeirarchicalLinkedListItem();
-    HeirarchicalLinkedListItem child2 = new HeirarchicalLinkedListItem();
-    HeirarchicalLinkedListItem child3 = new HeirarchicalLinkedListItem();
-    HeirarchicalLinkedListItem badChild = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem parent = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem child1 = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem child2 = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem child3 = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem badChild = new HeirarchicalLinkedListItem();
 
     try {
       parent.addLastChildItem(null);
@@ -372,12 +372,12 @@ public class HeirarchicalLinkedListItemTest extends TestCase {
    */
   @SuppressWarnings("nls")
   public void testRemove() {
-    HeirarchicalLinkedListItem parent = new HeirarchicalLinkedListItem();
-    HeirarchicalLinkedListItem child1 = new HeirarchicalLinkedListItem();
-    HeirarchicalLinkedListItem child2 = new HeirarchicalLinkedListItem();
-    HeirarchicalLinkedListItem child3 = new HeirarchicalLinkedListItem();
-    HeirarchicalLinkedListItem child4 = new HeirarchicalLinkedListItem();
-    HeirarchicalLinkedListItem child5 = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem parent = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem child1 = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem child2 = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem child3 = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem child4 = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem child5 = new HeirarchicalLinkedListItem();
 
     parent.addChildItem(child1);
     parent.addChildItem(child2);
@@ -433,12 +433,12 @@ public class HeirarchicalLinkedListItemTest extends TestCase {
    * Tests the <code>getChildCount()</code> method
    */
   public void testGetChildCount() {
-    HeirarchicalLinkedListItem parent = new HeirarchicalLinkedListItem();
-    HeirarchicalLinkedListItem child1 = new HeirarchicalLinkedListItem();
-    HeirarchicalLinkedListItem child2 = new HeirarchicalLinkedListItem();
-    HeirarchicalLinkedListItem child3 = new HeirarchicalLinkedListItem();
-    HeirarchicalLinkedListItem child4 = new HeirarchicalLinkedListItem();
-    HeirarchicalLinkedListItem child5 = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem parent = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem child1 = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem child2 = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem child3 = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem child4 = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem child5 = new HeirarchicalLinkedListItem();
 
     assertEquals("Empty parent should have 0 children", 0, parent.getChildCount());
 
@@ -504,15 +504,15 @@ public class HeirarchicalLinkedListItemTest extends TestCase {
     assertNull("A non-connected node should return null", new HeirarchicalLinkedListItem().getNextDepthFirstItem());
 
     // Setup the tree
-    HeirarchicalLinkedListItem parent = new HeirarchicalLinkedListItem();
-    HeirarchicalLinkedListItem child1 = new HeirarchicalLinkedListItem();
-    HeirarchicalLinkedListItem child2 = new HeirarchicalLinkedListItem();
-    HeirarchicalLinkedListItem child3 = new HeirarchicalLinkedListItem();
-    HeirarchicalLinkedListItem child4 = new HeirarchicalLinkedListItem();
-    HeirarchicalLinkedListItem child5 = new HeirarchicalLinkedListItem();
-    HeirarchicalLinkedListItem child6 = new HeirarchicalLinkedListItem();
-    HeirarchicalLinkedListItem child7 = new HeirarchicalLinkedListItem();
-    HeirarchicalLinkedListItem child8 = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem parent = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem child1 = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem child2 = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem child3 = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem child4 = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem child5 = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem child6 = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem child7 = new HeirarchicalLinkedListItem();
+    final HeirarchicalLinkedListItem child8 = new HeirarchicalLinkedListItem();
     parent.addChildItem(child1);
     parent.addChildItem(child2);
     child1.addChildItem(child3);

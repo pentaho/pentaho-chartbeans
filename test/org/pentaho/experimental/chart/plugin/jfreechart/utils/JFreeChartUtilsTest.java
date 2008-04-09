@@ -49,7 +49,7 @@ public class JFreeChartUtilsTest extends TestCase {
   }
   
   public void testGetOrientation() throws ResourceException {
-    PlotOrientation[] expectedValues = {
+    final PlotOrientation[] expectedValues = {
          PlotOrientation.VERTICAL,
          PlotOrientation.HORIZONTAL,
          PlotOrientation.VERTICAL,
@@ -57,12 +57,12 @@ public class JFreeChartUtilsTest extends TestCase {
     };
 
     for (int i = 0; i < testFileNames.length; i++) {
-      ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource(testFileNames[i])); 
+      final ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource(testFileNames[i]));
       assertNotNull(cdc);
-      ChartDocument cd = cdc.getChartDocument();
+      final ChartDocument cd = cdc.getChartDocument();
       assertNotNull(cd);    
 
-      ChartElement plotElement = cd.getPlotElement();
+      final ChartElement plotElement = cd.getPlotElement();
       if (i == 0) {
         assertEquals(null, plotElement);
       } else {  
@@ -73,7 +73,7 @@ public class JFreeChartUtilsTest extends TestCase {
 
   public void testShowURLs() throws ResourceException {
 
-    boolean[] expectedValues = {
+    final boolean[] expectedValues = {
          false,
          true,
          false,
@@ -81,12 +81,12 @@ public class JFreeChartUtilsTest extends TestCase {
     };
 
     for (int i = 0; i < testFileNames.length; i++) {
-      ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource(testFileNames[i])); 
+      final ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource(testFileNames[i]));
       assertNotNull(cdc);
-      ChartDocument cd = cdc.getChartDocument();
+      final ChartDocument cd = cdc.getChartDocument();
       assertNotNull(cd);    
 
-      ChartElement plotElement = cd.getPlotElement();
+      final ChartElement plotElement = cd.getPlotElement();
       if (i == 0) {
         assertEquals(null, plotElement);
       } else {  
@@ -100,7 +100,7 @@ public class JFreeChartUtilsTest extends TestCase {
    */
   public void testGradientPaint() throws ResourceException {
     
-    GradientPaint[] expectedValues = new GradientPaint[] {
+    final GradientPaint[] expectedValues = new GradientPaint[] {
       null,
       new GradientPaint(0,0, Color.black, 1,1, Color.white),
       new GradientPaint(0.5f,99.90f, Color.black, 1,1, Color.white),  
@@ -123,25 +123,25 @@ public class JFreeChartUtilsTest extends TestCase {
       new GradientPaint(0,0, Color.yellow, 1,1, new Color(0x0000FF)),  
     };
     
-    String[] testGradFileNames = { 
+    final String[] testGradFileNames = {
         "JFreeChartUtilsTestGradColor.xml", //$NON-NLS-1$
     };
 
     
     for (int i = 0; i < testGradFileNames.length; i++) {
-      ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource(testGradFileNames[i])); 
+      final ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource(testGradFileNames[i]));
       assertNotNull(cdc);
-      ChartDocument cd = cdc.getChartDocument();
+      final ChartDocument cd = cdc.getChartDocument();
       assertNotNull(cd);
       
-      List seriesList = cd.getSeriesChartElements();
+      final List seriesList = cd.getSeriesChartElements();
       if (seriesList.size() == 0) {        
         fail("The Series list should never be empty."); //$NON-NLS-1$       
       }
       
       for (int seriesCounter = 0; seriesCounter < seriesList.size(); seriesCounter++) {
-        ChartElement currElement = (ChartElement)seriesList.get(seriesCounter);
-        GradientPaint gotGradientPaint = JFreeChartUtils.getGradientPaint(currElement);
+        final ChartElement currElement = (ChartElement)seriesList.get(seriesCounter);
+        final GradientPaint gotGradientPaint = JFreeChartUtils.getGradientPaint(currElement);
         if (seriesCounter==0) {
           assertNull(gotGradientPaint);
         } else {
@@ -156,11 +156,11 @@ public class JFreeChartUtilsTest extends TestCase {
   }
   
   public void testGetStandardGradientPaint() throws ResourceException {
-    String[] testGradFileNames = { 
+    final String[] testGradFileNames = {
         "StandardGradientPaint.xml", //$NON-NLS-1$
     };
     
-    GradientPaintTransformType[] expectedValues = new GradientPaintTransformType[] {
+    final GradientPaintTransformType[] expectedValues = new GradientPaintTransformType[] {
       null,
       null,
       null,
@@ -170,19 +170,19 @@ public class JFreeChartUtilsTest extends TestCase {
       GradientPaintTransformType.CENTER_VERTICAL,
     };
     
-    for (String fileName : testGradFileNames) {
-      ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource(fileName)); 
+    for (final String fileName : testGradFileNames) {
+      final ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource(fileName));
       assertNotNull(cdc);
-      ChartDocument cd = cdc.getChartDocument();
+      final ChartDocument cd = cdc.getChartDocument();
       assertNotNull(cd);
       
-      List seriesList = cd.getSeriesChartElements();
+      final List seriesList = cd.getSeriesChartElements();
       if (seriesList.size() == 0) {        
         fail("The Series list should never be empty."); //$NON-NLS-1$       
       }
       
       for (int i=0; i< seriesList.size(); i++){
-        ChartElement ce = (ChartElement)seriesList.get(i);
+        final ChartElement ce = (ChartElement)seriesList.get(i);
         if (i == 0 || i == 1 || i == 2) {
           assertNull(JFreeChartUtils.getStandardGradientPaintTrans(ce));
         } else {          

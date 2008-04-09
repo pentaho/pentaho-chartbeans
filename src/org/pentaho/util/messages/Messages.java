@@ -20,7 +20,7 @@ public class Messages {
   
 
   private static ResourceBundle getBundle() {
-    Locale locale = LocaleHelper.getLocale();
+    final Locale locale = LocaleHelper.getLocale();
     ResourceBundle bundle = (ResourceBundle) locales.get(locale);
     if (bundle == null) {
       bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale);
@@ -29,11 +29,11 @@ public class Messages {
     return bundle;
   }
   
-  public static String getString(String key, String param1, String param2) {
+  public static String getString(final String key, final String param1, final String param2) {
     return MessageUtil.getString(getBundle(), key, param1, param2);
   }
   
-  public static String getString(String key) {
+  public static String getString(final String key) {
     try {
       return RESOURCE_BUNDLE.getString(key);
     } catch (MissingResourceException e) {
@@ -41,19 +41,19 @@ public class Messages {
     }
   }
   
-  public static String getErrorString(String key) {
+  public static String getErrorString(final String key) {
     return MessageUtil.formatErrorMessage(key, getString(key));
   }
 
-  public static String getErrorString(String key, String param1) {
+  public static String getErrorString(final String key, final String param1) {
     return MessageUtil.getErrorString(getBundle(), key, param1);
   }
 
-  public static String getErrorString(String key, String param1, String param2) {
+  public static String getErrorString(final String key, final String param1, final String param2) {
     return MessageUtil.getErrorString(getBundle(), key, param1, param2);
   }
 
-  public static String getErrorString(String key, String param1, String param2, String param3) {
+  public static String getErrorString(final String key, final String param1, final String param2, final String param3) {
     return MessageUtil.getErrorString(getBundle(), key, param1, param2, param3);
   }
 }

@@ -209,7 +209,7 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
   /**
    * Sets the tagname for this element.
    */
-  public void setTagName(String tagName) {
+  public void setTagName(final String tagName) {
     if (StringUtils.isBlank(tagName)) {
       throw new NullPointerException();
     }
@@ -356,7 +356,7 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
     return null;
   }
 
-  public void addChildElement(ChartElement chartElement) {
+  public void addChildElement(final ChartElement chartElement) {
     addChildItem(chartElement);
   }
 
@@ -364,7 +364,7 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
     return text;
   }
 
-  public void setText(String text) {
+  public void setText(final String text) {
 
     this.text = text;
   }
@@ -463,7 +463,7 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
    * @param tagName the name of the tag used in searching
    * @return an array of <code>ChartElement</code> objects that match the search criteria
    */
-  public ChartElement[] findChildrenByName(String tagName) {
+  public ChartElement[] findChildrenByName(final String tagName) {
     // Holder for the elements that match
     final ArrayList<ChartElement> matchList = new ArrayList<ChartElement>();
 

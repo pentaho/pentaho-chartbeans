@@ -147,7 +147,7 @@ public class ChartDocumentContext implements DocumentContext {
    * @return a list of ordered <code>StyleReferences</code>. The order in the list will be the same as the
    *         order the style information was encountered in the chart document.
    */
-  protected StyleReference[] createStyleReferences(ChartDocument chartDocument) {
+  protected StyleReference[] createStyleReferences(final ChartDocument chartDocument) {
     // Get the set of top-level document items which contain style sheet information
     final ChartElement[] styleSheetElements = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_STYLESHEET);
 
@@ -179,7 +179,7 @@ public class ChartDocumentContext implements DocumentContext {
     return dataLinkInfo;
   }
 
-  public void setDataLinkInfo(ChartSeriesDataLinkInfo dataLinkInfo) {
+  public void setDataLinkInfo(final ChartSeriesDataLinkInfo dataLinkInfo) {
     this.dataLinkInfo = dataLinkInfo;
   }
 

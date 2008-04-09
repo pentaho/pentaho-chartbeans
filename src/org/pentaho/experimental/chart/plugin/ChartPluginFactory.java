@@ -40,8 +40,8 @@ public class ChartPluginFactory  {
    * @return an implementation of the IChartPlugin
    */
   public static synchronized IChartPlugin getChartPlugin() {
-    Configuration config = ChartBoot.getInstance().loadConfiguration();
-    String className = config.getConfigProperty("IChartPlugin"); //$NON-NLS-1$
+    final Configuration config = ChartBoot.getInstance().loadConfiguration();
+    final String className = config.getConfigProperty("IChartPlugin"); //$NON-NLS-1$
     Class<IChartPlugin> pluginClass = null;
     try {
       pluginClass = (Class<IChartPlugin>) Class.forName(className);
@@ -61,7 +61,7 @@ public class ChartPluginFactory  {
    * @param className
    * @return
    */
-  public static IChartPlugin getChartPlugin(String className) {
+  public static IChartPlugin getChartPlugin(final String className) {
     try {
       return (IChartPlugin) Class.forName(className).newInstance();
     } catch (ClassNotFoundException e) {
@@ -80,8 +80,8 @@ public class ChartPluginFactory  {
    * @return an implementation of IOutput
    */
   public static IOutput getChartOutput() {
-    Configuration config = ChartBoot.getInstance().loadConfiguration();
-    String className = config.getConfigProperty("IOutput"); //$NON-NLS-1$
+    final Configuration config = ChartBoot.getInstance().loadConfiguration();
+    final String className = config.getConfigProperty("IOutput"); //$NON-NLS-1$
     return getChartOutput(className);
   }
 
@@ -92,7 +92,7 @@ public class ChartPluginFactory  {
    * @param className
    * @return an implementation of IOutput
    */
-  public static IOutput getChartOutput(String className) {
+  public static IOutput getChartOutput(final String className) {
     try {
       return (IOutput) Class.forName(className).newInstance();
     } catch (ClassNotFoundException e) {

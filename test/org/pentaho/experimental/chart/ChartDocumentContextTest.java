@@ -30,7 +30,7 @@ public class ChartDocumentContextTest extends TestCase {
   /**
    * Chart document used for testing
    */
-  private ChartDocument chart = null;
+  private ChartDocument chart;
 
   /**
    * Performs the ChartBoot before performing the tests
@@ -52,10 +52,10 @@ public class ChartDocumentContextTest extends TestCase {
    * for style information and returns the information created from the style information.
    */
   public void testCreateStyleReferences() throws ResourceException {
-    ChartDocumentContext cdc = new ChartDocumentContext(chart);
-    ChartDocument chartDoc = cdc.getChartDocument();
+    final ChartDocumentContext cdc = new ChartDocumentContext(chart);
+    final ChartDocument chartDoc = cdc.getChartDocument();
 
-    StyleReference[] styleReferences = cdc.createStyleReferences(chartDoc);
+    final StyleReference[] styleReferences = cdc.createStyleReferences(chartDoc);
     assertNotNull(styleReferences);
     assertEquals(4, styleReferences.length);
 

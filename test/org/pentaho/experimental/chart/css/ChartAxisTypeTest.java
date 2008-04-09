@@ -26,13 +26,13 @@ public class ChartAxisTypeTest extends TestCase {
   }
   
   public void testChartAxisType() throws IllegalStateException, ResourceException {
-    ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource("ChartAxisTypeTest.xml")); //$NON-NLS-1$
-    ChartDocument cd = cdc.getChartDocument();
+    final ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource("ChartAxisTypeTest.xml")); //$NON-NLS-1$
+    final ChartDocument cd = cdc.getChartDocument();
     assertNotNull(cd);
-    ChartElement element = cd.getRootElement();
+    final ChartElement element = cd.getRootElement();
     assertNotNull(element);
 
-    CSSValue[][] passValues = new CSSValue[][] {
+    final CSSValue[][] passValues = new CSSValue[][] {
         new CSSValue[] {ChartAxisDimension.AUTO, ChartAxisPosition.PRIMARY, new CSSConstant("1")}, //$NON-NLS-1$
         new CSSValue[] {ChartAxisDimension.AUTO, ChartAxisPosition.SECONDARY, new CSSConstant("2")}, //$NON-NLS-1$
         new CSSValue[] {ChartAxisDimension.DOMAIN, ChartAxisPosition.PRIMARY, new CSSConstant("3")}, //$NON-NLS-1$
@@ -48,11 +48,11 @@ public class ChartAxisTypeTest extends TestCase {
     };
     
     int counter = 0;
-    int lenArray = passValues.length;
+    final int lenArray = passValues.length;
     ChartElement child = element.getFirstChildItem();
     
     while(child != null) {
-      LayoutStyle layoutStyle = child.getLayoutStyle();
+      final LayoutStyle layoutStyle = child.getLayoutStyle();
       assertNotNull(layoutStyle);
       System.out.print("Counter#: " + counter + " Expecting: " + passValues[counter][0] + "," + passValues[counter][1] + "," + passValues[counter][2]); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
       System.out.println(" -- Got: " + layoutStyle.getValue(ChartStyleKeys.AXIS_DIMENSION) + "," + layoutStyle.getValue(ChartStyleKeys.AXIS_POSITION) + "," + layoutStyle.getValue(ChartStyleKeys.AXIS_ORDER).getCSSText()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

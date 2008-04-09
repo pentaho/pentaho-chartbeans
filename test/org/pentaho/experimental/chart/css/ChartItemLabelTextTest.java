@@ -23,13 +23,13 @@ public class ChartItemLabelTextTest extends TestCase {
   }
   
   public void testChartLabelText() throws Exception {
-    ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource("ChartItemLabelTextTest.xml")); //$NON-NLS-1$
-    ChartDocument cd = cdc.getChartDocument();
+    final ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource("ChartItemLabelTextTest.xml")); //$NON-NLS-1$
+    final ChartDocument cd = cdc.getChartDocument();
     assertNotNull(cd);
-    ChartElement element = cd.getRootElement();
+    final ChartElement element = cd.getRootElement();
     assertNotNull(element);
 
-    CSSStringValue[] passValues = new CSSStringValue[] {
+    final CSSStringValue[] passValues = new CSSStringValue[] {
       new CSSStringValue(CSSStringType.STRING, "{0,$###,###.##} this is a label {1, format}"), //$NON-NLS-1$  
       new CSSStringValue(CSSStringType.STRING, "{0}"), //$NON-NLS-1$
       new CSSStringValue(CSSStringType.STRING, ""), //$NON-NLS-1$
@@ -37,11 +37,11 @@ public class ChartItemLabelTextTest extends TestCase {
     };
     
     int counter = 0;
-    int lenArray = passValues.length;
+    final int lenArray = passValues.length;
     ChartElement child = element.getFirstChildItem();
     
     while(child != null) {
-      LayoutStyle layoutStyle = child.getLayoutStyle();
+      final LayoutStyle layoutStyle = child.getLayoutStyle();
       assertNotNull(layoutStyle);
       System.out.println("Expected: "+passValues[counter]+" - Got: "+layoutStyle.getValue(ChartStyleKeys.ITEM_LABEL_TEXT).getCSSText()); //$NON-NLS-1$ //$NON-NLS-2$
       assertEquals(passValues[counter++].getCSSText(), layoutStyle.getValue(ChartStyleKeys.ITEM_LABEL_TEXT).getCSSText());

@@ -46,7 +46,7 @@ public class ChartElementReadHandler extends StringReadHandler {
    * @param parentChartElement the parent <code>ChartElement</code> to which the <code>ChartElement</code> being parsed
    *                           will be a child.
    */
-  public ChartElementReadHandler(ChartElement parentChartElement) {
+  public ChartElementReadHandler(final ChartElement parentChartElement) {
     this.chartElement = new ChartElement();
     parentChartElement.addChildElement(this.chartElement);
   }
@@ -80,7 +80,7 @@ public class ChartElementReadHandler extends StringReadHandler {
    * @param attrs the attributes of the tag being parsed
    * @throws SAXException indicates an error during parsing of this tag
    */
-  protected void startParsing(Attributes attrs) throws SAXException {
+  protected void startParsing(final Attributes attrs) throws SAXException {
     // Let the base class perform its operations
     super.startParsing(attrs);
 
@@ -103,7 +103,7 @@ public class ChartElementReadHandler extends StringReadHandler {
    */
   protected void doneParsing() throws SAXException {
     super.doneParsing();
-    String result = getResult();
+    final String result = getResult();
     if (result.trim().length() > 0) {
       chartElement.setText(result);
     }

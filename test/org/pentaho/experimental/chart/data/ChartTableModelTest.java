@@ -25,7 +25,7 @@ public class ChartTableModelTest extends TestCase {
    * Performs tests on null data
    */
   public final void testNullData() {
-    ChartTableModel ct = new ChartTableModel();
+    final ChartTableModel ct = new ChartTableModel();
 
     assertNull("Data is null. We should be getting null back", ct.getValueAt(0, 0)); //$NON-NLS-1$
     assertEquals(0, ct.getRowCount());
@@ -43,7 +43,7 @@ public class ChartTableModelTest extends TestCase {
    * Performs tests on null metadata
    */
   public final void testNullMetaData() {
-    ChartTableModel ct = new ChartTableModel();
+    final ChartTableModel ct = new ChartTableModel();
     Object data = null;
 
     try {
@@ -120,7 +120,7 @@ public class ChartTableModelTest extends TestCase {
    * Initializes data and performs tests on it
    */
   public final void testDataInit() {
-    ChartTableModel ct = new ChartTableModel();
+    final ChartTableModel ct = new ChartTableModel();
     ct.setData(dataSample);
     assertEquals("Mary", ct.getValueAt(0, 0)); //$NON-NLS-1$
     assertEquals("Snowboarding", ct.getValueAt(0, 2)); //$NON-NLS-1$
@@ -139,9 +139,9 @@ public class ChartTableModelTest extends TestCase {
    * Tests the row col count for with various configurations of data
    */
   public final void testRowColCount() {
-    ChartTableModel ct = new ChartTableModel();
+    final ChartTableModel ct = new ChartTableModel();
 
-    Object[][] data1 = {
+    final Object[][] data1 = {
         {"abc", 2, false, "some"}, //$NON-NLS-1$ //$NON-NLS-2$ 
         {"def", 1, 2, 3, 4}, //$NON-NLS-1$
         {"gh", 10} //$NON-NLS-1$
@@ -151,7 +151,7 @@ public class ChartTableModelTest extends TestCase {
     assertEquals(3, ct.getRowCount());
     assertEquals(5, ct.getColumnCount());
 
-    Object[][] data2 = {
+    final Object[][] data2 = {
         {"abc", 2}, //$NON-NLS-1$
         {"def"} //$NON-NLS-1$        
     };
@@ -160,7 +160,7 @@ public class ChartTableModelTest extends TestCase {
     assertEquals(2, ct.getRowCount());
     assertEquals(2, ct.getColumnCount());
 
-    Object[][] data3 = {
+    final Object[][] data3 = {
         {"abc", 2, 1, 3, 4, 9}, //$NON-NLS-1$ 
         {"def"},  //$NON-NLS-1$        
         {"def"},  //$NON-NLS-1$        
@@ -180,9 +180,9 @@ public class ChartTableModelTest extends TestCase {
    */
   public final void testDataNulls() {
 
-    ChartTableModel ct = new ChartTableModel();
+    final ChartTableModel ct = new ChartTableModel();
 
-    Object[][] data1 = {
+    final Object[][] data1 = {
         {"abc", 2, false, "some"}, //$NON-NLS-1$ //$NON-NLS-2$
         {"aaa", "bbb", null, "yes"},  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         {"gh", 10, null}, //$NON-NLS-1$
@@ -206,7 +206,7 @@ public class ChartTableModelTest extends TestCase {
     assertEquals(10, ct.getValueAt(2, 1));
     assertNull(ct.getValueAt(4, 1));
 
-    Object[][] data2 = {
+    final Object[][] data2 = {
         {"abc", 2, false, "some"}, //$NON-NLS-1$ //$NON-NLS-2$ 
         null,
         {"gh", 10} //$NON-NLS-1$
@@ -227,7 +227,7 @@ public class ChartTableModelTest extends TestCase {
   public void testMetaDataInit() {
     final String COLOR = "color";//$NON-NLS-1$
     final String NAME = "ChartTableModel.Name";//$NON-NLS-1$
-    ChartTableModel ct = new ChartTableModel();
+    final ChartTableModel ct = new ChartTableModel();
     Object data = null;
 
     // Some row level stuff
@@ -352,7 +352,7 @@ public class ChartTableModelTest extends TestCase {
    * Tests simple data initialization
    */
   public final void testHappyTest() {
-    ChartTableModel ct = new ChartTableModel();
+    final ChartTableModel ct = new ChartTableModel();
     ct.setData(dataSample);
     assertEquals("Mary", ct.getValueAt(0, 0)); //$NON-NLS-1$  
     assertEquals(false, ct.getValueAt(4, 4));

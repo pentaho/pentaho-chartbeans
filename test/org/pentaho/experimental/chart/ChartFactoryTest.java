@@ -68,44 +68,44 @@ public class ChartFactoryTest extends TestCase {
    */
   public void testStyleResolver() throws ResourceException {
     // Create the chart for testing
-    ChartDocument cd = new ChartXMLParser().parseChartDocument(this.getClass().getResource("style_test.xml"));
+    final ChartDocument cd = new ChartXMLParser().parseChartDocument(this.getClass().getResource("style_test.xml"));
     assertNotNull(cd);
-    ChartElement element = cd.getRootElement();
+    final ChartElement element = cd.getRootElement();
     assertNotNull(element);
-    ChartElement child1 = element.getFirstChildItem();
+    final ChartElement child1 = element.getFirstChildItem();
     assertNotNull(child1);
-    ChartElement child2 = element.getLastChildItem();
+    final ChartElement child2 = element.getLastChildItem();
     assertNotNull(child2);
 
     // Create the chart document context
-    ChartDocumentContext cdc = new ChartDocumentContext(cd);
+    final ChartDocumentContext cdc = new ChartDocumentContext(cd);
 
     // Get the initialized style resolver
-    StyleResolver sr = ChartFactory.getStyleResolver(cdc);
+    final StyleResolver sr = ChartFactory.getStyleResolver(cdc);
     assertNotNull(sr);
 
     // The 1st element of the chart should have no style information
     sr.resolveStyle(element);
-    LayoutStyle parentLayoutStyle = element.getLayoutStyle();
+    final LayoutStyle parentLayoutStyle = element.getLayoutStyle();
     assertNotNull(parentLayoutStyle);
 
     // The 1st child shouldn't have any style information either
     sr.resolveStyle(child1);
-    LayoutStyle child1LayoutStyle = child1.getLayoutStyle();
+    final LayoutStyle child1LayoutStyle = child1.getLayoutStyle();
     assertNotNull(child1LayoutStyle);
 
     // The 2nd child should get different information
     sr.resolveStyle(child2);
-    LayoutStyle child2LayoutStyle = child2.getLayoutStyle();
+    final LayoutStyle child2LayoutStyle = child2.getLayoutStyle();
     assertNotNull(child2LayoutStyle);
 
-    StyleKey fontFamily = StyleKeyRegistry.getRegistry().findKeyByName("font-family");
-    StyleKey fontSize = StyleKeyRegistry.getRegistry().findKeyByName("font-size");
-    StyleKey fontWeight = StyleKeyRegistry.getRegistry().findKeyByName("font-weight");
-    StyleKey fontStyle = StyleKeyRegistry.getRegistry().findKeyByName("font-style");
-    StyleKey textAlign = StyleKeyRegistry.getRegistry().findKeyByName("text-align");
-    StyleKey color = StyleKeyRegistry.getRegistry().findKeyByName("color");
-    StyleKey backgroundColor = StyleKeyRegistry.getRegistry().findKeyByName("background-color");
+    final StyleKey fontFamily = StyleKeyRegistry.getRegistry().findKeyByName("font-family");
+    final StyleKey fontSize = StyleKeyRegistry.getRegistry().findKeyByName("font-size");
+    final StyleKey fontWeight = StyleKeyRegistry.getRegistry().findKeyByName("font-weight");
+    final StyleKey fontStyle = StyleKeyRegistry.getRegistry().findKeyByName("font-style");
+    final StyleKey textAlign = StyleKeyRegistry.getRegistry().findKeyByName("text-align");
+    final StyleKey color = StyleKeyRegistry.getRegistry().findKeyByName("color");
+    final StyleKey backgroundColor = StyleKeyRegistry.getRegistry().findKeyByName("background-color");
     assertNotNull("Could not retrieve the StyleKey for [font-family]", fontFamily);
     assertNotNull("Could not retrieve the StyleKey for [font-size]", fontSize);
     assertNotNull("Could not retrieve the StyleKey for [font-weight]", fontWeight);
@@ -113,8 +113,8 @@ public class ChartFactoryTest extends TestCase {
     assertNotNull("Could not retrieve the StyleKey for [text-align]", textAlign);
     assertNotNull("Could not retrieve the StyleKey for [color]", color);
     assertNotNull("Could not retrieve the StyleKey for [background-color]", backgroundColor);
-    StyleKey[] different1Keys = new StyleKey[]{fontFamily, fontSize, fontWeight, fontStyle, textAlign, color, backgroundColor};
-    StyleKey[] different2Keys = new StyleKey[]{color};
+    final StyleKey[] different1Keys = new StyleKey[]{fontFamily, fontSize, fontWeight, fontStyle, textAlign, color, backgroundColor};
+    final StyleKey[] different2Keys = new StyleKey[]{color};
 
     //******************************************************************************************************************
     // NOTE: THE FOLLOWING TESTS WILL START FAILING WHEN CHANGED ARE MADE TO THE chart.css FILE! THIS IS EXPECTED!
@@ -123,7 +123,7 @@ public class ChartFactoryTest extends TestCase {
 
     // The parent tag (chart) and the 1st child tag (title) should have some different styles due to the "default"
     // style information for the <title> tag in the chart.css file
-    StyleKey[] allKeys = StyleKeyRegistry.getRegistry().getKeys();
+    final StyleKey[] allKeys = StyleKeyRegistry.getRegistry().getKeys();
     for (int i = 0; i < allKeys.length; ++i) {
       boolean different = false;
       for (int j = 0; j < different1Keys.length && !different; ++j) {

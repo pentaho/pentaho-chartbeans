@@ -113,13 +113,13 @@ public class ChartDocumentTest extends TestCase {
    * Tests for the <code>getSeriesTags()</code> helper methods
    */
   public void testGetSeriesTags() {
-    ChartElement rootElement = new ChartElement();
+    final ChartElement rootElement = new ChartElement();
     rootElement.setTagName(ChartElement.TAG_NAME_CHART);
-    ChartElement series1 = new ChartElement(); series1.setTagName(ChartElement.TAG_NAME_SERIES);
-    ChartElement series2 = new ChartElement(); series2.setTagName(ChartElement.TAG_NAME_SERIES);
-    ChartElement series3 = new ChartElement(); series3.setTagName(ChartElement.TAG_NAME_SERIES);
-    ChartElement series4 = new ChartElement(); series4.setTagName(ChartElement.TAG_NAME_SERIES);
-    ChartDocument doc = new ChartDocument(rootElement);
+    final ChartElement series1 = new ChartElement(); series1.setTagName(ChartElement.TAG_NAME_SERIES);
+    final ChartElement series2 = new ChartElement(); series2.setTagName(ChartElement.TAG_NAME_SERIES);
+    final ChartElement series3 = new ChartElement(); series3.setTagName(ChartElement.TAG_NAME_SERIES);
+    final ChartElement series4 = new ChartElement(); series4.setTagName(ChartElement.TAG_NAME_SERIES);
+    final ChartDocument doc = new ChartDocument(rootElement);
     rootElement.addChildElement(new ChartElement());
     rootElement.addChildElement(series1);
     rootElement.addChildElement(new ChartElement());
@@ -127,7 +127,7 @@ public class ChartDocumentTest extends TestCase {
     series2.addChildElement(series3);
     rootElement.addChildElement(series4);
 
-    List elements = doc.getSeriesChartElements();
+    final List elements = doc.getSeriesChartElements();
     assertNotNull(elements);
     assertEquals(3, elements.size());
     assertEquals(series1, elements.get(0));
@@ -139,13 +139,13 @@ public class ChartDocumentTest extends TestCase {
    * Tests for the <code>getSeriesTags()</code> helper methods
    */
   public void testGetGroupTags() {
-    ChartElement rootElement = new ChartElement();
+    final ChartElement rootElement = new ChartElement();
     rootElement.setTagName(ChartElement.TAG_NAME_CHART);
-    ChartElement series1 = new ChartElement(); series1.setTagName(ChartElement.TAG_NAME_GROUP);
-    ChartElement series2 = new ChartElement(); series2.setTagName(ChartElement.TAG_NAME_GROUP);
-    ChartElement series3 = new ChartElement(); series3.setTagName(ChartElement.TAG_NAME_GROUP);
-    ChartElement series4 = new ChartElement(); series4.setTagName(ChartElement.TAG_NAME_GROUP);
-    ChartDocument doc = new ChartDocument(rootElement);
+    final ChartElement series1 = new ChartElement(); series1.setTagName(ChartElement.TAG_NAME_GROUP);
+    final ChartElement series2 = new ChartElement(); series2.setTagName(ChartElement.TAG_NAME_GROUP);
+    final ChartElement series3 = new ChartElement(); series3.setTagName(ChartElement.TAG_NAME_GROUP);
+    final ChartElement series4 = new ChartElement(); series4.setTagName(ChartElement.TAG_NAME_GROUP);
+    final ChartDocument doc = new ChartDocument(rootElement);
     rootElement.addChildElement(series1);
     rootElement.addChildElement(new ChartElement());
     rootElement.addChildElement(series2);
@@ -153,7 +153,7 @@ public class ChartDocumentTest extends TestCase {
     rootElement.addChildElement(series4);
     rootElement.addChildElement(new ChartElement());
 
-    List elements = doc.getGroupChartElements();
+    final List elements = doc.getGroupChartElements();
     assertNotNull(elements);
     assertEquals(3, elements.size());
     assertEquals(series1, elements.get(0));
@@ -162,7 +162,7 @@ public class ChartDocumentTest extends TestCase {
   }
 
   public void testGetPlotElement() throws ResourceException {
-    String[] testFileNames = {
+    final String[] testFileNames = {
         "ChartDocumentTest1.xml", //$NON-NLS-1$
         "ChartDocumentTest2.xml", //$NON-NLS-1$
         "ChartDocumentTest3.xml", //$NON-NLS-1$
@@ -170,12 +170,12 @@ public class ChartDocumentTest extends TestCase {
     };
 
     for (int i = 0; i < testFileNames.length; i++) {
-      ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource(testFileNames[i])); 
+      final ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource(testFileNames[i]));
       assertNotNull(cdc);
-      ChartDocument cd = cdc.getChartDocument();
+      final ChartDocument cd = cdc.getChartDocument();
       assertNotNull(cd);    
 
-      ChartElement plotElement = cd.getPlotElement();
+      final ChartElement plotElement = cd.getPlotElement();
       if (i == 0) {
         assertEquals(null, plotElement);
       } else {

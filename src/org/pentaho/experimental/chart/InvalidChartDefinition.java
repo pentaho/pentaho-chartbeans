@@ -24,15 +24,15 @@ public class InvalidChartDefinition extends Exception {
   public InvalidChartDefinition() {
   }
 
-  public InvalidChartDefinition(String message) {
+  public InvalidChartDefinition(final String message) {
     super(message);
   }
 
-  public InvalidChartDefinition(String message, Throwable cause) {
+  public InvalidChartDefinition(final String message, final Throwable cause) {
     super(message, cause);
   }
 
-  public InvalidChartDefinition(Throwable cause) {
+  public InvalidChartDefinition(final Throwable cause) {
     super(cause);
   }
 }

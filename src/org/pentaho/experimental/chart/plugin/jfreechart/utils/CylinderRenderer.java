@@ -53,7 +53,7 @@ public class CylinderRenderer extends BarRenderer3D {
      * @param xOffset  the x-offset for the 3D effect.
      * @param yOffset  the y-offset for the 3D effect.
      */
-    public CylinderRenderer(double xOffset, double yOffset) {
+    public CylinderRenderer(final double xOffset, final double yOffset) {
         super(xOffset, yOffset);   
     }
     
@@ -71,49 +71,49 @@ public class CylinderRenderer extends BarRenderer3D {
      * @param column  the column index (zero-based).
      * @param pass  the pass index.
      */
-    public void drawItem(Graphics2D g2,
-                         CategoryItemRendererState state,
-                         Rectangle2D dataArea,
-                         CategoryPlot plot,
-                         CategoryAxis domainAxis,
-                         ValueAxis rangeAxis,
-                         CategoryDataset dataset,
-                         int row,
-                         int column,
-                         int pass) {
+    public void drawItem(final Graphics2D g2,
+                         final CategoryItemRendererState state,
+                         final Rectangle2D dataArea,
+                         final CategoryPlot plot,
+                         final CategoryAxis domainAxis,
+                         final ValueAxis rangeAxis,
+                         final CategoryDataset dataset,
+                         final int row,
+                         final int column,
+                         final int pass) {
     
         // check the value we are plotting...
-        Number dataValue = dataset.getValue(row, column);
+        final Number dataValue = dataset.getValue(row, column);
         if (dataValue == null) {
             return;
         }
         
-        double value = dataValue.doubleValue();
+        final double value = dataValue.doubleValue();
         
-        Rectangle2D adjusted = new Rectangle2D.Double(dataArea.getX(),
+        final Rectangle2D adjusted = new Rectangle2D.Double(dataArea.getX(),
                 dataArea.getY() + getYOffset(), 
                 dataArea.getWidth() - getXOffset(),
                 dataArea.getHeight() - getYOffset());
 
-        PlotOrientation orientation = plot.getOrientation();
+        final PlotOrientation orientation = plot.getOrientation();
         
-        double barW0 = calculateBarW0(plot, orientation, adjusted, domainAxis, 
+        final double barW0 = calculateBarW0(plot, orientation, adjusted, domainAxis,
                 state, row, column);
-        double[] barL0L1 = calculateBarL0L1(value);
+        final double[] barL0L1 = calculateBarL0L1(value);
         if (barL0L1 == null) {
             return;  // the bar is not visible
         }
 
-        RectangleEdge edge = plot.getRangeAxisEdge();
-        float transL0 = (float) rangeAxis.valueToJava2D(barL0L1[0], adjusted, 
+        final RectangleEdge edge = plot.getRangeAxisEdge();
+        final float transL0 = (float) rangeAxis.valueToJava2D(barL0L1[0], adjusted,
                 edge);
-        float transL1 = (float) rangeAxis.valueToJava2D(barL0L1[1], adjusted, 
+        final float transL1 = (float) rangeAxis.valueToJava2D(barL0L1[1], adjusted,
                 edge);
-        float barL0 = Math.min(transL0, transL1);
-        float barLength = Math.abs(transL1 - transL0);
+        final float barL0 = Math.min(transL0, transL1);
+        final float barLength = Math.abs(transL1 - transL0);
         
         // draw the bar...
-        GeneralPath bar = new GeneralPath();
+        final GeneralPath bar = new GeneralPath();
         Shape top = null;
         if (orientation == PlotOrientation.HORIZONTAL) {
             bar.moveTo((float) (barL0 + getXOffset() / 2), (float) barW0);
@@ -153,7 +153,7 @@ public class CylinderRenderer extends BarRenderer3D {
         Paint itemPaint = getItemPaint(row, column);
         if (getGradientPaintTransformer() != null 
                 && itemPaint instanceof GradientPaint) {
-            GradientPaint gp = (GradientPaint) itemPaint;
+            final GradientPaint gp = (GradientPaint) itemPaint;
             itemPaint = getGradientPaintTransformer().transform(gp, bar);
         }
         g2.setPaint(itemPaint);
@@ -176,7 +176,7 @@ public class CylinderRenderer extends BarRenderer3D {
             }
         }
 
-        CategoryItemLabelGenerator generator 
+        final CategoryItemLabelGenerator generator
                 = getItemLabelGenerator(row, column);
         if (generator != null && isItemLabelVisible(row, column)) {
             drawItemLabel(g2, dataset, row, column, plot, generator, 
@@ -185,10 +185,10 @@ public class CylinderRenderer extends BarRenderer3D {
 
         // collect entity and tool tip information...
         if (state.getInfo() != null) {
-            EntityCollection entities = state.getEntityCollection();
+            final EntityCollection entities = state.getEntityCollection();
             if (entities != null) {
                 String tip = null;
-                CategoryToolTipGenerator tipster 
+                final CategoryToolTipGenerator tipster
                         = getToolTipGenerator(row, column);
                 if (tipster != null) {
                     tip = tipster.generateToolTip(dataset, row, column);
@@ -198,7 +198,7 @@ public class CylinderRenderer extends BarRenderer3D {
                     url = getItemURLGenerator(row, column).generateURL(
                             dataset, row, column);
                 }
-                CategoryItemEntity entity = new CategoryItemEntity(
+                final CategoryItemEntity entity = new CategoryItemEntity(
                         bar.getBounds2D(), tip, url, dataset, 
                         dataset.getRowKey(row), dataset.getColumnKey(column));
                 entities.add(entity);

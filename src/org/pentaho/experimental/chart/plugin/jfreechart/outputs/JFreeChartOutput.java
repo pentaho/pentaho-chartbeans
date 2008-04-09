@@ -51,7 +51,7 @@ public class JFreeChartOutput implements IOutput {
    * @see org.pentaho.experimental.chart.plugin.api.IOutput#getAsStream()
    */
   public OutputStream getChartAsStream() throws PersistenceException {
-    ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
+    final ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
     
     if (outputStream == null) {
       outputStream = new ByteArrayOutputStream();
@@ -95,7 +95,7 @@ public class JFreeChartOutput implements IOutput {
    * @see org.pentaho.experimental.chart.plugin.api.IOutput#persist()
    */
   public void persist() throws PersistenceException {
-    ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
+    final ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
     
     if (filename != null && filename.length() > 0) {
       if (fileType == IOutput.FILE_TYPE_JPEG) {
@@ -120,11 +120,11 @@ public class JFreeChartOutput implements IOutput {
     
   }
   
-  private void writeImageMap(ChartRenderingInfo info) throws IOException {
+  private void writeImageMap(final ChartRenderingInfo info) throws IOException {
     if (chart.getCategoryPlot().getRenderer().getBaseItemURLGenerator() != null) {
-      String mapFileName = filename + MAP_EXTENSION;
-      String mapString = ImageMapUtilities.getImageMap(mapFileName, info);
-      BufferedWriter out = new BufferedWriter(new FileWriter(mapFileName));
+      final String mapFileName = filename + MAP_EXTENSION;
+      final String mapString = ImageMapUtilities.getImageMap(mapFileName, info);
+      final BufferedWriter out = new BufferedWriter(new FileWriter(mapFileName));
       out.write(mapString);
       out.flush();
       out.close();
@@ -134,21 +134,21 @@ public class JFreeChartOutput implements IOutput {
   /* (non-Javadoc)
    * @see org.pentaho.experimental.chart.plugin.api.IOutput#setChart(org.pentaho.experimental.chart.plugin.api.engine.Chart)
    */
-  public void setChart(Object chart) {
+  public void setChart(final Object chart) {
     this.chart = (JFreeChart) chart;
   }
 
   /* (non-Javadoc)
    * @see org.pentaho.experimental.chart.plugin.api.IOutput#setFileType(int)
    */
-  public void setFileType(int fileType) {
+  public void setFileType(final int fileType) {
     this.fileType = fileType;
   }
 
   /* (non-Javadoc)
    * @see org.pentaho.experimental.chart.plugin.api.IOutput#setFilename(java.lang.String)
    */
-  public void setFilename(String filename) {
+  public void setFilename(final String filename) {
     this.filename = filename;
   }
   
@@ -162,7 +162,7 @@ public class JFreeChartOutput implements IOutput {
   /* (non-Javadoc)
    * @see org.pentaho.experimental.chart.plugin.api.IOutput#setOutputStream(java.io.OutputStream)
    */
-  public void setOutputStream(OutputStream outputStream) {
+  public void setOutputStream(final OutputStream outputStream) {
     this.outputStream = outputStream;
   }
 

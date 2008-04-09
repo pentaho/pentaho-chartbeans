@@ -166,7 +166,7 @@ public class HeirarchicalLinkedListItem implements Cloneable {
    * @param newChild the item to be added at the end of the list.
    * @throws IllegalArgumentException indicates the supplied new child is <code>null</code>
    */
-  protected void addChildItem(HeirarchicalLinkedListItem newChild) throws IllegalArgumentException {
+  protected void addChildItem(final HeirarchicalLinkedListItem newChild) throws IllegalArgumentException {
     addLastChildItem(newChild);
   }
 
@@ -178,14 +178,14 @@ public class HeirarchicalLinkedListItem implements Cloneable {
    * @throws IllegalArgumentException indicates one of the supplied parameters is <code>null</code>
    * @throws IllegalStateException    indicates the new child already has a parent defined
    */
-  protected void insertAfter(HeirarchicalLinkedListItem newChild, HeirarchicalLinkedListItem target)
+  protected void insertAfter(final HeirarchicalLinkedListItem newChild, final HeirarchicalLinkedListItem target)
       throws IllegalArgumentException, IllegalStateException {
     if (newChild == null || target == null) {
       throw new IllegalArgumentException();
     }
 
     // Find the child in the list of children
-    HeirarchicalLinkedListItem foundTarget = findChildItem(target);
+    final HeirarchicalLinkedListItem foundTarget = findChildItem(target);
     if (foundTarget == null) {
       throw new IllegalArgumentException("Could not find target child!"); // TODO: externalize
     }
@@ -205,14 +205,14 @@ public class HeirarchicalLinkedListItem implements Cloneable {
    * @throws IllegalArgumentException indicates one of the supplied parameters is <code>null</code>
    * @throws IllegalStateException    indicates the new child already has a parent defined
    */
-  protected void insertBefore(HeirarchicalLinkedListItem newChild, HeirarchicalLinkedListItem target)
+  protected void insertBefore(final HeirarchicalLinkedListItem newChild, final HeirarchicalLinkedListItem target)
       throws IllegalArgumentException, IllegalStateException {
     if (newChild == null || target == null) {
       throw new IllegalArgumentException();
     }
 
     // Find the child in the list of children
-    HeirarchicalLinkedListItem foundTarget = findChildItem(target);
+    final HeirarchicalLinkedListItem foundTarget = findChildItem(target);
     if (foundTarget == null) {
       throw new IllegalArgumentException("Could not find target child!"); // TODO: externalize
     }
@@ -231,7 +231,7 @@ public class HeirarchicalLinkedListItem implements Cloneable {
    * @throws IllegalArgumentException indicates the new child is <code>null</code>
    * @throws IllegalStateException    indicates the new child already has a parent defined
    */
-  protected void addFirstChildItem(HeirarchicalLinkedListItem newChild) throws IllegalArgumentException, IllegalStateException {
+  protected void addFirstChildItem(final HeirarchicalLinkedListItem newChild) throws IllegalArgumentException, IllegalStateException {
     if (firstChild == null) {
       addChildItem(newChild);
     } else {
@@ -246,7 +246,7 @@ public class HeirarchicalLinkedListItem implements Cloneable {
    * @throws IllegalArgumentException indicates the new child is <code>null</code>
    * @throws IllegalStateException    indicates the new child already has a parent defined
    */
-  protected void addLastChildItem(HeirarchicalLinkedListItem newChild) throws IllegalArgumentException, IllegalStateException {
+  protected void addLastChildItem(final HeirarchicalLinkedListItem newChild) throws IllegalArgumentException, IllegalStateException {
     if (newChild == null) {
       throw new IllegalArgumentException();
     }
@@ -271,7 +271,7 @@ public class HeirarchicalLinkedListItem implements Cloneable {
    * @throws IllegalArgumentException indicates the supplied new parent is <code>null</code>
    * @throws IllegalStateException    indicates this item already has a parent defined
    */
-  private void setParentItem(HeirarchicalLinkedListItem newParent) throws IllegalArgumentException, IllegalStateException {
+  private void setParentItem(final HeirarchicalLinkedListItem newParent) throws IllegalArgumentException, IllegalStateException {
     if (newParent == null) {
       throw new IllegalArgumentException();
     }
@@ -292,7 +292,7 @@ public class HeirarchicalLinkedListItem implements Cloneable {
    *
    * @param itemToFind the item to find in the list of children
    */
-  private HeirarchicalLinkedListItem findChildItem(HeirarchicalLinkedListItem itemToFind) {
+  private HeirarchicalLinkedListItem findChildItem(final HeirarchicalLinkedListItem itemToFind) {
     for (HeirarchicalLinkedListItem searchItem = firstChild; searchItem != null; searchItem = searchItem.next) {
       if (searchItem.equals(itemToFind)) {
         return searchItem;
@@ -308,7 +308,7 @@ public class HeirarchicalLinkedListItem implements Cloneable {
    * @throws IllegalArgumentException indicates the supplied item is <code>null</code>
    * @throws IllegalStateException    indicates the new item already has a parent
    */
-  private void addPreviousItem(HeirarchicalLinkedListItem newItem) throws IllegalArgumentException, IllegalStateException {
+  private void addPreviousItem(final HeirarchicalLinkedListItem newItem) throws IllegalArgumentException, IllegalStateException {
     if (newItem == null) {
       throw new IllegalArgumentException();
     }
@@ -332,7 +332,7 @@ public class HeirarchicalLinkedListItem implements Cloneable {
    * @throws IllegalArgumentException indicates the supplied item is <code>null</code>
    * @throws IllegalStateException    indicates the new item already has a parent
    */
-  private void addNextItem(HeirarchicalLinkedListItem newItem) throws IllegalArgumentException, IllegalStateException {
+  private void addNextItem(final HeirarchicalLinkedListItem newItem) throws IllegalArgumentException, IllegalStateException {
     if (newItem == null) {
       throw new IllegalArgumentException();
     }

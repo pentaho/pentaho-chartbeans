@@ -28,10 +28,9 @@ import java.util.HashMap;
 public class ChartSeriesDataLinkInfo {
 
   private HashMap<ChartElement, Integer> seriesDataLinkHashMap = new HashMap<ChartElement, Integer>();
-  private ChartTableModel chartTableModelObj = null;
 
-  ChartSeriesDataLinkInfo(ChartTableModel data) {
-    chartTableModelObj = data;
+  ChartSeriesDataLinkInfo(final ChartTableModel data) {
+    final ChartTableModel chartTableModelObj = data;
   }
 
   /**
@@ -40,7 +39,7 @@ public class ChartSeriesDataLinkInfo {
    * @param seriesElement Series element is put into the hash as a KEY.
    * @param columnPos     Column position acts as the VALUE for the chart element KEY.
    */
-  public void setColumnNum(ChartElement seriesElement, Integer columnPos) {
+  public void setColumnNum(final ChartElement seriesElement, final Integer columnPos) {
     seriesDataLinkHashMap.put(seriesElement, columnPos);
   }
 
@@ -50,8 +49,8 @@ public class ChartSeriesDataLinkInfo {
    * @param seriesElement
    * @return columnPosition Returns the column number based on the series element.
    */
-  public Integer getColumnNum(ChartElement seriesElement) {
-    Integer columnPos = seriesDataLinkHashMap.get(seriesElement);
+  public Integer getColumnNum(final ChartElement seriesElement) {
+    final Integer columnPos = seriesDataLinkHashMap.get(seriesElement);
     return columnPos;
   }
 
@@ -70,7 +69,7 @@ public class ChartSeriesDataLinkInfo {
    * @param columnPos
    * @return Returns true if the hash map has column position.
    */
-  public boolean hasColumnPos(Integer columnPos) {
+  public boolean hasColumnPos(final Integer columnPos) {
     return seriesDataLinkHashMap.containsValue(columnPos);
   }
 
@@ -80,7 +79,7 @@ public class ChartSeriesDataLinkInfo {
    * @param seriesElement
    * @return Returns true if the hash map has series element.
    */
-  public boolean hasSeriesElement(ChartElement seriesElement) {
+  public boolean hasSeriesElement(final ChartElement seriesElement) {
     return seriesDataLinkHashMap.containsKey(seriesElement);
   }
 }

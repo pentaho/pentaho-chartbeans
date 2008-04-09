@@ -35,12 +35,12 @@ public class ChartSeriesDataLinkInfoTest extends TestCase {
    * @param chartDocFileName
    * @return
    */
-  private ChartDocument getChartDoc(String chartDocFileName) {
+  private ChartDocument getChartDoc(final String chartDocFileName) {
     ChartDocument chartDoc = null;
     // Read the XML document and prepare for the test
     try {
-      ChartXMLParser chartParser = new ChartXMLParser();
-      URL chartXmlDocument = this.getClass().getResource(chartDocFileName);
+      final ChartXMLParser chartParser = new ChartXMLParser();
+      final URL chartXmlDocument = this.getClass().getResource(chartDocFileName);
       chartDoc = chartParser.parseChartDocument(chartXmlDocument);
       if (chartDoc == null) {
         fail("A null document should never be returned");//$NON-NLS-1$
@@ -70,7 +70,7 @@ public class ChartSeriesDataLinkInfoTest extends TestCase {
   */ 
   public final void testColumnPositonsOnly() {
     ChartDocument chartDoc = getChartDoc("NoSeriesTag.xml"); //$NON-NLS-1$
-    ChartTableModel chartTableModel = new ChartTableModel();
+    final ChartTableModel chartTableModel = new ChartTableModel();
     ChartSeriesDataLinkInfo seriesDataLinkInfo = null;
     
 
@@ -124,8 +124,8 @@ public class ChartSeriesDataLinkInfoTest extends TestCase {
    *    j. the column name is correct and is in the metadata list of cols.
    */    
   public final void testColumnNamesOnly() {
-    ChartDocument chartDoc = getChartDoc("SeriesTagWithColumnNames.xml"); //$NON-NLS-1$
-    ChartTableModel chartTableModel = new ChartTableModel();
+    final ChartDocument chartDoc = getChartDoc("SeriesTagWithColumnNames.xml"); //$NON-NLS-1$
+    final ChartTableModel chartTableModel = new ChartTableModel();
     ChartSeriesDataLinkInfo seriesDataLinkInfo = null;
 
     // No data and meta data
@@ -159,8 +159,8 @@ public class ChartSeriesDataLinkInfoTest extends TestCase {
    *     i.e. series tag# 5 > max col 3   
    */
   public final void testSeriesPosOnly() {
-    ChartDocument chartDoc = getChartDoc("SeriesTagWith_NoColPos_NoColName.xml"); //$NON-NLS-1$
-    ChartTableModel chartTableModel = new ChartTableModel();
+    final ChartDocument chartDoc = getChartDoc("SeriesTagWith_NoColPos_NoColName.xml"); //$NON-NLS-1$
+    final ChartTableModel chartTableModel = new ChartTableModel();
     ChartSeriesDataLinkInfo seriesDataLinkInfo = null;
     
     // No data and meta data
@@ -186,8 +186,8 @@ public class ChartSeriesDataLinkInfoTest extends TestCase {
    * This is where we test all 3 conditions existing together.
    */
   public final void testSeriesMixed() {
-    ChartDocument chartDoc = getChartDoc("SeriesTagMixed.xml"); //$NON-NLS-1$
-    ChartTableModel chartTableModel = new ChartTableModel();
+    final ChartDocument chartDoc = getChartDoc("SeriesTagMixed.xml"); //$NON-NLS-1$
+    final ChartTableModel chartTableModel = new ChartTableModel();
     ChartSeriesDataLinkInfo seriesDataLinkInfo = null;
     
     // We have data and metadata now.
@@ -215,8 +215,8 @@ public class ChartSeriesDataLinkInfoTest extends TestCase {
    * This is where we test all 3 conditions existing together.
    */
   public final void testSeriesMixed2() {
-    ChartDocument chartDoc = getChartDoc("SeriesTagMixed2.xml"); //$NON-NLS-1$
-    ChartTableModel chartTableModel = new ChartTableModel();
+    final ChartDocument chartDoc = getChartDoc("SeriesTagMixed2.xml"); //$NON-NLS-1$
+    final ChartTableModel chartTableModel = new ChartTableModel();
    
     // We have data and metadata now.
     chartTableModel.setData(dataSample);
@@ -229,13 +229,13 @@ public class ChartSeriesDataLinkInfoTest extends TestCase {
     
     // If a series element that has incorrect column pos and incorrect column name? 
     // then we are ignoring it.
-    ChartSeriesDataLinkInfo seriesDataLinkInfo = ChartSeriesDataLinkInfoFactory.generateSeriesDataLinkInfo(chartDoc, chartTableModel); 
+    final ChartSeriesDataLinkInfo seriesDataLinkInfo = ChartSeriesDataLinkInfoFactory.generateSeriesDataLinkInfo(chartDoc, chartTableModel);
     
     // 5 is the number of columns in data array, we would ignore any 
     // chart element with column number greater than that    
     assertEquals(7, seriesDataLinkInfo.getDataSize());    
    
-    ChartElement rootChartElement = chartDoc.getRootElement();
+    final ChartElement rootChartElement = chartDoc.getRootElement();
     
     ChartElement currentChartElement = rootChartElement.getFirstChildItem();
     
@@ -243,7 +243,7 @@ public class ChartSeriesDataLinkInfoTest extends TestCase {
     int seriesCounter = 0;
     
     while (currentChartElement.getNextItem() != null) {
-      Integer colNum = seriesDataLinkInfo.getColumnNum(currentChartElement);
+      final Integer colNum = seriesDataLinkInfo.getColumnNum(currentChartElement);
      
       switch(seriesCounter) {
         case 0: assertEquals(new Integer("2"), colNum); break; //$NON-NLS-1$

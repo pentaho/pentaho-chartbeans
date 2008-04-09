@@ -53,14 +53,14 @@ public class ChartNamespaceDefinition implements NamespaceDefinition {
     }
 
     // Load the information from the chart properties file
-    Configuration config = ChartBoot.getInstance().getGlobalConfig();
+    final Configuration config = ChartBoot.getInstance().getGlobalConfig();
     preferredPrefix = config.getConfigProperty(PREFERRED_PREFIX, DEFAULT_PREFERRED_PREFIX);
     uri = config.getConfigProperty(URI, DEFAULT_URI);
     classAttributeNames = StringUtils.split(config.getConfigProperty(CLASS_ATTRIBUTES, DEFAULT_CLASS_ATTRIBUTE_NAMES));
     styleAttributeNames = StringUtils.split(config.getConfigProperty(STYLE_ATTRIBUTES, DEFAULT_STYLE_ATTRIBUTE_NAMES));
 
     // Load the chart style information and retain the key
-    String chartStyleLocation = config.getConfigProperty(CHART_STYLE_LOCATION, DEFAULT_CHART_STYLE_LOCATION);
+    final String chartStyleLocation = config.getConfigProperty(CHART_STYLE_LOCATION, DEFAULT_CHART_STYLE_LOCATION);
     chartStyleSheetKey = resourceManager.createKey(chartStyleLocation);
   }
 
@@ -72,11 +72,11 @@ public class ChartNamespaceDefinition implements NamespaceDefinition {
     return uri;
   }
 
-  public String[] getClassAttribute(String element) {
+  public String[] getClassAttribute(final String element) {
     return classAttributeNames;
   }
 
-  public String[] getStyleAttribute(String element) {
+  public String[] getStyleAttribute(final String element) {
     return styleAttributeNames;
   }
 

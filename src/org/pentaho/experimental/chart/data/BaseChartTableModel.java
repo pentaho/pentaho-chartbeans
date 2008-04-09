@@ -64,9 +64,9 @@ class BaseChartTableModel extends AbstractTableModel {
   /**
    * Data array
    */
-  private Object[][] data = null;
-  private int rowCount = 0;
-  private int colCount = 0;
+  private Object[][] data;
+  private int rowCount;
+  private int colCount;
 
 
   /*
@@ -94,7 +94,7 @@ class BaseChartTableModel extends AbstractTableModel {
    * @see javax.swing.table.AbstractTableModel#getColumnName(int)
    *      Column name is ofcourse column specific, so we use COL as a placeholder to get Column specific data
    */
-  public String getColumnName(int col) {
+  public String getColumnName(final int col) {
     String colName = null;
 
     if (col >= 0) {
@@ -111,7 +111,7 @@ class BaseChartTableModel extends AbstractTableModel {
    * @param row the 0-based row number for which the name should be returned
    * @return the name of the specified row
    */
-  public String getRowName(int row) {
+  public String getRowName(final int row) {
     String rowName = null;
 
     if (row >= 0) {
@@ -127,7 +127,7 @@ class BaseChartTableModel extends AbstractTableModel {
    *
    * @param col Column number to be
    */
-  public void setColumnName(int col, String name) {
+  public void setColumnName(final int col, final String name) {
     if (col < 0) {
       logger.error(Messages.getErrorString("ChartTableModel.ERROR_0001_COLUMN_NUM_LOWER_THAN_ZERO")); //$NON-NLS-1$
     } else if (null == name || name.trim().length() == 0) {
@@ -143,7 +143,7 @@ class BaseChartTableModel extends AbstractTableModel {
    * @param row  the 0-based row number
    * @param name the name to assign to the specified row
    */
-  public void setRowName(int row, String name) {
+  public void setRowName(final int row, final String name) {
     if (row >= 0) {
       metadataMap.put(ROW, row, NAME, name);
     } else {
@@ -156,7 +156,7 @@ class BaseChartTableModel extends AbstractTableModel {
    *
    * @see javax.swing.table.TableModel#getValueAt(int, int)
    */
-  public Object getValueAt(int row, int col) {
+  public Object getValueAt(final int row, final int col) {
     Object retData = null;
 
     if (null == data) {
@@ -181,7 +181,7 @@ class BaseChartTableModel extends AbstractTableModel {
    * @throws ArrayIndexOutOfBoundsException if the row or column number are out of bounds
    * @throws IllegalStateException          if the data array is not initialized
    */
-  public void setValueAt(Object value, int row, int col) throws ArrayIndexOutOfBoundsException, IllegalStateException {
+  public void setValueAt(final Object value, final int row, final int col) throws ArrayIndexOutOfBoundsException, IllegalStateException {
     if (row > getRowCount() || row < 0) {
       throw new ArrayIndexOutOfBoundsException(Messages.getErrorString("ChartTableModel.ERROR_0004_ROW_NUM_OUT_OF_BOUNDS")); //$NON-NLS-1$
     } else if (col > getColumnCount() || col < 0) {
@@ -198,7 +198,7 @@ class BaseChartTableModel extends AbstractTableModel {
    * @param inData The input data
    * @throws IllegalStateException if any data element within the array is null.
    */
-  public void setData(Object[][] inData) throws IllegalStateException {
+  public void setData(final Object[][] inData) throws IllegalStateException {
     // Reinitialize before setting new data
     rowCount = 0;
     colCount = 0;
@@ -236,7 +236,7 @@ class BaseChartTableModel extends AbstractTableModel {
    * @param value Data to be set
    * @throws IllegalArgumentException when the row number is less than zero or when the key is null
    */
-  public void setRowMetadata(int row, Object key, Object value) throws IllegalArgumentException {
+  public void setRowMetadata(final int row, final Object key, final Object value) throws IllegalArgumentException {
     if (row < 0) {
       throw new IllegalArgumentException("Row number cannot be less than zero."); //$NON-NLS-1$
     } else if (null == key) {
@@ -254,7 +254,7 @@ class BaseChartTableModel extends AbstractTableModel {
    * @return The actual metadata
    * @throws IllegalArgumentException when the row number is less than zero or when the key is null
    */
-  public Object getRowMetadata(int row, Object key)
+  public Object getRowMetadata(final int row, final Object key)
       throws IllegalArgumentException {
     Object metadata = null;
 
@@ -278,7 +278,7 @@ class BaseChartTableModel extends AbstractTableModel {
    * @param value Data to be set
    * @throws IllegalArgumentException when the column number is less than zero or when the key is null
    */
-  public void setColMetadata(int col, Object key, Object value)
+  public void setColMetadata(final int col, final Object key, final Object value)
       throws IllegalArgumentException {
     if (col < 0) {
       throw new IllegalArgumentException(Messages.getErrorString("ChartTableModel.ERROR_0001_COLUMN_NUM_LOWER_THAN_ZERO")); //$NON-NLS-1$
@@ -297,7 +297,7 @@ class BaseChartTableModel extends AbstractTableModel {
    * @return The actual metadata
    * @throws IllegalArgumentException when the column number is less than zero or when the key is null
    */
-  public Object getColMetadata(int col, Object key)
+  public Object getColMetadata(final int col, final Object key)
       throws IllegalArgumentException {
     Object metadata = null;
 
@@ -322,7 +322,7 @@ class BaseChartTableModel extends AbstractTableModel {
    * @param value Data to be set
    * @throws IllegalArgumentException when the row number or column number is less than zero or when the key is null
    */
-  public void setCellMetadata(int row, int col, Object key, Object value)
+  public void setCellMetadata(final int row, final int col, final Object key, final Object value)
       throws IllegalArgumentException {
     if (col < 0 || row < 0) {
       throw new IllegalArgumentException(Messages.getErrorString("ChartTableModel.ERROR_0007_ROW_COL_IS_OUT_OF_BOUNDS")); //$NON-NLS-1$
@@ -341,7 +341,7 @@ class BaseChartTableModel extends AbstractTableModel {
    * @param key Attribute for which we want the metadata
    * @return The actual metadata
    */
-  public Object getCellMetadata(int row, int col, Object key) {
+  public Object getCellMetadata(final int row, final int col, final Object key) {
     Object metadata = null;
 
     if (row < 0 || col < 0) {

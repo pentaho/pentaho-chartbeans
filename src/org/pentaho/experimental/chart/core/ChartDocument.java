@@ -54,7 +54,7 @@ public class ChartDocument {
    *
    * @param rootElement the parsed root element of the chart document
    */
-  public ChartDocument(ChartElement rootElement) {
+  public ChartDocument(final ChartElement rootElement) {
     if (rootElement == null) {
       throw new IllegalArgumentException("Root Element can not be null"); //$NON-NLS-1$
     }
@@ -85,14 +85,14 @@ public class ChartDocument {
   /**
    * Sets the resource manager for this chart document
    */
-  public void setResourceManager(ResourceManager resourceManager) {
+  public void setResourceManager(final ResourceManager resourceManager) {
     this.resourceManager = resourceManager;
   }
 
   /**
    * Sets the resource key for this chart document
    */
-  public void setResourceKey(ResourceKey resourceKey) {
+  public void setResourceKey(final ResourceKey resourceKey) {
     this.resourceKey = resourceKey;
   }
 
@@ -176,7 +176,7 @@ public class ChartDocument {
    *                deeper than the chart tag.
    * @return ChartElement Returns the chart element.
    */
-  private ChartElement getChartLevelElement(String tagName) {
+  private ChartElement getChartLevelElement(final String tagName) {
     ChartElement returnValue = null;
 
     if (rootElement != null && ChartElement.TAG_NAME_CHART.equals(rootElement.getTagName())) {
@@ -206,8 +206,8 @@ public class ChartDocument {
    * Creats a list of chart elements with the specified tag name that are child elements of the root level (chart) element
    * @param tagname the tagname used in selecting elements
    */
-  private List getChartLevelElements(String tagname) {
-    List elements = new ArrayList();
+  private List getChartLevelElements(final String tagname) {
+    final List elements = new ArrayList();
     ChartElement element = rootElement.getFirstChildItem();
     while (element != null) {
       if (tagname.equals(element.getTagName())) {
@@ -240,7 +240,7 @@ public class ChartDocument {
    * @return CSSValue Represents the value for Plot Orientation. 
    */
   public CSSValue getPlotOrientation(){
-    ChartElement plotElement = getChartLevelElement(ChartElement.TAG_NAME_PLOT);
+    final ChartElement plotElement = getChartLevelElement(ChartElement.TAG_NAME_PLOT);
     CSSValue value = null;
     
     if (plotElement != null) {

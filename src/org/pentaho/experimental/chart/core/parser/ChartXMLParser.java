@@ -47,7 +47,7 @@ public class ChartXMLParser {
    *
    * @param resourceManager the <code>ResourceManager</code> to use while parsing a chart definition
    */
-  public ChartXMLParser(ResourceManager resourceManager) {
+  public ChartXMLParser(final ResourceManager resourceManager) {
     this.resourceManager = resourceManager;
   }
 
@@ -60,10 +60,10 @@ public class ChartXMLParser {
    * @throws org.jfree.resourceloader.ResourceException
    *          indeicates an error occurred loading the chart defintion
    */
-  public ChartDocument parseChartDocument(URL chartDefinitionURL) throws ResourceException {
-    Resource res = resourceManager.createDirectly(chartDefinitionURL, ChartDocument.class);
-    ResourceKey key = res.getSource();
-    ChartDocument chart = (ChartDocument) res.getResource();
+  public ChartDocument parseChartDocument(final URL chartDefinitionURL) throws ResourceException {
+    final Resource res = resourceManager.createDirectly(chartDefinitionURL, ChartDocument.class);
+    final ResourceKey key = res.getSource();
+    final ChartDocument chart = (ChartDocument) res.getResource();
     chart.setResourceManager(resourceManager);
     chart.setResourceKey(key);
     return chart;

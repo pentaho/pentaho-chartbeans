@@ -22,13 +22,13 @@ public class ChartOrientationStyleTest extends TestCase {
   }
   
   public void testOrientationStyle() throws Exception {
-    ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource("ChartOrientationStyleTest.xml")); //$NON-NLS-1$
-    ChartDocument cd = cdc.getChartDocument();
+    final ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource("ChartOrientationStyleTest.xml")); //$NON-NLS-1$
+    final ChartDocument cd = cdc.getChartDocument();
     assertNotNull(cd);
-    ChartElement element = cd.getRootElement();
+    final ChartElement element = cd.getRootElement();
     assertNotNull(element);
 
-    CSSConstant[] passValues = new CSSConstant[]{ 
+    final CSSConstant[] passValues = new CSSConstant[]{
         ChartOrientationStyle.VERTICAL,
         ChartOrientationStyle.HORIZONTAL,
         ChartOrientationStyle.VERTICAL,
@@ -36,11 +36,11 @@ public class ChartOrientationStyleTest extends TestCase {
     };
     
     int counter = 0;
-    int lenArray = passValues.length;
+    final int lenArray = passValues.length;
     ChartElement child = element.getFirstChildItem();
     
     while(child != null) {
-      LayoutStyle layoutStyle = child.getLayoutStyle();
+      final LayoutStyle layoutStyle = child.getLayoutStyle();
       assertNotNull(layoutStyle);
       System.out.println("Expected: "+passValues[counter]+" - Got: "+layoutStyle.getValue(ChartStyleKeys.ORIENTATION)); //$NON-NLS-1$ //$NON-NLS-2$
       assertEquals(passValues[counter++], layoutStyle.getValue(ChartStyleKeys.ORIENTATION));

@@ -25,13 +25,13 @@ public class ChartScaleTest extends TestCase {
   }
   
   public void testChartScale() throws IllegalStateException, ResourceException {
-    ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource("ChartScaleTest.xml")); //$NON-NLS-1$
-    ChartDocument cd = cdc.getChartDocument();
+    final ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource("ChartScaleTest.xml")); //$NON-NLS-1$
+    final ChartDocument cd = cdc.getChartDocument();
     assertNotNull(cd);
-    ChartElement element = cd.getRootElement();
+    final ChartElement element = cd.getRootElement();
     assertNotNull(element);
 
-    CSSValue[] passValues = new CSSValue[]{
+    final CSSValue[] passValues = new CSSValue[]{
         CSSNumericValue.createValue(CSSNumericType.NUMBER,1),
         CSSNumericValue.createValue(CSSNumericType.NUMBER,2.5),
         CSSNumericValue.createValue(CSSNumericType.NUMBER,0.001),
@@ -40,15 +40,15 @@ public class ChartScaleTest extends TestCase {
     };
     
     int counter = 0;
-    int lenArray = passValues.length;
+    final int lenArray = passValues.length;
     ChartElement child = element.getFirstChildItem();
     
     while(child != null) {
-      LayoutStyle layoutStyle = child.getLayoutStyle();
+      final LayoutStyle layoutStyle = child.getLayoutStyle();
       assertNotNull(layoutStyle);
       
-      Float expectedValue = Float.valueOf(layoutStyle.getValue(ChartStyleKeys.SCALE_NUM).getCSSText());
-      Float gotValue      = Float.valueOf(passValues[counter].getCSSText());
+      final Float expectedValue = Float.valueOf(layoutStyle.getValue(ChartStyleKeys.SCALE_NUM).getCSSText());
+      final Float gotValue      = Float.valueOf(passValues[counter].getCSSText());
       
       System.out.println("Expected: "+expectedValue+" - Got: "+gotValue); //$NON-NLS-1$ //$NON-NLS-2$
       assertEquals(expectedValue, gotValue);      

@@ -23,8 +23,8 @@ public class DrillUrlStyleTest extends TestCase {
 
   public void testDrillUrl() throws Exception {
     // Get the chart
-    ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource("DrillUrlTest.xml")); //$NON-NLS-1$
-    ChartDocument cd = cdc.getChartDocument();
+    final ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource("DrillUrlTest.xml")); //$NON-NLS-1$
+    final ChartDocument cd = cdc.getChartDocument();
     assertNotNull(cd);
     ChartElement element = cd.getRootElement();
     assertNotNull(element);
@@ -32,7 +32,7 @@ public class DrillUrlStyleTest extends TestCase {
     assertNotNull(element);
 
     // Check the values
-    Object [] validResults = new Object[] {
+    final Object [] validResults = new Object[] {
       new CSSConstant("none"),
       new CSSConstant("none"),
       new CSSStringValue(CSSStringType.URI, "DrillUrlTest.xml"),
@@ -40,7 +40,7 @@ public class DrillUrlStyleTest extends TestCase {
     };
     int i = 0;
     while(element != null) {
-      CSSValue value = element.getLayoutStyle().getValue(ChartStyleKeys.DRILL_URL);
+      final CSSValue value = element.getLayoutStyle().getValue(ChartStyleKeys.DRILL_URL);
       System.out.println("expecting: "+validResults[i]+" : received: "+value);
       validResults[i].equals(value);
       assertEquals(validResults[i], value);

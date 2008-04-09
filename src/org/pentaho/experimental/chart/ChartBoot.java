@@ -19,6 +19,7 @@ import org.pentaho.reporting.libraries.base.boot.AbstractBoot;
 import org.pentaho.reporting.libraries.base.config.Configuration;
 import org.pentaho.reporting.libraries.base.versioning.ProjectInformation;
 
+@SuppressWarnings({"StaticNonFinalField"})
 public class ChartBoot extends AbstractBoot {
   private static ChartBoot instance;
 

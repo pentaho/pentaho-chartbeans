@@ -27,24 +27,24 @@ public class TestChartItemLabelGenerator extends TestCase {
   }
   
   public void testNulls() throws ResourceException {
-    ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource("ItemLabelTest1.xml")); //$NON-NLS-1$
-    ChartDocument cd = cdc.getChartDocument();
+    final ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource("ItemLabelTest1.xml")); //$NON-NLS-1$
+    final ChartDocument cd = cdc.getChartDocument();
     assertNotNull(cd);
     if (cd == null) {
       fail("A null document should never be returned"); //$NON-NLS-1$
     }
 
-    ChartElement[] seriesElements = cd.getRootElement().findChildrenByName("series"); //$NON-NLS-1$
+    final ChartElement[] seriesElements = cd.getRootElement().findChildrenByName("series"); //$NON-NLS-1$
     ChartTableModel chartData = createChartTableModel(null);
     ChartItemLabelGenerator labelGen = new ChartItemLabelGenerator(seriesElements, chartData);
     assertNotNull(labelGen);
     
-    Object[][] dataArray = {{null, null, null}, {null, 40, 35}, {null, 35, 86}};
+    final Object[][] dataArray = {{null, null, null}, {null, 40, 35}, {null, 35, 86}};
     chartData = createChartTableModel(dataArray);
     labelGen = new ChartItemLabelGenerator(seriesElements, chartData);
     assertNotNull(labelGen);
     
-    CategoryDataset categoryDataset = JFreeChartUtils.createDefaultCategoryDataset(chartData, cd);
+    final CategoryDataset categoryDataset = JFreeChartUtils.createDefaultCategoryDataset(chartData, cd);
     
     for(int i=0; i< dataArray.length; i++) {
       for (int j=0; j<dataArray[i].length; j++) {
@@ -53,8 +53,8 @@ public class TestChartItemLabelGenerator extends TestCase {
     }
   }
   
-  private ChartTableModel createChartTableModel(Object[][] dataArray) {
-    ChartTableModel data = new ChartTableModel();
+  private ChartTableModel createChartTableModel(final Object[][] dataArray) {
+    final ChartTableModel data = new ChartTableModel();
     data.setData(dataArray);
     data.setColumnName(0, "budget"); //$NON-NLS-1$
     data.setColumnName(1, "sales"); //$NON-NLS-1$

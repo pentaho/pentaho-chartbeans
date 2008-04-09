@@ -12,15 +12,15 @@ public class PersistenceException extends Exception {
   public PersistenceException() {
   }
 
-  public PersistenceException(String msg) {
+  public PersistenceException(final String msg) {
     super(msg);
   }
 
-  public PersistenceException(Throwable th) {
+  public PersistenceException(final Throwable th) {
     super(th);
   }
 
-  public PersistenceException(String msg, Throwable th) {
+  public PersistenceException(final String msg, final Throwable th) {
     super(msg, th);
   }
 

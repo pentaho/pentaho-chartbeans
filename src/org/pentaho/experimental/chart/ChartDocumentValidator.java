@@ -42,7 +42,7 @@ public class ChartDocumentValidator {
    * Constructs a validator for the specified ChartDocument
    * @param chartDoc
    */
-  public ChartDocumentValidator(ChartDocument chartDoc) {
+  public ChartDocumentValidator(final ChartDocument chartDoc) {
     this.chartDoc = chartDoc;
     revalidate();
   }
@@ -69,10 +69,10 @@ public class ChartDocumentValidator {
   }
 
   private void validateSeriesTags() {
-    ChartElement chart = chartDoc.getRootElement();
+    final ChartElement chart = chartDoc.getRootElement();
 
     // Make sure there are one or more series elements
-    List seriesElements = chartDoc.getSeriesChartElements();
+    final List seriesElements = chartDoc.getSeriesChartElements();
     if (seriesElements.size() == 0) {
       messages.add("Could not find any <series> tags as children of the <chart> tag");
     }

@@ -43,7 +43,7 @@ public class ChartTableModel extends BaseChartTableModel {
   /**
    * Creats an empty ChartTableModel
    */
-  public ChartTableModel(boolean rotation) {
+  public ChartTableModel(final boolean rotation) {
     setRotated(rotation);
   }
 
@@ -59,7 +59,7 @@ public class ChartTableModel extends BaseChartTableModel {
    * and the columns will be accessed as rows. If the rotation is <code>false</code>, then the table will be
    * accessed as normal.
    */
-  public void setRotated(boolean rotated) {
+  public void setRotated(final boolean rotated) {
     this.rotated = rotated;
   }
 
@@ -80,7 +80,7 @@ public class ChartTableModel extends BaseChartTableModel {
   /**
    * Returns the name of the specified 0-based column number
    */
-  public String getColumnName(int col) {
+  public String getColumnName(final int col) {
     return (rotated ? super.getRowName(col) : super.getColumnName(col));
   }
 
@@ -90,7 +90,7 @@ public class ChartTableModel extends BaseChartTableModel {
    * @param col  the 0-based column number
    * @param name the name for the specified column
    */
-  public void setColumnName(int col, final String name) {
+  public void setColumnName(final int col, final String name) {
     if (rotated) {
       super.setRowName(col, name);
     } else {
@@ -101,7 +101,7 @@ public class ChartTableModel extends BaseChartTableModel {
   /**
    * Returns the data at the specified (row, col)
    */
-  public Object getValueAt(int row, int col) {
+  public Object getValueAt(final int row, final int col) {
     return (rotated ? super.getValueAt(col, row) : super.getValueAt(row, col));
   }
 
@@ -111,7 +111,7 @@ public class ChartTableModel extends BaseChartTableModel {
    * @throws ArrayIndexOutOfBoundsException indicates the row or column are invalid
    * @throws IllegalStateException          indicates there is no data in the table
    */
-  public void setValueAt(final Object value, int row, int col) throws ArrayIndexOutOfBoundsException, IllegalStateException {
+  public void setValueAt(final Object value, final int row, final int col) throws ArrayIndexOutOfBoundsException, IllegalStateException {
     if (rotated) {
       super.setValueAt(value, col, row);
     } else {
@@ -127,7 +127,7 @@ public class ChartTableModel extends BaseChartTableModel {
    * @param value the value of the metadata
    * @throws IllegalArgumentException indicates an invalid parameter value
    */
-  public void setRowMetadata(int row, final Object key, final Object value) throws IllegalArgumentException {
+  public void setRowMetadata(final int row, final Object key, final Object value) throws IllegalArgumentException {
     if (rotated) {
       super.setColMetadata(row, key, value);
     } else {
@@ -144,7 +144,7 @@ public class ChartTableModel extends BaseChartTableModel {
    *         or row do not exist.
    * @throws IllegalArgumentException indicates an invalid row number or key
    */
-  public Object getRowMetadata(int row, final Object key) throws IllegalArgumentException {
+  public Object getRowMetadata(final int row, final Object key) throws IllegalArgumentException {
     return (rotated ? super.getColMetadata(row, key) : super.getRowMetadata(row, key));
   }
 
@@ -156,7 +156,7 @@ public class ChartTableModel extends BaseChartTableModel {
    * @param value the metadata value
    * @throws IllegalArgumentException indicates an invalid parameter value
    */
-  public void setColMetadata(int col, Object key, Object value) throws IllegalArgumentException {
+  public void setColMetadata(final int col, final Object key, final Object value) throws IllegalArgumentException {
     if (rotated) {
       super.setRowMetadata(col, key, value);
     } else {
@@ -172,7 +172,7 @@ public class ChartTableModel extends BaseChartTableModel {
    * @return the value of the metadata. If the data does not exist, <code>null</code> will be returned
    * @throws IllegalArgumentException indicates an invalid patameter
    */
-  public Object getColMetadata(int col, Object key) throws IllegalArgumentException {
+  public Object getColMetadata(final int col, final Object key) throws IllegalArgumentException {
     return (rotated ? super.getRowMetadata(col, key) : super.getColMetadata(col, key));
   }
 
@@ -185,7 +185,7 @@ public class ChartTableModel extends BaseChartTableModel {
    * @param value the value of the metadata
    * @throws IllegalArgumentException indicates an invalid parameter
    */
-  public void setCellMetadata(int row, int col, Object key, Object value) throws IllegalArgumentException {
+  public void setCellMetadata(final int row, final int col, final Object key, final Object value) throws IllegalArgumentException {
     if (rotated) {
       super.setCellMetadata(col, row, key, value);
     } else {
@@ -201,14 +201,14 @@ public class ChartTableModel extends BaseChartTableModel {
    * @param key the metadata key
    * @return the value of the metadata
    */
-  public Object getCellMetadata(int row, int col, Object key) {
+  public Object getCellMetadata(final int row, final int col, final Object key) {
     return (rotated ? super.getCellMetadata(col, row, key) : super.getCellMetadata(row, col, key));
   }
 
   /**
    * Returns the name of the specified 0-based row
    */
-  public String getRowName(int row) {
+  public String getRowName(final int row) {
     return (rotated ? super.getColumnName(row) : super.getRowName(row));
   }
 
@@ -218,7 +218,7 @@ public class ChartTableModel extends BaseChartTableModel {
    * @param row  the 0-based row index
    * @param name the name to assign to the specified row
    */
-  public void setRowName(int row, String name) {
+  public void setRowName(final int row, final String name) {
     if (rotated) {
       super.setColumnName(row, name);
     } else {

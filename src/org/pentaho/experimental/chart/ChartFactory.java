@@ -58,11 +58,11 @@ public class ChartFactory {
    */
   public static ChartDocumentContext generateChart(final URL chartURL, final ChartTableModel tableModel) throws ResourceException {
     // Parse the chart
-    ChartXMLParser chartParser = new ChartXMLParser();
-    ChartDocument chart = chartParser.parseChartDocument(chartURL);
+    final ChartXMLParser chartParser = new ChartXMLParser();
+    final ChartDocument chart = chartParser.parseChartDocument(chartURL);
 
     // Create a ChartDocumentContext
-    ChartDocumentContext cdc = new ChartDocumentContext(chart);
+    final ChartDocumentContext cdc = new ChartDocumentContext(chart);
 
     // Resolve the style information
     resolveStyles(chart, cdc);
@@ -81,7 +81,7 @@ public class ChartFactory {
    * NOTE: this method is protected for testing purposes only
    */
   protected static StyleResolver getStyleResolver(final ChartDocumentContext cdc) {
-    StyleResolver sr = new DefaultStyleResolver();
+    final StyleResolver sr = new DefaultStyleResolver();
     sr.initialize(cdc);
     return sr;
   }
@@ -94,7 +94,7 @@ public class ChartFactory {
    */
   protected static void resolveStyles(final ChartDocument chart, final ChartDocumentContext cdc) {
     // Get the style resolveer
-    StyleResolver sr = getStyleResolver(cdc);
+    final StyleResolver sr = getStyleResolver(cdc);
 
     // Resolve the style for all the nodes in the chart
     ChartElement element = chart.getRootElement();

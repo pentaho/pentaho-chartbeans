@@ -56,7 +56,7 @@ public class ChartSeriesDataLinkInfoFactory {
    * @return The chart series data link info that has the data.
    * @throws IllegalArgumentException
    */
-  public static ChartSeriesDataLinkInfo generateSeriesDataLinkInfo(ChartDocument chartDoc, ChartTableModel data)
+  public static ChartSeriesDataLinkInfo generateSeriesDataLinkInfo(final ChartDocument chartDoc, final ChartTableModel data)
       throws IllegalArgumentException {
     if (null == chartDoc) {
       throw new IllegalArgumentException(Messages.getErrorString("ChartSeriesDataLinkInfoFactory.ERROR_0001_CHART_DOC_IS_NULL")); //$NON-NLS-1$
@@ -64,7 +64,7 @@ public class ChartSeriesDataLinkInfoFactory {
       throw new IllegalArgumentException(Messages.getErrorString("ChartSeriesDataLinkInfoFactory.ERROR_0002_TABLE_MODEL_IS_NULL")); //$NON-NLS-1$
     }
 
-    ChartSeriesDataLinkInfo seriesDataLinkInfo = new ChartSeriesDataLinkInfo(data);
+    final ChartSeriesDataLinkInfo seriesDataLinkInfo = new ChartSeriesDataLinkInfo(data);
     parseChartDocument(chartDoc, data, seriesDataLinkInfo);
     return seriesDataLinkInfo;
   }
@@ -77,15 +77,15 @@ public class ChartSeriesDataLinkInfoFactory {
    * @param seriesDataLinkInfo
    * @throws IllegalStateException
    */
-  private static void parseChartDocument(ChartDocument chartDoc, ChartTableModel chartTableModel, ChartSeriesDataLinkInfo seriesDataLinkInfo) throws IllegalStateException {
+  private static void parseChartDocument(final ChartDocument chartDoc, final ChartTableModel chartTableModel, final ChartSeriesDataLinkInfo seriesDataLinkInfo) throws IllegalStateException {
     // We do not parse the ChartDocument when we do not have any data
-    int dataColumnCount = chartTableModel.getColumnCount();
+    final int dataColumnCount = chartTableModel.getColumnCount();
     if (dataColumnCount <= 0) {
       logger.warn(Messages.getString("ChartSeriesDataLinkInfoFactory.WARN_DATA_IS_NULL"));//$NON-NLS-1$
       return;
     }
 
-    ChartElement rootChartElement = chartDoc.getRootElement();
+    final ChartElement rootChartElement = chartDoc.getRootElement();
     ChartElement currentChartElement = rootChartElement.getFirstChildItem();
     int seriesCount = 0;
 
@@ -96,8 +96,8 @@ public class ChartSeriesDataLinkInfoFactory {
     while (currentChartElement != null) {
       if (SERIES.equalsIgnoreCase(currentChartElement.getTagName())) {
         boolean foundColumn = false;
-        Object currentColumnNum = currentChartElement.getAttribute(COL_POS);
-        Object currentColumnName = currentChartElement.getAttribute(COL_NAME);
+        final Object currentColumnNum = currentChartElement.getAttribute(COL_POS);
+        final Object currentColumnName = currentChartElement.getAttribute(COL_NAME);
 
         /*
         * |-> If column name and position are not specified/are null then process current
@@ -155,8 +155,8 @@ public class ChartSeriesDataLinkInfoFactory {
    * @return Returns true if the column position was found.
    * @throws NumberFormatException
    */
-  private static boolean processColumnPos(Object currentColumnNum, ChartElement currentChartElement,
-                                          ChartTableModel chartTableModel, ChartSeriesDataLinkInfo seriesDataLinkInfo)
+  private static boolean processColumnPos(final Object currentColumnNum, final ChartElement currentChartElement,
+                                          final ChartTableModel chartTableModel, final ChartSeriesDataLinkInfo seriesDataLinkInfo)
       throws NumberFormatException {
     int columnNum = 0;
     boolean foundColumn = false;
@@ -185,11 +185,11 @@ public class ChartSeriesDataLinkInfoFactory {
    * @param seriesDataLinkInfo
    * @return Returns true if the column name matches the a column name in metadata.
    */
-  private static boolean processColumnName(Object currentColumnName, ChartElement currentChartElement,
-                                           ChartTableModel chartTableModel, ChartSeriesDataLinkInfo seriesDataLinkInfo) {
-    String columnName = ((String) currentColumnName).trim();
+  private static boolean processColumnName(final Object currentColumnName, final ChartElement currentChartElement,
+                                           final ChartTableModel chartTableModel, final ChartSeriesDataLinkInfo seriesDataLinkInfo) {
+    final String columnName = ((String) currentColumnName).trim();
     boolean foundColumn = false;
-    int dataColumnCount = chartTableModel.getColumnCount();
+    final int dataColumnCount = chartTableModel.getColumnCount();
 
     if (columnName.length() <= 0) {
       logger.warn(Messages.getString("ChartSeriesDataLinkInfoFactory.WARN_COLUMN_NAME_IS_NULL")); //$NON-NLS-1$
@@ -201,7 +201,7 @@ public class ChartSeriesDataLinkInfoFactory {
        * hashmap with the given column position
        */
       for (int i = 0; i < dataColumnCount; i++) {
-        String columnNameFromChartTableModel = chartTableModel.getColumnName(i);
+        final String columnNameFromChartTableModel = chartTableModel.getColumnName(i);
         if (columnNameFromChartTableModel != null && columnNameFromChartTableModel.equalsIgnoreCase(columnName)) {
           seriesDataLinkInfo.setColumnNum(currentChartElement, i);
           foundColumn = true;

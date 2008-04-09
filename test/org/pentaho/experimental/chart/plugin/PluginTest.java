@@ -52,84 +52,84 @@ public class PluginTest extends TestCase {
   }
 
   public void testValidate() throws Exception {
-    ChartXMLParser chartParser = new ChartXMLParser();
-    URL chartXmlDocument = this.getClass().getResource("PluginTest2a.xml"); //$NON-NLS-1$
-    ChartDocument chartDocument = chartParser.parseChartDocument(chartXmlDocument);
+    final ChartXMLParser chartParser = new ChartXMLParser();
+    final URL chartXmlDocument = this.getClass().getResource("PluginTest2a.xml"); //$NON-NLS-1$
+    final ChartDocument chartDocument = chartParser.parseChartDocument(chartXmlDocument);
     if (chartDocument == null) {
       fail("A null document should never be returned"); //$NON-NLS-1$
     }
 
-    IChartPlugin chartPlugin = ChartPluginFactory.getChartPlugin();
-    ChartResult result = chartPlugin.validateChartDocument(chartDocument);
+    final IChartPlugin chartPlugin = ChartPluginFactory.getChartPlugin();
+    final ChartResult result = chartPlugin.validateChartDocument(chartDocument);
     assertEquals(result.getErrorCode(), IChartPlugin.RESULT_VALIDATED);
   }
 
-  private void testRenderAsPng(String fileName) throws Exception {
-    IChartPlugin plugin = ChartPluginFactory.getChartPlugin("org.pentaho.experimental.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
-    IOutput output = ChartPluginFactory.getChartOutput();
+  private void testRenderAsPng(final String fileName) throws Exception {
+    final IChartPlugin plugin = ChartPluginFactory.getChartPlugin("org.pentaho.experimental.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
+    final IOutput output = ChartPluginFactory.getChartOutput();
     // At this point we have an output of the correct type
     // Now we can manipulate it to meet our needs so that we get the correct
     // output location and type.
 
     // Now lets create some data
-    ChartTableModel data = createChartTableModel();
+    final ChartTableModel data = createChartTableModel();
     output.setFilename(TEST_FILE_PATH + fileName.substring(0, fileName.indexOf('.')) + PNG_SUFFIX); //$NON-NLS-1$
     output.setFileType(IOutput.FILE_TYPE_PNG);
 
     // Load / parse the chart document
     final URL chartURL = this.getClass().getResource(fileName);
-    ChartDocumentContext cdc = ChartFactory.generateChart(chartURL, data); 
+    final ChartDocumentContext cdc = ChartFactory.generateChart(chartURL, data);
     assertNotNull(cdc);
     assertNotNull(cdc.getChartDocument());
     assertNotNull(cdc.getDataLinkInfo());
 
     // Render and save the plot
     plugin.renderChartDocument(cdc.getChartDocument(), data, output);
-    File chartFile = new File(output.getFilename());
+    final File chartFile = new File(output.getFilename());
     assertTrue(chartFile.exists());
     assertTrue(chartFile.length() > 5000);
   }
 
-  private void testRenderAsJpeg(String fileName) throws Exception {
-    IChartPlugin plugin = ChartPluginFactory.getChartPlugin("org.pentaho.experimental.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
-    IOutput output = ChartPluginFactory.getChartOutput();
+  private void testRenderAsJpeg(final String fileName) throws Exception {
+    final IChartPlugin plugin = ChartPluginFactory.getChartPlugin("org.pentaho.experimental.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
+    final IOutput output = ChartPluginFactory.getChartOutput();
     // At this point we have an output of the correct type
     // Now we can manipulate it to meet our needs so that we get the correct
     // output location and type.
 
     // Now lets create some data
-    ChartTableModel data = createChartTableModel();
+    final ChartTableModel data = createChartTableModel();
     output.setFilename(TEST_FILE_PATH + fileName.substring(0, fileName.indexOf('.')) + JPG_SUFFIX); //$NON-NLS-1$
     output.setFileType(IOutput.FILE_TYPE_JPEG);
 
     // Load / parse the chart document
     final URL chartURL = this.getClass().getResource(fileName);
-    ChartDocumentContext cdc = ChartFactory.generateChart(chartURL, data); 
+    final ChartDocumentContext cdc = ChartFactory.generateChart(chartURL, data);
     assertNotNull(cdc);
     assertNotNull(cdc.getChartDocument());
     assertNotNull(cdc.getDataLinkInfo());
 
     // Render and save the plot
     plugin.renderChartDocument(cdc.getChartDocument(), data, output);
-    File chartFile = new File(output.getFilename());
+    final File chartFile = new File(output.getFilename());
     assertTrue(chartFile.exists());
     assertTrue(chartFile.length() > 5000);
   }
 
-  private void testRenderAsPngStream(String fileName) throws Exception {
-    IChartPlugin plugin = ChartPluginFactory.getChartPlugin("org.pentaho.experimental.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
-    IOutput output = ChartPluginFactory.getChartOutput();
+  private void testRenderAsPngStream(final String fileName) throws Exception {
+    final IChartPlugin plugin = ChartPluginFactory.getChartPlugin("org.pentaho.experimental.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
+    final IOutput output = ChartPluginFactory.getChartOutput();
     // At this point we have an output of the correct type
     // Now we can manipulate it to meet our needs so that we get the correct
     // output location and type.
 
     // Now lets create some data
-    ChartTableModel data = createChartTableModel();
+    final ChartTableModel data = createChartTableModel();
     output.setFileType(IOutput.FILE_TYPE_PNG);
 
     // Load / parse the chart document
     final URL chartURL = this.getClass().getResource(fileName);
-    ChartDocumentContext cdc = ChartFactory.generateChart(chartURL, data); 
+    final ChartDocumentContext cdc = ChartFactory.generateChart(chartURL, data);
     assertNotNull(cdc);
     assertNotNull(cdc.getChartDocument());
     assertNotNull(cdc.getDataLinkInfo());
@@ -137,25 +137,25 @@ public class PluginTest extends TestCase {
     // Render and save the plot
     plugin.renderChartDocument(cdc.getChartDocument(), data, output);
 
-    ByteArrayOutputStream newOutputStream = (ByteArrayOutputStream) output.getChartAsStream();
+    final ByteArrayOutputStream newOutputStream = (ByteArrayOutputStream) output.getChartAsStream();
     assertTrue(newOutputStream.toByteArray().length > 5000);
 
   }
 
-  private void testRenderAsJpegStream(String fileName) throws Exception {
-    IChartPlugin plugin = ChartPluginFactory.getChartPlugin("org.pentaho.experimental.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
-    IOutput output = ChartPluginFactory.getChartOutput();
+  private void testRenderAsJpegStream(final String fileName) throws Exception {
+    final IChartPlugin plugin = ChartPluginFactory.getChartPlugin("org.pentaho.experimental.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
+    final IOutput output = ChartPluginFactory.getChartOutput();
     // At this point we have an output of the correct type
     // Now we can manipulate it to meet our needs so that we get the correct
     // output location and type.
 
     // Now lets create some data
-    ChartTableModel data = createChartTableModel();
+    final ChartTableModel data = createChartTableModel();
     output.setFileType(IOutput.FILE_TYPE_JPEG);
 
     // Load / parse the chart document
     final URL chartURL = this.getClass().getResource(fileName);
-    ChartDocumentContext cdc = ChartFactory.generateChart(chartURL, data); 
+    final ChartDocumentContext cdc = ChartFactory.generateChart(chartURL, data);
     assertNotNull(cdc);
     assertNotNull(cdc.getChartDocument());
     assertNotNull(cdc.getDataLinkInfo());
@@ -163,12 +163,12 @@ public class PluginTest extends TestCase {
     // Render and save the plot
     plugin.renderChartDocument(cdc.getChartDocument(), data, output);
 
-    ByteArrayOutputStream newOutputStream = (ByteArrayOutputStream) output.getChartAsStream();
+    final ByteArrayOutputStream newOutputStream = (ByteArrayOutputStream) output.getChartAsStream();
     assertTrue(newOutputStream.toByteArray().length > 5000);
   }
 
-  private static final ChartTableModel createChartTableModel() {
-    ChartTableModel data = new ChartTableModel();
+  private static ChartTableModel createChartTableModel() {
+    final ChartTableModel data = new ChartTableModel();
     data.setData(dataArray);
     data.setColumnName(0, "budget"); //$NON-NLS-1$
     data.setColumnName(1, "sales"); //$NON-NLS-1$
@@ -182,7 +182,7 @@ public class PluginTest extends TestCase {
   }
 
   public void testGradientPaint() {
-    String[] fileNames = new String[] {
+    final String[] fileNames = new String[] {
       "PluginTest1a.xml", //$NON-NLS-1$
       "PluginTest1b.xml", //$NON-NLS-1$
       "PluginTest2a.xml", //$NON-NLS-1$

@@ -46,9 +46,9 @@ public class ParseTest extends TestCase {
   @SuppressWarnings("nls")
   public void testParser() throws Exception {
     // Parse the test document located in the same class location as this class
-    ChartXMLParser chartParser = new ChartXMLParser();
-    URL chartXmlDocument = this.getClass().getResource("ParseTest.xml");
-    ChartDocument doc = chartParser.parseChartDocument(chartXmlDocument);
+    final ChartXMLParser chartParser = new ChartXMLParser();
+    final URL chartXmlDocument = this.getClass().getResource("ParseTest.xml");
+    final ChartDocument doc = chartParser.parseChartDocument(chartXmlDocument);
     if (doc == null) {
       fail("A null document should never be returned");
     }
@@ -59,7 +59,7 @@ public class ParseTest extends TestCase {
     // ...
     // </chart>
     //
-    ChartElement rootElement = doc.getRootElement();
+    final ChartElement rootElement = doc.getRootElement();
     assertNotNull(rootElement);
     assertEquals("chart", rootElement.getTagName());
     assertEquals(12, rootElement.getChildCount());

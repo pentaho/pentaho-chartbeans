@@ -27,7 +27,7 @@ public class ChartGradientPositionTest extends TestCase {
   
   public void testGradientStartPosition()
   throws Exception {
-    CSSValuePair[] passValues = new CSSValuePair[] {
+    final CSSValuePair[] passValues = new CSSValuePair[] {
         new CSSValuePair( CSSNumericValue.createValue(CSSNumericType.NUMBER,0), 
                           CSSNumericValue.createValue(CSSNumericType.NUMBER,0) 
           ),
@@ -56,7 +56,7 @@ public class ChartGradientPositionTest extends TestCase {
 
   public void testGradientEndPosition()
   throws Exception {
-    CSSValuePair[] passValues = new CSSValuePair[] {
+    final CSSValuePair[] passValues = new CSSValuePair[] {
         new CSSValuePair( CSSNumericValue.createValue(CSSNumericType.NUMBER,1), 
                           CSSNumericValue.createValue(CSSNumericType.NUMBER,1) 
           ),
@@ -82,30 +82,30 @@ public class ChartGradientPositionTest extends TestCase {
     testPosition("ChartGradientEndTest.xml", ChartStyleKeys.GRADIENT_END, passValues); //$NON-NLS-1$
   }
   
-  private void testPosition(String xmlFileName, StyleKey currTestStyleKey, CSSValuePair[] passValues)
+  private void testPosition(final String xmlFileName, final StyleKey currTestStyleKey, final CSSValuePair[] passValues)
   throws Exception {
     System.out.println("----------Start Testing :--> " + currTestStyleKey + "--------------" ); //$NON-NLS-1$ //$NON-NLS-2$
-    ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource(xmlFileName));
-    ChartDocument cd = cdc.getChartDocument();
+    final ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource(xmlFileName));
+    final ChartDocument cd = cdc.getChartDocument();
     assertNotNull(cd);
-    ChartElement element = cd.getRootElement();
+    final ChartElement element = cd.getRootElement();
     assertNotNull(element);
   
     int counter = 0;
-    int lenArray = passValues.length;
+    final int lenArray = passValues.length;
     ChartElement child = element.getFirstChildItem();
     
     while(child != null) {
-      LayoutStyle layoutStyle = child.getLayoutStyle();
+      final LayoutStyle layoutStyle = child.getLayoutStyle();
       assertNotNull(layoutStyle);
       
-      CSSValuePair valuePair = (CSSValuePair) layoutStyle.getValue(currTestStyleKey);
+      final CSSValuePair valuePair = (CSSValuePair) layoutStyle.getValue(currTestStyleKey);
       
       // Getting and testing each individual value 
-      Float gotValue1      = Float.valueOf(valuePair.getFirstValue().getCSSText());
-      Float gotValue2      = Float.valueOf(valuePair.getSecondValue().getCSSText());
-      Float expectedValue1 = Float.valueOf(passValues[counter].getFirstValue().getCSSText());
-      Float expectedValue2 = Float.valueOf(passValues[counter].getSecondValue().getCSSText());
+      final Float gotValue1      = Float.valueOf(valuePair.getFirstValue().getCSSText());
+      final Float gotValue2      = Float.valueOf(valuePair.getSecondValue().getCSSText());
+      final Float expectedValue1 = Float.valueOf(passValues[counter].getFirstValue().getCSSText());
+      final Float expectedValue2 = Float.valueOf(passValues[counter].getSecondValue().getCSSText());
 
       System.out.println("Expected : (" + expectedValue1 + ", " + expectedValue2 + ") - Got : ("+gotValue1+ ", " + gotValue2 + ")"); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$//$NON-NLS-5$ 
       assertEquals(expectedValue1, gotValue1);

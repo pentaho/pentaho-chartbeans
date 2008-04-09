@@ -36,11 +36,11 @@ import org.pentaho.reporting.libraries.css.values.CSSStringValue;
  */
 public class ChartItemLabelGenerator extends StandardCategoryItemLabelGenerator {
   
-  ChartElement[] chartElements = null;
-  ChartTableModel chartData = null;
+  ChartElement[] chartElements;
+  ChartTableModel chartData;
   Map<Integer, ChartElement> map = new HashMap<Integer, ChartElement>();
   
-  public ChartItemLabelGenerator(ChartElement[] chartElements, ChartTableModel chartData) {
+  public ChartItemLabelGenerator(final ChartElement[] chartElements, final ChartTableModel chartData) {
     this.chartElements = chartElements;
     this.chartData = chartData;
     // Get the column number for a particular series and store the information in the map
@@ -61,17 +61,17 @@ public class ChartItemLabelGenerator extends StandardCategoryItemLabelGenerator 
    *        column    Column number
    * @return String Final label string for the given series
    */
-  public String generateLabel(CategoryDataset dataset, int row, int column) {
+  public String generateLabel(final CategoryDataset dataset, final int row, final int column) {
     String result = null;
     String messageFormat = "";//$NON-NLS-1$
     
     if (dataset != null) {
       try {
-        Object data = dataset.getValue(row, column);
+        final Object data = dataset.getValue(row, column);
         if (data != null) {
-          ChartElement ce = map.get(Integer.valueOf(column));
+          final ChartElement ce = map.get(Integer.valueOf(column));
           if (ce != null) {
-            LayoutStyle layoutStyle = ce.getLayoutStyle();
+            final LayoutStyle layoutStyle = ce.getLayoutStyle();
           
             //Format the item label text 
             messageFormat = ((CSSStringValue)layoutStyle.getValue(ChartStyleKeys.ITEM_LABEL_TEXT)).getValue();
@@ -79,7 +79,7 @@ public class ChartItemLabelGenerator extends StandardCategoryItemLabelGenerator 
             
             //Get the font variant to convert the label text to upper case if the 
             //font variant is set to small-caps
-            String variant = layoutStyle.getValue(FontStyleKeys.FONT_VARIANT).getCSSText();
+            final String variant = layoutStyle.getValue(FontStyleKeys.FONT_VARIANT).getCSSText();
             if (variant.equals(FontVariant.SMALL_CAPS.getCSSText())) {
               result = result.toUpperCase();
             }
@@ -102,15 +102,15 @@ public class ChartItemLabelGenerator extends StandardCategoryItemLabelGenerator 
   private void mapSeriesToColumnNumber() {
     int i = 0;
     if (chartElements != null) {
-      for (ChartElement seriesElement : chartElements) {
-        int columnNum = getSeriesColumn(seriesElement, i);      
+      for (final ChartElement seriesElement : chartElements) {
+        final int columnNum = getSeriesColumn(seriesElement, i);
         map.put(Integer.valueOf(columnNum), seriesElement);
         i++;
       }
     }
   }
   
-  private int getSeriesColumn(ChartElement seriesElement, int columnDefault) {
+  private int getSeriesColumn(final ChartElement seriesElement, final int columnDefault) {
     int column = columnDefault;
 
     if (seriesElement != null) {
@@ -127,7 +127,7 @@ public class ChartItemLabelGenerator extends StandardCategoryItemLabelGenerator 
     return column;
   }
   
-  private int lookupPosition(String columnName) {
+  private int lookupPosition(final String columnName) {
     if (chartData != null) {
       for (int i=0; i<chartData.getColumnCount(); i++) {
         if (chartData.getColumnName(i).equalsIgnoreCase(columnName)) {

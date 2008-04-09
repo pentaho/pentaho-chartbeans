@@ -22,18 +22,18 @@ public class LineStyleTest extends TestCase {
   }
   
   public void testLineStyle() throws Exception {
-    ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource("LineStyleTest.xml")); //$NON-NLS-1$
-    ChartDocument cd = cdc.getChartDocument();
+    final ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource("LineStyleTest.xml")); //$NON-NLS-1$
+    final ChartDocument cd = cdc.getChartDocument();
     assertNotNull(cd);
-    ChartElement element = cd.getRootElement();
+    final ChartElement element = cd.getRootElement();
     assertNotNull(element);
 
     int index = 0;
-    CSSConstant[] passValues = new CSSConstant[] { ChartLineStyle.SOLID, ChartLineStyle.DASHED, ChartLineStyle.DOT_DOT_DASH, ChartLineStyle.SOLID, ChartLineStyle.SOLID };
+    final CSSConstant[] passValues = new CSSConstant[] { ChartLineStyle.SOLID, ChartLineStyle.DASHED, ChartLineStyle.DOT_DOT_DASH, ChartLineStyle.SOLID, ChartLineStyle.SOLID };
     ChartElement child = element.getFirstChildItem().getNextItem();
     
     while(child != null) {
-      LayoutStyle layoutStyle = child.getLayoutStyle();
+      final LayoutStyle layoutStyle = child.getLayoutStyle();
       assertNotNull(layoutStyle);
       System.out.println("expected: "+passValues[index]+" - got: "+layoutStyle.getValue(ChartStyleKeys.LINE_STYLE)); //$NON-NLS-1$ //$NON-NLS-2$
       assertEquals(passValues[index++], layoutStyle.getValue(ChartStyleKeys.LINE_STYLE));

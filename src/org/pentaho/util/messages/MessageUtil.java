@@ -39,7 +39,7 @@ public class MessageUtil {
    * the <code>key</code> parameter.
    * @return String containing the formatted error message.
    */
-  public static String formatErrorMessage(String key, String msg) {
+  public static String formatErrorMessage(final String key, final String msg) {
     int end = key.indexOf(".ERROR_"); //$NON-NLS-1$
     end = (end < 0) ? key.length() : Math.min(end + ".ERROR_0000".length(), key.length()); //$NON-NLS-1$
     return Messages.getString("MESSUTIL.ERROR_FORMAT_MASK", key.substring(0, end), msg); //$NON-NLS-1$
@@ -53,7 +53,7 @@ public class MessageUtil {
    * @return String containing the message from the specified resource bundle accessed
    * using the specified key
    */
-  public static String getString(ResourceBundle bundle, String key) {
+  public static String getString(final ResourceBundle bundle, final String key) {
     try {
       return bundle.getString(key);
     } catch (Exception e) {
@@ -70,76 +70,76 @@ public class MessageUtil {
    * @param key String containing the key to locate the desired String in the ResourceBundle.
    * @return String containing the formatted message.
    */
-  public static String getErrorString(ResourceBundle bundle, String key) {
+  public static String getErrorString(final ResourceBundle bundle, final String key) {
     return formatErrorMessage(key, getString(bundle, key));
   }
 
-  public static String getString(ResourceBundle bundle, String key, String param1) {
+  public static String getString(final ResourceBundle bundle, final String key, final String param1) {
     try {
-      Object[] args = { param1 };
+      final Object[] args = { param1 };
       return MessageFormat.format(bundle.getString(key), args);
     } catch (Exception e) {
       return '!' + key + '!';
     }
   }
 
-  public static String getErrorString(ResourceBundle bundle, String key, String param1) {
+  public static String getErrorString(final ResourceBundle bundle, final String key, final String param1) {
     return formatErrorMessage(key, getString(bundle, key, param1));
   }
 
-  public static String getString(ResourceBundle bundle, String key, String param1, String param2) {
+  public static String getString(final ResourceBundle bundle, final String key, final String param1, final String param2) {
     try {
-      Object[] args = { param1, param2 };
+      final Object[] args = { param1, param2 };
       return MessageFormat.format(bundle.getString(key), args);
     } catch (Exception e) {
       return '!' + key + '!';
     }
   }
 
-  public static String getErrorString(ResourceBundle bundle, String key, String param1, String param2) {
+  public static String getErrorString(final ResourceBundle bundle, final String key, final String param1, final String param2) {
     return formatErrorMessage(key, getString(bundle, key, param1, param2));
   }
 
-  public static String getString(ResourceBundle bundle, String key, String param1, String param2, String param3) {
+  public static String getString(final ResourceBundle bundle, final String key, final String param1, final String param2, final String param3) {
     try {
-      Object[] args = { param1, param2, param3 };
+      final Object[] args = { param1, param2, param3 };
       return MessageFormat.format(bundle.getString(key), args);
     } catch (Exception e) {
       return '!' + key + '!';
     }
   }
 
-  public static String getErrorString(ResourceBundle bundle, String key, String param1, String param2, String param3) {
+  public static String getErrorString(final ResourceBundle bundle, final String key, final String param1, final String param2, final String param3) {
     return formatErrorMessage(key, getString(bundle, key, param1, param2, param3));
   }
 
-  public static String getString(ResourceBundle bundle, String key, String param1, String param2, String param3,
-      String param4) {
+  public static String getString(final ResourceBundle bundle, final String key, final String param1, final String param2, final String param3,
+      final String param4) {
     try {
-      Object[] args = { param1, param2, param3, param4 };
+      final Object[] args = { param1, param2, param3, param4 };
       return MessageFormat.format(bundle.getString(key), args);
     } catch (Exception e) {
       return '!' + key + '!';
     }
   }
 
-  public static String getErrorString(ResourceBundle bundle, String key, String param1, String param2, String param3,
-      String param4) {
+  public static String getErrorString(final ResourceBundle bundle, final String key, final String param1, final String param2, final String param3,
+      final String param4) {
     return formatErrorMessage(key, getString(bundle, key, param1, param2, param3, param4));
   }
 
-  public static String formatMessage(String pattern, String param1) {
+  public static String formatMessage(final String pattern, final String param1) {
     try {
-      Object[] args = { param1 };
+      final Object[] args = { param1 };
       return MessageFormat.format(pattern, args);
     } catch (Exception e) {
       return '!' + pattern + '!';
     }
   }
 
-  public static String formatMessage(String pattern, String param1, String param2) {
+  public static String formatMessage(final String pattern, final String param1, final String param2) {
     try {
-      Object[] args = { param1, param2 };
+      final Object[] args = { param1, param2 };
       return MessageFormat.format(pattern, args);
     } catch (Exception e) {
       return '!' + pattern + '!';
@@ -147,18 +147,18 @@ public class MessageUtil {
 
   }
 
-  public static String formatMessage(String pattern, String param1, String param2, String param3) {
+  public static String formatMessage(final String pattern, final String param1, final String param2, final String param3) {
     try {
-      Object[] args = { param1, param2, param3 };
+      final Object[] args = { param1, param2, param3 };
       return MessageFormat.format(pattern, args);
     } catch (Exception e) {
       return '!' + pattern + '!';
     }
   }
 
-  public static String formatMessage(String pattern, String param1, String param2, String param3, String param4) {
+  public static String formatMessage(final String pattern, final String param1, final String param2, final String param3, final String param4) {
     try {
-      Object[] args = { param1, param2, param3, param4 };
+      final Object[] args = { param1, param2, param3, param4 };
       return MessageFormat.format(pattern, args);
     } catch (Exception e) {
       return '!' + pattern + '!';
