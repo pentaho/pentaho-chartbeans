@@ -33,7 +33,10 @@ import java.net.URL;
  * @author David Kincade
  */
 public class ChartFactory {
-  private static ResourceManager resourceManager;
+  private static ResourceManager resourceManager = null;
+
+  private ChartFactory() {
+  }
 
   /**
    * Creats a chart based on the chart definition
@@ -44,7 +47,7 @@ public class ChartFactory {
    * @throws InvalidChartDefinition indicates an error with chart definition
    */
   public static ChartDocumentContext generateChart(final URL chartURL) throws ResourceException {
-    return generateChart(chartURL, null);
+    return ChartFactory.generateChart(chartURL, null);
   }
 
   /**
@@ -65,7 +68,7 @@ public class ChartFactory {
     final ChartDocumentContext cdc = new ChartDocumentContext(chart);
 
     // Resolve the style information
-    resolveStyles(chart, cdc);
+    ChartFactory.resolveStyles(chart, cdc);
 
     // Link the series tags with the tabel model
     if (tableModel != null) {
@@ -94,7 +97,7 @@ public class ChartFactory {
    */
   protected static void resolveStyles(final ChartDocument chart, final ChartDocumentContext cdc) {
     // Get the style resolveer
-    final StyleResolver sr = getStyleResolver(cdc);
+    final StyleResolver sr = ChartFactory.getStyleResolver(cdc);
 
     // Resolve the style for all the nodes in the chart
     ChartElement element = chart.getRootElement();

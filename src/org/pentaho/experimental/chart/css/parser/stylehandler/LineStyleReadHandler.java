@@ -18,10 +18,6 @@ package org.pentaho.experimental.chart.css.parser.stylehandler;
 
 import org.pentaho.experimental.chart.css.styles.ChartLineStyle;
 import org.pentaho.reporting.libraries.css.parser.stylehandler.OneOfConstantsReadHandler;
-import org.pentaho.reporting.libraries.css.values.CSSValue;
-import org.pentaho.reporting.libraries.css.values.CSSConstant;
-import org.pentaho.reporting.libraries.css.model.StyleKey;
-import org.w3c.css.sac.LexicalUnit;
 
 /**
  * The style parser for the <code>-x-pentaho-chart-line-style</code> style.

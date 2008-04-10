@@ -26,4 +26,7 @@ public class ChartAxisDimension {
   public static final CSSConstant AUTO = new CSSConstant("auto"); //$NON-NLS-1$
   public static final CSSConstant DOMAIN = new CSSConstant("domain"); //$NON-NLS-1$
   public static final CSSConstant RANGE = new CSSConstant("range"); //$NON-NLS-1$  
+
+  private ChartAxisDimension() {
+  }
 }

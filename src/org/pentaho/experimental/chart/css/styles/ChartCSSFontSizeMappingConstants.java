@@ -11,4 +11,7 @@ public class ChartCSSFontSizeMappingConstants {
   public static final int XX_LARGE = 18;
   public static final int SMALLER = 10;
   public static final int LARGER = 16;
+
+  private ChartCSSFontSizeMappingConstants() {
+  }
 }

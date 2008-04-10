@@ -21,7 +21,7 @@ import org.pentaho.reporting.libraries.base.versioning.ProjectInformation;
 
 @SuppressWarnings({"StaticNonFinalField"})
 public class ChartBoot extends AbstractBoot {
-  private static ChartBoot instance;
+  private static ChartBoot instance=null;
 
   public static synchronized ChartBoot getInstance() {
     if (ChartBoot.instance == null) {

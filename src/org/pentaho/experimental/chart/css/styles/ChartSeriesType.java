@@ -27,4 +27,7 @@ public class ChartSeriesType {
   public static final CSSConstant BAR = new CSSConstant("bar"); //$NON-NLS-1$
   public static final CSSConstant PIE = new CSSConstant("pie"); //$NON-NLS-1$
   public static final CSSConstant LINE = new CSSConstant("line"); //$NON-NLS-1$  
+
+  private ChartSeriesType() {
+  }
 }

@@ -20,6 +20,8 @@ import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
 public class MessageUtil {
+  private MessageUtil() {
+  }
 
   /**
    * Get a formatted error message. The message consists of two parts. The first part is the
@@ -71,7 +73,7 @@ public class MessageUtil {
    * @return String containing the formatted message.
    */
   public static String getErrorString(final ResourceBundle bundle, final String key) {
-    return formatErrorMessage(key, getString(bundle, key));
+    return MessageUtil.formatErrorMessage(key, MessageUtil.getString(bundle, key));
   }
 
   public static String getString(final ResourceBundle bundle, final String key, final String param1) {
@@ -84,7 +86,7 @@ public class MessageUtil {
   }
 
   public static String getErrorString(final ResourceBundle bundle, final String key, final String param1) {
-    return formatErrorMessage(key, getString(bundle, key, param1));
+    return MessageUtil.formatErrorMessage(key, MessageUtil.getString(bundle, key, param1));
   }
 
   public static String getString(final ResourceBundle bundle, final String key, final String param1, final String param2) {
@@ -97,7 +99,7 @@ public class MessageUtil {
   }
 
   public static String getErrorString(final ResourceBundle bundle, final String key, final String param1, final String param2) {
-    return formatErrorMessage(key, getString(bundle, key, param1, param2));
+    return MessageUtil.formatErrorMessage(key, MessageUtil.getString(bundle, key, param1, param2));
   }
 
   public static String getString(final ResourceBundle bundle, final String key, final String param1, final String param2, final String param3) {
@@ -110,7 +112,7 @@ public class MessageUtil {
   }
 
   public static String getErrorString(final ResourceBundle bundle, final String key, final String param1, final String param2, final String param3) {
-    return formatErrorMessage(key, getString(bundle, key, param1, param2, param3));
+    return MessageUtil.formatErrorMessage(key, MessageUtil.getString(bundle, key, param1, param2, param3));
   }
 
   public static String getString(final ResourceBundle bundle, final String key, final String param1, final String param2, final String param3,
@@ -125,7 +127,7 @@ public class MessageUtil {
 
   public static String getErrorString(final ResourceBundle bundle, final String key, final String param1, final String param2, final String param3,
       final String param4) {
-    return formatErrorMessage(key, getString(bundle, key, param1, param2, param3, param4));
+    return MessageUtil.formatErrorMessage(key, MessageUtil.getString(bundle, key, param1, param2, param3, param4));
   }
 
   public static String formatMessage(final String pattern, final String param1) {

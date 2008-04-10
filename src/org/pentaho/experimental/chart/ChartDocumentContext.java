@@ -27,8 +27,8 @@ import org.pentaho.reporting.libraries.css.model.StyleKeyRegistry;
 import org.pentaho.reporting.libraries.css.namespace.DefaultNamespaceCollection;
 import org.pentaho.reporting.libraries.css.namespace.NamespaceCollection;
 
-import java.awt.*;
 import java.util.ArrayList;
+import java.awt.Image;
 
 /**
  * The <code>DocumentContext</code> for the Charting systen.
@@ -114,7 +114,7 @@ public class ChartDocumentContext implements DocumentContext {
    * @see ResourceManager#create(ResourceKey, ResourceKey, Class[])
    */
   public Class[] getSupportedResourceTypes() {
-    return (Class[]) SUPPORTED_TYPES.clone();
+    return (Class[]) ChartDocumentContext.SUPPORTED_TYPES.clone();
   }
 
   /**
@@ -155,7 +155,8 @@ public class ChartDocumentContext implements DocumentContext {
     final ArrayList<StyleReference> styleReferenceList = new ArrayList<StyleReference>(styleSheetElements.length);
 
     // Process the list of style sheet chart definitions
-    for (int i = 0; i < styleSheetElements.length; ++i) {
+    final int elementsLength = styleSheetElements.length;
+    for (int i = 0; i < elementsLength; ++i) {
       // Get the URL from the href attributes
       final String hrefText = (String) styleSheetElements[i].getAttribute("href");
       if (hrefText != null) {

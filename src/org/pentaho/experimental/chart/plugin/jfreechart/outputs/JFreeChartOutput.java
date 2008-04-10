@@ -29,12 +29,10 @@ import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.entity.StandardEntityCollection;
 import org.jfree.chart.imagemap.ImageMapUtilities;
-import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.plugin.api.IOutput;
 import org.pentaho.experimental.chart.plugin.api.PersistenceException;
-import org.pentaho.experimental.chart.plugin.jfreechart.utils.JFreeChartUtils;
 
-  
+
 /**
  * @author wseyler
  *
@@ -122,7 +120,7 @@ public class JFreeChartOutput implements IOutput {
   
   private void writeImageMap(final ChartRenderingInfo info) throws IOException {
     if (chart.getCategoryPlot().getRenderer().getBaseItemURLGenerator() != null) {
-      final String mapFileName = filename + MAP_EXTENSION;
+      final String mapFileName = filename + JFreeChartOutput.MAP_EXTENSION;
       final String mapString = ImageMapUtilities.getImageMap(mapFileName, info);
       final BufferedWriter out = new BufferedWriter(new FileWriter(mapFileName));
       out.write(mapString);

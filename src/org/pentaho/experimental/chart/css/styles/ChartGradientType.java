@@ -29,4 +29,7 @@ public class ChartGradientType {
   public static final CSSConstant CENTER_HORIZONTAL = new CSSConstant("CENTER_HORIZONTAL"); //$NON-NLS-1$
   public static final CSSConstant CENTER_VERTICAL = new CSSConstant("CENTER_VERTICAL"); //$NON-NLS-1$
   public static final CSSConstant POINTS = new CSSConstant("POINTS"); //$NON-NLS-1$  
+
+  private ChartGradientType() {
+  }
 }

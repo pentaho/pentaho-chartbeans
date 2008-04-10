@@ -159,7 +159,7 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
    */
   public ChartElement() {
     this.attributes = new AttributeMap();
-    setNamespace(NAMESPACE);
+    setNamespace(ChartElement.NAMESPACE);
     this.layoutStyle = new DefaultLayoutStyle();
   }
 
@@ -176,27 +176,27 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
   /**
    */
   public String getNamespace() {
-    return (String) getAttribute(NAMESPACE, NAMESPACE_ATTRIBUTE);
+    return (String) getAttribute(ChartElement.NAMESPACE, ChartElement.NAMESPACE_ATTRIBUTE);
   }
 
   /**
    */
   public void setNamespace(final String id) {
-    setAttribute(NAMESPACE, NAMESPACE_ATTRIBUTE, id);
+    setAttribute(ChartElement.NAMESPACE, ChartElement.NAMESPACE_ATTRIBUTE, id);
   }
 
   /**
    * Returns the id for this chart element
    */
   public String getId() {
-    return (String) getAttribute(NAMESPACE, ID_ATTRIBUTE);
+    return (String) getAttribute(ChartElement.NAMESPACE, ChartElement.ID_ATTRIBUTE);
   }
 
   /**
    * Sets the id for this chart elements
    */
   public void setId(final String id) {
-    setAttribute(LibXmlInfo.XML_NAMESPACE, ID_ATTRIBUTE, id);
+    setAttribute(LibXmlInfo.XML_NAMESPACE, ChartElement.ID_ATTRIBUTE, id);
   }
 
   /**
@@ -225,7 +225,7 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
    * @param name the name of this element
    */
   public void setName(final String name) {
-    setAttribute(LibXmlInfo.XML_NAMESPACE, NAME_ATTRIBUTE, name);
+    setAttribute(LibXmlInfo.XML_NAMESPACE, ChartElement.NAME_ATTRIBUTE, name);
   }
 
   /**
@@ -234,7 +234,7 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
    * @return the name.
    */
   public String getName() {
-    return (String) getAttribute(LibXmlInfo.XML_NAMESPACE, NAME_ATTRIBUTE);
+    return (String) getAttribute(LibXmlInfo.XML_NAMESPACE, ChartElement.NAME_ATTRIBUTE);
   }
 
   /**
@@ -393,10 +393,10 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
   public String toString(final String prefix) {
     final StringBuffer sb = new StringBuffer();
     sb.append(prefix).append(toString()).append("\n");
-    ChartElement child = (ChartElement) getFirstChildItem();
+    ChartElement child = getFirstChildItem();
     while (child != null) {
-      sb.append("\n").append(child.toString(prefix + TO_STRING_PREFIX));
-      child = (ChartElement) child.getNextItem();
+      sb.append("\n").append(child.toString(prefix + ChartElement.TO_STRING_PREFIX));
+      child = child.getNextItem();
     }
     return sb.toString();
   }

@@ -25,4 +25,7 @@ import org.pentaho.reporting.libraries.css.values.CSSConstant;
 public class ChartItemLabelVisibleType {
   public static final CSSConstant NO = new CSSConstant("no"); //$NON-NLS-1$
   public static final CSSConstant YES = new CSSConstant("yes"); //$NON-NLS-1$
+
+  private ChartItemLabelVisibleType() {
+  }
 }

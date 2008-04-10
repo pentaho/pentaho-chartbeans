@@ -150,5 +150,8 @@ public class ChartStyleKeys {
    */
   public static final StyleKey MARGIN_ITEM = StyleKeyRegistry.getRegistry().
       createKey("-x-pentaho-chart-axis-item-margin", false, false, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+
+  private ChartStyleKeys() {
+  }
 }
 

@@ -38,14 +38,14 @@ public class ChartXmlFactoryModule implements XmlFactoryModule {
    * @return an indicator of how this document is recogniszed
    */
   public int getDocumentSupport(final XmlDocumentInfo documentInfo) {
-    return RECOGNIZED_BY_TAGNAME;
+    return XmlFactoryModule.RECOGNIZED_BY_TAGNAME;
   }
 
   /**
    * Returns the default namespace to be used with this XML document based on the document information.
    */
   public String getDefaultNamespace(final XmlDocumentInfo documentInfo) {
-    return NAMESPACE;
+    return ChartXmlFactoryModule.NAMESPACE;
   }
 
   /**

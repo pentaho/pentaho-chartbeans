@@ -54,13 +54,13 @@ public class ChartNamespaceDefinition implements NamespaceDefinition {
 
     // Load the information from the chart properties file
     final Configuration config = ChartBoot.getInstance().getGlobalConfig();
-    preferredPrefix = config.getConfigProperty(PREFERRED_PREFIX, DEFAULT_PREFERRED_PREFIX);
-    uri = config.getConfigProperty(URI, DEFAULT_URI);
-    classAttributeNames = StringUtils.split(config.getConfigProperty(CLASS_ATTRIBUTES, DEFAULT_CLASS_ATTRIBUTE_NAMES));
-    styleAttributeNames = StringUtils.split(config.getConfigProperty(STYLE_ATTRIBUTES, DEFAULT_STYLE_ATTRIBUTE_NAMES));
+    preferredPrefix = config.getConfigProperty(ChartNamespaceDefinition.PREFERRED_PREFIX, ChartNamespaceDefinition.DEFAULT_PREFERRED_PREFIX);
+    uri = config.getConfigProperty(ChartNamespaceDefinition.URI, ChartNamespaceDefinition.DEFAULT_URI);
+    classAttributeNames = StringUtils.split(config.getConfigProperty(ChartNamespaceDefinition.CLASS_ATTRIBUTES, ChartNamespaceDefinition.DEFAULT_CLASS_ATTRIBUTE_NAMES));
+    styleAttributeNames = StringUtils.split(config.getConfigProperty(ChartNamespaceDefinition.STYLE_ATTRIBUTES, ChartNamespaceDefinition.DEFAULT_STYLE_ATTRIBUTE_NAMES));
 
     // Load the chart style information and retain the key
-    final String chartStyleLocation = config.getConfigProperty(CHART_STYLE_LOCATION, DEFAULT_CHART_STYLE_LOCATION);
+    final String chartStyleLocation = config.getConfigProperty(ChartNamespaceDefinition.CHART_STYLE_LOCATION, ChartNamespaceDefinition.DEFAULT_CHART_STYLE_LOCATION);
     chartStyleSheetKey = resourceManager.createKey(chartStyleLocation);
   }
 

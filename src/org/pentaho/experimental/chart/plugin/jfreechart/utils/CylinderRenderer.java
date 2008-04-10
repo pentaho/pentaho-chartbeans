@@ -26,6 +26,7 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer3D;
 import org.jfree.chart.renderer.category.CategoryItemRendererState;
+import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.ui.RectangleEdge;
 
@@ -114,7 +115,7 @@ public class CylinderRenderer extends BarRenderer3D {
         
         // draw the bar...
         final GeneralPath bar = new GeneralPath();
-        Shape top = null;
+        final Shape top;
         if (orientation == PlotOrientation.HORIZONTAL) {
             bar.moveTo((float) (barL0 + getXOffset() / 2), (float) barW0);
             bar.lineTo((float) (barL0 + barLength + getXOffset() / 2), 
@@ -167,7 +168,7 @@ public class CylinderRenderer extends BarRenderer3D {
         }
         
         if (isDrawBarOutline() 
-                && state.getBarWidth() > BAR_OUTLINE_WIDTH_THRESHOLD) {
+                && state.getBarWidth() > BarRenderer.BAR_OUTLINE_WIDTH_THRESHOLD) {
             g2.setStroke(getItemOutlineStroke(row, column));
             g2.setPaint(getItemOutlinePaint(row, column));
             g2.draw(bar);

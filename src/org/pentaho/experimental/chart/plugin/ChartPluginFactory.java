@@ -31,8 +31,11 @@ import org.pentaho.reporting.libraries.base.config.Configuration;
  */
 public class ChartPluginFactory  {
   private static final Log logger = LogFactory.getLog(ChartPluginFactory.class);
-  static IChartPlugin chartPlugin = null;
-  
+  private static IChartPlugin chartPlugin = null;
+
+  private ChartPluginFactory() {
+  }
+
   /**
    * Creates an instance of the IChartPlugin as defined in the chart.properties document if one
    * doesn't already exist.  If one exists it will return that one.
@@ -46,12 +49,12 @@ public class ChartPluginFactory  {
     try {
       pluginClass = (Class<IChartPlugin>) Class.forName(className);
     } catch (ClassNotFoundException e) {
-      logger.error(e);
+      ChartPluginFactory.logger.error(e);
     }
-    if (chartPlugin == null || !chartPlugin.getClass().equals(pluginClass)) {
-      chartPlugin = getChartPlugin(className);
+    if (ChartPluginFactory.chartPlugin == null || !ChartPluginFactory.chartPlugin.getClass().equals(pluginClass)) {
+      ChartPluginFactory.chartPlugin = ChartPluginFactory.getChartPlugin(className);
     }
-    return chartPlugin;
+    return ChartPluginFactory.chartPlugin;
   }
 
   /**
@@ -65,11 +68,11 @@ public class ChartPluginFactory  {
     try {
       return (IChartPlugin) Class.forName(className).newInstance();
     } catch (ClassNotFoundException e) {
-      logger.error(e);
+      ChartPluginFactory.logger.error(e);
     } catch (InstantiationException e) {
-      logger.error(e);
+      ChartPluginFactory.logger.error(e);
     } catch (IllegalAccessException e) {
-      logger.error(e);
+      ChartPluginFactory.logger.error(e);
     }
     return null;
   }
@@ -82,7 +85,7 @@ public class ChartPluginFactory  {
   public static IOutput getChartOutput() {
     final Configuration config = ChartBoot.getInstance().loadConfiguration();
     final String className = config.getConfigProperty("IOutput"); //$NON-NLS-1$
-    return getChartOutput(className);
+    return ChartPluginFactory.getChartOutput(className);
   }
 
   /**
@@ -96,11 +99,11 @@ public class ChartPluginFactory  {
     try {
       return (IOutput) Class.forName(className).newInstance();
     } catch (ClassNotFoundException e) {
-      logger.error(e);
+      ChartPluginFactory.logger.error(e);
     } catch (InstantiationException e) {
-      logger.error(e);
+      ChartPluginFactory.logger.error(e);
     } catch (IllegalAccessException e) {
-      logger.error(e);
+      ChartPluginFactory.logger.error(e);
     }
     return null;
   }

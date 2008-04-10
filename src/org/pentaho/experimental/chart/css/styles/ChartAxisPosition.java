@@ -25,4 +25,7 @@ import org.pentaho.reporting.libraries.css.values.CSSConstant;
 public class ChartAxisPosition {
   public static final CSSConstant PRIMARY = new CSSConstant("primary"); //$NON-NLS-1$
   public static final CSSConstant SECONDARY = new CSSConstant("secondary"); //$NON-NLS-1$    
+
+  private ChartAxisPosition() {
+  }
 }

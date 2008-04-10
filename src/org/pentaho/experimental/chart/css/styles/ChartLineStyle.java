@@ -28,4 +28,7 @@ public class ChartLineStyle {
   public static final CSSConstant DASHED = new CSSConstant("dashed");
   public static final CSSConstant DOT_DASH = new CSSConstant("dot-dash");
   public static final CSSConstant DOT_DOT_DASH = new CSSConstant("dot-dot-dash");
+
+  private ChartLineStyle() {
+  }
 }

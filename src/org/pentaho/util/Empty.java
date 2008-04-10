@@ -15,7 +15,12 @@
  */
 package org.pentaho.util;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Collections;
+import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
+
 
 /**
  * Class which holds a static reference to a set of empty objects. This is created for performance

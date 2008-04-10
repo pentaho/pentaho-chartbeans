@@ -47,7 +47,7 @@ public class JFreeChartPlugin extends AbstractChartPlugin {
     if (chartResult.getErrorCode() == IChartPlugin.RESULT_VALIDATED) {  // The superclass so now we'll render
       currentChartType = JFreeChartUtils.determineChartType(chartDocument);
       if (currentChartType == ChartSeriesType.UNDEFINED) {
-        chartResult.setErrorCode(ERROR_INDETERMINATE_CHART_TYPE);
+        chartResult.setErrorCode(IChartPlugin.ERROR_INDETERMINATE_CHART_TYPE);
         chartResult.setDescription(Messages.getErrorString("JFreeChartPlugin.ERROR_0001_CHART_TYPE_INDETERMINABLE")); //$NON-NLS-1$
       }
 
@@ -55,14 +55,14 @@ public class JFreeChartPlugin extends AbstractChartPlugin {
         try {
           chartFactory.makeBarChart(data, chartDocument, output);
         } catch (Exception e) {
-          chartResult.setErrorCode(RESULT_ERROR);
+          chartResult.setErrorCode(IChartPlugin.RESULT_ERROR);
           chartResult.setDescription(e.getLocalizedMessage());
         }
       } else if (currentChartType == ChartSeriesType.LINE) {
         try {
           chartFactory.makeLineChart(data, chartDocument, output);
         } catch (Exception e) {
-          chartResult.setErrorCode(RESULT_ERROR);
+          chartResult.setErrorCode(IChartPlugin.RESULT_ERROR);
           chartResult.setDescription(e.getLocalizedMessage());
         }
       }

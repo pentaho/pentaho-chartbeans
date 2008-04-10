@@ -48,7 +48,7 @@ public abstract class AbstractChartPlugin implements IChartPlugin {
     // Validate the series
     final ChartElement[] seriesElement = chartDocument.getRootElement().findChildrenByName("series"); //$NON-NLS-1$
     if (seriesElement == null || seriesElement.length < 1) {
-      return new ChartResult(ERROR_MISSING_REQUIRED_DATA, Messages.getErrorString("AbstractChartPlugin.ERROR_0001_NO_ELEMENT", "series"));  //$NON-NLS-1$//$NON-NLS-2$
+      return new ChartResult(IChartPlugin.ERROR_MISSING_REQUIRED_DATA, Messages.getErrorString("AbstractChartPlugin.ERROR_0001_NO_ELEMENT", "series"));  //$NON-NLS-1$//$NON-NLS-2$
     }
 
     return new ChartResult();

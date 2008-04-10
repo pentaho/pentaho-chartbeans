@@ -48,6 +48,9 @@ public class ChartSeriesDataLinkInfoFactory {
   private static final String COL_POS = "column-pos"; //$NON-NLS-1$
   private static final String SERIES = "series"; //$NON-NLS-1$
 
+  private ChartSeriesDataLinkInfoFactory() {
+  }
+
   /**
    * Creates the chart series data link info object, updates it and returns the updated object.
    *
@@ -65,7 +68,7 @@ public class ChartSeriesDataLinkInfoFactory {
     }
 
     final ChartSeriesDataLinkInfo seriesDataLinkInfo = new ChartSeriesDataLinkInfo(data);
-    parseChartDocument(chartDoc, data, seriesDataLinkInfo);
+    ChartSeriesDataLinkInfoFactory.parseChartDocument(chartDoc, data, seriesDataLinkInfo);
     return seriesDataLinkInfo;
   }
 
@@ -81,7 +84,7 @@ public class ChartSeriesDataLinkInfoFactory {
     // We do not parse the ChartDocument when we do not have any data
     final int dataColumnCount = chartTableModel.getColumnCount();
     if (dataColumnCount <= 0) {
-      logger.warn(Messages.getString("ChartSeriesDataLinkInfoFactory.WARN_DATA_IS_NULL"));//$NON-NLS-1$
+      ChartSeriesDataLinkInfoFactory.logger.warn(Messages.getString("ChartSeriesDataLinkInfoFactory.WARN_DATA_IS_NULL"));//$NON-NLS-1$
       return;
     }
 
@@ -94,10 +97,10 @@ public class ChartSeriesDataLinkInfoFactory {
     * NOTE: We are iterating at level 1 and not doing depth traversal on each element.
     */
     while (currentChartElement != null) {
-      if (SERIES.equalsIgnoreCase(currentChartElement.getTagName())) {
+      if (ChartSeriesDataLinkInfoFactory.SERIES.equalsIgnoreCase(currentChartElement.getTagName())) {
         boolean foundColumn = false;
-        final Object currentColumnNum = currentChartElement.getAttribute(COL_POS);
-        final Object currentColumnName = currentChartElement.getAttribute(COL_NAME);
+        final Object currentColumnNum = currentChartElement.getAttribute(ChartSeriesDataLinkInfoFactory.COL_POS);
+        final Object currentColumnName = currentChartElement.getAttribute(ChartSeriesDataLinkInfoFactory.COL_NAME);
 
         /*
         * |-> If column name and position are not specified/are null then process current
@@ -115,16 +118,16 @@ public class ChartSeriesDataLinkInfoFactory {
         // Get the column position based on the column number provided.
         if (currentColumnNum != null) {
           try {
-            foundColumn = processColumnPos(currentColumnNum, currentChartElement, chartTableModel, seriesDataLinkInfo);
+            foundColumn = ChartSeriesDataLinkInfoFactory.processColumnPos(currentColumnNum, currentChartElement, chartTableModel, seriesDataLinkInfo);
           } catch (NumberFormatException ignore) {
-            logger.warn(Messages.getString("ChartSeriesDataLinkInfoFactory.WARN_COLUMN_NUM_IS_NOT_VALID_INTEGER", (String) currentColumnNum, null)); //$NON-NLS-1$
+            ChartSeriesDataLinkInfoFactory.logger.warn(Messages.getString("ChartSeriesDataLinkInfoFactory.WARN_COLUMN_NUM_IS_NOT_VALID_INTEGER", (String) currentColumnNum, null)); //$NON-NLS-1$
           }
         }
 
         // If we haven't matched the current series to a column position and if we are provided 
         // with a column name, then get the column position based on column name. 
         if (!foundColumn && currentColumnName != null) {
-          foundColumn = processColumnName(currentColumnName, currentChartElement, chartTableModel, seriesDataLinkInfo);
+          foundColumn = ChartSeriesDataLinkInfoFactory.processColumnName(currentColumnName, currentChartElement, chartTableModel, seriesDataLinkInfo);
         }
 
         // If we haven't found the column and col name and col pos are null 
@@ -160,7 +163,7 @@ public class ChartSeriesDataLinkInfoFactory {
       throws NumberFormatException {
     boolean foundColumn = false;
 
-    int columnNum = Integer.parseInt(((String) currentColumnNum).trim());
+    final int columnNum = Integer.parseInt(((String) currentColumnNum).trim());
 
     // Check if it is a valid column number. The column number(s) are zero based.   
     if (columnNum >= 0 && columnNum < chartTableModel.getColumnCount()) {
@@ -168,7 +171,7 @@ public class ChartSeriesDataLinkInfoFactory {
       seriesDataLinkInfo.setColumnNum(currentChartElement, columnNum);
       foundColumn = true;
     } else {
-      logger.warn(Messages.getString("ChartSeriesDataLinkInfoFactory.WARN_INCORECT_COLUMN_NUM", (String) currentColumnNum, null)); //$NON-NLS-1$
+      ChartSeriesDataLinkInfoFactory.logger.warn(Messages.getString("ChartSeriesDataLinkInfoFactory.WARN_INCORECT_COLUMN_NUM", (String) currentColumnNum, null)); //$NON-NLS-1$
     }
 
     return foundColumn;
@@ -191,7 +194,7 @@ public class ChartSeriesDataLinkInfoFactory {
     final int dataColumnCount = chartTableModel.getColumnCount();
 
     if (columnName.length() <= 0) {
-      logger.warn(Messages.getString("ChartSeriesDataLinkInfoFactory.WARN_COLUMN_NAME_IS_NULL")); //$NON-NLS-1$
+      ChartSeriesDataLinkInfoFactory.logger.warn(Messages.getString("ChartSeriesDataLinkInfoFactory.WARN_COLUMN_NAME_IS_NULL")); //$NON-NLS-1$
     } else {
       /* 
        * We ignore case when matching the column names in the series tag to the metadata.
