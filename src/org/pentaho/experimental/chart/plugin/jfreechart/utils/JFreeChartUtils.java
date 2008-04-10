@@ -39,6 +39,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.category.DefaultIntervalCategoryDataset;
 import org.jfree.ui.GradientPaintTransformType;
 import org.jfree.ui.StandardGradientPaintTransformer;
+import org.pentaho.experimental.chart.ChartBoot;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
 import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
@@ -49,6 +50,7 @@ import org.pentaho.experimental.chart.css.styles.ChartOrientationStyle;
 import org.pentaho.experimental.chart.css.styles.ChartSeriesType;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.api.ChartItemLabelGenerator;
+import org.pentaho.reporting.libraries.base.config.Configuration;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
 import org.pentaho.reporting.libraries.css.keys.border.BorderStyle;
 import org.pentaho.reporting.libraries.css.keys.border.BorderStyleKeys;
@@ -91,18 +93,23 @@ public class JFreeChartUtils {
   public static DefaultCategoryDataset createDefaultCategoryDataset(final ChartTableModel data, final ChartDocument chartDocument) {
     final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
     final int rowCount = data.getRowCount();
+    final Configuration config = ChartBoot.getInstance().getGlobalConfig();
+    final String noRowNameSpecified = config.getConfigProperty("org.pentaho.experimental.chart.namespace.row_name_not_defined");
+    final int colCount = data.getColumnCount();
+    final String noColumnName = config.getConfigProperty("org.pentaho.experimental.chart.namespace.column_name_not_defined");
+    final double scale = JFreeChartUtils.getScale(chartDocument);
+
     for (int row = 0; row < rowCount; row++) {
-      final int colCount = data.getColumnCount();
       for (int column = 0; column < colCount; column++) {
-        final Comparable<?> columnName = data.getColumnName(column) == null ? column : data.getColumnName(column);
-        final Comparable<?> rowName = (Comparable<?>) (data.getRowMetadata(row, "row-name") == null ? row : data.getRowMetadata(row, "row-name")); //$NON-NLS-1$  //$NON-NLS-2$
+        final String rawColumnName = data.getColumnName(column);
+        final String columnName = rawColumnName != null ? rawColumnName : noColumnName + column ;
+        final Object rawRowName = data.getRowMetadata(row, "row-name");
+        final String rowName = rawRowName != null ? String.valueOf(rawRowName): (noRowNameSpecified + row); //$NON-NLS-1$  //$NON-NLS-2$
         final Object rawValue = data.getValueAt(row, column);
-        if (rawValue instanceof Number) {
-        final Number number = (Number) rawValue;
-          double value = number.doubleValue();
-          value *= JFreeChartUtils.getScale(chartDocument);
-          dataset.setValue(value, rowName, columnName);
-        }
+        if (rawValue != null && rawValue instanceof Number) {
+	        final Number number = (Number) rawValue;
+	        dataset.setValue(number.doubleValue() * scale, rowName, columnName);
+      	}
       }
     }
     return dataset;
@@ -560,7 +567,6 @@ public class JFreeChartUtils {
    * @param data          - Actual data
    */
   private static void setSeriesAttributes(final CategoryPlot categoryPlot, final ChartDocument chartDocument, final ChartTableModel data) {
-    // TODO set other stuff about the series.
     final ChartElement[] seriesElements = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_SERIES);
     JFreeChartUtils.setSeriesItemLabel(categoryPlot, seriesElements, data);
     JFreeChartUtils.setSeriesPaint(categoryPlot, seriesElements, data);
@@ -857,14 +863,14 @@ public class JFreeChartUtils {
     return maxWidth;
   }
 
-  public static ChartElement getBaseStackedGroupElement(ChartDocument chartDocument) {
+  public static ChartElement getBaseStackedGroupElement(final ChartDocument chartDocument) {
     return chartDocument.getChartLevelElement(ChartElement.TAG_NAME_GROUP);
-  }
+}
   /**
    * @param chartDocument
    * @return
    */
-  public static boolean getIsStackedGrouped(ChartDocument chartDocument) {
+  public static boolean getIsStackedGrouped(final ChartDocument chartDocument) {
     return getBaseStackedGroupElement(chartDocument) != null;
   }
 
@@ -873,17 +879,18 @@ public class JFreeChartUtils {
    * @param data
    * @return
    */
-  public static KeyToGroupMap createKeyToGroupMap(ChartDocument chartDocument, ChartTableModel data) {
-    ChartElement groupElement = getBaseStackedGroupElement(chartDocument);
-    String columnName = groupElement.getAttribute(ChartElement.COLUMN_NAME).toString();
-    int columnNum = data.getColumnIndex(columnName);
-    Set groupSet = new HashSet();
-    for (int i=0; i<data.getRowCount(); i++) {
+  public static KeyToGroupMap createKeyToGroupMap(final ChartDocument chartDocument, final ChartTableModel data) {
+    final ChartElement groupElement = getBaseStackedGroupElement(chartDocument);
+    final String columnName = groupElement.getAttribute(ChartElement.COLUMN_NAME).toString();
+    final int columnNum = data.getColumnIndex(columnName);
+    final Set groupSet = new HashSet();
+    final int rowCount = data.getRowCount();
+    for (int i=0; i<rowCount; i++) {
       groupSet.add(data.getValueAt(i, columnNum));
     }
-    KeyToGroupMap keyToGroupMap = new KeyToGroupMap();
-    Iterator iter = groupSet.iterator();
-    int i=0;
+    final KeyToGroupMap keyToGroupMap = new KeyToGroupMap();
+    final Iterator iter = groupSet.iterator();
+    final int i=0;
     while (iter.hasNext()) {
       keyToGroupMap.mapKeyToGroup("G"+i, (Comparable) iter.next());
     }
