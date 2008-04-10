@@ -7,9 +7,11 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.GroupedStackedBarRenderer;
 import org.jfree.chart.renderer.category.IntervalBarRenderer;
 import org.jfree.chart.renderer.category.LayeredBarRenderer;
 import org.jfree.chart.renderer.category.StackedBarRenderer;
+import org.jfree.data.KeyToGroupMap;
 import org.jfree.util.SortOrder;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
@@ -81,6 +83,11 @@ public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable
     // Note:  We'll handle url generator when we update the plot info
     if (stacked || stackedPct || stacked100Pct) {
       chart = ChartFactory.createStackedBarChart(title, valueAxisLabel, valueAxisLabel, JFreeChartUtils.createDefaultCategoryDataset(data, chartDocument), orientation, legend, toolTips, false);
+      if (JFreeChartUtils.getIsStackedGrouped(chartDocument)) {
+        GroupedStackedBarRenderer renderer = new GroupedStackedBarRenderer();
+        KeyToGroupMap map = JFreeChartUtils.createKeyToGroupMap(chartDocument, data);
+        renderer.setSeriesToGroupMap(map); 
+      }
       ((StackedBarRenderer)chart.getCategoryPlot().getRenderer()).setRenderAsPercentages(stackedPct || stacked100Pct);
       if (stacked100Pct) {
         final NumberAxis rangeAxis = (NumberAxis) chart.getCategoryPlot().getRangeAxis();

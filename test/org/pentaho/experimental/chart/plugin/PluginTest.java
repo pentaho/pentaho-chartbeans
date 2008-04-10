@@ -36,7 +36,7 @@ import org.pentaho.experimental.chart.plugin.api.IOutput;
  * @author wseyler
  */
 public class PluginTest extends TestCase {
-  private static final Object[][] dataArray = {{5.55, 10.11, 20.22}, {30.33, 40.44, 50.55}, {60.66, 70.77, 80.88}};
+  private static final Object[][] dataArray = {{5.55, 10.11, 20.22, "East"}, {30.33, 40.44, 50.55, "West"}, {60.66, 70.77, 80.88, "Central"}};
 
   private static final String PNG_SUFFIX = ".png"; //$NON-NLS-1$
   private static final String JPG_SUFFIX = ".jpeg"; //$NON-NLS-1$
@@ -173,6 +173,7 @@ public class PluginTest extends TestCase {
     data.setColumnName(0, "budget"); //$NON-NLS-1$
     data.setColumnName(1, "sales"); //$NON-NLS-1$
     data.setColumnName(2, "forecast"); //$NON-NLS-1$
+    data.setColumnName(3, "region"); //$NON-NLS-1$
 
     data.setRowMetadata(0, ROW_NAME, "Jan"); //$NON-NLS-1$
     data.setRowMetadata(1, ROW_NAME, "Feb"); //$NON-NLS-1$

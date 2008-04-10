@@ -84,6 +84,20 @@ public class ChartTableModel extends BaseChartTableModel {
     return (rotated ? super.getRowName(col) : super.getColumnName(col));
   }
 
+  /* (non-Javadoc)
+   * @see org.pentaho.experimental.chart.data.BaseChartTableModel#getColumnIndex(java.lang.String)
+   */
+  public int getColumnIndex(String name) {
+    return rotated ? super.getRowIndex(name) : super.getColumnIndex(name);
+  }
+  
+  /* (non-Javadoc)
+   * @see org.pentaho.experimental.chart.data.BaseChartTableModel#getRowIndex(java.lang.String)
+   */
+  public int getRowIndex(String name) {
+    return rotated ? super.getColumnIndex(name) : super.getRowIndex(name);
+  }
+  
   /**
    * Sets the name of the column for the specified 0-based column number
    *

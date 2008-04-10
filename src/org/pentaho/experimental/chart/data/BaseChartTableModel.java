@@ -121,7 +121,39 @@ class BaseChartTableModel extends AbstractTableModel {
     }
     return rowName;
   }
+  
+  /**
+   * Returns the column index where the column name is name. -1 if name could not be found
+   * 
+   * @param name
+   * @return
+   */
+  public int getColumnIndex(final String name) {
+    for (int i=0; i<getColumnCount(); i++) {
+      String columnName = getColumnName(i);
+      if (columnName.equals(name)) {
+        return i;
+      }
+    }
+    return -1;
+  }
 
+  /**
+   * Returns the row index where the row name is name. -1 if name could not be found
+   * 
+   * @param name
+   * @return
+   */
+  public int getRowIndex(final String name) {
+    for (int i=0; i<getRowCount(); i++) {
+      String rowName = getRowName(i);
+      if (rowName.equals(name)) {
+        return i;
+      }
+    }
+    return -1;
+  }
+  
   /**
    * Set the name of a particular column
    *

@@ -17,12 +17,24 @@
 
 package org.pentaho.experimental.chart.plugin.jfreechart.utils;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.GradientPaint;
+import java.awt.Paint;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.urls.StandardCategoryURLGenerator;
+import org.jfree.data.KeyToGroupMap;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.category.DefaultIntervalCategoryDataset;
 import org.jfree.ui.GradientPaintTransformType;
@@ -32,9 +44,9 @@ import org.pentaho.experimental.chart.core.ChartElement;
 import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
 import org.pentaho.experimental.chart.css.styles.ChartCSSFontSizeMappingConstants;
 import org.pentaho.experimental.chart.css.styles.ChartGradientType;
+import org.pentaho.experimental.chart.css.styles.ChartItemLabelVisibleType;
 import org.pentaho.experimental.chart.css.styles.ChartOrientationStyle;
 import org.pentaho.experimental.chart.css.styles.ChartSeriesType;
-import org.pentaho.experimental.chart.css.styles.ChartItemLabelVisibleType;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.api.ChartItemLabelGenerator;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
@@ -52,14 +64,6 @@ import org.pentaho.reporting.libraries.css.values.CSSNumericType;
 import org.pentaho.reporting.libraries.css.values.CSSNumericValue;
 import org.pentaho.reporting.libraries.css.values.CSSValue;
 import org.pentaho.reporting.libraries.css.values.CSSValuePair;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.GradientPaint;
-import java.awt.Paint;
 
 /**
  * @author wseyler
@@ -92,8 +96,9 @@ public class JFreeChartUtils {
       for (int column = 0; column < colCount; column++) {
         final Comparable<?> columnName = data.getColumnName(column) == null ? column : data.getColumnName(column);
         final Comparable<?> rowName = (Comparable<?>) (data.getRowMetadata(row, "row-name") == null ? row : data.getRowMetadata(row, "row-name")); //$NON-NLS-1$  //$NON-NLS-2$
-        final Number number = (Number) data.getValueAt(row, column);
-        if (number != null) {
+        final Object rawValue = data.getValueAt(row, column);
+        if (rawValue instanceof Number) {
+        final Number number = (Number) rawValue;
           double value = number.doubleValue();
           value *= JFreeChartUtils.getScale(chartDocument);
           dataset.setValue(value, rowName, columnName);
@@ -851,4 +856,39 @@ public class JFreeChartUtils {
     }
     return maxWidth;
   }
+
+  public static ChartElement getBaseStackedGroupElement(ChartDocument chartDocument) {
+    return chartDocument.getChartLevelElement(ChartElement.TAG_NAME_GROUP);
+  }
+  /**
+   * @param chartDocument
+   * @return
+   */
+  public static boolean getIsStackedGrouped(ChartDocument chartDocument) {
+    return getBaseStackedGroupElement(chartDocument) != null;
+  }
+
+  /**
+   * @param chartDocument
+   * @param data
+   * @return
+   */
+  public static KeyToGroupMap createKeyToGroupMap(ChartDocument chartDocument, ChartTableModel data) {
+    ChartElement groupElement = getBaseStackedGroupElement(chartDocument);
+    String columnName = groupElement.getAttribute(ChartElement.COLUMN_NAME).toString();
+    int columnNum = data.getColumnIndex(columnName);
+    Set groupSet = new HashSet();
+    for (int i=0; i<data.getRowCount(); i++) {
+      groupSet.add(data.getValueAt(i, columnNum));
+    }
+    KeyToGroupMap keyToGroupMap = new KeyToGroupMap();
+    Iterator iter = groupSet.iterator();
+    int i=0;
+    while (iter.hasNext()) {
+      keyToGroupMap.mapKeyToGroup("G"+i, (Comparable) iter.next());
+    }
+    
+    return keyToGroupMap;
+  }
+
 }

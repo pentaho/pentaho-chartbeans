@@ -15,14 +15,14 @@
  */
 package org.pentaho.experimental.chart.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.BooleanUtils;
 import org.jfree.resourceloader.ResourceKey;
 import org.jfree.resourceloader.ResourceManager;
 import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
 import org.pentaho.reporting.libraries.css.values.CSSValue;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This is the object that contains the root element of the parsed chart defintion
@@ -164,20 +164,20 @@ public class ChartDocument {
   public List getSeriesChartElements() {
     return getChartLevelElements(ChartElement.TAG_NAME_SERIES);
   }
-
+  
   /**
-   * Gets the specified element from the chart document (at one level deeper than the chart element).
+   * Gets the specified element from the chart document (at one level deeper than the chart element). 
    * Returns the first occurrence of the given tag.
-   * @param tagName The tagName to be looked up in the chart document at one level
+   * @param tagName The tagName to be looked up in the chart document at one level 
    *                deeper than the chart tag.
    * @return ChartElement Returns the chart element.
    */
-  private ChartElement getChartLevelElement(final String tagName) {
+  public ChartElement getChartLevelElement(final String tagName) {
     ChartElement returnValue = null;
 
     if (rootElement != null && ChartElement.TAG_NAME_CHART.equals(rootElement.getTagName())) {
-      ChartElement element = rootElement.getFirstChildItem();
-
+      ChartElement element = rootElement.getFirstChildItem();  
+      
       while (element != null) {
         if (tagName.equals(element.getTagName())) {
           returnValue = element;
@@ -185,7 +185,7 @@ public class ChartDocument {
         }
         element = element.getNextItem();
       }
-    }
+    }        
     return returnValue;
   }
 
@@ -213,7 +213,7 @@ public class ChartDocument {
     }
     return elements;
   }
-
+  
   /**
    * Provides the plot element in the given chart document. Returns null if not found.
    * @return ChartElement Returns the plot element for the given chart document.
@@ -221,7 +221,7 @@ public class ChartDocument {
   public ChartElement getPlotElement() {
     return getChartLevelElement(ChartElement.TAG_NAME_PLOT);
   }
-
+  
   /**
    * Provides the axis element in the given chart document. Returns null if not found.
    * @return ChartElement Returns the axis element for the given chart document.
@@ -229,11 +229,11 @@ public class ChartDocument {
   public ChartElement getAxisElement() {
     return getChartLevelElement(ChartElement.TAG_NAME_AXIS);
   }
-
-
+  
+  
   /**
    * Provides the CSSValue for Plot Orientation eg: horizontal or vertical
-   * @return CSSValue Represents the value for Plot Orientation.
+   * @return CSSValue Represents the value for Plot Orientation. 
    */
   public CSSValue getPlotOrientation(){
     final ChartElement plotElement = getChartLevelElement(ChartElement.TAG_NAME_PLOT);
