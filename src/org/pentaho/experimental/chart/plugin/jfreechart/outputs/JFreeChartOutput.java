@@ -45,6 +45,9 @@ public class JFreeChartOutput implements IOutput {
   JFreeChart chart;
   ChartRenderingInfo info;
   
+  /* (non-Javadoc)
+   * @see org.pentaho.experimental.chart.plugin.api.IOutput#persistChart(java.lang.String, int)
+   */
   public void persistChart(String filePath, int fileType) throws PersistenceException {
     info = new ChartRenderingInfo(new StandardEntityCollection());
     if (filePath != null && filePath.length() > 0) {
@@ -65,6 +68,9 @@ public class JFreeChartOutput implements IOutput {
     
   }
 
+  /* (non-Javadoc)
+   * @see org.pentaho.experimental.chart.plugin.api.IOutput#persistChart(java.io.OutputStream, int)
+   */
   public OutputStream persistChart(OutputStream outputStream, int fileType) throws PersistenceException {
     info = new ChartRenderingInfo(new StandardEntityCollection());
     if (outputStream == null) {
@@ -91,6 +97,9 @@ public class JFreeChartOutput implements IOutput {
     return outputStream;
   }
 
+  /* (non-Javadoc)
+   * @see org.pentaho.experimental.chart.plugin.api.IOutput#persistMap(java.lang.String)
+   */
   public void persistMap(String filePath) throws PersistenceException {
     if (chart.getCategoryPlot().getRenderer().getBaseItemURLGenerator() != null) {
       final String mapFileName = filePath + MAP_EXTENSION;
@@ -104,6 +113,9 @@ public class JFreeChartOutput implements IOutput {
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.pentaho.experimental.chart.plugin.api.IOutput#persistMap(java.io.OutputStream, java.lang.String)
+   */
   public OutputStream persistMap(OutputStream outputStream, String mapName) throws PersistenceException {
     if (outputStream == null) {
       outputStream = new ByteArrayOutputStream();
@@ -124,14 +136,23 @@ public class JFreeChartOutput implements IOutput {
     return outputStream;
   }
   
+  /* (non-Javadoc)
+   * @see org.pentaho.experimental.chart.plugin.api.IOutput#getMap(java.lang.String)
+   */
   public String getMap(String mapName) {
     return ImageMapUtilities.getImageMap(mapName, info);
   }
   
+  /* (non-Javadoc)
+   * @see org.pentaho.experimental.chart.plugin.api.IOutput#setChart(java.lang.Object)
+   */
   public void setChart(final Object chart) {
     this.chart = (JFreeChart) chart;
   }
 
+  /* (non-Javadoc)
+   * @see org.pentaho.experimental.chart.plugin.api.IOutput#draw(java.awt.Graphics2D, java.awt.geom.Rectangle2D)
+   */
   public void draw(Graphics2D graphics, Rectangle2D rectangle) {
     info = new ChartRenderingInfo(new StandardEntityCollection());
     chart.draw(graphics, rectangle, info);

@@ -45,12 +45,11 @@ public interface IChartPlugin {
 
   /**
    * Renders the chart based on the chartDocument and data.  Chart can be accessed via the output parameter
-   * which gets completed during the rendering of the chart
+   * which gets returned from this method call
    * 
    * @param chartDocument
    * @param data
-   * @param output
-   * @return
+   * @return IOutput
    */
   public IOutput renderChartDocument(ChartDocument chartDocument, ChartTableModel data) throws PersistenceException;
 
