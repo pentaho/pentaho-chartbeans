@@ -42,7 +42,7 @@ public class ChartPluginFactory  {
    * 
    * @return an implementation of the IChartPlugin
    */
-  public static synchronized IChartPlugin getChartPlugin() {
+  public static synchronized IChartPlugin getInstance() {
     final Configuration config = ChartBoot.getInstance().loadConfiguration();
     final String className = config.getConfigProperty("IChartPlugin"); //$NON-NLS-1$
     Class<IChartPlugin> pluginClass = null;
@@ -52,7 +52,7 @@ public class ChartPluginFactory  {
       ChartPluginFactory.logger.error(e);
     }
     if (ChartPluginFactory.chartPlugin == null || !ChartPluginFactory.chartPlugin.getClass().equals(pluginClass)) {
-      ChartPluginFactory.chartPlugin = ChartPluginFactory.getChartPlugin(className);
+      ChartPluginFactory.chartPlugin = ChartPluginFactory.getInstance(className);
     }
     return ChartPluginFactory.chartPlugin;
   }
@@ -64,7 +64,7 @@ public class ChartPluginFactory  {
    * @param className
    * @return
    */
-  public static IChartPlugin getChartPlugin(final String className) {
+  public static IChartPlugin getInstance(final String className) {
     try {
       return (IChartPlugin) Class.forName(className).newInstance();
     } catch (ClassNotFoundException e) {

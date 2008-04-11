@@ -25,6 +25,7 @@ import org.pentaho.experimental.chart.plugin.IChartPlugin;
 import org.pentaho.experimental.chart.plugin.api.ChartResult;
 import org.pentaho.experimental.chart.plugin.api.IOutput;
 import org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine;
+import org.pentaho.experimental.chart.plugin.jfreechart.outputs.JFreeChartOutput;
 import org.pentaho.experimental.chart.plugin.jfreechart.utils.JFreeChartUtils;
 import org.pentaho.reporting.libraries.css.values.CSSConstant;
 import org.pentaho.util.messages.Messages;
@@ -41,13 +42,13 @@ public class JFreeChartPlugin extends AbstractChartPlugin {
    * 
    * This method determines what type of chart to render and then calls the correct method in the ChartFactoryEngine.
    */
-  public ChartResult renderChartDocument(final ChartDocument chartDocument, final ChartTableModel data, final IOutput output) {
-    final ChartResult chartResult = super.renderChartDocument(chartDocument, data, output);
-
+  public IOutput renderChartDocument(final ChartDocument chartDocument, final ChartTableModel data) {
+    final ChartResult chartResult = validateChartDocument(chartDocument);
+    IOutput output = new JFreeChartOutput();
     if (chartResult.getErrorCode() == IChartPlugin.RESULT_VALIDATED) {  // The superclass so now we'll render
       currentChartType = JFreeChartUtils.determineChartType(chartDocument);
       if (currentChartType == ChartSeriesType.UNDEFINED) {
-        chartResult.setErrorCode(IChartPlugin.ERROR_INDETERMINATE_CHART_TYPE);
+        chartResult.setErrorCode(ERROR_INDETERMINATE_CHART_TYPE);
         chartResult.setDescription(Messages.getErrorString("JFreeChartPlugin.ERROR_0001_CHART_TYPE_INDETERMINABLE")); //$NON-NLS-1$
       }
 
@@ -55,21 +56,21 @@ public class JFreeChartPlugin extends AbstractChartPlugin {
         try {
           chartFactory.makeBarChart(data, chartDocument, output);
         } catch (Exception e) {
-          chartResult.setErrorCode(IChartPlugin.RESULT_ERROR);
+          chartResult.setErrorCode(RESULT_ERROR);
           chartResult.setDescription(e.getLocalizedMessage());
         }
       } else if (currentChartType == ChartSeriesType.LINE) {
         try {
           chartFactory.makeLineChart(data, chartDocument, output);
         } catch (Exception e) {
-          chartResult.setErrorCode(IChartPlugin.RESULT_ERROR);
+          chartResult.setErrorCode(RESULT_ERROR);
           chartResult.setDescription(e.getLocalizedMessage());
         }
       }
 
     }
 
-    return chartResult;
+    return output;
   }
 
   /* (non-Javadoc)

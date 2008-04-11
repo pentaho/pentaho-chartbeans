@@ -21,6 +21,7 @@ import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.api.ChartResult;
 import org.pentaho.experimental.chart.plugin.api.IOutput;
+import org.pentaho.experimental.chart.plugin.api.PersistenceException;
 
 /**
  * @author wseyler
@@ -51,7 +52,7 @@ public interface IChartPlugin {
    * @param output
    * @return
    */
-  public ChartResult renderChartDocument(ChartDocument chartDocument, ChartTableModel data, IOutput output);
+  public IOutput renderChartDocument(ChartDocument chartDocument, ChartTableModel data) throws PersistenceException;
 
   public void setChartCallback(IChartCallback callback);
 

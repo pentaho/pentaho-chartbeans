@@ -73,6 +73,7 @@ import org.pentaho.reporting.libraries.css.values.CSSValuePair;
 public class JFreeChartUtils {
 
   private static final Log logger = LogFactory.getLog(JFreeChartUtils.class);
+  private static final char NULL_CHAR = '\0';
 
   private JFreeChartUtils() {
   }
@@ -94,25 +95,48 @@ public class JFreeChartUtils {
     final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
     final int rowCount = data.getRowCount();
     final Configuration config = ChartBoot.getInstance().getGlobalConfig();
-    final String noRowNameSpecified = config.getConfigProperty("org.pentaho.experimental.chart.namespace.row_name_not_defined");
+    final String noRowNameSpecified = config.getConfigProperty("org.pentaho.experimental.chart.namespace.row_name_not_defined"); //$NON-NLS-1$
     final int colCount = data.getColumnCount();
-    final String noColumnName = config.getConfigProperty("org.pentaho.experimental.chart.namespace.column_name_not_defined");
+    final String noColumnName = config.getConfigProperty("org.pentaho.experimental.chart.namespace.column_name_not_defined"); //$NON-NLS-1$
     final double scale = JFreeChartUtils.getScale(chartDocument);
 
     for (int row = 0; row < rowCount; row++) {
       for (int column = 0; column < colCount; column++) {
-        final String rawColumnName = data.getColumnName(column);
+        final String rawColumnName = getColumnName(data, chartDocument, row, column);
         final String columnName = rawColumnName != null ? rawColumnName : noColumnName + column ;
-        final Object rawRowName = data.getRowMetadata(row, "row-name");
-        final String rowName = rawRowName != null ? String.valueOf(rawRowName): (noRowNameSpecified + row); //$NON-NLS-1$  //$NON-NLS-2$
+        final Object rawRowName = data.getRowMetadata(row, "row-name"); //$NON-NLS-1$
+        final String rowName = rawRowName != null ? String.valueOf(rawRowName): (noRowNameSpecified + row); 
         final Object rawValue = data.getValueAt(row, column);
-        if (rawValue != null && rawValue instanceof Number) {
-	        final Number number = (Number) rawValue;
-	        dataset.setValue(number.doubleValue() * scale, rowName, columnName);
-      	}
+        if (rawValue instanceof Number) {
+        final Number number = (Number) rawValue;
+          double value = number.doubleValue();
+          value *= scale;
+          dataset.setValue(value, rowName, columnName);
+        }
       }
     }
     return dataset;
+  }
+
+  /**
+   * @param data
+   * @param chartDocument
+   * @param row
+   * @return
+   */
+  private static String getColumnName(final ChartTableModel data, final ChartDocument chartDocument, final int row, final int column) {
+    if (getIsStackedGrouped(chartDocument)) {
+      StringBuffer syntheticColumnName = new StringBuffer();
+      final ChartElement[] groupElements = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_GROUP);
+      for (ChartElement groupElement : groupElements) {
+        final String columnName = groupElement.getAttribute(ChartElement.COLUMN_NAME).toString();
+        final int columnIndex = data.getColumnIndex(columnName);
+        syntheticColumnName.append(data.getValueAt(row, columnIndex)).append(NULL_CHAR);
+      }
+      return syntheticColumnName.toString();
+    } else {
+      return data.getColumnName(column) == null ? Integer.toBinaryString(column) : data.getColumnName(column).toString();
+    }
   }
 
   /**
@@ -659,7 +683,7 @@ public class JFreeChartUtils {
 
         gradientColor = new Color(red, green, blue);
       } catch (NumberFormatException ne) {
-        JFreeChartUtils.logger.info("Color values defined were incorrect.", ne);
+        JFreeChartUtils.logger.info("Color values defined were incorrect.", ne); //$NON-NLS-1$
       }
 
     } else if (value instanceof CSSColorValue) {
@@ -865,7 +889,7 @@ public class JFreeChartUtils {
 
   public static ChartElement getBaseStackedGroupElement(final ChartDocument chartDocument) {
     return chartDocument.getChartLevelElement(ChartElement.TAG_NAME_GROUP);
-}
+  }
   /**
    * @param chartDocument
    * @return
@@ -890,9 +914,10 @@ public class JFreeChartUtils {
     }
     final KeyToGroupMap keyToGroupMap = new KeyToGroupMap();
     final Iterator iter = groupSet.iterator();
-    final int i=0;
+    int i=0;
     while (iter.hasNext()) {
       keyToGroupMap.mapKeyToGroup("G"+i, (Comparable) iter.next());
+      i++;
     }
     
     return keyToGroupMap;

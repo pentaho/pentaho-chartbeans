@@ -57,7 +57,6 @@ public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable
     JFreeChartUtils.setPlotAttributes(chart.getCategoryPlot(), chartDocument, data);
 
     outHandler.setChart(chart);
-    outHandler.persist();
   }
   
   private JFreeChart createBarChartSubtype(final ChartDocument chartDocument, final ChartTableModel data, final String title, final String valueCategoryLabel, final String valueAxisLabel, final PlotOrientation orientation, final boolean legend, final boolean toolTips) {

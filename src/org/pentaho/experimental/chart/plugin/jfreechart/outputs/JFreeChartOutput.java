@@ -17,10 +17,13 @@
 
 package org.pentaho.experimental.chart.plugin.jfreechart.outputs;
 
-import java.io.BufferedWriter;
+import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -32,25 +35,38 @@ import org.jfree.chart.imagemap.ImageMapUtilities;
 import org.pentaho.experimental.chart.plugin.api.IOutput;
 import org.pentaho.experimental.chart.plugin.api.PersistenceException;
 
-
+  
 /**
  * @author wseyler
  *
  */
 public class JFreeChartOutput implements IOutput {
-  private static final String MAP_EXTENSION = ".map"; //$NON-NLS-1$
   
   JFreeChart chart;
-  int fileType;
-  String filename;
-  OutputStream outputStream;
+  ChartRenderingInfo info;
   
-  /* (non-Javadoc)
-   * @see org.pentaho.experimental.chart.plugin.api.IOutput#getAsStream()
-   */
-  public OutputStream getChartAsStream() throws PersistenceException {
-    final ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
+  public void persistChart(String filePath, int fileType) throws PersistenceException {
+    info = new ChartRenderingInfo(new StandardEntityCollection());
+    if (filePath != null && filePath.length() > 0) {
+      if (fileType == IOutput.FILE_TYPE_JPEG) {
+        try {
+          ChartUtilities.saveChartAsJPEG(new File(filePath), chart, 400, 400, info);
+        } catch (IOException e) {
+          throw new PersistenceException(e);
+        }
+      } else if (fileType == IOutput.FILE_TYPE_PNG) {
+        try {
+          ChartUtilities.saveChartAsPNG(new File(filePath), chart, 400, 400, info);
+        } catch (IOException e) {
+          throw new PersistenceException(e);
+        }
+      }
+    }
     
+  }
+
+  public OutputStream persistChart(OutputStream outputStream, int fileType) throws PersistenceException {
+    info = new ChartRenderingInfo(new StandardEntityCollection());
     if (outputStream == null) {
       outputStream = new ByteArrayOutputStream();
     }
@@ -75,93 +91,51 @@ public class JFreeChartOutput implements IOutput {
     return outputStream;
   }
 
-  /* (non-Javadoc)
-   * @see org.pentaho.experimental.chart.plugin.api.IOutput#getChart()
-   */
-  public JFreeChart getChart() {
-    return chart;
-  }
-
-  /* (non-Javadoc)
-   * @see org.pentaho.experimental.chart.plugin.api.IOutput#getFileType()
-   */
-  public int getFileType() {
-    return fileType;
-  }
-
-  /* (non-Javadoc)
-   * @see org.pentaho.experimental.chart.plugin.api.IOutput#persist()
-   */
-  public void persist() throws PersistenceException {
-    final ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-    
-    if (filename != null && filename.length() > 0) {
-      if (fileType == IOutput.FILE_TYPE_JPEG) {
-        try {
-          ChartUtilities.saveChartAsJPEG(new File(filename), chart, 400, 400, info);
-        } catch (IOException e) {
-          throw new PersistenceException(e);
-        }
-      } else if (fileType == IOutput.FILE_TYPE_PNG) {
-        try {
-          ChartUtilities.saveChartAsPNG(new File(filename), chart, 400, 400, info);
-        } catch (IOException e) {
-          throw new PersistenceException(e);
-        }
-      }
+  public void persistMap(String filePath) throws PersistenceException {
+    if (chart.getCategoryPlot().getRenderer().getBaseItemURLGenerator() != null) {
+      final String mapFileName = filePath + MAP_EXTENSION;
+      BufferedOutputStream outputStream;
       try {
-        writeImageMap(info);
-      } catch (IOException e) {
+        outputStream = new BufferedOutputStream(new FileOutputStream(mapFileName));
+        persistMap(outputStream, mapFileName);
+      } catch (FileNotFoundException e) {
         throw new PersistenceException(e);
       }
     }
-    
-  }
-  
-  private void writeImageMap(final ChartRenderingInfo info) throws IOException {
-    if (chart.getCategoryPlot().getRenderer().getBaseItemURLGenerator() != null) {
-      final String mapFileName = filename + JFreeChartOutput.MAP_EXTENSION;
-      final String mapString = ImageMapUtilities.getImageMap(mapFileName, info);
-      final BufferedWriter out = new BufferedWriter(new FileWriter(mapFileName));
-      out.write(mapString);
-      out.flush();
-      out.close();
-    }
   }
 
-  /* (non-Javadoc)
-   * @see org.pentaho.experimental.chart.plugin.api.IOutput#setChart(org.pentaho.experimental.chart.plugin.api.engine.Chart)
-   */
+  public OutputStream persistMap(OutputStream outputStream, String mapName) throws PersistenceException {
+    if (outputStream == null) {
+      outputStream = new ByteArrayOutputStream();
+    }
+    try {
+      outputStream.flush();
+    } catch (IOException e1) {
+      throw new PersistenceException(e1);
+    }
+    final String mapString = getMap(mapName);
+    try {
+      outputStream.write(mapString.getBytes());
+      outputStream.flush();
+      outputStream.close();
+    } catch (IOException e) {
+      throw new PersistenceException(e);
+    }
+    return outputStream;
+  }
+  
+  public String getMap(String mapName) {
+    return ImageMapUtilities.getImageMap(mapName, info);
+  }
+  
   public void setChart(final Object chart) {
     this.chart = (JFreeChart) chart;
   }
 
-  /* (non-Javadoc)
-   * @see org.pentaho.experimental.chart.plugin.api.IOutput#setFileType(int)
-   */
-  public void setFileType(final int fileType) {
-    this.fileType = fileType;
+  public void draw(Graphics2D graphics, Rectangle2D rectangle) {
+    info = new ChartRenderingInfo(new StandardEntityCollection());
+    chart.draw(graphics, rectangle, info);
   }
 
-  /* (non-Javadoc)
-   * @see org.pentaho.experimental.chart.plugin.api.IOutput#setFilename(java.lang.String)
-   */
-  public void setFilename(final String filename) {
-    this.filename = filename;
-  }
   
-  /* (non-Javadoc)
-   * @see org.pentaho.experimental.chart.plugin.api.IOutput#getFilename()
-   */
-  public String getFilename() {
-    return filename;
-  }
-
-  /* (non-Javadoc)
-   * @see org.pentaho.experimental.chart.plugin.api.IOutput#setOutputStream(java.io.OutputStream)
-   */
-  public void setOutputStream(final OutputStream outputStream) {
-    this.outputStream = outputStream;
-  }
-
 }
