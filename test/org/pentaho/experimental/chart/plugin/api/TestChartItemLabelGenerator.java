@@ -2,7 +2,6 @@ package org.pentaho.experimental.chart.plugin.api;
 
 
 import junit.framework.TestCase;
-
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.resourceloader.ResourceException;
 import org.junit.After;

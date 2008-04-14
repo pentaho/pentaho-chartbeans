@@ -144,11 +144,11 @@
     Runs all the unit tests in the test directory
   -->
   <target name="test" depends="compile-tests" description="Runs the unit tests">
+    <delete dir="${test.output.dir}"/>
     <mkdir dir="${test.output.dir}"/>
     
-    <junit printsummary="yes">
-      <classpath refid="test.run.classpath">
-      </classpath>
+    <junit printsummary="yes" errorproperty="junit-error" failureproperty="junit-failure">
+      <classpath refid="test.run.classpath"/>
       <formatter type="xml"/>
       <batchtest fork="yes" todir="${test.output.dir}">
         <fileset dir="${test.src.dir}" casesensitive="yes">
@@ -157,6 +157,10 @@
         </fileset>
       </batchtest>
     </junit>
+
+    <fail message="JUNIT ERRORS" if="junit-error"/>
+    <fail message="JUNIT FAILURE" if="junit-failure"/>
+
   </target>
 
 

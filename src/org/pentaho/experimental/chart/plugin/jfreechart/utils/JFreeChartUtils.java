@@ -520,9 +520,9 @@ public class JFreeChartUtils {
    * @param chartDocument Current chart defintion
    */
   private static void setAxisMargins(final CategoryPlot categoryPlot, final ChartDocument chartDocument) {
-    final ChartElement axisElement = chartDocument.getAxisElement();
-    if (axisElement != null) {
-      final LayoutStyle layoutStyle = axisElement.getLayoutStyle();
+    final ChartElement[] axisElements = chartDocument.getAxisElements();
+    if (axisElements != null && axisElements.length > 0) {
+      final LayoutStyle layoutStyle = axisElements[0].getLayoutStyle();
       final CSSValue lowerMarginValue = layoutStyle.getValue(ChartStyleKeys.MARGIN_LOWER);
       final CSSValue upperMarginValue = layoutStyle.getValue(ChartStyleKeys.MARGIN_UPPER);
       final CSSValue itemMarginValue = layoutStyle.getValue(ChartStyleKeys.MARGIN_ITEM);
@@ -888,7 +888,12 @@ public class JFreeChartUtils {
   }
 
   public static ChartElement getBaseStackedGroupElement(final ChartDocument chartDocument) {
-    return chartDocument.getChartLevelElement(ChartElement.TAG_NAME_GROUP);
+    final ChartElement[] groupElements = chartDocument.getGroupChartElements();
+    if (groupElements.length > 0) {
+      return groupElements[0];
+    } else {
+      return null;
+    }
   }
   /**
    * @param chartDocument

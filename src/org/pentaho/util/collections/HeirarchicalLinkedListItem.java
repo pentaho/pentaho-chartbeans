@@ -47,6 +47,22 @@ public class HeirarchicalLinkedListItem implements Cloneable {
   private HeirarchicalLinkedListItem lastChild;
 
   /**
+   * The number of times this item (or any of its children) have been modified.
+   * This is most commonly used to determine if cached data has changed.
+   */
+  private long modNumber = 0L;
+
+  /**
+   * Returns the modification number for this item. This number can be used
+   * to determine if a cache is invalid by comparing this number to the value when the
+   * cache was last updated. If the number is different, it will indicate if this item
+   * or any of it's children have been modified.
+   */
+  public long getModNumber() {
+    return modNumber;
+  }
+
+  /**
    * Returns the parent item of this item. It will return <code>null</code> if this item has no parent.
    */
   public HeirarchicalLinkedListItem getParentItem() {
@@ -89,11 +105,14 @@ public class HeirarchicalLinkedListItem implements Cloneable {
    */
   public void removeItem() {
     // Remove this item from the current heirarchy
+    boolean modified = false;
     if (prev != null) {
       prev.next = next;
+      modified = true;
     }
     if (next != null) {
       next.prev = prev;
+      modified = true;
     }
 
     // Make sure to clean up the parent's first and last child
@@ -104,6 +123,12 @@ public class HeirarchicalLinkedListItem implements Cloneable {
       if (this.equals(parent.lastChild)) {
         parent.lastChild = prev;
       }
+      modified = true;
+    }
+
+    // If modified, mark as modified
+    if (modified) {
+      markModified();
     }
 
     // Cleanup this item (no dangling references)
@@ -168,6 +193,7 @@ public class HeirarchicalLinkedListItem implements Cloneable {
    */
   protected void addChildItem(final HeirarchicalLinkedListItem newChild) throws IllegalArgumentException {
     addLastChildItem(newChild);
+    markModified();
   }
 
   /**
@@ -195,6 +221,9 @@ public class HeirarchicalLinkedListItem implements Cloneable {
     if (lastChild.equals(target)) {
       lastChild = newChild;
     }
+
+    // Mark this item as modified
+    markModified();
   }
 
   /**
@@ -222,6 +251,9 @@ public class HeirarchicalLinkedListItem implements Cloneable {
     if (firstChild.equals(target)) {
       firstChild = newChild;
     }
+
+    // Mark this item as modified
+    markModified();
   }
 
   /**
@@ -237,6 +269,9 @@ public class HeirarchicalLinkedListItem implements Cloneable {
     } else {
       insertBefore(newChild, firstChild);
     }
+
+    // Mark this item as modified
+    markModified();
   }
 
   /**
@@ -261,6 +296,9 @@ public class HeirarchicalLinkedListItem implements Cloneable {
       newChild.prev = null;
       newChild.next = null;
     }
+
+    // Mark this item as modified
+    markModified();
   }
 
   /**
@@ -283,6 +321,9 @@ public class HeirarchicalLinkedListItem implements Cloneable {
 
     // Set the parent as a new parent
     parent = newParent;
+
+    // Mark this item as modified
+    markModified();
   }
 
   /**
@@ -323,6 +364,9 @@ public class HeirarchicalLinkedListItem implements Cloneable {
       prev.next = newItem;
     }
     prev = newItem;
+
+    // Mark this item as modified
+    markModified();
   }
 
   /**
@@ -347,5 +391,18 @@ public class HeirarchicalLinkedListItem implements Cloneable {
       next.prev = newItem;
     }
     next = newItem;
+    
+    // Mark this item as modified
+    markModified();
+  }
+
+  /**
+   * Indicates that the item (or one of its children) has been modified.
+   */
+  protected void markModified() {
+    ++modNumber;
+    if (parent != null) {
+      parent.markModified();
+    }
   }
 }

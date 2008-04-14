@@ -27,7 +27,7 @@ Child Elements: none
 
 <plot>
 Description:    Defines the plot element of the chart
-Attributes:     id       - optional - defines an id that allows other tags to reference this plot
+Attributes:     none
 Text:           none
 Child Elements: none
 
@@ -35,7 +35,9 @@ Child Elements: none
 <axis>
 Description:    Defines an axis to be applied to the plot
 Attributes:     id       - optional - defines an id that allows other tags to refeence this axis
-                plot-id  - optional - defines the plot to which this axis will be applied
+                order    - optional - the lower the order number, the closer to the plot
+                type     - optional - [domain / range] indicates axis location
+                side     - optional - [primary / secondary] (primary is left or bottom, secondary is right or top)
 
 
 <series>
@@ -44,7 +46,6 @@ Attributes:     id           - optional - defines an id that allows other tags t
                 column-pos   - optional - defines the column position in the data to which this series is related
                                           (overrides the name-ref attribute if valid)
                 column-name  - optional - defines the column name in the data to which this series is related
-                plot-id      - optional - defines which plot this series should be plotted upon
                 axis-id      - optional - defines which axis this series should be plotted against
 Text:           none
 Child Elements: none

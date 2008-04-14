@@ -15,9 +15,13 @@
  */
 package org.pentaho.experimental.chart.core;
 
-import org.apache.commons.lang.StringUtils;
+import java.util.ArrayList;
+import java.util.Locale;
+import java.util.Map;
+
 import org.jfree.xmlns.LibXmlInfo;
 import org.jfree.xmlns.common.AttributeMap;
+import org.pentaho.reporting.libraries.base.util.StringUtils;
 import org.pentaho.reporting.libraries.css.dom.DefaultLayoutStyle;
 import org.pentaho.reporting.libraries.css.dom.LayoutElement;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
@@ -26,16 +30,18 @@ import org.pentaho.reporting.libraries.css.values.CSSValue;
 import org.pentaho.util.Empty;
 import org.pentaho.util.collections.HeirarchicalLinkedListItem;
 
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.Map;
-
 /**
  * Defines the element information for the elements in the chart definition file
  */
 public class ChartElement extends HeirarchicalLinkedListItem implements Cloneable, LayoutElement {
-  public static final String NAME_ATTRIBUTE = "name"; //$NON-NLS-1$
+  /**
+   * The name attribute which defines the element name (if specified)
+   */
+  public static final String NAME_ATTRIBUTE = "name"; //$NON-NLS-1
 
+  /**
+   * The ID attribute which defines an element's id (in the xml namespace)
+   */
   public static final String ID_ATTRIBUTE = "id"; //$NON-NLS-1$
 
   /**
@@ -43,7 +49,9 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
    */
   public static final String NAMESPACE_ATTRIBUTE = "namespace"; //$NON-NLS-1$
 
-
+  /**
+   * The namespace for all the charting items
+   */
   public static final String NAMESPACE = "charting-rulez"; //$NON-NLS-1$
 
   /**
@@ -161,6 +169,9 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
     this.attributes = new AttributeMap();
     setNamespace(ChartElement.NAMESPACE);
     this.layoutStyle = new DefaultLayoutStyle();
+
+    // Mark this item as modified
+    markModified();
   }
 
   /**
@@ -183,6 +194,9 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
    */
   public void setNamespace(final String id) {
     setAttribute(ChartElement.NAMESPACE, ChartElement.NAMESPACE_ATTRIBUTE, id);
+
+    // Mark this item as modified
+    markModified();
   }
 
   /**
@@ -197,6 +211,9 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
    */
   public void setId(final String id) {
     setAttribute(LibXmlInfo.XML_NAMESPACE, ChartElement.ID_ATTRIBUTE, id);
+
+    // Mark this item as modified
+    markModified();
   }
 
   /**
@@ -210,10 +227,13 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
    * Sets the tagname for this element.
    */
   public void setTagName(final String tagName) {
-    if (StringUtils.isBlank(tagName)) {
+    if (StringUtils.isEmpty(tagName)) {
       throw new NullPointerException();
     }
     this.tagName = tagName.trim();
+
+    // Mark this item as modified
+    markModified();
   }
 
   /**
@@ -226,6 +246,9 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
    */
   public void setName(final String name) {
     setAttribute(LibXmlInfo.XML_NAMESPACE, ChartElement.NAME_ATTRIBUTE, name);
+
+    // Mark this item as modified
+    markModified();
   }
 
   /**
@@ -243,6 +266,9 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
    */
   public void setAttribute(final String name, final Object value) {
     setAttribute(getNamespace(), name, value);
+
+    // Mark this item as modified
+    markModified();
   }
 
   /**
@@ -251,13 +277,16 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
    * @param value
    */
   public void setAttribute(final String namespace, final String name, final Object value) {
-    if (StringUtils.isBlank(name)) {
+    if (StringUtils.isEmpty(name)) {
       throw new NullPointerException();
     }
     if (attributes == null) {
       this.attributes = new AttributeMap();
     }
     this.attributes.setAttribute(namespace, name.trim(), value);
+
+    // Mark this item as modified
+    markModified();
   }
 
   /**
@@ -357,7 +386,7 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
   }
 
   public void addChildElement(final ChartElement chartElement) {
-    addChildItem(chartElement);
+    addChildItem(chartElement); // sets modification flag
   }
 
   public String getText() {
@@ -365,8 +394,10 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
   }
 
   public void setText(final String text) {
-
     this.text = text;
+
+    // Mark this item as modified
+    markModified();
   }
 
   /**
@@ -492,7 +523,5 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
     }
     return result;
   }
-
-
 }
 

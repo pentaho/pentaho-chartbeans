@@ -16,11 +16,8 @@
 package org.pentaho.experimental.chart;
 
 import junit.framework.TestCase;
-import org.apache.commons.lang.BooleanUtils;
 import org.pentaho.experimental.chart.core.ChartElement;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.pentaho.reporting.libraries.base.util.StringUtils;
 
 /**
  * Tests for the <code>ChartDocumentValidator</code> class.
@@ -34,7 +31,7 @@ public class ChartDocumentValidatorTest extends TestCase {
     // A blank example should produce no messages
     {
       ChartDocumentValidator validator = new ChartDocumentValidator();
-      List<ChartElement> list = new ArrayList();
+      ChartElement[] list = new ChartElement[0];
       validator.validateGroupTags(list);
       assertEquals(0, validator.getMessageCount());
     }
@@ -42,21 +39,20 @@ public class ChartDocumentValidatorTest extends TestCase {
     // A simple example should produce no errors (and skip the non-group tags)
     {
       ChartDocumentValidator validator = new ChartDocumentValidator();
-      List<ChartElement> list = new ArrayList();
       ChartElement [] elements = createChartElements(new String[] {ChartElement.TAG_NAME_GROUP, ChartElement.TAG_NAME_GROUP, "test", ChartElement.TAG_NAME_GROUP, ChartElement.TAG_NAME_GROUP});
       elements[0].addChildElement(elements[1]);
       elements[1].addChildElement(elements[2]);
       elements[1].addChildElement(elements[3]);
       elements[3].addChildElement(elements[4]);
       elements[3].setAttribute(ChartElement.STACKED, "on");
-      list.add(elements[0]);
+      ChartElement[] list = new ChartElement[] { elements[0] };
       validator.validateGroupTags(list);
       assertEquals(0, validator.getMessageCount());
       assertNull(elements[0].getAttribute(ChartElement.STACKED));
       assertNull(elements[1].getAttribute(ChartElement.STACKED));
       assertNull(elements[2].getAttribute(ChartElement.STACKED));
-      assertTrue(BooleanUtils.toBoolean((String)elements[3].getAttribute(ChartElement.STACKED)));
-      assertTrue(BooleanUtils.toBoolean((String)elements[4].getAttribute(ChartElement.STACKED)));
+      assertTrue(StringUtils.toBoolean((String)elements[3].getAttribute(ChartElement.STACKED)));
+      assertTrue(StringUtils.toBoolean((String)elements[4].getAttribute(ChartElement.STACKED)));
     }
   }
 

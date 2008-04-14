@@ -6,14 +6,11 @@ package org.pentaho.experimental.chart.plugin.jfreechart.utils;
 
 import java.awt.Color;
 import java.awt.GradientPaint;
-import java.util.List;
 
 import junit.framework.TestCase;
-
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.resourceloader.ResourceException;
 import org.jfree.ui.GradientPaintTransformType;
-import org.jfree.ui.StandardGradientPaintTransformer;
 import org.junit.After;
 import org.junit.Before;
 import org.pentaho.experimental.chart.ChartDocumentContext;
@@ -134,13 +131,13 @@ public class JFreeChartUtilsTest extends TestCase {
       final ChartDocument cd = cdc.getChartDocument();
       assertNotNull(cd);
       
-      final List seriesList = cd.getSeriesChartElements();
-      if (seriesList.size() == 0) {        
+      final ChartElement[] seriesList = cd.getSeriesChartElements();
+      if (seriesList.length == 0) {
         fail("The Series list should never be empty."); //$NON-NLS-1$       
       }
       
-      for (int seriesCounter = 0; seriesCounter < seriesList.size(); seriesCounter++) {
-        final ChartElement currElement = (ChartElement)seriesList.get(seriesCounter);
+      for (int seriesCounter = 0; seriesCounter < seriesList.length; seriesCounter++) {
+        final ChartElement currElement = seriesList[seriesCounter];
         final GradientPaint gotGradientPaint = JFreeChartUtils.getGradientPaint(currElement);
         if (seriesCounter==0) {
           assertNull(gotGradientPaint);
@@ -176,13 +173,13 @@ public class JFreeChartUtilsTest extends TestCase {
       final ChartDocument cd = cdc.getChartDocument();
       assertNotNull(cd);
       
-      final List seriesList = cd.getSeriesChartElements();
-      if (seriesList.size() == 0) {        
+      final ChartElement[] seriesList = cd.getSeriesChartElements();
+      if (seriesList.length == 0) {
         fail("The Series list should never be empty."); //$NON-NLS-1$       
       }
       
-      for (int i=0; i< seriesList.size(); i++){
-        final ChartElement ce = (ChartElement)seriesList.get(i);
+      for (int i=0; i< seriesList.length; i++){
+        final ChartElement ce = (ChartElement)seriesList[i];
         if (i == 0 || i == 1 || i == 2) {
           assertNull(JFreeChartUtils.getStandardGradientPaintTrans(ce));
         } else {          

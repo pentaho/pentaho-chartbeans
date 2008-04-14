@@ -62,7 +62,7 @@ public class ChartGradientReadHandler implements CSSCompoundValueReadHandler {
     /**
      * Parses the LexicalUnit and returns a map of (StyleKey, CSSValue) pairs.
      *
-     * @param value
+     * @param unit
      * @return
      */
     public Map createValues(LexicalUnit unit) {

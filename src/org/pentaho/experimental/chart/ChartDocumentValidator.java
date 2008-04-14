@@ -15,12 +15,12 @@
  */
 package org.pentaho.experimental.chart;
 
-import org.apache.commons.lang.BooleanUtils;
-import org.pentaho.experimental.chart.core.ChartDocument;
-import org.pentaho.experimental.chart.core.ChartElement;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.pentaho.experimental.chart.core.ChartDocument;
+import org.pentaho.experimental.chart.core.ChartElement;
+import org.pentaho.reporting.libraries.base.util.StringUtils;
 
 /**
  * Performs validation on the <code>ChartDocument</code> and ensures it is proper
@@ -87,8 +87,8 @@ public class ChartDocumentValidator {
    */
   private void validateSeriesTags() {
     // Make sure there are one or more series elements
-    final List<ChartElement> seriesElements = chartDoc.getSeriesChartElements();
-    if (seriesElements.size() == 0) {
+    final ChartElement[] seriesElements = chartDoc.getSeriesChartElements();
+    if (seriesElements.length == 0) {
       messages.add("Could not find any <series> tags as children of the <chart> tag");
     }
   }
@@ -101,7 +101,7 @@ public class ChartDocumentValidator {
     if (chartDoc == null || chartDoc.getRootElement() == null) {
       messages.add("Chart Document is empty");
     } else if (!ChartElement.TAG_NAME_CHART.equals(chartDoc.getRootElement().getTagName())) {
-      messages.add("<chart> must be the root chart element");
+      messages.add("<chart> must be the root chart element"); 
     }
   }
 
@@ -114,16 +114,16 @@ public class ChartDocumentValidator {
    *
    * NOTE: this method is package protected for testing purposes only
    */
-  void validateGroupTags(final List<ChartElement> groupElements) {
-    if (groupElements.size() > 0) {
+  void validateGroupTags(final ChartElement[] groupElements) {
+    if (groupElements.length > 0) {
       // Only process the 1st element
-      ChartElement groupElement = groupElements.get(0);
+      ChartElement groupElement = groupElements[0];
       ChartElement parentGroupElement = null;
       boolean isStacked = false;
       while (groupElement != null) {
         // See if the stacked flag is set correctly
         final String stacked = (String)groupElement.getAttribute(ChartElement.STACKED);
-        final boolean elementStacked = BooleanUtils.toBoolean(stacked);
+        final boolean elementStacked = StringUtils.toBoolean(stacked);
         if (isStacked && !elementStacked) {
           // Set the stack property
           groupElement.setAttribute(ChartElement.STACKED, Boolean.TRUE.toString());

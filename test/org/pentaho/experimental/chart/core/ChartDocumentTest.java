@@ -15,16 +15,10 @@
  */
 package org.pentaho.experimental.chart.core;
 
-import java.util.List;
 import junit.framework.TestCase;
-import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.resourceloader.ResourceException;
 import org.pentaho.experimental.chart.ChartDocumentContext;
 import org.pentaho.experimental.chart.ChartFactory;
-import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
-import org.pentaho.experimental.chart.css.styles.ChartOrientationStyle;
-import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
-import org.pentaho.reporting.libraries.css.values.CSSValue;
 
 /**
  * Tests for the ChartDocument class
@@ -125,12 +119,12 @@ public class ChartDocumentTest extends TestCase {
     series2.addChildElement(series3);
     rootElement.addChildElement(series4);
 
-    final List elements = doc.getSeriesChartElements();
+    final ChartElement[] elements = doc.getSeriesChartElements();
     assertNotNull(elements);
-    assertEquals(3, elements.size());
-    assertEquals(series1, elements.get(0));
-    assertEquals(series2, elements.get(1));
-    assertEquals(series4, elements.get(2));
+    assertEquals(3, elements.length);
+    assertEquals(series1, elements[0]);
+    assertEquals(series2, elements[1]);
+    assertEquals(series4, elements[2]);
   }
 
   /**
@@ -151,12 +145,12 @@ public class ChartDocumentTest extends TestCase {
     rootElement.addChildElement(series4);
     rootElement.addChildElement(new ChartElement());
 
-    final List elements = doc.getGroupChartElements();
+    final ChartElement[] elements = doc.getGroupChartElements();
     assertNotNull(elements);
-    assertEquals(3, elements.size());
-    assertEquals(series1, elements.get(0));
-    assertEquals(series2, elements.get(1));
-    assertEquals(series4, elements.get(2));
+    assertEquals(3, elements.length);
+    assertEquals(series1, elements[0]);
+    assertEquals(series2, elements[1]);
+    assertEquals(series4, elements[2]);
   }
 
   public void testGetPlotElement() throws ResourceException {

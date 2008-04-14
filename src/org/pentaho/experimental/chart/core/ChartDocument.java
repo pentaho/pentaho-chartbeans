@@ -1,16 +1,16 @@
 /*
- * Copyright 2008 Pentaho Corporation.  All rights reserved. 
- * This software was developed by Pentaho Corporation and is provided under the terms 
- * of the Mozilla Public License, Version 1.1, or any later version. You may not use 
- * this file except in compliance with the license. If you need a copy of the license, 
- * please go to http://www.mozilla.org/MPL/MPL-1.1.txt. The Original Code is the Pentaho 
+ * Copyright 2008 Pentaho Corporation.  All rights reserved.
+ * This software was developed by Pentaho Corporation and is provided under the terms
+ * of the Mozilla Public License, Version 1.1, or any later version. You may not use
+ * this file except in compliance with the license. If you need a copy of the license,
+ * please go to http://www.mozilla.org/MPL/MPL-1.1.txt. The Original Code is the Pentaho
  * BI Platform.  The Initial Developer is Pentaho Corporation.
  *
- * Software distributed under the Mozilla Public License is distributed on an "AS IS" 
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or  implied. Please refer to 
+ * Software distributed under the Mozilla Public License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or  implied. Please refer to
  * the license for the specific language governing your rights and limitations.
  *
- * Created  
+ * Created
  * @author David Kincade
  */
 package org.pentaho.experimental.chart.core;
@@ -18,10 +18,10 @@ package org.pentaho.experimental.chart.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.BooleanUtils;
 import org.jfree.resourceloader.ResourceKey;
 import org.jfree.resourceloader.ResourceManager;
 import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
+import org.pentaho.reporting.libraries.base.util.StringUtils;
 import org.pentaho.reporting.libraries.css.values.CSSValue;
 
 /**
@@ -44,6 +44,46 @@ public class ChartDocument {
    * The resource key that servers as the base location for loading relative infomraiton
    */
   private ResourceKey resourceKey;
+
+  /**
+   * Cache of the series elements
+   */
+  private ChartElement[] cachedSeriesElements = null;
+
+  /**
+   * Modification number when the series elements cache was created (used to invalidate the cache)
+   */
+  private long cachedSeriesElementModNumber = 0L;
+
+  /**
+   * Cache of the group elements
+   */
+  private ChartElement[] cachedGroupElements = null;
+
+  /**
+   * Modification number when the group elements cache was created (used to invalidate the cache)
+   */
+  private long cachedGroupElementModNumber = 0L;
+
+  /**
+   * The cached version of the plot element
+   */
+  private ChartElement cachedPlotElement = null;
+
+  /**
+   * Modification number of when the plot element was cached (used to invalidate the cache)
+   */
+  private long cachedPlotElementModNumber = 0L;
+
+  /**
+   * The cached version of the plot element
+   */
+  private ChartElement[] cachedAxisElements = null;
+
+  /**
+   * Modification number of when the plot element was cached (used to invalidate the cache)
+   */
+  private long cachedAxisElementModNumber = 0L;
 
   /**
    * Constructor that creats the chart document.
@@ -93,13 +133,21 @@ public class ChartDocument {
   }
 
   /**
+   * Returns the modification number from the root element. This number
+   * can be used to invalidate cache information.
+   */
+  public long getModNumber() {
+    return rootElement.getModNumber();
+  }
+
+  /**
    * Generates a string representation of the chart document
    */
   public String toString() {
     final StringBuffer sb = new StringBuffer();
     sb.append(getClass().getName());
     if (rootElement == null) {
-      sb.append(" [null]");  //$NON-NLS-1$
+      sb.append(" [null]"); //$NON-NLS-1
     } else {
       sb.append("\n").append(rootElement.toString("  "));  //$NON-NLS-1$ //$NON-NLS-2$
     }
@@ -115,7 +163,7 @@ public class ChartDocument {
     final ChartElement root = getRootElement();
     if (root != null) {
       if (ChartElement.TAG_NAME_CHART.equals(root.getTagName())) {
-        result = ChartDocument.booleanAttributeValue(root, ChartElement.CATEGORICAL, false);
+        result = booleanAttributeValue(root, ChartElement.CATEGORICAL, false);
       }
     }
     return result;
@@ -130,7 +178,7 @@ public class ChartDocument {
     final ChartElement root = getRootElement();
     if (root != null) {
       if (ChartElement.TAG_NAME_CHART.equals(root.getTagName())) {
-        result = ChartDocument.booleanAttributeValue(root, ChartElement.BYROW, false);
+        result = booleanAttributeValue(root, ChartElement.BYROW, false);
       }
     }
     return result;
@@ -150,7 +198,7 @@ public class ChartDocument {
     if (element != null) {
       final Object value = element.getAttribute(attributeName);
       if (value != null) {
-        result = BooleanUtils.toBoolean(value.toString());
+        result = StringUtils.toBoolean(value.toString());
       }
     }
     return result;
@@ -159,14 +207,76 @@ public class ChartDocument {
   /**
    * Creates a list of all the <code>series</code> ChartElements that are the children of the <code>chart</code> tag.
    * @return a list of <code>ChartElements</code> which represent the <code>series</code> tags. If there are none,
-   * the list will be empty.
+   *         the list will be empty.
    */
-  public List getSeriesChartElements() {
-    return getChartLevelElements(ChartElement.TAG_NAME_SERIES);
+  public ChartElement[] getSeriesChartElements() {
+    final long currentModNumber = getModNumber();
+    if (cachedSeriesElementModNumber != currentModNumber) {
+      cachedSeriesElements = getChartLevelElements(ChartElement.TAG_NAME_SERIES);
+      cachedSeriesElementModNumber = currentModNumber;
+    }
+    return cachedSeriesElements;
   }
 
   /**
-   * Gets the specified element from the chart document (at one level deeper than the chart element).
+   * Creates a list of all the <code>series</code> ChartElements that are the children of the <code>chart</code> tag.
+   *
+   * @return a list of <code>ChartElements</code> which represent the <code>series</code> tags. If there are none,
+   *         the list will be empty.
+   */
+  public ChartElement[] getGroupChartElements() {
+    final long currentModNumber = getModNumber();
+    if (cachedGroupElementModNumber != currentModNumber) {
+      cachedGroupElements = getChartLevelElements(ChartElement.TAG_NAME_GROUP);
+      cachedGroupElementModNumber = currentModNumber;
+    }
+    return cachedGroupElements;
+  }
+
+  /**
+   * Provides the plot element in the given chart document. Returns null if not found.
+   *
+   * @return ChartElement Returns the plot element for the given chart document.
+   */
+  public ChartElement getPlotElement() {
+    final long currentModNumber = getModNumber();
+    if (cachedPlotElementModNumber != currentModNumber) {
+      cachedPlotElement = getChartLevelElement(ChartElement.TAG_NAME_PLOT);
+      cachedPlotElementModNumber = currentModNumber;
+    }
+    return cachedPlotElement;
+  }
+
+  /**
+   * Provides the axis element in the given chart document. Returns null if not found.
+   *
+   * @return ChartElement Returns the axis element for the given chart document.
+   */
+  public ChartElement[] getAxisElements() {
+    final long currentModNumber = getModNumber();
+    if (cachedAxisElementModNumber != currentModNumber) {
+      cachedAxisElements = getChartLevelElements(ChartElement.TAG_NAME_AXIS);
+      cachedAxisElementModNumber = currentModNumber;
+    }
+    return cachedAxisElements;
+  }
+
+  /**
+   * Provides the CSSValue for Plot Orientation eg: horizontal or vertical
+   *
+   * @return CSSValue Represents the value for Plot Orientation.
+   */
+  public CSSValue getPlotOrientation() {
+    final ChartElement plotElement = getPlotElement();
+    CSSValue value = null;
+    if (plotElement != null) {
+      value = plotElement.getStyle(ChartStyleKeys.ORIENTATION);
+    }
+    return value;
+  }
+
+  /**
+   * Gets the specified element from the chart document (achart element).
    * Returns the first occurrence of the given tag.
    * @param tagName The tagName to be looked up in the chart document at one level
    *                deeper than the chart tag.
@@ -190,19 +300,10 @@ public class ChartDocument {
   }
 
   /**
-   * Creates a list of all the <code>series</code> ChartElements that are the children of the <code>chart</code> tag.
-   * @return a list of <code>ChartElements</code> which represent the <code>series</code> tags. If there are none,
-   * the list will be empty.
-   */
-  public List getGroupChartElements() {
-    return getChartLevelElements(ChartElement.TAG_NAME_GROUP);
-  }
-
-  /**
    * Creats a list of chart elements with the specified tag name that are child elements of the root level (chart) element
    * @param tagname the tagname used in selecting elements
    */
-  private List getChartLevelElements(final String tagname) {
+  private ChartElement[] getChartLevelElements(final String tagname) {
     final List<ChartElement> elements = new ArrayList<ChartElement>();
     ChartElement element = rootElement.getFirstChildItem();
     while (element != null) {
@@ -211,37 +312,6 @@ public class ChartDocument {
       }
       element = element.getNextItem();
     }
-    return elements;
+    return elements.toArray(new ChartElement[elements.size()]);
   }
-
-  /**
-   * Provides the plot element in the given chart document. Returns null if not found.
-   * @return ChartElement Returns the plot element for the given chart document.
-   */
-  public ChartElement getPlotElement() {
-    return getChartLevelElement(ChartElement.TAG_NAME_PLOT);
-  }
-
-  /**
-   * Provides the axis element in the given chart document. Returns null if not found.
-   * @return ChartElement Returns the axis element for the given chart document.
-   */
-  public ChartElement getAxisElement() {
-    return getChartLevelElement(ChartElement.TAG_NAME_AXIS);
-  }
-
-
-  /**
-   * Provides the CSSValue for Plot Orientation eg: horizontal or vertical
-   * @return CSSValue Represents the value for Plot Orientation.
-   */
-  public CSSValue getPlotOrientation(){
-    final ChartElement plotElement = getChartLevelElement(ChartElement.TAG_NAME_PLOT);
-    CSSValue value = null;
-    
-    if (plotElement != null) {
-      value = plotElement.getStyle(ChartStyleKeys.ORIENTATION);
-    }    
-    return value;
-  }  
 }

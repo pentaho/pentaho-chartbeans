@@ -22,7 +22,6 @@ import java.io.File;
 import java.net.URL;
 
 import junit.framework.TestCase;
-
 import org.pentaho.experimental.chart.ChartBoot;
 import org.pentaho.experimental.chart.ChartDocumentContext;
 import org.pentaho.experimental.chart.ChartFactory;
