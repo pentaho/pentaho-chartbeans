@@ -17,6 +17,9 @@
 
 package org.pentaho.experimental.chart.plugin.jfreechart;
 
+import java.util.EnumSet;
+import java.util.Set;
+
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.css.styles.ChartSeriesType;
 import org.pentaho.experimental.chart.data.ChartTableModel;
@@ -36,7 +39,8 @@ import org.pentaho.util.messages.Messages;
 public class JFreeChartPlugin extends AbstractChartPlugin {
   final ChartFactoryEngine chartFactory = new JFreeChartFactoryEngine();
   CSSConstant currentChartType = ChartSeriesType.UNDEFINED;
-
+  final static Set<IOutput.OutputTypes> supportedOutputs = EnumSet.of(IOutput.OutputTypes.DATA_TYPE_STREAM, IOutput.OutputTypes.FILE_TYPE_JPEG, IOutput.OutputTypes.FILE_TYPE_PNG);
+  
   /* (non-Javadoc)
    * @see org.pentaho.experimental.chart.plugin.AbstractChartPlugin#renderChartDocument(org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.plugin.api.IOutput)
    * 
@@ -78,5 +82,12 @@ public class JFreeChartPlugin extends AbstractChartPlugin {
    */
   public ChartResult validateChartDocument(final ChartDocument chartDocument) {
     return super.validateChartDocument(chartDocument);
+  }
+
+  /* (non-Javadoc)
+   * @see org.pentaho.experimental.chart.plugin.IChartPlugin#getSupportedOutputs()
+   */
+  public Set<IOutput.OutputTypes> getSupportedOutputs() {
+    return supportedOutputs;
   }
 }

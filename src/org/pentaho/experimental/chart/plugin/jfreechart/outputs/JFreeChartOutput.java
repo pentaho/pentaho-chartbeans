@@ -48,16 +48,16 @@ public class JFreeChartOutput implements IOutput {
   /* (non-Javadoc)
    * @see org.pentaho.experimental.chart.plugin.api.IOutput#persistChart(java.lang.String, int)
    */
-  public void persistChart(String filePath, int fileType) throws PersistenceException {
+  public void persistChart(String filePath, IOutput.OutputTypes fileType) throws PersistenceException {
     info = new ChartRenderingInfo(new StandardEntityCollection());
     if (filePath != null && filePath.length() > 0) {
-      if (fileType == IOutput.FILE_TYPE_JPEG) {
+      if (fileType == IOutput.OutputTypes.FILE_TYPE_JPEG) {
         try {
           ChartUtilities.saveChartAsJPEG(new File(filePath), chart, 400, 400, info);
         } catch (IOException e) {
           throw new PersistenceException(e);
         }
-      } else if (fileType == IOutput.FILE_TYPE_PNG) {
+      } else if (fileType == IOutput.OutputTypes.FILE_TYPE_PNG) {
         try {
           ChartUtilities.saveChartAsPNG(new File(filePath), chart, 400, 400, info);
         } catch (IOException e) {
@@ -71,7 +71,7 @@ public class JFreeChartOutput implements IOutput {
   /* (non-Javadoc)
    * @see org.pentaho.experimental.chart.plugin.api.IOutput#persistChart(java.io.OutputStream, int)
    */
-  public OutputStream persistChart(OutputStream outputStream, int fileType) throws PersistenceException {
+  public OutputStream persistChart(OutputStream outputStream, IOutput.OutputTypes fileType) throws PersistenceException {
     info = new ChartRenderingInfo(new StandardEntityCollection());
     if (outputStream == null) {
       outputStream = new ByteArrayOutputStream();
@@ -81,13 +81,13 @@ public class JFreeChartOutput implements IOutput {
     } catch (IOException e1) {
       throw new PersistenceException(e1);
     }
-    if (fileType == IOutput.FILE_TYPE_JPEG) {
+    if (fileType == IOutput.OutputTypes.FILE_TYPE_JPEG) {
       try {
         ChartUtilities.writeChartAsJPEG(outputStream, chart, 400, 400, info);
       } catch (IOException e) {
         throw new PersistenceException(e);
       }
-    } else if (fileType == IOutput.FILE_TYPE_PNG) {
+    } else if (fileType == IOutput.OutputTypes.FILE_TYPE_PNG) {
       try {
         ChartUtilities.writeChartAsPNG(outputStream, chart, 400, 400, info);
       } catch (IOException e) {

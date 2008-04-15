@@ -10,8 +10,13 @@ import java.io.OutputStream;
  *
  */
 public interface IOutput {
-  public static final int FILE_TYPE_JPEG = 1;
-  public static final int FILE_TYPE_PNG = 2;
+  public enum OutputTypes {
+    FILE_TYPE_JPEG,
+    FILE_TYPE_PNG,
+    DATA_TYPE_STREAM
+  }
+//  public static final int FILE_TYPE_JPEG = 1;
+//  public static final int FILE_TYPE_PNG = 2;
   public static final int CHART_DEFINITION = 3;
   
   public static final String MAP_EXTENSION = ".map"; //$NON-NLS-1$
@@ -24,7 +29,7 @@ public interface IOutput {
    * @param fileType
    * @throws PersistenceException
    */
-  public void persistChart(String filePath, int fileType) throws PersistenceException; 
+  public void persistChart(String filePath, OutputTypes fileType) throws PersistenceException; 
   
   /**
    * Sends the current chart to the outputStream and formats it to the file of fileType.
@@ -34,7 +39,7 @@ public interface IOutput {
    * @return
    * @throws PersistenceException
    */
-  public OutputStream persistChart(OutputStream outputStream, int fileType) throws PersistenceException;
+  public OutputStream persistChart(OutputStream outputStream, OutputTypes fileType) throws PersistenceException;
 
   /**
    * Persists the current map to the filePath.  The the postfix of ".map" is added to the filename.

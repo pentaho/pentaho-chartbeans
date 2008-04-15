@@ -22,6 +22,7 @@ import java.io.File;
 import java.net.URL;
 
 import junit.framework.TestCase;
+
 import org.pentaho.experimental.chart.ChartBoot;
 import org.pentaho.experimental.chart.ChartDocumentContext;
 import org.pentaho.experimental.chart.ChartFactory;
@@ -104,7 +105,7 @@ public class PluginTest extends TestCase {
 
     // Render and save the plot
     IOutput output = plugin.renderChartDocument(cdc.getChartDocument(), data);
-    output.persistChart(chartFileName, IOutput.FILE_TYPE_PNG);
+    output.persistChart(chartFileName, IOutput.OutputTypes.FILE_TYPE_PNG);
     final File chartFile = new File(chartFileName);
     assertTrue(chartFile.exists());
     assertTrue(chartFile.length() > 5000);
@@ -135,7 +136,7 @@ public class PluginTest extends TestCase {
 
     // Render and save the plot
     IOutput output = plugin.renderChartDocument(cdc.getChartDocument(), data);
-    output.persistChart(chartFileName, IOutput.FILE_TYPE_JPEG);
+    output.persistChart(chartFileName, IOutput.OutputTypes.FILE_TYPE_JPEG);
     final File chartFile = new File(chartFileName);
     assertTrue(chartFile.exists());
     assertTrue(chartFile.length() > 5000);
@@ -166,7 +167,7 @@ public class PluginTest extends TestCase {
     // Render and save the plot
     IOutput output = plugin.renderChartDocument(cdc.getChartDocument(), data);
 
-    final ByteArrayOutputStream newOutputStream = (ByteArrayOutputStream) output.persistChart(new ByteArrayOutputStream(), IOutput.FILE_TYPE_PNG);
+    final ByteArrayOutputStream newOutputStream = (ByteArrayOutputStream) output.persistChart(new ByteArrayOutputStream(), IOutput.OutputTypes.FILE_TYPE_PNG);
     assertTrue(newOutputStream.toByteArray().length > 5000);
 
   }
@@ -188,7 +189,7 @@ public class PluginTest extends TestCase {
     assertNotNull(cdc.getDataLinkInfo());
 
     // Render and save the plot
-    ByteArrayOutputStream os = (ByteArrayOutputStream) plugin.renderChartDocument(cdc.getChartDocument(), data).persistChart(new ByteArrayOutputStream(), IOutput.FILE_TYPE_JPEG);
+    ByteArrayOutputStream os = (ByteArrayOutputStream) plugin.renderChartDocument(cdc.getChartDocument(), data).persistChart(new ByteArrayOutputStream(), IOutput.OutputTypes.FILE_TYPE_JPEG);
 
     assertTrue(os.toByteArray().length > 5000);
   }

@@ -17,6 +17,8 @@
 
 package org.pentaho.experimental.chart.plugin;
 
+import java.util.Set;
+
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.api.ChartResult;
@@ -56,4 +58,10 @@ public interface IChartPlugin {
   public void setChartCallback(IChartCallback callback);
 
   public IChartCallback getChartCallback();
+  
+  /**
+   * Returns a set of OutputTypes that this plugin can return (via the IOutput returned from renderChartDocument).
+   * @return
+   */
+  public Set<IOutput.OutputTypes> getSupportedOutputs();
 }
