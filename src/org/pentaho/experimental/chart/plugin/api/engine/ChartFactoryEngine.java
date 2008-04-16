@@ -1,5 +1,6 @@
 package org.pentaho.experimental.chart.plugin.api.engine;
 
+import org.pentaho.experimental.chart.ChartDocumentContext;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.api.IOutput;
@@ -14,7 +15,7 @@ public interface ChartFactoryEngine {
 
   public ChartFactoryEngine getInstance();
 
-  public void makeBarChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler) throws Exception;
+  public void makeBarChart(ChartTableModel data, ChartDocumentContext chartDocumentContext, IOutput outHandler) throws Exception;
 
   public void makeLineChart(ChartTableModel data, ChartDocument chartDocument, IOutput outHandler) throws Exception;
 

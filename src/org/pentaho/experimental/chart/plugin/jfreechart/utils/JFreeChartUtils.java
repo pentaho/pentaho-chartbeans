@@ -22,6 +22,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Paint;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -74,7 +75,7 @@ public class JFreeChartUtils {
 
   private static final Log logger = LogFactory.getLog(JFreeChartUtils.class);
   private static final char NULL_CHAR = '\0';
-
+  private static final String DOMAIN_AXIS="domain";
   private JFreeChartUtils() {
   }
 
@@ -91,7 +92,7 @@ public class JFreeChartUtils {
    * @param chartDocument - Contains actual chart definition
    * @return DefaultCategoryDataset that can be used as a source for JFreeChart
    */
-  public static DefaultCategoryDataset createDefaultCategoryDataset(final ChartTableModel data, final ChartDocument chartDocument) {
+  public static DefaultCategoryDataset createDefaultCategoryDataset(final ChartTableModel data, final ChartDocument chartDocument, final Integer[] columnIndexArr) {
     final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
     final int rowCount = data.getRowCount();
     final Configuration config = ChartBoot.getInstance().getGlobalConfig();
@@ -100,22 +101,71 @@ public class JFreeChartUtils {
     final String noColumnName = config.getConfigProperty("org.pentaho.experimental.chart.namespace.column_name_not_defined"); //$NON-NLS-1$
     final double scale = JFreeChartUtils.getScale(chartDocument);
 
-    for (int row = 0; row < rowCount; row++) {
-      for (int column = 0; column < colCount; column++) {
-        final String rawColumnName = getColumnName(data, chartDocument, row, column);
-        final String columnName = rawColumnName != null ? rawColumnName : noColumnName + column ;
-        final Object rawRowName = data.getRowMetadata(row, "row-name"); //$NON-NLS-1$
-        final String rowName = rawRowName != null ? String.valueOf(rawRowName): (noRowNameSpecified + row); 
-        final Object rawValue = data.getValueAt(row, column);
-        if (rawValue instanceof Number) {
-        final Number number = (Number) rawValue;
-          double value = number.doubleValue();
-          value *= scale;
-          dataset.setValue(value, rowName, columnName);
+    // Only if we have to separate datasets then do we do some column processing in the given data
+    // else we simply process all rows and all columns
+    if (columnIndexArr != null) {
+      final int columnIndexArrLength = columnIndexArr.length;
+      for (int row = 0; row < rowCount; row++) {
+        int columnIndexArrCounter = 0;
+        for (int column = 0; column < colCount; column++) {
+          if (columnIndexArrCounter < columnIndexArrLength) {
+            // if the current column is what we want in the dataset (based on column indexes in columnIndexArr),
+            // then process the data
+            // Else move to the next column
+            if (column == columnIndexArr[columnIndexArrCounter]) {
+              setDataset(dataset, chartDocument, data, row, column, noRowNameSpecified, noColumnName, scale);
+              // Increment the counter so that we can process the next column in the columnIndexArr
+              columnIndexArrCounter++;
+            }
+          } else {
+            // if we have reached beyond the last element in the column index array then simply start processing
+            // the next row of data.
+            break;
+          }
+        }
+      }      
+    }
+    // If we do not want to process entire data as is (without dividing the dataset)
+    // then simply process all the dataset
+    else {
+      for (int row = 0; row < rowCount; row++) {
+        for (int column = 0; column < colCount; column++) {
+          setDataset(dataset, chartDocument, data, row, column, noRowNameSpecified, noColumnName, scale);
         }
       }
     }
     return dataset;
+  }
+
+  /**
+   * 
+   * @param dataset
+   * @param data
+   * @param row
+   * @param column
+   * @param noRowNameSpecified
+   * @param noColumnName
+   * @param scale
+   */
+  private static void setDataset(DefaultCategoryDataset dataset,
+                                 ChartDocument chartDocument,
+                                 ChartTableModel data,
+                                 int row,
+                                 int column,
+                                 String noRowNameSpecified,
+                                 String noColumnName,
+                                 double scale) {
+    final String rawColumnName = getColumnName(data, chartDocument, row, column);
+    final String columnName = rawColumnName != null ? rawColumnName : noColumnName + column ;
+        final Object rawRowName = data.getRowMetadata(row, "row-name"); //$NON-NLS-1$
+        final String rowName = rawRowName != null ? String.valueOf(rawRowName): (noRowNameSpecified + row); 
+    final Object rawValue = data.getValueAt(row, column);
+        if (rawValue instanceof Number) {
+      final Number number = (Number) rawValue;
+          double value = number.doubleValue();
+          value *= scale;
+          dataset.setValue(value, rowName, columnName);
+    }     
   }
 
   /**
@@ -272,16 +322,19 @@ public class JFreeChartUtils {
    * @param data           - the data
    */
   private static void setSeriesItemLabel(final CategoryPlot categoryPlot, final ChartElement[] seriesElements, final ChartTableModel data) {
-    categoryPlot.getRenderer().setBaseItemLabelGenerator(new ChartItemLabelGenerator(seriesElements, data));
+    final int numOfDatasets = categoryPlot.getDatasetCount();
+    for (int datasetCounter =0 ; datasetCounter < numOfDatasets; datasetCounter++) {
+      categoryPlot.getRenderer(datasetCounter).setBaseItemLabelGenerator(new ChartItemLabelGenerator(seriesElements, data));
 
-    final int length = seriesElements.length;
-    for (int i = 0; i < length; i++) {
-      // Get and set font information only if the item label's visibility is set to true 
-      if (JFreeChartUtils.showItemLabel(seriesElements[i])) {
-        final BarRenderer barRender = (BarRenderer) categoryPlot.getRenderer();
-        final Font font = JFreeChartUtils.getFont(seriesElements[i]);
-        barRender.setSeriesItemLabelFont(i, font, true);
-        barRender.setSeriesItemLabelsVisible(i, Boolean.TRUE, true);
+      final int numOfSeriesElements = seriesElements.length;
+      for (int seriesCounter = 0; seriesCounter < numOfSeriesElements; seriesCounter++) {
+        // Get and set font information only if the item label's visibility is set to true
+        if (JFreeChartUtils.showItemLabel(seriesElements[seriesCounter])) {
+          final BarRenderer barRender = (BarRenderer) categoryPlot.getRenderer(datasetCounter);
+          final Font font = JFreeChartUtils.getFont(seriesElements[seriesCounter]);
+          barRender.setSeriesItemLabelFont(seriesCounter, font, true);
+          barRender.setSeriesItemLabelsVisible(seriesCounter, Boolean.TRUE, true);
+        }
       }
     }
   }
@@ -303,8 +356,10 @@ public class JFreeChartUtils {
       final Paint paint = JFreeChartUtils.getPaintFromSeries(seriesElement);
       if (paint != null) {
         final int column = JFreeChartUtils.getSeriesColumn(seriesElement, data, i);
-        categoryPlot.getRenderer().setSeriesPaint(column, paint);
-
+        final int datasetCount = categoryPlot.getDatasetCount();
+        for (int datasetCounter=0; datasetCounter<datasetCount; datasetCounter++) {
+          categoryPlot.getRenderer(datasetCounter).setSeriesPaint(column, paint);
+        }
         /*
         * JFreeChart engine cannot currently implement more than one gradient type except
         * when it's none. That is we cannot have one gradient as CENTER_VERTICAL and another
@@ -324,11 +379,20 @@ public class JFreeChartUtils {
         */
         if (st == null) {
           st = JFreeChartUtils.getStandardGradientPaintTrans(seriesElements[i]);
-          final BarRenderer barRender = (BarRenderer) categoryPlot.getRenderer();
-          barRender.setGradientPaintTransformer(st);
           final float barWidthPercent = JFreeChartUtils.getMaximumBarWidth(seriesElements[i]);
-          if (barWidthPercent > 0) {
-            barRender.setMaximumBarWidth(barWidthPercent);
+          for (int datasetCounter = 0; datasetCounter < datasetCount; datasetCounter++) {
+            final CategoryItemRenderer itemRenderer = categoryPlot.getRenderer(datasetCounter);
+
+            // If the renderer is of type BarRenderer then set the gradient paint transform
+            // and also set the maximum bar width
+            if (itemRenderer instanceof BarRenderer) {
+              final BarRenderer barRender = (BarRenderer) categoryPlot.getRenderer(datasetCounter);
+              barRender.setGradientPaintTransformer(st);
+
+              if (barWidthPercent > 0) {
+                barRender.setMaximumBarWidth(barWidthPercent);
+              }
+            }
           }
         }
       }
@@ -520,34 +584,42 @@ public class JFreeChartUtils {
    * @param chartDocument Current chart defintion
    */
   private static void setAxisMargins(final CategoryPlot categoryPlot, final ChartDocument chartDocument) {
-    final ChartElement[] axisElements = chartDocument.getAxisElements();
-    if (axisElements != null && axisElements.length > 0) {
-      final LayoutStyle layoutStyle = axisElements[0].getLayoutStyle();
-      final CSSValue lowerMarginValue = layoutStyle.getValue(ChartStyleKeys.MARGIN_LOWER);
-      final CSSValue upperMarginValue = layoutStyle.getValue(ChartStyleKeys.MARGIN_UPPER);
-      final CSSValue itemMarginValue = layoutStyle.getValue(ChartStyleKeys.MARGIN_ITEM);
-      final CSSValue categoryMarginValue = layoutStyle.getValue(ChartStyleKeys.MARGIN_CATEGORY);
+    final ArrayList<ChartElement> axisElementsList = chartDocument.getAxisSeriesLinkInfo().getDomainAxisElements();
+    if (axisElementsList != null) {
+      for(ChartElement axisElement : axisElementsList) {
+        if (axisElement != null) {
+          final String axisType = (String)axisElement.getAttribute("type");
+          if (axisType != null &&
+              DOMAIN_AXIS.equalsIgnoreCase(axisType)) {
+            final LayoutStyle layoutStyle = axisElement.getLayoutStyle();
+            final CSSValue lowerMarginValue = layoutStyle.getValue(ChartStyleKeys.MARGIN_LOWER);
+            final CSSValue upperMarginValue = layoutStyle.getValue(ChartStyleKeys.MARGIN_UPPER);
+            final CSSValue itemMarginValue = layoutStyle.getValue(ChartStyleKeys.MARGIN_ITEM);
+            final CSSValue categoryMarginValue = layoutStyle.getValue(ChartStyleKeys.MARGIN_CATEGORY);
 
-      // The lower, upper and category margins can be controlled through category axis
-      final CategoryAxis categoryAxis = categoryPlot.getDomainAxis();
-      if (lowerMarginValue != null) {
-        final double lowerMargin = ((CSSNumericValue) lowerMarginValue).getValue() / 100;
-        categoryAxis.setLowerMargin(lowerMargin);
-      }
-      if (upperMarginValue != null) {
-        final double upperMargin = ((CSSNumericValue) upperMarginValue).getValue() / 100;
-        categoryAxis.setUpperMargin(upperMargin);
-      }
-      if (categoryMarginValue != null) {
-        final double categoryMargin = ((CSSNumericValue) categoryMarginValue).getValue() / 100;
-        categoryAxis.setCategoryMargin(categoryMargin);
-      }
+            // The lower, upper and category margins can be controlled through category axis
+            final CategoryAxis categoryAxis = categoryPlot.getDomainAxis();
+            if (lowerMarginValue != null) {
+              final double lowerMargin = ((CSSNumericValue) lowerMarginValue).getValue() / 100;
+              categoryAxis.setLowerMargin(lowerMargin);
+            }
+            if (upperMarginValue != null) {
+              final double upperMargin = ((CSSNumericValue) upperMarginValue).getValue() / 100;
+              categoryAxis.setUpperMargin(upperMargin);
+            }
+            if (categoryMarginValue != null) {
+              final double categoryMargin = ((CSSNumericValue) categoryMarginValue).getValue() / 100;
+              categoryAxis.setCategoryMargin(categoryMargin);
+            }
 
-      if (itemMarginValue != null) {
-        final double itemMargin = ((CSSNumericValue) itemMarginValue).getValue() / 100;
-        if (categoryPlot.getRenderer() instanceof BarRenderer) {
-          final BarRenderer barRenderer = (BarRenderer) categoryPlot.getRenderer();
-          barRenderer.setItemMargin(itemMargin);
+            if (itemMarginValue != null) {
+              final double itemMargin = ((CSSNumericValue) itemMarginValue).getValue() / 100;
+              if (categoryPlot.getRenderer() instanceof BarRenderer) {
+                final BarRenderer barRenderer = (BarRenderer) categoryPlot.getRenderer();
+                barRenderer.setItemMargin(itemMargin);
+              }
+            }
+          }
         }
       }
     }
@@ -893,7 +965,7 @@ public class JFreeChartUtils {
       return groupElements[0];
     } else {
       return null;
-    }
+}
   }
   /**
    * @param chartDocument

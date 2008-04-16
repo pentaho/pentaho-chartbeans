@@ -19,11 +19,11 @@ package org.pentaho.experimental.chart.plugin;
 
 import java.util.Set;
 
+import org.pentaho.experimental.chart.ChartDocumentContext;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.api.ChartResult;
 import org.pentaho.experimental.chart.plugin.api.IOutput;
-import org.pentaho.experimental.chart.plugin.api.PersistenceException;
 
 /**
  * @author wseyler
@@ -53,7 +53,7 @@ public interface IChartPlugin {
    * @param data
    * @return IOutput
    */
-  public IOutput renderChartDocument(ChartDocument chartDocument, ChartTableModel data) throws PersistenceException;
+  public IOutput renderChartDocument(ChartDocumentContext chartDocumentContext, ChartTableModel data);
 
   public void setChartCallback(IChartCallback callback);
 

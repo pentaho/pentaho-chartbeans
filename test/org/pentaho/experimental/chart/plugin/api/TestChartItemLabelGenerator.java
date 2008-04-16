@@ -2,6 +2,7 @@ package org.pentaho.experimental.chart.plugin.api;
 
 
 import junit.framework.TestCase;
+
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.resourceloader.ResourceException;
 import org.junit.After;
@@ -43,7 +44,7 @@ public class TestChartItemLabelGenerator extends TestCase {
     labelGen = new ChartItemLabelGenerator(seriesElements, chartData);
     assertNotNull(labelGen);
     
-    final CategoryDataset categoryDataset = JFreeChartUtils.createDefaultCategoryDataset(chartData, cd);
+    final CategoryDataset categoryDataset = JFreeChartUtils.createDefaultCategoryDataset(chartData, cd, null);
     
     for(int i=0; i< dataArray.length; i++) {
       for (int j=0; j<dataArray[i].length; j++) {

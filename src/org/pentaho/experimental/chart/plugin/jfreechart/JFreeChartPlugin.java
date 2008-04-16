@@ -20,6 +20,7 @@ package org.pentaho.experimental.chart.plugin.jfreechart;
 import java.util.EnumSet;
 import java.util.Set;
 
+import org.pentaho.experimental.chart.ChartDocumentContext;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.css.styles.ChartSeriesType;
 import org.pentaho.experimental.chart.data.ChartTableModel;
@@ -40,14 +41,15 @@ public class JFreeChartPlugin extends AbstractChartPlugin {
   final ChartFactoryEngine chartFactory = new JFreeChartFactoryEngine();
   CSSConstant currentChartType = ChartSeriesType.UNDEFINED;
   final static Set<IOutput.OutputTypes> supportedOutputs = EnumSet.of(IOutput.OutputTypes.DATA_TYPE_STREAM, IOutput.OutputTypes.FILE_TYPE_JPEG, IOutput.OutputTypes.FILE_TYPE_PNG);
-  
+
   /* (non-Javadoc)
    * @see org.pentaho.experimental.chart.plugin.AbstractChartPlugin#renderChartDocument(org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.plugin.api.IOutput)
    * 
    * This method determines what type of chart to render and then calls the correct method in the ChartFactoryEngine.
    */
-  public IOutput renderChartDocument(final ChartDocument chartDocument, final ChartTableModel data) {
-    final ChartResult chartResult = validateChartDocument(chartDocument);
+  public IOutput renderChartDocument(final ChartDocumentContext chartDocumentContext, final ChartTableModel data) {
+    final ChartDocument chartDocument = chartDocumentContext.getChartDocument();
+    final ChartResult chartResult     = validateChartDocument(chartDocument);
     IOutput output = new JFreeChartOutput();
     if (chartResult.getErrorCode() == IChartPlugin.RESULT_VALIDATED) {  // The superclass so now we'll render
       currentChartType = JFreeChartUtils.determineChartType(chartDocument);
@@ -58,14 +60,14 @@ public class JFreeChartPlugin extends AbstractChartPlugin {
 
       if (currentChartType == ChartSeriesType.BAR) {
         try {
-          chartFactory.makeBarChart(data, chartDocument, output);
+          chartFactory.makeBarChart(data, chartDocumentContext, output);
         } catch (Exception e) {
           chartResult.setErrorCode(RESULT_ERROR);
           chartResult.setDescription(e.getLocalizedMessage());
         }
       } else if (currentChartType == ChartSeriesType.LINE) {
         try {
-          chartFactory.makeLineChart(data, chartDocument, output);
+          chartFactory.makeLineChart(data, chartDocumentContext, output);
         } catch (Exception e) {
           chartResult.setErrorCode(RESULT_ERROR);
           chartResult.setDescription(e.getLocalizedMessage());
@@ -89,5 +91,5 @@ public class JFreeChartPlugin extends AbstractChartPlugin {
    */
   public Set<IOutput.OutputTypes> getSupportedOutputs() {
     return supportedOutputs;
-  }
+}
 }

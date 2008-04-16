@@ -58,8 +58,10 @@ public class PluginTest extends TestCase {
 //                                               {90.99,  5.55,   15.15,  "Eastern",  "China",  "North"},  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
 //                                               {25.25,  35.35,  45.45,  "Eastern",  "China",  "South"}}; //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
 
-  private static final Object[][] dataArray = {{5.55, 10.11, 20.22, "East"}, {30.33, 40.44, 50.55, "West"}, {60.66, 70.77, 80.88, "Central"}};
-  
+  private static final Object[][] dataArray = {{5.55, 10.11, 20.22, "East"}, //$NON-NLS-1$
+                                               {30.33, 40.44, 50.55, "West"}, //$NON-NLS-1$
+                                               {55.66, 70.77, 80.88, "Central"} //$NON-NLS-1$
+                                              };
   private static final String PNG_SUFFIX = ".png"; //$NON-NLS-1$
   private static final String JPG_SUFFIX = ".jpeg"; //$NON-NLS-1$
   private static final String TEST_FILE_PATH = "test/test-output/TestChart"; //$NON-NLS-1$
@@ -104,7 +106,7 @@ public class PluginTest extends TestCase {
     assertNotNull(cdc.getDataLinkInfo());
 
     // Render and save the plot
-    IOutput output = plugin.renderChartDocument(cdc.getChartDocument(), data);
+    IOutput output = plugin.renderChartDocument(cdc, data);
     output.persistChart(chartFileName, IOutput.OutputTypes.FILE_TYPE_PNG);
     final File chartFile = new File(chartFileName);
     assertTrue(chartFile.exists());
@@ -114,7 +116,7 @@ public class PluginTest extends TestCase {
       final File mapFile = new File(chartFileName + IOutput.MAP_EXTENSION);
       assertTrue(mapFile.exists());
       assertTrue(mapFile.length() > 100);
-    }
+  }
   }
 
   private void testRenderAsJpeg(final String fileName) throws Exception {
@@ -135,7 +137,7 @@ public class PluginTest extends TestCase {
     assertNotNull(cdc.getDataLinkInfo());
 
     // Render and save the plot
-    IOutput output = plugin.renderChartDocument(cdc.getChartDocument(), data);
+    IOutput output = plugin.renderChartDocument(cdc, data);
     output.persistChart(chartFileName, IOutput.OutputTypes.FILE_TYPE_JPEG);
     final File chartFile = new File(chartFileName);
     assertTrue(chartFile.exists());
@@ -145,12 +147,12 @@ public class PluginTest extends TestCase {
       final File mapFile = new File(chartFileName + IOutput.MAP_EXTENSION);
       assertTrue(mapFile.exists());
       assertTrue(mapFile.length() > 100);
-    }
+  }
   }
 
   private void testRenderAsPngStream(final String fileName) throws Exception {
     final IChartPlugin plugin = ChartPluginFactory.getInstance("org.pentaho.experimental.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
-     // At this point we have an output of the correct type
+    // At this point we have an output of the correct type
     // Now we can manipulate it to meet our needs so that we get the correct
     // output location and type.
 
@@ -165,7 +167,7 @@ public class PluginTest extends TestCase {
     assertNotNull(cdc.getDataLinkInfo());
 
     // Render and save the plot
-    IOutput output = plugin.renderChartDocument(cdc.getChartDocument(), data);
+    IOutput output = plugin.renderChartDocument(cdc, data);
 
     final ByteArrayOutputStream newOutputStream = (ByteArrayOutputStream) output.persistChart(new ByteArrayOutputStream(), IOutput.OutputTypes.FILE_TYPE_PNG);
     assertTrue(newOutputStream.toByteArray().length > 5000);
@@ -189,7 +191,7 @@ public class PluginTest extends TestCase {
     assertNotNull(cdc.getDataLinkInfo());
 
     // Render and save the plot
-    ByteArrayOutputStream os = (ByteArrayOutputStream) plugin.renderChartDocument(cdc.getChartDocument(), data).persistChart(new ByteArrayOutputStream(), IOutput.OutputTypes.FILE_TYPE_JPEG);
+    ByteArrayOutputStream os = (ByteArrayOutputStream) plugin.renderChartDocument(cdc, data).persistChart(new ByteArrayOutputStream(), IOutput.OutputTypes.FILE_TYPE_JPEG);
 
     assertTrue(os.toByteArray().length > 5000);
   }
@@ -203,7 +205,7 @@ public class PluginTest extends TestCase {
 //    data.setColumnName(3, "hemisphere"); //$NON-NLS-1$
 //    data.setColumnName(4, "country"); //$NON-NLS-1$
 //    data.setColumnName(5, "region"); //$NON-NLS-1$
-    
+
     data.setRowMetadata(0, ROW_NAME, "Jan"); //$NON-NLS-1$
     data.setRowMetadata(1, ROW_NAME, "Feb"); //$NON-NLS-1$
     data.setRowMetadata(2, ROW_NAME, "Mar"); //$NON-NLS-1$
@@ -246,14 +248,17 @@ public class PluginTest extends TestCase {
       "PluginTest5.xml", //$NON-NLS-1$
       "PluginTest6.xml", //$NON-NLS-1$
       "PluginTest7.xml", //$NON-NLS-1$
-      "PluginTest8a.xml", //$NON-NLS-1$      
-      "PluginTest8b.xml", //$NON-NLS-1$      
+      "PluginTest8a.xml", //$NON-NLS-1$
+      "PluginTest8b.xml", //$NON-NLS-1$
       "PluginTest9.xml", //$NON-NLS-1$
       "PluginTest10a.xml", //$NON-NLS-1$
       "PluginTest11a.xml", //$NON-NLS-1$
       "PluginTest11b.xml", //$NON-NLS-1$
       "PluginTest11c.xml", //$NON-NLS-1$
       "PluginTest11d.xml", //$NON-NLS-1$
+      "PluginTest12a.xml", //$NON-NLS-1$
+      "PluginTest12b.xml", //$NON-NLS-1$
+      "PluginTest12c.xml", //$NON-NLS-1$
     };
     
     for (int i = 0; i < fileNames.length; i++) {

@@ -52,7 +52,7 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
   /**
    * The namespace for all the charting items
    */
-  public static final String NAMESPACE = "charting-rulez"; //$NON-NLS-1$
+  public static final String NAMESPACE = "http://reporting.pentaho.org/namespaces/charting/1.0"; //$NON-NLS-1$
 
   /**
    * Chart Definition tag for the base chart

@@ -1,16 +1,16 @@
 /*
- * Copyright 2008 Pentaho Corporation.  All rights reserved.
- * This software was developed by Pentaho Corporation and is provided under the terms
- * of the Mozilla Public License, Version 1.1, or any later version. You may not use
- * this file except in compliance with the license. If you need a copy of the license,
- * please go to http://www.mozilla.org/MPL/MPL-1.1.txt. The Original Code is the Pentaho
+ * Copyright 2008 Pentaho Corporation.  All rights reserved. 
+ * This software was developed by Pentaho Corporation and is provided under the terms 
+ * of the Mozilla Public License, Version 1.1, or any later version. You may not use 
+ * this file except in compliance with the license. If you need a copy of the license, 
+ * please go to http://www.mozilla.org/MPL/MPL-1.1.txt. The Original Code is the Pentaho 
  * BI Platform.  The Initial Developer is Pentaho Corporation.
  *
- * Software distributed under the Mozilla Public License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or  implied. Please refer to
+ * Software distributed under the Mozilla Public License is distributed on an "AS IS" 
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or  implied. Please refer to 
  * the license for the specific language governing your rights and limitations.
  *
- * Created
+ * Created  
  * @author David Kincade
  */
 package org.pentaho.experimental.chart.core;
@@ -44,8 +44,8 @@ public class ChartDocument {
    * The resource key that servers as the base location for loading relative infomraiton
    */
   private ResourceKey resourceKey;
-
-  /**
+  
+    /**
    * Cache of the series elements
    */
   private ChartElement[] cachedSeriesElements = null;
@@ -85,6 +85,18 @@ public class ChartDocument {
    */
   private long cachedAxisElementModNumber = 0L;
 
+  
+  /**
+   * Is true if we have processed the axis elements and retrieved pertinent information.
+   * This is so that we can use the cache instead of processing the axis elements every time.
+   */
+  private boolean processedAxisElements = false;
+  
+  /**
+   * This class object stores the series mapping to axis element by way of axis-id.
+   */
+  private AxisSeriesLinkInfo axisSeriesLinkInfo;
+
   /**
    * Constructor that creats the chart document.
    *
@@ -94,7 +106,7 @@ public class ChartDocument {
     if (rootElement == null) {
       throw new IllegalArgumentException("Root Element can not be null"); //$NON-NLS-1$
     }
-    this.rootElement = rootElement;
+    this.rootElement = rootElement;    
   }
 
   /**
@@ -207,14 +219,14 @@ public class ChartDocument {
   /**
    * Creates a list of all the <code>series</code> ChartElements that are the children of the <code>chart</code> tag.
    * @return a list of <code>ChartElements</code> which represent the <code>series</code> tags. If there are none,
-   *         the list will be empty.
+   * the list will be empty.
    */
   public ChartElement[] getSeriesChartElements() {
     final long currentModNumber = getModNumber();
     if (cachedSeriesElementModNumber != currentModNumber) {
       cachedSeriesElements = getChartLevelElements(ChartElement.TAG_NAME_SERIES);
       cachedSeriesElementModNumber = currentModNumber;
-    }
+  }
     return cachedSeriesElements;
   }
 
@@ -313,5 +325,54 @@ public class ChartDocument {
       element = element.getNextItem();
     }
     return elements.toArray(new ChartElement[elements.size()]);
+  }
+  
+
+  /**
+   * Get all the axis elements from the chart document and store it in a multi key HashMap
+   * where the key is the axis-id and "axis" tag. This is so that we can then retrieve each axis element by
+   * their id and then retrieve the individual attribute from the axis element object.
+   * We also store the series elements that refer the same axis id in an array list
+   * that can be accessed using the axis id and "series" as the key.
+   *
+   * For eg: The data structure in AxisSeriesLinkInfo looks like below:
+   * hashMap{axisID-1}{axis} = AxisElement;
+   * hashMap{axisID-1}{series} = ArrayList of SeriesElements that refer axisID-1
+   *
+   * @return AxisSeriesLinkInfo - The class that stores the axis and series information in a multi key hash map.
+   */
+  public AxisSeriesLinkInfo getAxisSeriesLinkInfo() {
+    /*
+      If we have not processed the axis elements for the given chart document then
+      1. Create axis series link info object
+      2. Iterate over the elements
+            If the element is a series element then store the series element in the array for the given axis id.
+            If the element is an axis element then create a new hash map entry for the given axis id. 
+     */
+    if (!processedAxisElements) {
+      axisSeriesLinkInfo = new AxisSeriesLinkInfo();
+
+      ChartElement element = rootElement.getFirstChildItem();
+      while (element != null) {
+         // if the current element is an axis element then get the id of the element and
+         // update the axis series link info
+          if (ChartElement.TAG_NAME_AXIS.equals(element.getTagName())) {
+            final Object axisId = element.getAttribute("id");
+            if (axisId != null) {
+              axisSeriesLinkInfo.setAxisElement(axisId, element);
+            }
+          } else if (ChartElement.TAG_NAME_SERIES.equalsIgnoreCase(element.getTagName())) {
+            // if the current element is a series element then get the axis id of the series element and
+            // update the axis series link info
+            final Object axisId = element.getAttribute("axis-id");
+            if (axisId != null) {
+              axisSeriesLinkInfo.setSeriesElements(axisId, element);
+            }
+          }
+        element = element.getNextItem();
+      }
+      processedAxisElements = true;
+    }
+    return axisSeriesLinkInfo;
   }
 }
