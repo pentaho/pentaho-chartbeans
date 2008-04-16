@@ -60,7 +60,7 @@
 
   <series name="forecast" class="bar3" column-pos="0"/>
 	
-	<axis style="-x-pentaho-chart-axis-category-margin: 45%;"/>
+	<axis type="domain" id="domain#1" style="-x-pentaho-chart-axis-category-margin: 45%;"/>
 	
   <plot style="-x-pentaho-chart-orientation: horizontal;"/>
 </chart>

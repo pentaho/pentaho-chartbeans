@@ -62,5 +62,5 @@
 
   <plot style="-x-pentaho-chart-orientation: horizontal; -x-pentaho-chart-axis-lower-margin: 5%;"/>
   
-  <axis type="domain" style="-x-pentaho-chart-axis-lower-margin: 30%;"/>	
+  <axis id="domain#1" type="domain" style="-x-pentaho-chart-axis-lower-margin: 30%;"/>	
 </chart>
