@@ -15,13 +15,14 @@
  */
 package org.pentaho.experimental.chart.data;
 
+import javax.swing.table.AbstractTableModel;
+
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.collections.map.MultiKeyMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.pentaho.experimental.chart.ChartData;
 import org.pentaho.util.messages.Messages;
-
-import javax.swing.table.AbstractTableModel;
 
 
 /**
@@ -35,7 +36,7 @@ import javax.swing.table.AbstractTableModel;
  *         cell level support, then we can use simple hash map instead of multi-key hash map.
  *         4. Metadata supports only one level of key.
  */
-class BaseChartTableModel extends AbstractTableModel {
+class BaseChartTableModel extends AbstractTableModel implements ChartData {
 
   private static final long serialVersionUID = -3841939975394981180L;
 
@@ -52,7 +53,7 @@ class BaseChartTableModel extends AbstractTableModel {
   /**
    * Cell data indicator
    */
-  private static final String CELL = "cell";//$NON-NLS-1$
+  private static final String CELL = "cell"; //$NON-NLS-1$
   /**
    * Holds the name of the attribute
    */
@@ -121,39 +122,7 @@ class BaseChartTableModel extends AbstractTableModel {
     }
     return rowName;
   }
-  
-  /**
-   * Returns the column index where the column name is name. -1 if name could not be found
-   * 
-   * @param name
-   * @return
-   */
-  public int getColumnIndex(final String name) {
-    for (int i=0; i<getColumnCount(); i++) {
-      String columnName = getColumnName(i);
-      if (columnName.equals(name)) {
-        return i;
-      }
-    }
-    return -1;
-  }
 
-  /**
-   * Returns the row index where the row name is name. -1 if name could not be found
-   * 
-   * @param name
-   * @return
-   */
-  public int getRowIndex(final String name) {
-    for (int i=0; i<getRowCount(); i++) {
-      String rowName = getRowName(i);
-      if (rowName.equals(name)) {
-        return i;
-      }
-    }
-    return -1;
-  }
-  
   /**
    * Set the name of a particular column
    *
@@ -293,7 +262,7 @@ class BaseChartTableModel extends AbstractTableModel {
     if (row < 0) {
       throw new IllegalArgumentException(Messages.getErrorString("ChartTableModel.ERROR_0003_ROW_NUM_LOWER_THAN_ZERO")); //$NON-NLS-1$
     } else if (null == key) {
-      throw new IllegalArgumentException(Messages.getErrorString("ChartTableModel.ERROR_0005_KEY_IS_NULL"));//$NON-NLS-1$
+      throw new IllegalArgumentException(Messages.getErrorString("ChartTableModel.ERROR_0005_KEY_IS_NULL")); //$NON-NLS-1$
     } else {
       // Row specific
       metadata = metadataMap.get(ROW, row, key);
@@ -386,5 +355,21 @@ class BaseChartTableModel extends AbstractTableModel {
     }
 
     return metadata;
+  }
+
+  /**
+   * Returns the row number of the 1st row with the specified row name.
+   *
+   * @param rowName the row name
+   * @return the row number of the 1st row with the specified row name, or <code>-1</code> if none found.
+   */
+  public int findRow(String rowName) {
+    for (int i = 0; i < getRowCount(); i++) {
+      String name = getRowName(i);
+      if (name.equals(rowName)) {
+        return i;
+      }
+    }
+    return -1;
   }
 }

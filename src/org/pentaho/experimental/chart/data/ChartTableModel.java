@@ -15,20 +15,12 @@
  */
 package org.pentaho.experimental.chart.data;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 /**
  * Contains the data and metadata using with the charting API.
  *
  * @author David Kincade
  */
 public class ChartTableModel extends BaseChartTableModel {
-  /**
-   * Logger for this class
-   */
-  private static final Log log = LogFactory.getLog(ChartTableModel.class);
-
   /**
    * Flag indicating is this table model should be rotated (row accessed as columns and columns accessed as rows)
    */
@@ -84,20 +76,6 @@ public class ChartTableModel extends BaseChartTableModel {
     return (rotated ? super.getRowName(col) : super.getColumnName(col));
   }
 
-  /* (non-Javadoc)
-   * @see org.pentaho.experimental.chart.data.BaseChartTableModel#getColumnIndex(java.lang.String)
-   */
-  public int getColumnIndex(String name) {
-    return rotated ? super.getRowIndex(name) : super.getColumnIndex(name);
-  }
-  
-  /* (non-Javadoc)
-   * @see org.pentaho.experimental.chart.data.BaseChartTableModel#getRowIndex(java.lang.String)
-   */
-  public int getRowIndex(String name) {
-    return rotated ? super.getColumnIndex(name) : super.getRowIndex(name);
-  }
-  
   /**
    * Sets the name of the column for the specified 0-based column number
    *
@@ -238,5 +216,9 @@ public class ChartTableModel extends BaseChartTableModel {
     } else {
       super.setRowName(row, name);
     }
+  }
+
+  public int findRow(String rowName) {
+    return (rotated ? super.findColumn(rowName) : findRow(rowName));
   }
 }

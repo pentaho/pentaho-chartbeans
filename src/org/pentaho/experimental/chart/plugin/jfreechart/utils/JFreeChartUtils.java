@@ -180,7 +180,7 @@ public class JFreeChartUtils {
       final ChartElement[] groupElements = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_GROUP);
       for (ChartElement groupElement : groupElements) {
         final String columnName = groupElement.getAttribute(ChartElement.COLUMN_NAME).toString();
-        final int columnIndex = data.getColumnIndex(columnName);
+        final int columnIndex = data.findColumn(columnName);
         syntheticColumnName.append(data.getValueAt(row, columnIndex)).append(NULL_CHAR);
       }
       return syntheticColumnName.toString();
@@ -983,7 +983,7 @@ public class JFreeChartUtils {
   public static KeyToGroupMap createKeyToGroupMap(final ChartDocument chartDocument, final ChartTableModel data) {
     final ChartElement groupElement = getBaseStackedGroupElement(chartDocument);
     final String columnName = groupElement.getAttribute(ChartElement.COLUMN_NAME).toString();
-    final int columnNum = data.getColumnIndex(columnName);
+    final int columnNum = data.findColumn(columnName);
     final Set groupSet = new HashSet();
     final int rowCount = data.getRowCount();
     for (int i=0; i<rowCount; i++) {

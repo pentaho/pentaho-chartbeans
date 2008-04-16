@@ -15,13 +15,13 @@
  */
 package org.pentaho.experimental.chart.core.parser;
 
+import java.net.URL;
+
 import org.jfree.resourceloader.Resource;
 import org.jfree.resourceloader.ResourceException;
 import org.jfree.resourceloader.ResourceKey;
 import org.jfree.resourceloader.ResourceManager;
 import org.pentaho.experimental.chart.core.ChartDocument;
-
-import java.net.URL;
 
 /**
  * Parses the chart XML document into the internal representation of the chart document.
