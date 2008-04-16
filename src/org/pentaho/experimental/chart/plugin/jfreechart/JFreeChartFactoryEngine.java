@@ -323,7 +323,7 @@ public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable
   /* (non-Javadoc)
    * @see org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine#makeLineChart(org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.api.IOutput)
    */
-  public void makeLineChart(final ChartTableModel data, final ChartDocumentContext chartDocumentContext, final IOutput outHandler) {
+  public void makeLineChart(final ChartTableModel data, final ChartDocument chartDocument, final IOutput outHandler) {
 
   }
 

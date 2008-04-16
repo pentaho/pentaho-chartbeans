@@ -67,7 +67,7 @@ public class JFreeChartPlugin extends AbstractChartPlugin {
         }
       } else if (currentChartType == ChartSeriesType.LINE) {
         try {
-          chartFactory.makeLineChart(data, chartDocumentContext, output);
+          chartFactory.makeLineChart(data, chartDocument, output);
         } catch (Exception e) {
           chartResult.setErrorCode(RESULT_ERROR);
           chartResult.setDescription(e.getLocalizedMessage());
