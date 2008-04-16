@@ -26,6 +26,7 @@ import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
 import org.pentaho.experimental.chart.core.ChartSeriesDataLinkInfo;
 import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
+import org.pentaho.experimental.chart.css.styles.ChartAxisLocationType;
 import org.pentaho.experimental.chart.css.styles.ChartBarStyle;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.api.IOutput;
@@ -269,8 +270,9 @@ public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable
   private void setRangeAxisLocation (final CategoryPlot plot,
                                      final ChartElement axisElement,
                                      final int axisCounter) {
-    final String side = (String)axisElement.getAttribute("side");
-    if (side != null && (side.equalsIgnoreCase("primary") || side.equalsIgnoreCase("left"))){
+    final CSSValue cssValue = axisElement.getLayoutStyle().getValue(ChartStyleKeys.AXIS_LOCATION);
+    final String side = cssValue.getCSSText();
+    if (side != null && (cssValue.equals(ChartAxisLocationType.PRIMARY))){
       plot.setRangeAxisLocation(axisCounter, AxisLocation.BOTTOM_OR_LEFT);
     } else {
       plot.setRangeAxisLocation(axisCounter, AxisLocation.TOP_OR_RIGHT);                        

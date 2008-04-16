@@ -614,9 +614,12 @@ public class JFreeChartUtils {
 
             if (itemMarginValue != null) {
               final double itemMargin = ((CSSNumericValue) itemMarginValue).getValue() / 100;
-              if (categoryPlot.getRenderer() instanceof BarRenderer) {
-                final BarRenderer barRenderer = (BarRenderer) categoryPlot.getRenderer();
-                barRenderer.setItemMargin(itemMargin);
+              final int datasetCount = categoryPlot.getDatasetCount();
+              for(int i=0; i< datasetCount; i++) {
+                if (categoryPlot.getRenderer() instanceof BarRenderer) {
+                  final BarRenderer barRenderer = (BarRenderer) categoryPlot.getRenderer(i);
+                  barRenderer.setItemMargin(itemMargin);
+                }
               }
             }
           }

@@ -55,6 +55,6 @@
 	  
   <plot style="-x-pentaho-chart-orientation: vertical;"/>
 
-  <axis id="axis_range1" type="range" label="Country" side="left"/>
-  <axis id="axis_range2" type="range" label="State" side="right"/>  
+  <axis id="axis_range1" type="range" label="Country" style="-x-pentaho-chart-axis-location: primary"/>
+  <axis id="axis_range2" type="range" label="State" style="-x-pentaho-chart-axis-location: secondary"/>  
 </chart>

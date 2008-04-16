@@ -1,0 +1,6 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+		<axis style="-x-pentaho-chart-axis-location: primary"/>		
+		<axis style="-x-pentaho-chart-axis-location: secondary"/>		
+		<axis style="-x-pentaho-chart-axis-location: "/>		
+		<axis style="-x-pentaho-chart-axis-location: prim"/>		
+</chart>
