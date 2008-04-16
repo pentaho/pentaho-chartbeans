@@ -151,6 +151,12 @@ public class ChartStyleKeys {
   public static final StyleKey MARGIN_ITEM = StyleKeyRegistry.getRegistry().
       createKey("-x-pentaho-chart-axis-item-margin", false, false, StyleKey.All_ELEMENTS); //$NON-NLS-1$
 
+  /**
+   * Axis location (primary/secondary)
+   */
+  public static final StyleKey AXIS_LOCATION = StyleKeyRegistry.getRegistry().
+      createKey("-x-pentaho-chart-axis-location", false, false, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+
   private ChartStyleKeys() {
   }
 }
