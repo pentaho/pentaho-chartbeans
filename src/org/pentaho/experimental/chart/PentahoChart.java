@@ -19,7 +19,7 @@ package org.pentaho.experimental.chart;
  * @author David Kincade
  */
 public final class PentahoChart {
-  public static final ChartDefinition createChart(ChartData data) {
+  public static ChartDefinition createChart(ChartData data) {
     return null;
   }
 

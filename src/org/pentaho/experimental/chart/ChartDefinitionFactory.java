@@ -25,27 +25,27 @@ import org.pentaho.experimental.chart.core.ChartDocument;
  * @author David Kincade
  */
 public class ChartDefinitionFactory {
-  public static final ChartDefinition createChartDefinition(ChartDocument doc) {
+  public static ChartDefinition createChartDefinition(ChartDocument doc) {
     return new ChartDefinitionImpl(doc);
   }
 
-  public static final ChartDefinition createChartDefinition(ResourceKey chartKey) throws ResourceException {
+  public static ChartDefinition createChartDefinition(ResourceKey chartKey) throws ResourceException {
     return new ChartDefinitionImpl(null, chartKey);
   }
 
-  public static final ChartDefinition createChartDefinition(ResourceKey chartKey, ResourceManager resourceManager) throws ResourceException {
+  public static ChartDefinition createChartDefinition(ResourceKey chartKey, ResourceManager resourceManager) throws ResourceException {
     return new ChartDefinitionImpl(resourceManager, chartKey);
   }
 
-  public static final ChartDefinition createChartDefinition(ChartData data, ChartDocument doc) {
+  public static ChartDefinition createChartDefinition(ChartData data, ChartDocument doc) {
     return new ChartDefinitionImpl(data, doc);
   }
 
-  public static final ChartDefinition createChartDefinition(ChartData data, ResourceKey chartKey) throws ResourceException {
+  public static ChartDefinition createChartDefinition(ChartData data, ResourceKey chartKey) throws ResourceException {
     return new ChartDefinitionImpl(data, null, chartKey);
   }
 
-  public static final ChartDefinition createChartDefinition(ChartData data, ResourceKey chartKey, ResourceManager resourceManager) throws ResourceException {
+  public static ChartDefinition createChartDefinition(ChartData data, ResourceKey chartKey, ResourceManager resourceManager) throws ResourceException {
     return new ChartDefinitionImpl(data, resourceManager, chartKey);
   }
 }
