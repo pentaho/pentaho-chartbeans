@@ -36,6 +36,7 @@ import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.urls.StandardCategoryURLGenerator;
 import org.jfree.data.KeyToGroupMap;
+import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.category.DefaultIntervalCategoryDataset;
 import org.jfree.ui.GradientPaintTransformType;
@@ -74,7 +75,8 @@ import org.pentaho.reporting.libraries.css.values.CSSValuePair;
 public class JFreeChartUtils {
 
   private static final Log logger = LogFactory.getLog(JFreeChartUtils.class);
-  private static final char NULL_CHAR = '\0';
+
+  private static final char SEPERATOR = '/';
   private static final String DOMAIN_AXIS="domain";
   private JFreeChartUtils() {
   }
@@ -128,8 +130,8 @@ public class JFreeChartUtils {
     // If we do not want to process entire data as is (without dividing the dataset)
     // then simply process all the dataset
     else {
-      for (int row = 0; row < rowCount; row++) {
-        for (int column = 0; column < colCount; column++) {
+    for (int row = 0; row < rowCount; row++) {
+      for (int column = 0; column < colCount; column++) {
           setDataset(dataset, chartDocument, data, row, column, noRowNameSpecified, noColumnName, scale);
         }
       }
@@ -155,19 +157,33 @@ public class JFreeChartUtils {
                                  String noRowNameSpecified,
                                  String noColumnName,
                                  double scale) {
-    final String rawColumnName = getColumnName(data, chartDocument, row, column);
-    final String columnName = rawColumnName != null ? rawColumnName : noColumnName + column ;
-        final Object rawRowName = data.getRowMetadata(row, "row-name"); //$NON-NLS-1$
+        final String rawColumnName = getColumnName(data, chartDocument, row, column);
+        final String columnName = rawColumnName != null ? rawColumnName : noColumnName + column ;
+        final Object rawRowName = getRawRowName(data, chartDocument, row);
         final String rowName = rawRowName != null ? String.valueOf(rawRowName): (noRowNameSpecified + row); 
-    final Object rawValue = data.getValueAt(row, column);
+        final Object rawValue = data.getValueAt(row, column);
         if (rawValue instanceof Number) {
-      final Number number = (Number) rawValue;
+        final Number number = (Number) rawValue;
           double value = number.doubleValue();
           value *= scale;
           dataset.setValue(value, rowName, columnName);
-    }     
-  }
+      }
+    }
 
+  private static Object getRawRowName(final ChartTableModel data, final ChartDocument chartDocument, int row) {
+    StringBuffer syntheticColumnName = new StringBuffer();
+    if (getIsStackedGrouped(chartDocument)) {
+        ChartElement currentGroup = getBaseStackedGroupElement(chartDocument);
+        while (currentGroup != null) {
+          final String columnName = currentGroup.getAttribute(ChartElement.COLUMN_NAME).toString();
+          final int columnIndex = data.findColumn(columnName);
+          syntheticColumnName.append(data.getValueAt(row, columnIndex)).append(SEPERATOR);
+          currentGroup = getChildGroup(currentGroup);
+        }
+    }
+    
+    return syntheticColumnName.append(data.getRowMetadata(row, "row-name")).toString(); //$NON-NLS-1$
+  }
   /**
    * @param data
    * @param chartDocument
@@ -175,18 +191,7 @@ public class JFreeChartUtils {
    * @return
    */
   private static String getColumnName(final ChartTableModel data, final ChartDocument chartDocument, final int row, final int column) {
-    if (getIsStackedGrouped(chartDocument)) {
-      StringBuffer syntheticColumnName = new StringBuffer();
-      final ChartElement[] groupElements = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_GROUP);
-      for (ChartElement groupElement : groupElements) {
-        final String columnName = groupElement.getAttribute(ChartElement.COLUMN_NAME).toString();
-        final int columnIndex = data.findColumn(columnName);
-        syntheticColumnName.append(data.getValueAt(row, columnIndex)).append(NULL_CHAR);
-      }
-      return syntheticColumnName.toString();
-    } else {
-      return data.getColumnName(column) == null ? Integer.toBinaryString(column) : data.getColumnName(column).toString();
-    }
+    return data.getColumnName(column) == null ? Integer.toBinaryString(column) : data.getColumnName(column).toString();
   }
 
   /**
@@ -328,7 +333,7 @@ public class JFreeChartUtils {
 
       final int numOfSeriesElements = seriesElements.length;
       for (int seriesCounter = 0; seriesCounter < numOfSeriesElements; seriesCounter++) {
-        // Get and set font information only if the item label's visibility is set to true
+      // Get and set font information only if the item label's visibility is set to true 
         if (JFreeChartUtils.showItemLabel(seriesElements[seriesCounter])) {
           final BarRenderer barRender = (BarRenderer) categoryPlot.getRenderer(datasetCounter);
           final Font font = JFreeChartUtils.getFont(seriesElements[seriesCounter]);
@@ -387,15 +392,15 @@ public class JFreeChartUtils {
             // and also set the maximum bar width
             if (itemRenderer instanceof BarRenderer) {
               final BarRenderer barRender = (BarRenderer) categoryPlot.getRenderer(datasetCounter);
-              barRender.setGradientPaintTransformer(st);
+          barRender.setGradientPaintTransformer(st);
 
-              if (barWidthPercent > 0) {
-                barRender.setMaximumBarWidth(barWidthPercent);
-              }
-            }
+          if (barWidthPercent > 0) {
+            barRender.setMaximumBarWidth(barWidthPercent);
           }
         }
       }
+    }
+  }
     }
   }
 
@@ -592,39 +597,39 @@ public class JFreeChartUtils {
           if (axisType != null &&
               DOMAIN_AXIS.equalsIgnoreCase(axisType)) {
             final LayoutStyle layoutStyle = axisElement.getLayoutStyle();
-            final CSSValue lowerMarginValue = layoutStyle.getValue(ChartStyleKeys.MARGIN_LOWER);
-            final CSSValue upperMarginValue = layoutStyle.getValue(ChartStyleKeys.MARGIN_UPPER);
-            final CSSValue itemMarginValue = layoutStyle.getValue(ChartStyleKeys.MARGIN_ITEM);
-            final CSSValue categoryMarginValue = layoutStyle.getValue(ChartStyleKeys.MARGIN_CATEGORY);
+      final CSSValue lowerMarginValue = layoutStyle.getValue(ChartStyleKeys.MARGIN_LOWER);
+      final CSSValue upperMarginValue = layoutStyle.getValue(ChartStyleKeys.MARGIN_UPPER);
+      final CSSValue itemMarginValue = layoutStyle.getValue(ChartStyleKeys.MARGIN_ITEM);
+      final CSSValue categoryMarginValue = layoutStyle.getValue(ChartStyleKeys.MARGIN_CATEGORY);
 
-            // The lower, upper and category margins can be controlled through category axis
-            final CategoryAxis categoryAxis = categoryPlot.getDomainAxis();
-            if (lowerMarginValue != null) {
-              final double lowerMargin = ((CSSNumericValue) lowerMarginValue).getValue() / 100;
-              categoryAxis.setLowerMargin(lowerMargin);
-            }
-            if (upperMarginValue != null) {
-              final double upperMargin = ((CSSNumericValue) upperMarginValue).getValue() / 100;
-              categoryAxis.setUpperMargin(upperMargin);
-            }
-            if (categoryMarginValue != null) {
-              final double categoryMargin = ((CSSNumericValue) categoryMarginValue).getValue() / 100;
-              categoryAxis.setCategoryMargin(categoryMargin);
-            }
+      // The lower, upper and category margins can be controlled through category axis
+      final CategoryAxis categoryAxis = categoryPlot.getDomainAxis();
+      if (lowerMarginValue != null) {
+        final double lowerMargin = ((CSSNumericValue) lowerMarginValue).getValue() / 100;
+        categoryAxis.setLowerMargin(lowerMargin);
+      }
+      if (upperMarginValue != null) {
+        final double upperMargin = ((CSSNumericValue) upperMarginValue).getValue() / 100;
+        categoryAxis.setUpperMargin(upperMargin);
+      }
+      if (categoryMarginValue != null) {
+        final double categoryMargin = ((CSSNumericValue) categoryMarginValue).getValue() / 100;
+        categoryAxis.setCategoryMargin(categoryMargin);
+      }
 
-            if (itemMarginValue != null) {
-              final double itemMargin = ((CSSNumericValue) itemMarginValue).getValue() / 100;
+      if (itemMarginValue != null) {
+        final double itemMargin = ((CSSNumericValue) itemMarginValue).getValue() / 100;
               final int datasetCount = categoryPlot.getDatasetCount();
               for(int i=0; i< datasetCount; i++) {
-                if (categoryPlot.getRenderer() instanceof BarRenderer) {
+        if (categoryPlot.getRenderer() instanceof BarRenderer) {
                   final BarRenderer barRenderer = (BarRenderer) categoryPlot.getRenderer(i);
-                  barRenderer.setItemMargin(itemMargin);
+          barRenderer.setItemMargin(itemMargin);
                 }
               }
-            }
-          }
         }
       }
+    }
+  }
     }
   }
 
@@ -966,9 +971,18 @@ public class JFreeChartUtils {
     final ChartElement[] groupElements = chartDocument.getGroupChartElements();
     if (groupElements.length > 0) {
       return groupElements[0];
-    } else {
-      return null;
-}
+    } 
+    
+    return null;
+  }
+  
+  public static ChartElement getChildGroup(ChartElement parentGroup) {
+    ChartElement[] groupElements = parentGroup.findChildrenByName(ChartElement.TAG_NAME_GROUP);
+    if (groupElements.length > 0) {
+      return groupElements[0];
+    }
+    
+    return null;
   }
   /**
    * @param chartDocument
@@ -983,24 +997,65 @@ public class JFreeChartUtils {
    * @param data
    * @return
    */
-  public static KeyToGroupMap createKeyToGroupMap(final ChartDocument chartDocument, final ChartTableModel data) {
-    final ChartElement groupElement = getBaseStackedGroupElement(chartDocument);
-    final String columnName = groupElement.getAttribute(ChartElement.COLUMN_NAME).toString();
-    final int columnNum = data.findColumn(columnName);
-    final Set groupSet = new HashSet();
-    final int rowCount = data.getRowCount();
-    for (int i=0; i<rowCount; i++) {
-      groupSet.add(data.getValueAt(i, columnNum));
+  public static KeyToGroupMap createKeyToGroupMap(final ChartDocument chartDocument, final ChartTableModel data, final CategoryDataset dataSet) {
+    ChartElement groupElement = getBaseStackedGroupElement(chartDocument);
+    
+    // First build the set of keys to match against
+    Set matchSet = new HashSet();
+    for (int row = 0; row<data.getRowCount(); row++) {
+      StringBuffer keyStr = new StringBuffer();
+      for (int i=0; i<getGroupDepth(groupElement); i++) {
+        String columnName = groupElement.getAttribute(ChartElement.COLUMN_NAME).toString();
+        int columnNum = data.findColumn(columnName);
+        keyStr.append(data.getValueAt(row, columnNum)).append(SEPERATOR);
+        groupElement = getChildGroup(groupElement);
+      }
+      matchSet.add(keyStr.toString());
+      groupElement = getBaseStackedGroupElement(chartDocument);
     }
-    final KeyToGroupMap keyToGroupMap = new KeyToGroupMap();
-    final Iterator iter = groupSet.iterator();
-    int i=0;
-    while (iter.hasNext()) {
-      keyToGroupMap.mapKeyToGroup("G"+i, (Comparable) iter.next());
-      i++;
+    
+    // Now we match them and add then to an appropriate group
+    KeyToGroupMap keyToGroupMap = new KeyToGroupMap();
+
+    Iterator matchSetIterator = matchSet.iterator();
+    while (matchSetIterator.hasNext()) {
+      String matchStr = matchSetIterator.next().toString();
+      Iterator rowHeaderIterator = dataSet.getRowKeys().iterator();
+      while (rowHeaderIterator.hasNext()) {
+        String rowHeader = rowHeaderIterator.next().toString();
+        if (rowHeader.startsWith(matchStr)) {
+          keyToGroupMap.mapKeyToGroup(rowHeader, matchStr);
+        }
+      }
     }
     
     return keyToGroupMap;
+  }
+
+  /**
+   * @param groupElement
+   * @return
+   */
+  private static int getGroupDepth(ChartElement groupElement) {
+    int depth = 0;
+    
+    while(groupElement != null) {
+      depth ++;
+      groupElement = getChildGroup(groupElement);
+    }
+    
+    return depth;
+  }
+  
+  private static String getInnermostGroupName(ChartDocument chartDocument) {
+    ChartElement group = getBaseStackedGroupElement(chartDocument);
+    while (getChildGroup(group) != null) {
+      group = getChildGroup(group);
+    }
+    if (group != null) {
+      return group.getAttribute(ChartElement.COLUMN_NAME).toString();
+    }
+    return null;
   }
 
 }

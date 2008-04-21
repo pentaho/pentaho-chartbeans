@@ -9,6 +9,7 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.SubCategoryAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
@@ -74,15 +75,15 @@ public class JFreeChartFactoryEngine implements Serializable {
       } catch (Exception e) {
         chartResult.setErrorCode(IChartPlugin.RESULT_ERROR);
         chartResult.setDescription(e.getLocalizedMessage());
-      }
+  }
     }
-
+  
     return null;
   }
 
   /* (non-Javadoc)
-  * @see org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine#makeAreaChart(org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.api.IOutput)
-  */
+   * @see org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine#makeAreaChart(org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.api.IOutput)
+   */
   public void makeAreaChart(final ChartTableModel data, final ChartDocument chartDocument, final IOutput outHandler) {
     // TODO Auto-generated method stub
 
@@ -144,7 +145,7 @@ public class JFreeChartFactoryEngine implements Serializable {
       
     return columnPosArr;
   }
-
+  
   /**
    * 
    * @param chartDocumentContext
@@ -183,9 +184,23 @@ public class JFreeChartFactoryEngine implements Serializable {
     if (stacked || stackedPct || stacked100Pct) {
       chart = ChartFactory.createStackedBarChart(title, valueAxisLabel, valueAxisLabel, JFreeChartUtils.createDefaultCategoryDataset(data, chartDocument, null), orientation, legend, toolTips, false);
       if (JFreeChartUtils.getIsStackedGrouped(chartDocument)) {
-        GroupedStackedBarRenderer renderer = new GroupedStackedBarRenderer();
-        KeyToGroupMap map = JFreeChartUtils.createKeyToGroupMap(chartDocument, data);
-        renderer.setSeriesToGroupMap(map); 
+        GroupedStackedBarRenderer renderer = new GroupedStackedBarRenderer();       
+        KeyToGroupMap map = JFreeChartUtils.createKeyToGroupMap(chartDocument, data, chart.getCategoryPlot().getDataset());
+        renderer.setSeriesToGroupMap(map);
+        SubCategoryAxis domainAxis = new SubCategoryAxis("Product / Month");
+        domainAxis.setCategoryMargin(0.05);
+        domainAxis.addSubCategory("North America / Canada");
+        domainAxis.addSubCategory("North America / USA");
+        domainAxis.addSubCategory("Asia / Russia");
+        domainAxis.addSubCategory("Asia / China");
+        domainAxis.addSubCategory("South America / Peru");
+        domainAxis.addSubCategory("South America / Brazil");
+        domainAxis.addSubCategory("Europe / Italy");
+        domainAxis.addSubCategory("Eurpoe / Germany");
+
+        CategoryPlot plot = (CategoryPlot) chart.getPlot();
+        plot.setDomainAxis(domainAxis);
+        plot.setRenderer(renderer);
       }
       ((StackedBarRenderer)chart.getCategoryPlot().getRenderer()).setRenderAsPercentages(stackedPct || stacked100Pct);
       if (stacked100Pct) {
@@ -245,7 +260,6 @@ public class JFreeChartFactoryEngine implements Serializable {
         setRenderer(plot, i);
       }
     }
-
     return chart;
   }
 
