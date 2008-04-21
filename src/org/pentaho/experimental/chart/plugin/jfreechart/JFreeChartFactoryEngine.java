@@ -28,29 +28,61 @@ import org.pentaho.experimental.chart.core.ChartSeriesDataLinkInfo;
 import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
 import org.pentaho.experimental.chart.css.styles.ChartAxisLocationType;
 import org.pentaho.experimental.chart.css.styles.ChartBarStyle;
+import org.pentaho.experimental.chart.css.styles.ChartSeriesType;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.api.IOutput;
-import org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine;
+import org.pentaho.experimental.chart.plugin.api.ChartResult;
 import org.pentaho.experimental.chart.plugin.jfreechart.utils.CylinderRenderer;
 import org.pentaho.experimental.chart.plugin.jfreechart.utils.JFreeChartUtils;
+import org.pentaho.experimental.chart.plugin.jfreechart.outputs.JFreeChartOutput;
+import org.pentaho.experimental.chart.plugin.IChartPlugin;
 import org.pentaho.reporting.libraries.css.values.CSSValue;
+import org.pentaho.reporting.libraries.css.values.CSSConstant;
+import org.pentaho.util.messages.Messages;
 
-public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable {
+public class JFreeChartFactoryEngine implements Serializable {
   
   private static final long serialVersionUID = -1079376910255750394L;
-  //TODO: Remove this at the earliest
-  private static final String RANGE="range";
 
   public JFreeChartFactoryEngine(){
   }
-  
-  public ChartFactoryEngine getInstance() {
-    return this;
+//
+//  public ChartFactoryEngine getInstance() {
+//    return this;
+//  }
+
+  public IOutput makeChart(final ChartTableModel data, final ChartDocumentContext chartDocumentContext, final ChartResult chartResult)
+  {
+    final ChartDocument chartDocument = chartDocumentContext.getChartDocument();
+    CSSConstant currentChartType = JFreeChartUtils.determineChartType(chartDocument);
+    if (currentChartType == ChartSeriesType.UNDEFINED) {
+      chartResult.setErrorCode(IChartPlugin.ERROR_INDETERMINATE_CHART_TYPE);
+      chartResult.setDescription(Messages.getErrorString("JFreeChartPlugin.ERROR_0001_CHART_TYPE_INDETERMINABLE")); //$NON-NLS-1$
+    }
+
+    if (currentChartType == ChartSeriesType.BAR) {
+      try {
+        final JFreeChart chart = makeBarChart(data, chartDocumentContext);
+        return new JFreeChartOutput(chart);
+      } catch (Exception e) {
+        chartResult.setErrorCode(IChartPlugin.RESULT_ERROR);
+        chartResult.setDescription(e.getLocalizedMessage());
+      }
+    } else if (currentChartType == ChartSeriesType.LINE) {
+      try {
+        return new JFreeChartOutput(makeLineChart(data, chartDocument));
+      } catch (Exception e) {
+        chartResult.setErrorCode(IChartPlugin.RESULT_ERROR);
+        chartResult.setDescription(e.getLocalizedMessage());
+      }
+    }
+
+    return null;
   }
 
   /* (non-Javadoc)
-   * @see org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine#makeAreaChart(org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.api.IOutput)
-   */
+  * @see org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine#makeAreaChart(org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.api.IOutput)
+  */
   public void makeAreaChart(final ChartTableModel data, final ChartDocument chartDocument, final IOutput outHandler) {
     // TODO Auto-generated method stub
 
@@ -59,7 +91,8 @@ public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable
   /* (non-Javadoc)
    * @see org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine#makeBarChart(org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.api.IOutput)
    */
-  public void makeBarChart(final ChartTableModel data, final ChartDocumentContext chartDocumentContext, final IOutput outHandler) throws Exception {
+  public JFreeChart makeBarChart(final ChartTableModel data, final ChartDocumentContext chartDocumentContext)
+      throws Exception {
     final ChartDocument chartDocument = chartDocumentContext.getChartDocument();
     final String title = JFreeChartUtils.getTitle(chartDocument);
     final String valueCategoryLabel = JFreeChartUtils.getValueCategoryLabel(chartDocument);
@@ -70,7 +103,7 @@ public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable
     final JFreeChart chart = createBarChartSubtype(chartDocumentContext, data, title, valueCategoryLabel, valueAxisLabel, orientation, legend, toolTips);
     JFreeChartUtils.setPlotAttributes(chart.getCategoryPlot(), chartDocument, data);
 
-    outHandler.setChart(chart);
+    return chart;
   }
 
 
@@ -137,12 +170,12 @@ public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable
     //TODO: ask if we need to break out of this loop instead of going through the entire series.
     for (final ChartElement element : elements) {
       final CSSValue value = element.getLayoutStyle().getValue(ChartStyleKeys.BAR_STYLE);
-      stacked = value.equals(ChartBarStyle.STACKED) ? true : stacked;
-      stackedPct = value.equals(ChartBarStyle.STACK_PERCENT) ? true : stackedPct;
-      cylinder = value.equals(ChartBarStyle.CYLINDER) ? true : cylinder;
-      interval = value.equals(ChartBarStyle.INTERVAL) ? true : interval;
-      layered = value.equals(ChartBarStyle.LAYERED) ? true : layered;
-      stacked100Pct = value.equals(ChartBarStyle.STACK_100_PERCENT) ? true : stacked100Pct;
+      stacked |= value.equals(ChartBarStyle.STACKED);
+      stackedPct |= value.equals(ChartBarStyle.STACK_PERCENT);
+      cylinder |= value.equals(ChartBarStyle.CYLINDER);
+      interval |= value.equals(ChartBarStyle.INTERVAL);
+      layered |= value.equals(ChartBarStyle.LAYERED);
+      stacked100Pct |= value.equals(ChartBarStyle.STACK_100_PERCENT);
     }
     
     JFreeChart chart = null;
@@ -295,82 +328,10 @@ public class JFreeChartFactoryEngine implements ChartFactoryEngine, Serializable
   }
 
   /* (non-Javadoc)
-   * @see org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine#makeBarLineChart(org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.api.IOutput)
-   */
-  public void makeBarLineChart(final ChartTableModel data, final ChartDocument chartDocument, final IOutput outHandler) {
-
-  }
-
-  /* (non-Javadoc)
-   * @see org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine#makeBubbleChart(org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.api.IOutput)
-   */
-  public void makeBubbleChart(final ChartTableModel data, final ChartDocument chartDocument, final IOutput outHandler) {
-
-  }
-
-  /* (non-Javadoc)
-   * @see org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine#makeDialChart(org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.api.IOutput)
-   */
-  public void makeDialChart(final ChartTableModel data, final ChartDocument chartDocument, final IOutput outHandler) {
-
-  }
-
-  /* (non-Javadoc)
-   * @see org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine#makeDifferenceChart(org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.api.IOutput)
-   */
-  public void makeDifferenceChart(final ChartTableModel data, final ChartDocument chartDocument, final IOutput outHandler) {
-
-  }
-
-  /* (non-Javadoc)
    * @see org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine#makeLineChart(org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.api.IOutput)
    */
-  public void makeLineChart(final ChartTableModel data, final ChartDocument chartDocument, final IOutput outHandler) {
-
+  private JFreeChart makeLineChart(final ChartTableModel data, final ChartDocument chartDocument) {
+    return null;
   }
-
-  /* (non-Javadoc)
-   * @see org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine#makeMultiPieChart(org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.api.IOutput)
-   */
-  public void makeMultiPieChart(final ChartTableModel data, final ChartDocument chartDocument, final IOutput outHandler) {
-
-  }
-
-  /* (non-Javadoc)
-   * @see org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine#makePieChart(org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.api.IOutput)
-   */
-  public void makePieChart(final ChartTableModel data, final ChartDocument chartDocument, final IOutput outHandler) {
-
-  }
-
-  /* (non-Javadoc)
-   * @see org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine#makeScatterPlotChart(org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.api.IOutput)
-   */
-  public void makeScatterPlotChart(final ChartTableModel data, final ChartDocument chartDocument, final IOutput outHandler) {
-
-  }
-
-  /* (non-Javadoc)
-   * @see org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine#makeStepAreaChart(org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.api.IOutput)
-   */
-  public void makeStepAreaChart(final ChartTableModel data, final ChartDocument chartDocument, final IOutput outHandler) {
-
-  }
-
-  /* (non-Javadoc)
-   * @see org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine#makeStepChart(org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.api.IOutput)
-   */
-  public void makeStepChart(final ChartTableModel data, final ChartDocument chartDocument, final IOutput outHandler) {
-
-  }
-
-  /* (non-Javadoc)
-   * @see org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine#makeWaterfallChart(org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.api.IOutput)
-   */
-  public void makeWaterfallChart(final ChartTableModel data, final ChartDocument chartDocument, final IOutput outHandler) {
-
-  }
-
-
   
 }

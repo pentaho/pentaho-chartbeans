@@ -22,6 +22,7 @@ import org.apache.commons.logging.LogFactory;
 import org.pentaho.experimental.chart.ChartBoot;
 import org.pentaho.experimental.chart.plugin.api.IOutput;
 import org.pentaho.reporting.libraries.base.config.Configuration;
+import org.pentaho.reporting.libraries.base.util.ObjectUtilities;
 
 /**
  * @author wseyler
@@ -31,7 +32,6 @@ import org.pentaho.reporting.libraries.base.config.Configuration;
  */
 public class ChartPluginFactory  {
   private static final Log logger = LogFactory.getLog(ChartPluginFactory.class);
-  private static IChartPlugin chartPlugin = null;
 
   private ChartPluginFactory() {
   }
@@ -42,19 +42,9 @@ public class ChartPluginFactory  {
    * 
    * @return an implementation of the IChartPlugin
    */
-  public static synchronized IChartPlugin getInstance() {
-    final Configuration config = ChartBoot.getInstance().loadConfiguration();
-    final String className = config.getConfigProperty("IChartPlugin"); //$NON-NLS-1$
-    Class<IChartPlugin> pluginClass = null;
-    try {
-      pluginClass = (Class<IChartPlugin>) Class.forName(className);
-    } catch (ClassNotFoundException e) {
-      ChartPluginFactory.logger.error(e);
-    }
-    if (ChartPluginFactory.chartPlugin == null || !ChartPluginFactory.chartPlugin.getClass().equals(pluginClass)) {
-      ChartPluginFactory.chartPlugin = ChartPluginFactory.getInstance(className);
-    }
-    return ChartPluginFactory.chartPlugin;
+  public static synchronized IChartPlugin getInstance() throws ChartProcessingException
+  {
+    return getInstance(null);
   }
 
   /**
@@ -64,48 +54,64 @@ public class ChartPluginFactory  {
    * @param className
    * @return
    */
-  public static IChartPlugin getInstance(final String className) {
-    try {
-      return (IChartPlugin) Class.forName(className).newInstance();
-    } catch (ClassNotFoundException e) {
-      ChartPluginFactory.logger.error(e);
-    } catch (InstantiationException e) {
-      ChartPluginFactory.logger.error(e);
-    } catch (IllegalAccessException e) {
-      ChartPluginFactory.logger.error(e);
+  public static IChartPlugin getInstance(String className) throws ChartProcessingException
+  {
+    if (className == null)
+    {
+      final Configuration config = ChartBoot.getInstance().loadConfiguration();
+      className = config.getConfigProperty("org.pentaho.experimental.chart.plugin.Default-IChartPlugin"); //$NON-NLS-1$
+      if (className == null)
+      {
+        throw new ChartProcessingException("No ChartPlugin defined as default");
+      }
     }
-    return null;
-  }
-  
-  /**
-   * Creates an new instance of IOutput as defined in the chart.properties document.
-   * 
-   * @return an implementation of IOutput
-   */
-  public static IOutput getChartOutput() {
-    final Configuration config = ChartBoot.getInstance().loadConfiguration();
-    final String className = config.getConfigProperty("IOutput"); //$NON-NLS-1$
-    return ChartPluginFactory.getChartOutput(className);
-  }
-
-  /**
-   * Creates an new instance of IOutput as defined by the classname parameter.  Logs 
-   * any errors and returns null of class couldn't be created.
-   * 
-   * @param className
-   * @return an implementation of IOutput
-   */
-  public static IOutput getChartOutput(final String className) {
     try {
-      return (IOutput) Class.forName(className).newInstance();
-    } catch (ClassNotFoundException e) {
+      final IChartPlugin o = (IChartPlugin)
+          ObjectUtilities.loadAndInstantiate(className, ChartPluginFactory.class, IChartPlugin.class);
+      if (o == null)
+      {
+        throw new ChartProcessingException("Unable to instantiate the requested chart-plugin: " + className);
+      }
+      return o;
+    } catch (Exception e) {
       ChartPluginFactory.logger.error(e);
-    } catch (InstantiationException e) {
-      ChartPluginFactory.logger.error(e);
-    } catch (IllegalAccessException e) {
-      ChartPluginFactory.logger.error(e);
+      throw new ChartProcessingException("Error while instantiating the Chart-Plugin " + className, e);
     }
-    return null;
   }
+//
+//  /**
+//   * Creates an new instance of IOutput as defined in the chart.properties document.
+//   *
+//   * @return an implementation of IOutput
+//   */
+//  public static IOutput getChartOutput() throws ChartProcessingException
+//  {
+//    final Configuration config = ChartBoot.getInstance().loadConfiguration();
+//    final String className = config.getConfigProperty("org.pentaho.experimental.chart.plugin.Default-IOutput"); //$NON-NLS-1$
+//    return ChartPluginFactory.getChartOutput(className);
+//  }
+//
+//  /**
+//   * Creates an new instance of IOutput as defined by the classname parameter.  Logs
+//   * any errors and returns null of class couldn't be created.
+//   *
+//   * @param className
+//   * @return an implementation of IOutput
+//   */
+//  public static IOutput getChartOutput(final String className) throws ChartProcessingException
+//  {
+//    try {
+//      final IOutput o = (IOutput)
+//          ObjectUtilities.loadAndInstantiate(className, ChartPluginFactory.class, IOutput.class);
+//      if (o == null)
+//      {
+//        throw new ChartProcessingException("Unable to instantiate the requested chart-output: " + className);
+//      }
+//      return o;
+//    } catch (Exception e) {
+//      ChartPluginFactory.logger.error(e);
+//      throw new ChartProcessingException("Unable to instantiate the requested chart-plugin: " + className, e);
+//    }
+//  }
 
 }

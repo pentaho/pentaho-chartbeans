@@ -58,6 +58,8 @@ public class PluginTest extends TestCase {
 //                                               {90.99,  5.55,   15.15,  "Eastern",  "China",  "North"},  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
 //                                               {25.25,  35.35,  45.45,  "Eastern",  "China",  "South"}}; //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
 
+
+  private static final String MAP_EXTENSION = ".map"; //$NON-NLS-1$
   private static final Object[][] dataArray = {{5.55, 10.11, 20.22, "East"}, //$NON-NLS-1$
                                                {30.33, 40.44, 50.55, "West"}, //$NON-NLS-1$
                                                {55.66, 70.77, 80.88, "Central"} //$NON-NLS-1$
@@ -107,13 +109,13 @@ public class PluginTest extends TestCase {
 
     // Render and save the plot
     IOutput output = plugin.renderChartDocument(cdc, data);
-    output.persistChart(chartFileName, IOutput.OutputTypes.FILE_TYPE_PNG);
+    OutputUtils.persistChart(output, chartFileName, IOutput.OutputTypes.FILE_TYPE_PNG);
     final File chartFile = new File(chartFileName);
     assertTrue(chartFile.exists());
     assertTrue(chartFile.length() > 5000);
     if (JFreeChartUtils.getShowUrls(cdc.getChartDocument())) {
-      output.persistMap(chartFileName);
-      final File mapFile = new File(chartFileName + IOutput.MAP_EXTENSION);
+      OutputUtils.persistMap(output, chartFileName + MAP_EXTENSION);
+      final File mapFile = new File(chartFileName + MAP_EXTENSION);
       assertTrue(mapFile.exists());
       assertTrue(mapFile.length() > 100);
   }
@@ -138,13 +140,13 @@ public class PluginTest extends TestCase {
 
     // Render and save the plot
     IOutput output = plugin.renderChartDocument(cdc, data);
-    output.persistChart(chartFileName, IOutput.OutputTypes.FILE_TYPE_JPEG);
+    OutputUtils.persistChart(output, chartFileName, IOutput.OutputTypes.FILE_TYPE_JPEG);
     final File chartFile = new File(chartFileName);
     assertTrue(chartFile.exists());
     assertTrue(chartFile.length() > 5000);
     if (JFreeChartUtils.getShowUrls(cdc.getChartDocument())) {
-      output.persistMap(chartFileName);
-      final File mapFile = new File(chartFileName + IOutput.MAP_EXTENSION);
+      OutputUtils.persistMap(output, chartFileName + MAP_EXTENSION);
+      final File mapFile = new File(chartFileName + MAP_EXTENSION);
       assertTrue(mapFile.exists());
       assertTrue(mapFile.length() > 100);
   }
@@ -265,21 +267,25 @@ public class PluginTest extends TestCase {
       try {
         testRenderAsJpeg(fileNames[i]);    
       } catch (Exception e) {
+        e.printStackTrace();
         fail("Failed parsing "+fileNames[i]+ " file in method testRenderAsJpeg"); //$NON-NLS-1$ //$NON-NLS-2$
       }
       try {
         testRenderAsJpegStream(fileNames[i]);
       } catch (Exception e) {
+        e.printStackTrace();
         fail("Failed parsing "+fileNames[i]+ " file in method testRenderAsJpegStream"); //$NON-NLS-1$ //$NON-NLS-2$
       }
       try {
         testRenderAsPng(fileNames[i]);
       } catch (Exception e) {
+        e.printStackTrace();
         fail("Failed parsing "+fileNames[i]+ " file in method testRenderAsPng"); //$NON-NLS-1$ //$NON-NLS-2$
       }
       try {
         testRenderAsPngStream(fileNames[i]);
       } catch (Exception e) {
+        e.printStackTrace();
         fail("Failed parsing "+fileNames[i]+ " file in method testRenderAsPngStream"); //$NON-NLS-1$ //$NON-NLS-2$
       }
     }

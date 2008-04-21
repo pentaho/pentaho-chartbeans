@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Map;
 
-import org.jfree.xmlns.LibXmlInfo;
-import org.jfree.xmlns.common.AttributeMap;
 import org.pentaho.reporting.libraries.base.util.Empty;
 import org.pentaho.reporting.libraries.base.util.StringUtils;
 import org.pentaho.reporting.libraries.css.dom.DefaultLayoutStyle;
@@ -29,6 +27,8 @@ import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
 import org.pentaho.reporting.libraries.css.model.StyleKey;
 import org.pentaho.reporting.libraries.css.values.CSSValue;
 import org.pentaho.util.collections.HeirarchicalLinkedListItem;
+import org.jfree.xmlns.common.AttributeMap;
+import org.jfree.xmlns.LibXmlInfo;
 
 /**
  * Defines the element information for the elements in the chart definition file

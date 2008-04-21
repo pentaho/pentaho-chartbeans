@@ -15,11 +15,11 @@
  */
 package org.pentaho.experimental.chart.core.parser;
 
-import org.jfree.xmlns.parser.StringReadHandler;
-import org.jfree.xmlns.parser.XmlReadHandler;
 import org.pentaho.experimental.chart.core.ChartElement;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+import org.jfree.xmlns.parser.StringReadHandler;
+import org.jfree.xmlns.parser.XmlReadHandler;
 
 /**
  * Used in the parsing of the chart definition xml document. This class will perform the creation of a
@@ -27,7 +27,8 @@ import org.xml.sax.SAXException;
  *
  * @author David Kincade
  */
-public class ChartElementReadHandler extends StringReadHandler {
+public class ChartElementReadHandler extends StringReadHandler
+{
   /**
    * The chart element to be created / initialized during the reading of this tag
    */
