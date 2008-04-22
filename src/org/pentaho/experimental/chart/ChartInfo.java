@@ -22,20 +22,36 @@ import org.pentaho.reporting.libraries.base.versioning.ProjectInformation;
 import org.pentaho.reporting.libraries.css.LibCssInfo;
 
 public class ChartInfo extends ProjectInformation {
-  public static final ProjectInformation INSTANCE = new ChartInfo();
+
+  private static ChartInfo info;
+
+  public static ProjectInformation getInstance()
+  {
+    if (info == null)
+    {
+      info = new ChartInfo();
+      info.initialize();
+    }
+    return info;
+  }
 
   @SuppressWarnings("nls")
   private ChartInfo() {
     super("chartbundle", "ChartBundle");
+  }
+
+  private ChartInfo initialize() {
 
     setBootClass(ChartBoot.class.getName());
     setLicenseName("LGPL");
     setInfo("http://pentaho.org/chartbundle/");
     setCopyright("(C)opyright 2008, by Pentaho Corporation and Contributors");
 
-    addLibrary(LibBaseInfo.INSTANCE);
+    addLibrary(LibBaseInfo.getInstance());
     addLibrary(LibLoaderInfo.getInstance());
     addLibrary(LibXmlInfo.getInstance());
     addLibrary(LibCssInfo.getInstance());
+
+    return this;
   }
 }

@@ -47,6 +47,6 @@ public class ChartBoot extends AbstractBoot {
   }
 
   protected ProjectInformation getProjectInfo() {
-    return ChartInfo.INSTANCE;
+    return ChartInfo.getInstance();
   }
 }
