@@ -9,7 +9,6 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.axis.SubCategoryAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
@@ -31,14 +30,14 @@ import org.pentaho.experimental.chart.css.styles.ChartAxisLocationType;
 import org.pentaho.experimental.chart.css.styles.ChartBarStyle;
 import org.pentaho.experimental.chart.css.styles.ChartSeriesType;
 import org.pentaho.experimental.chart.data.ChartTableModel;
-import org.pentaho.experimental.chart.plugin.api.IOutput;
+import org.pentaho.experimental.chart.plugin.IChartPlugin;
 import org.pentaho.experimental.chart.plugin.api.ChartResult;
+import org.pentaho.experimental.chart.plugin.api.IOutput;
+import org.pentaho.experimental.chart.plugin.jfreechart.outputs.JFreeChartOutput;
 import org.pentaho.experimental.chart.plugin.jfreechart.utils.CylinderRenderer;
 import org.pentaho.experimental.chart.plugin.jfreechart.utils.JFreeChartUtils;
-import org.pentaho.experimental.chart.plugin.jfreechart.outputs.JFreeChartOutput;
-import org.pentaho.experimental.chart.plugin.IChartPlugin;
-import org.pentaho.reporting.libraries.css.values.CSSValue;
 import org.pentaho.reporting.libraries.css.values.CSSConstant;
+import org.pentaho.reporting.libraries.css.values.CSSValue;
 import org.pentaho.util.messages.Messages;
 
 public class JFreeChartFactoryEngine implements Serializable {
@@ -187,19 +186,19 @@ public class JFreeChartFactoryEngine implements Serializable {
         GroupedStackedBarRenderer renderer = new GroupedStackedBarRenderer();       
         KeyToGroupMap map = JFreeChartUtils.createKeyToGroupMap(chartDocument, data, chart.getCategoryPlot().getDataset());
         renderer.setSeriesToGroupMap(map);
-        SubCategoryAxis domainAxis = new SubCategoryAxis("Product / Month");
-        domainAxis.setCategoryMargin(0.05);
-        domainAxis.addSubCategory("North America / Canada");
-        domainAxis.addSubCategory("North America / USA");
-        domainAxis.addSubCategory("Asia / Russia");
-        domainAxis.addSubCategory("Asia / China");
-        domainAxis.addSubCategory("South America / Peru");
-        domainAxis.addSubCategory("South America / Brazil");
-        domainAxis.addSubCategory("Europe / Italy");
-        domainAxis.addSubCategory("Eurpoe / Germany");
+//        SubCategoryAxis domainAxis = new SubCategoryAxis("Product / Month");
+//        domainAxis.setCategoryMargin(0.05);
+//        domainAxis.addSubCategory("North America / Canada");
+//        domainAxis.addSubCategory("North America / USA");
+//        domainAxis.addSubCategory("Asia / Russia");
+//        domainAxis.addSubCategory("Asia / China");
+//        domainAxis.addSubCategory("South America / Peru");
+//        domainAxis.addSubCategory("South America / Brazil");
+//        domainAxis.addSubCategory("Europe / Italy");
+//        domainAxis.addSubCategory("Eurpoe / Germany");
 
         CategoryPlot plot = (CategoryPlot) chart.getPlot();
-        plot.setDomainAxis(domainAxis);
+//        plot.setDomainAxis(domainAxis);
         plot.setRenderer(renderer);
       }
       ((StackedBarRenderer)chart.getCategoryPlot().getRenderer()).setRenderAsPercentages(stackedPct || stacked100Pct);
