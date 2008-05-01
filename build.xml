@@ -149,7 +149,7 @@
     
     <junit printsummary="yes" errorproperty="junit-error" failureproperty="junit-failure">
       <classpath refid="test.run.classpath"/>
-      <formatter type="plain"/>
+      <formatter type="xml"/> <!-- output tests in xml for automated build to report on -->
       <batchtest fork="yes" todir="${test.output.dir}">
         <fileset dir="${test.src.dir}" casesensitive="yes">
           <include name="**/Test*.java"/>
