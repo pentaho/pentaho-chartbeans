@@ -6,7 +6,6 @@
     -x-pentaho-chart-gradient: blue, red POINTS 1,10 2,20;
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: stacked;
-    -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-bar-max-width: 10%;
     }
 
@@ -15,7 +14,6 @@
     -x-pentaho-chart-gradient: black, blue POINTS 1,10 2,20;
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: stacked;
-    -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-bar-max-width: 10%;
     }
 
@@ -23,7 +21,6 @@
     color: green;
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: stacked;
-    -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-bar-max-width: 10%;
     }
   </stylesheet>

@@ -4,21 +4,18 @@
     .bar1 {
     color: yellow;
     -x-pentaho-chart-series-type: bar;
-    -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-bar-max-width: 10%;
     }
 
     .bar2 {
     color: red;
     -x-pentaho-chart-series-type: bar;
-    -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-bar-max-width: 10%;
     }
 
     .bar3 {
     color: green;
     -x-pentaho-chart-series-type: bar;
-    -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-bar-max-width: 10%;
     }
   </stylesheet>

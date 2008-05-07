@@ -5,7 +5,6 @@
     color: red;
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: layered;
-    -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-bar-max-width: 10%;
     }
 
@@ -13,7 +12,6 @@
     color: black;
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: layered;
-    -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-bar-max-width: 10%;
     }
 
@@ -21,7 +19,6 @@
     color: green;
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: layered;
-    -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-bar-max-width: 10%;
     }
   </stylesheet>

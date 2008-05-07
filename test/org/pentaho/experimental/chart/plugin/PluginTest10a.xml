@@ -13,8 +13,7 @@
     -x-pentaho-chart-item-label-text: '{0,number,$##.##}';
     -x-pentaho-chart-item-label-visible: yes;
     -x-pentaho-chart-series-type: bar;
-    -x-pentaho-chart-bar-style: bar;
-    -x-pentaho-chart-categorical: true;
+    -x-pentaho-chart-bar-style: bar;    
     -x-pentaho-chart-bar-max-width: 10%;
     }
 
@@ -31,7 +30,6 @@
     -x-pentaho-chart-item-label-visible: yes;
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
-    -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-bar-max-width: 10%;
     }
 
@@ -47,7 +45,6 @@
     -x-pentaho-chart-item-label-visible: yes;
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
-    -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-bar-max-width: 5%;
     }
   </stylesheet>

@@ -10,7 +10,6 @@
     -x-pentaho-chart-gradient: blue, yellow HORIZONTAL 1,10 2,20;		
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
-    -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-bar-max-width: 10%;
     }
 
@@ -22,7 +21,6 @@
     -x-pentaho-chart-gradient: blue, yellow HORIZONTAL 1,10 2,20;		
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
-    -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-bar-max-width: 10%;
     }
 
@@ -34,7 +32,6 @@
     -x-pentaho-chart-gradient: blue, yellow HORIZONTAL 1,10 2,20;		    
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
-    -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-bar-max-width: 10%;
     }
   </stylesheet>

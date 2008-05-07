@@ -7,7 +7,6 @@
     -x-pentaho-chart-gradient: red, white CENTER_VEICAL 1,10 2,20;	<!-- misspelled, would default to none -->
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
-    -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-bar-max-width: 10%;
     }
 
@@ -16,7 +15,6 @@
     -x-pentaho-chart-gradient: red, white none 1,10 2,20;	<!-- misspelled, would default to none -->
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
-    -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-bar-max-width: 10%;
     }
   
@@ -25,7 +23,6 @@
     -x-pentaho-chart-gradient: red, white POINTS 1,10 2,20;	<!-- points, would default to none -->
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
-    -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-bar-max-width: 10%;
     }
   
@@ -34,7 +31,6 @@
     -x-pentaho-chart-gradient: red, white HORIZONTAL 1,10 2,20;		
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
-    -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-bar-max-width: 10%;
     }
 
@@ -43,7 +39,6 @@
     -x-pentaho-chart-gradient: red, white VERTICAL 1,10 2,20;		
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
-    -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-bar-max-width: 10%;
     }
 
@@ -52,7 +47,6 @@
     -x-pentaho-chart-gradient: red, white CENTER_HORIZONTAL 1,10 2,20;		    
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
-    -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-bar-max-width: 10%;
     }
     
@@ -61,7 +55,6 @@
     -x-pentaho-chart-gradient: red, white CENTER_VERTICAL 1,10 2,20;		
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
-    -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-bar-max-width: 10%;
     }
     

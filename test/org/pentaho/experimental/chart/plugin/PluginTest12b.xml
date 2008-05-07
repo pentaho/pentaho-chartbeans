@@ -9,7 +9,6 @@
     font-style: italic;
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
-    -x-pentaho-chart-categorical: true;
     }
 
     .bar2 {
@@ -20,7 +19,6 @@
     font-style: normal;
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
-    -x-pentaho-chart-categorical: true;
     }
 
     .bar3 {
@@ -30,7 +28,6 @@
     font-variant: small-caps;
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
-    -x-pentaho-chart-categorical: true;
     }
   </stylesheet>
 
