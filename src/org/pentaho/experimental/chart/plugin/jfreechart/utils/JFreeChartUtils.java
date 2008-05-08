@@ -77,7 +77,7 @@ public class JFreeChartUtils {
   private static final Log logger = LogFactory.getLog(JFreeChartUtils.class);
 
   private static final char SEPERATOR = '/';
-  private static final String DOMAIN_AXIS="domain";
+  private static final String DOMAIN_AXIS="domain";//$NON-NLS-1$
   private JFreeChartUtils() {
   }
 
@@ -593,7 +593,7 @@ public class JFreeChartUtils {
     if (axisElementsList != null) {
       for(ChartElement axisElement : axisElementsList) {
         if (axisElement != null) {
-          final String axisType = (String)axisElement.getAttribute("type");
+          final String axisType = (String)axisElement.getAttribute("type");//$NON-NLS-1$
           if (axisType != null &&
               DOMAIN_AXIS.equalsIgnoreCase(axisType)) {
             final LayoutStyle layoutStyle = axisElement.getLayoutStyle();
@@ -750,7 +750,7 @@ public class JFreeChartUtils {
    * @return Color  Returns a Color object created from the color information in the value parameter
    *         If the CSSValue does not contain any color information then returns a null.
    */
-  private static Color getColorFromCSSValue(final CSSValue value) {
+  public static Color getColorFromCSSValue(final CSSValue value) {
     Color gradientColor = null;
 
     if (value instanceof CSSFunctionValue) {
@@ -1046,16 +1046,4 @@ public class JFreeChartUtils {
     
     return depth;
   }
-  
-  private static String getInnermostGroupName(ChartDocument chartDocument) {
-    ChartElement group = getBaseStackedGroupElement(chartDocument);
-    while (getChildGroup(group) != null) {
-      group = getChildGroup(group);
-    }
-    if (group != null) {
-      return group.getAttribute(ChartElement.COLUMN_NAME).toString();
-    }
-    return null;
-  }
-
 }

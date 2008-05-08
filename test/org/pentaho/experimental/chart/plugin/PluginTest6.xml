@@ -18,7 +18,7 @@
     font-size: 10pt;    
     font-variant: normal;
     font-style: normal;
-    -x-pentaho-chart-gradient: blue, yellow HORIZONTAL 1,10 2,20;		
+    -x-pentaho-chart-gradient: blue, green HORIZONTAL 1,10 2,20;		
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
     -x-pentaho-chart-bar-max-width: 10%;
@@ -29,7 +29,7 @@
     font-size: smaller;
     font-style: normal;    
     font-variant: small-caps;
-    -x-pentaho-chart-gradient: blue, yellow HORIZONTAL 1,10 2,20;		    
+    -x-pentaho-chart-gradient: blue, red HORIZONTAL 1,10 2,20;		    
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
     -x-pentaho-chart-bar-max-width: 10%;

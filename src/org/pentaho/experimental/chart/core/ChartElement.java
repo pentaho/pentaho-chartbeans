@@ -37,7 +37,7 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
   /**
    * The name attribute which defines the element name (if specified)
    */
-  public static final String NAME_ATTRIBUTE = "name"; //$NON-NLS-1
+  public static final String NAME_ATTRIBUTE = "name";//$NON-NLS-1$
 
   /**
    * The ID attribute which defines an element's id (in the xml namespace)
@@ -94,6 +94,16 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
    */
   public static final String TAG_NAME_GROUP = "group"; //$NON-NLS-1$
 
+  /**
+   * The name of the XML tag which represents a tick label in the chart
+   */
+  public static final String TAG_NAME_LABEL = "label"; //$NON-NLS-1$
+
+  /**
+    * The name of the XML tag which represents a label in the chart
+    */
+   public static final String TAG_NAME_TICK_LABEL = "ticklabel"; //$NON-NLS-1$
+  
   /**
    * Attribute name for specifying a chart's data should be represented categorically
    */
@@ -152,7 +162,7 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
   /**
    * Constant used when generating the deep <code>toString</code> representation
    */
-  private static final String TO_STRING_PREFIX = "  ";
+  private static final String TO_STRING_PREFIX = "  "; //$NON-NLS-1$
 
   /**
    * Constructs an element.
@@ -407,12 +417,12 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
     final StringBuffer sb = new StringBuffer();
 
     // Dump this object
-    sb.append(getClass().getName()).append(" {").append("tagName=[").append(tagName).append("]");
-    sb.append(" attributes=[").append(attributes).append("]");
+    sb.append(getClass().getName()).append(" {").append("tagName=[").append(tagName).append("]");//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+    sb.append(" attributes=[").append(attributes).append("]");//$NON-NLS-1$//$NON-NLS-2$
     if (text != null) {
-      sb.append(" text=[").append(text).append("]");
+      sb.append(" text=[").append(text).append("]");//$NON-NLS-1$//$NON-NLS-2$
     }
-    sb.append("}");
+    sb.append("}");//$NON-NLS-1$
     return sb.toString();
   }
 
@@ -423,10 +433,10 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
    */
   public String toString(final String prefix) {
     final StringBuffer sb = new StringBuffer();
-    sb.append(prefix).append(toString()).append("\n");
+    sb.append(prefix).append(toString()).append("\n");//$NON-NLS-1$
     ChartElement child = getFirstChildItem();
     while (child != null) {
-      sb.append("\n").append(child.toString(prefix + ChartElement.TO_STRING_PREFIX));
+      sb.append("\n").append(child.toString(prefix + ChartElement.TO_STRING_PREFIX));//$NON-NLS-1$
       child = child.getNextItem();
     }
     return sb.toString();
@@ -494,16 +504,16 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
    * @param tagName the name of the tag used in searching
    * @return an array of <code>ChartElement</code> objects that match the search criteria
    */
-  public ChartElement[] findChildrenByName(final String tagName) {
+  public ChartElement[] findChildrenByName(final String tagNameToMatch) {
     // Holder for the elements that match
     final ArrayList<ChartElement> matchList = new ArrayList<ChartElement>();
 
     // If there is no tag name specified, then nothing will match
-    if (tagName != null) {
+    if (tagNameToMatch != null) {
       // "Have you checked the children lately"
       for (ChartElement item = getFirstChildItem(); item != null; item = item.getNextItem()) {
         // See if this item matches
-        if (tagName.equals(item.getTagName())) {
+        if (tagNameToMatch.equals(item.getTagName())) {
           matchList.add(item);
         }
       }

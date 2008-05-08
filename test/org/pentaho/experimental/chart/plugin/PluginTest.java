@@ -54,9 +54,9 @@ public class PluginTest extends TestCase {
 //                                               {31, 46, 23, "Europe",         "Germany",  "East"},  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
 //                                               {47, 33, 51, "Europe",         "Germany",  "West"}}; //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
 
-  private static final Object[][] dataArray = {{5.55, 10.11, 20.22, "East"}, 
-                                               {30.33, 40.44, 50.55, "West"}, 
-                                               {60.66, 70.77, 80.88, "Central"}};
+  private static final Object[][] dataArray = {{5.55, 10.11, 20.22, "East"}, //$NON-NLS-1$
+                                               {30.33, 40.44, 50.55, "West"}, //$NON-NLS-1$
+                                               {60.66, 70.77, 80.88, "Central"}};//$NON-NLS-1$
   private static final String MAP_EXTENSION = ".map"; //$NON-NLS-1$
   private static final String PNG_SUFFIX = ".png"; //$NON-NLS-1$
   private static final String JPG_SUFFIX = ".jpeg"; //$NON-NLS-1$
@@ -235,7 +235,7 @@ public class PluginTest extends TestCase {
       "PluginTest2c.xml", //$NON-NLS-1$
       "PluginTest2d.xml", //$NON-NLS-1$
       "PluginTest2e.xml", //$NON-NLS-1$
-//      "PluginTest2f.xml"
+//      "PluginTest2f.xml", //$NON-NLS-1$
       "PluginTest3.xml", //$NON-NLS-1$
       "PluginTest4.xml", //$NON-NLS-1$
       "PluginTest5.xml", //$NON-NLS-1$

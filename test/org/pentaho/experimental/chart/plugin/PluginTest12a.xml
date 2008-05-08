@@ -52,6 +52,9 @@
 	  
   <plot style="-x-pentaho-chart-orientation: vertical;"/>
 
-  <axis id="axis_range1" type="range" label="Country" style="-x-pentaho-chart-axis-location: secondary"/> 
+  <axis id="axis_range1" type="range" label="Country" style="-x-pentaho-chart-axis-location: secondary">
+    <label style="color: blue"/>
+    <ticklabel style="color: green"/>
+  </axis>
   
 </chart>

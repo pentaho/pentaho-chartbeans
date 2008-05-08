@@ -15,6 +15,9 @@
  */
 package org.pentaho.experimental.chart;
 
+import java.awt.Image;
+import java.util.ArrayList;
+
 import org.jfree.resourceloader.ResourceKey;
 import org.jfree.resourceloader.ResourceKeyCreationException;
 import org.jfree.resourceloader.ResourceManager;
@@ -26,9 +29,6 @@ import org.pentaho.reporting.libraries.css.dom.StyleReference;
 import org.pentaho.reporting.libraries.css.model.StyleKeyRegistry;
 import org.pentaho.reporting.libraries.css.namespace.DefaultNamespaceCollection;
 import org.pentaho.reporting.libraries.css.namespace.NamespaceCollection;
-
-import java.util.ArrayList;
-import java.awt.Image;
 
 /**
  * The <code>DocumentContext</code> for the Charting systen.
@@ -114,7 +114,7 @@ public class ChartDocumentContext implements DocumentContext {
    * @see ResourceManager#create(ResourceKey, ResourceKey, Class[])
    */
   public Class[] getSupportedResourceTypes() {
-    return (Class[]) ChartDocumentContext.SUPPORTED_TYPES.clone();
+    return ChartDocumentContext.SUPPORTED_TYPES.clone();
   }
 
   /**
@@ -147,9 +147,10 @@ public class ChartDocumentContext implements DocumentContext {
    * @return a list of ordered <code>StyleReferences</code>. The order in the list will be the same as the
    *         order the style information was encountered in the chart document.
    */
-  protected StyleReference[] createStyleReferences(final ChartDocument chartDocument) {
+  //TODO: Do we really need chart document as a parameter here?
+  protected StyleReference[] createStyleReferences(final ChartDocument chartDoc) {
     // Get the set of top-level document items which contain style sheet information
-    final ChartElement[] styleSheetElements = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_STYLESHEET);
+    final ChartElement[] styleSheetElements = chartDoc.getRootElement().findChildrenByName(ChartElement.TAG_NAME_STYLESHEET);
 
     // The list of StyleReferences created from the styleSheetElements
     final ArrayList<StyleReference> styleReferenceList = new ArrayList<StyleReference>(styleSheetElements.length);
@@ -158,7 +159,7 @@ public class ChartDocumentContext implements DocumentContext {
     final int elementsLength = styleSheetElements.length;
     for (int i = 0; i < elementsLength; ++i) {
       // Get the URL from the href attributes
-      final String hrefText = (String) styleSheetElements[i].getAttribute("href");
+      final String hrefText = (String) styleSheetElements[i].getAttribute("href");//$NON-NLS-1$
       if (hrefText != null) {
         final StyleReference linkStyleReference = new StyleReference(StyleReference.LINK, hrefText);
         styleReferenceList.add(linkStyleReference);

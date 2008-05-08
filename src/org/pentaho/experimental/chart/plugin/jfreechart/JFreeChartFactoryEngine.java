@@ -1,5 +1,6 @@
 package org.pentaho.experimental.chart.plugin.jfreechart;
 
+import java.awt.Color;
 import java.io.Serializable;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -46,15 +47,10 @@ public class JFreeChartFactoryEngine implements Serializable {
 
   public JFreeChartFactoryEngine(){
   }
-//
-//  public ChartFactoryEngine getInstance() {
-//    return this;
-//  }
 
-  public IOutput makeChart(final ChartTableModel data, final ChartDocumentContext chartDocumentContext, final ChartResult chartResult)
-  {
+  public IOutput makeChart(final ChartTableModel data, final ChartDocumentContext chartDocumentContext, final ChartResult chartResult) {
     final ChartDocument chartDocument = chartDocumentContext.getChartDocument();
-    CSSConstant currentChartType = JFreeChartUtils.determineChartType(chartDocument);
+    final CSSConstant currentChartType = JFreeChartUtils.determineChartType(chartDocument);
     if (currentChartType == ChartSeriesType.UNDEFINED) {
       chartResult.setErrorCode(IChartPlugin.ERROR_INDETERMINATE_CHART_TYPE);
       chartResult.setDescription(Messages.getErrorString("JFreeChartPlugin.ERROR_0001_CHART_TYPE_INDETERMINABLE")); //$NON-NLS-1$
@@ -74,7 +70,7 @@ public class JFreeChartFactoryEngine implements Serializable {
       } catch (Exception e) {
         chartResult.setErrorCode(IChartPlugin.RESULT_ERROR);
         chartResult.setDescription(e.getLocalizedMessage());
-  }
+      }
     }
   
     return null;
@@ -113,7 +109,7 @@ public class JFreeChartFactoryEngine implements Serializable {
    * @param axisId
    * @return
    */
-  private Integer[] getColumnPositions(ChartDocumentContext chartDocumentContext, AxisSeriesLinkInfo axisSeriesLinkInfo, Object axisId) {
+  private Integer[] getColumnPositions(final ChartDocumentContext chartDocumentContext, final AxisSeriesLinkInfo axisSeriesLinkInfo, final Object axisId) {
     Integer[] columnPosArr = null;
 
     if (chartDocumentContext != null && axisSeriesLinkInfo != null && axisId != null) {
@@ -121,8 +117,7 @@ public class JFreeChartFactoryEngine implements Serializable {
       final ChartDocument chartDocument = chartDocumentContext.getChartDocument();
 
       if (chartDocument != null && seriesDataLinkInfo != null) {
-        final ArrayList<ChartElement> seriesElementsList =
-                (ArrayList<ChartElement>)axisSeriesLinkInfo.getSeriesElements(axisId);
+        final ArrayList<ChartElement> seriesElementsList = axisSeriesLinkInfo.getSeriesElements(axisId);
 
           if (seriesElementsList != null) {
             final int size = seriesElementsList.size();
@@ -132,11 +127,9 @@ public class JFreeChartFactoryEngine implements Serializable {
               final Integer columnPos = seriesDataLinkInfo.getColumnNum(seriesElement);
               columnPosList.add(columnPos);
             }
-            System.out.println(" SWSWD " + columnPosList.toArray().getClass().getName());
             final int listLength = columnPosList.size();
             columnPosArr = new Integer[listLength];
             System.arraycopy(columnPosList.toArray(),0, columnPosArr, 0, listLength);
-            //columnPosArr = (Integer[])columnPosList.toArray();
             Arrays.sort(columnPosArr);
           }
         }
@@ -178,13 +171,13 @@ public class JFreeChartFactoryEngine implements Serializable {
       stacked100Pct |= value.equals(ChartBarStyle.STACK_100_PERCENT);
     }
     
-    JFreeChart chart = null;
+    final JFreeChart chart;
     // Note:  We'll handle url generator when we update the plot info
     if (stacked || stackedPct || stacked100Pct) {
       chart = ChartFactory.createStackedBarChart(title, valueAxisLabel, valueAxisLabel, JFreeChartUtils.createDefaultCategoryDataset(data, chartDocument, null), orientation, legend, toolTips, false);
       if (JFreeChartUtils.getIsStackedGrouped(chartDocument)) {
-        GroupedStackedBarRenderer renderer = new GroupedStackedBarRenderer();       
-        KeyToGroupMap map = JFreeChartUtils.createKeyToGroupMap(chartDocument, data, chart.getCategoryPlot().getDataset());
+        final GroupedStackedBarRenderer renderer = new GroupedStackedBarRenderer();
+        final KeyToGroupMap map = JFreeChartUtils.createKeyToGroupMap(chartDocument, data, chart.getCategoryPlot().getDataset());
         renderer.setSeriesToGroupMap(map);
 //        SubCategoryAxis domainAxis = new SubCategoryAxis("Product / Month");
 //        domainAxis.setCategoryMargin(0.05);
@@ -197,7 +190,7 @@ public class JFreeChartFactoryEngine implements Serializable {
 //        domainAxis.addSubCategory("Europe / Italy");
 //        domainAxis.addSubCategory("Eurpoe / Germany");
 
-        CategoryPlot plot = (CategoryPlot) chart.getPlot();
+        final CategoryPlot plot = (CategoryPlot) chart.getPlot();
 //        plot.setDomainAxis(domainAxis);
         plot.setRenderer(renderer);
       }
@@ -227,10 +220,10 @@ public class JFreeChartFactoryEngine implements Serializable {
 
     /*
      * Assumption:
-     * #1. User has to provide range axis type
+     * #1. User has to provide axis type for each axis (range/domain)
      * #2. User have to specify the axis id for each series
      * The code for handling multiple axis goes here.
-     * 1. Create multiple datasets only if there are more than one range axis
+     * 1. Create multiple datasets only if there are more than one range axis.
      * 2. Update certain axis attributes on the given plot.
      */
     final AxisSeriesLinkInfo axisSeriesLinkInfo = chartDocument.getAxisSeriesLinkInfo();
@@ -243,7 +236,7 @@ public class JFreeChartFactoryEngine implements Serializable {
       for (int i=0; i<rangeAxisCount; i++) {
         final ChartElement axisElement = rangeAxisArrayList.get(i);
         // If there is only one range axis then we do not need to create a new dataset (that uses certain column data)
-        // Instead we just need to update certain attributes
+        // Instead we just need to update certain attributes like label text, tick label color etc.
         if (rangeAxisCount > 1) {
           // Create new dataset since there are more than one range axis and get the data corresponding to
           // certain columns
@@ -252,11 +245,14 @@ public class JFreeChartFactoryEngine implements Serializable {
           plot.mapDatasetToRangeAxis(i, i);
         }
 
-        final ValueAxis valueAxis = createRangeAxis(plot, axisElement, i);
-        plot.setRangeAxis(i, valueAxis);
-
-        setRangeAxisLocation(plot, axisElement, i);
-        setRenderer(plot, i);
+        final ValueAxis valueAxis = createRangeAxis(axisElement);
+        if(valueAxis != null) {
+          plot.setRangeAxis(i, valueAxis);
+          setAxisColor(axisElement, valueAxis, ChartElement.TAG_NAME_LABEL);
+          setAxisColor(axisElement, valueAxis, ChartElement.TAG_NAME_TICK_LABEL);
+          setRangeAxisLocation(plot, axisElement, i);
+          setRenderer(plot, i);
+        }
       }
     }
     return chart;
@@ -264,47 +260,79 @@ public class JFreeChartFactoryEngine implements Serializable {
 
 
   /**
-   * 
+   * Returns custom dataset based on certain column positions. The column positions are retrieved by iterating
+   * over series elements looking for a specific/given axis id.
    * @param chartDocumentContext
    * @param axisElement
    * @param axisSeriesLinkInfo
    * @param data
-   * @return
+   * @return DefaultCategoryDataset that has information from specific column positions.
    */
   private DefaultCategoryDataset getDatasetForAxis(final ChartDocumentContext chartDocumentContext,
                                                    final ChartElement axisElement,
                                                    final AxisSeriesLinkInfo axisSeriesLinkInfo,
                                                    final ChartTableModel data) {
-    /*
-    First we get the information that for each range axis we get the columns array list.
-     */
-    final Object axisID = axisElement.getAttribute("id");
-    final Integer[] columnPosArr = getColumnPositions(chartDocumentContext, axisSeriesLinkInfo, axisID);
     final ChartDocument chartDocument = chartDocumentContext.getChartDocument();
-
-    final DefaultCategoryDataset currDataset = JFreeChartUtils.createDefaultCategoryDataset(data, chartDocument, columnPosArr);
-    return currDataset;
-
+    /*
+     * First we get the column pos information for each range axis from the columns array list.
+     * And then we create the default category dataset based on the columns positions retrieved above.
+     */
+    // Get current axis element's axis id.
+    final Object axisID = axisElement.getAttribute("id");//$NON-NLS-1$
+    // Get the column positions for current axis element by looking into each series for given axis id.
+    final Integer[] columnPosArr = getColumnPositions(chartDocumentContext, axisSeriesLinkInfo, axisID);
+    // Create custom dataset based on the given column positions.
+    return JFreeChartUtils.createDefaultCategoryDataset(data, chartDocument, columnPosArr);
   }
 
   /**
-   *
+   * Creates a Range Axis
    * @param plot
    * @param axisElement
-   * @param rangeAxisCounter
-   * @return
+   * @return Returns the new range axis.
    */
-  private ValueAxis createRangeAxis(final CategoryPlot plot,
-                                    final ChartElement axisElement,
-                                    final int rangeAxisCounter) {
-    final String axisLabel = (String)axisElement.getAttribute("label");
+  private ValueAxis createRangeAxis(final ChartElement axisElement) {
+    final String axisLabel = (String)axisElement.getAttribute("label");//$NON-NLS-1$
     final ValueAxis valueAxis;
     if (axisLabel != null) {
       valueAxis = new NumberAxis(axisLabel);
     } else {
       valueAxis = new NumberAxis();
     }
+//    final ChartElement [] labelElements = axisElement.findChildrenByName(ChartElement.TAG_NAME_LABEL);
+//    if (labelElements != null && labelElements.length > 0) {
+//      final CSSValue colorCSSValue = labelElements[0].getLayoutStyle().getValue(ChartStyleKeys.CSS_COLOR);
+//      final Color labelColor = JFreeChartUtils.getColorFromCSSValue(colorCSSValue);
+//      if (labelColor != null) {
+//        valueAxis.setLabelPaint(labelColor);
+//      }
+//    }
+//
+//    setAxisColor(axisElement, valueAxis, ChartElement.TAG_NAME_LABEL);
+//    setAxisColor(axisElement, valueAxis, ChartElement.TAG_NAME_TICK_LABEL);
+//
     return valueAxis;
+  }
+
+  /**
+   * Sets the axis label and tick label color.
+   * @param axisElement
+   * @param valueAxis
+   * @param labelType
+   */
+  private void setAxisColor(final ChartElement axisElement, final ValueAxis valueAxis, final String labelType) {
+    final ChartElement [] labelElements = axisElement.findChildrenByName(labelType);
+    if (labelElements != null && labelElements.length > 0) {
+      final CSSValue colorCSSValue = labelElements[0].getLayoutStyle().getValue(ChartStyleKeys.CSS_COLOR);
+      final Color axisLabelColor = JFreeChartUtils.getColorFromCSSValue(colorCSSValue);
+      if (axisLabelColor != null) {
+        if (ChartElement.TAG_NAME_LABEL.equalsIgnoreCase(labelType)) {
+          valueAxis.setLabelPaint(axisLabelColor);
+        } else if (ChartElement.TAG_NAME_TICK_LABEL.equalsIgnoreCase(labelType)) {
+          valueAxis.setTickLabelPaint(axisLabelColor);          
+        }
+      }
+    }
   }
 
   /**
@@ -330,7 +358,7 @@ public class JFreeChartFactoryEngine implements Serializable {
    * @param plot
    * @param index
    */
-  private void setRenderer(CategoryPlot plot, final int index ) {
+  private void setRenderer(final CategoryPlot plot, final int index ) {
     if (plot.getRenderer() instanceof GroupedStackedBarRenderer) {
     } else if (plot.getRenderer() instanceof CylinderRenderer) {
     } else if (plot.getRenderer() instanceof LayeredBarRenderer) {
