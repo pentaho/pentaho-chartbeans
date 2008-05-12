@@ -54,9 +54,7 @@ import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.api.ChartItemLabelGenerator;
 import org.pentaho.reporting.libraries.base.config.Configuration;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
-import org.pentaho.reporting.libraries.css.keys.border.BorderStyle;
 import org.pentaho.reporting.libraries.css.keys.border.BorderStyleKeys;
-import org.pentaho.reporting.libraries.css.keys.border.BorderWidth;
 import org.pentaho.reporting.libraries.css.keys.font.FontSizeConstant;
 import org.pentaho.reporting.libraries.css.keys.font.FontStyle;
 import org.pentaho.reporting.libraries.css.keys.font.FontStyleKeys;
@@ -92,6 +90,7 @@ public class JFreeChartUtils {
    *
    * @param data          - ChartTablemodel that represents the data that will be charted
    * @param chartDocument - Contains actual chart definition
+   * @param columnIndexArr - Contains column position information. When not null, we would get data from specified columns.
    * @return DefaultCategoryDataset that can be used as a source for JFreeChart
    */
   public static DefaultCategoryDataset createDefaultCategoryDataset(final ChartTableModel data, final ChartDocument chartDocument, final Integer[] columnIndexArr) {
@@ -149,15 +148,15 @@ public class JFreeChartUtils {
    * @param noColumnName
    * @param scale
    */
-  private static void setDataset(DefaultCategoryDataset dataset,
-                                 ChartDocument chartDocument,
-                                 ChartTableModel data,
-                                 int row,
-                                 int column,
-                                 String noRowNameSpecified,
-                                 String noColumnName,
-                                 double scale) {
-        final String rawColumnName = getColumnName(data, chartDocument, row, column);
+  private static void setDataset(final DefaultCategoryDataset dataset,
+                                 final ChartDocument chartDocument,
+                                 final ChartTableModel data,
+                                 final int row,
+                                 final int column,
+                                 final String noRowNameSpecified,
+                                 final String noColumnName,
+                                 final double scale) {
+        final String rawColumnName = getColumnName(data, column);
         final String columnName = rawColumnName != null ? rawColumnName : noColumnName + column ;
         final Object rawRowName = getRawRowName(data, chartDocument, row);
         final String rowName = rawRowName != null ? String.valueOf(rawRowName): (noRowNameSpecified + row); 
@@ -170,8 +169,8 @@ public class JFreeChartUtils {
       }
     }
 
-  private static Object getRawRowName(final ChartTableModel data, final ChartDocument chartDocument, int row) {
-    StringBuffer syntheticColumnName = new StringBuffer();
+  private static Object getRawRowName(final ChartTableModel data, final ChartDocument chartDocument, final int row) {
+    final StringBuffer syntheticColumnName = new StringBuffer();
     if (getIsStackedGrouped(chartDocument)) {
         ChartElement currentGroup = getBaseStackedGroupElement(chartDocument);
         while (currentGroup != null) {
@@ -186,12 +185,11 @@ public class JFreeChartUtils {
   }
   /**
    * @param data
-   * @param chartDocument
-   * @param row
+   * @param column
    * @return
    */
-  private static String getColumnName(final ChartTableModel data, final ChartDocument chartDocument, final int row, final int column) {
-    return data.getColumnName(column) == null ? Integer.toBinaryString(column) : data.getColumnName(column).toString();
+  private static String getColumnName(final ChartTableModel data, final int column) {
+    return data.getColumnName(column) == null ? Integer.toBinaryString(column) : data.getColumnName(column);
   }
 
   /**
@@ -244,79 +242,24 @@ public class JFreeChartUtils {
    */
   private static void setSeriesBarOutline(final CategoryPlot categoryPlot, final ChartElement[] seriesElements) {
     final int length = seriesElements.length;
+    final StrokeFactory strokeFacObj = StrokeFactory.getStrokeFactoryObject();
     for (int i = 0; i < length; i++) {
       final ChartElement currElement = seriesElements[i];
 
       if (categoryPlot.getRenderer() instanceof BarRenderer) {
         final BarRenderer barRender = (BarRenderer) categoryPlot.getRenderer();
-        final BasicStroke borderStyle = JFreeChartUtils.getBorderStyle(currElement);
-        if (borderStyle != null) {
+        final BasicStroke borderStyleStroke = strokeFacObj.getBorderStroke(currElement);
+        if (borderStyleStroke != null) {
           final CSSValue borderColorValue = currElement.getLayoutStyle().getValue(BorderStyleKeys.BORDER_TOP_COLOR);
           final Color borderColor = JFreeChartUtils.getColorFromCSSValue(borderColorValue);
           if (borderColor != null) {
             barRender.setSeriesOutlinePaint(i, borderColor, true);
           }
-          barRender.setSeriesOutlineStroke(i, borderStyle, true);
+          barRender.setSeriesOutlineStroke(i, borderStyleStroke, true);
           barRender.setDrawBarOutline(true);
         }
       }
     }
-  }
-
-  /**
-   * This method creates a BasicStroke object for border-style like dotted, solid etc
-   * It also incorporates border-width for the border.
-   * <p/>
-   * Currently we only support NONE, HIDDEN, SOLID, DASHED, DOT-DASH and DOTTED.
-   * The border-width: thin, medium and thick have been mapped to static widths.
-   * We do not support separate borders for top, bottom, left and right side of
-   * the bar. So we accept the first value and implement it for border-style and
-   * border-width.
-   *
-   * @param element The current series element
-   * @return BasicStroke  The basic stroke object that would implement border-style and border-width
-   */
-  private static BasicStroke getBorderStyle(final ChartElement element) {
-    final String borderWidth = element.getLayoutStyle().getValue(BorderStyleKeys.BORDER_TOP_WIDTH).getCSSText();
-
-    float width = 0f;
-    if (borderWidth != null) {
-      if (borderWidth.equalsIgnoreCase(BorderWidth.THIN.toString())) {
-        width = 1f;
-      } else if (borderWidth.equalsIgnoreCase(BorderWidth.MEDIUM.toString())) {
-        width = 2f;
-      } else if (borderWidth.equalsIgnoreCase(BorderWidth.THICK.toString())) {
-        width = 4f;
-      }
-    }
-
-    final CSSValue borderStyle = element.getLayoutStyle().getValue(BorderStyleKeys.BORDER_TOP_STYLE);
-    BasicStroke stroke = null;
-
-    if (borderStyle.equals(BorderStyle.SOLID)) {
-      stroke = new BasicStroke(width);
-    } else if (borderStyle.equals(BorderStyle.DASHED)) {
-      stroke = new BasicStroke(width, BasicStroke.CAP_BUTT,
-              BasicStroke.JOIN_MITER,
-              10.0F,
-              new float[]{10.0F, 3.0F},
-              0.F);
-    } else if (borderStyle.equals(BorderStyle.DOT_DASH)) {
-      stroke = new BasicStroke(width, BasicStroke.CAP_BUTT,
-              BasicStroke.JOIN_MITER,
-              10.0F,
-              new float[]{10.0F, 3.0F, 2.0F, 2.0F},
-              0.F);
-    } else if (borderStyle.equals(BorderStyle.DOTTED)) {
-      stroke = new BasicStroke(width, BasicStroke.CAP_ROUND,
-              BasicStroke.JOIN_ROUND,
-              0,
-              new float[]{0, 6, 0, 6},
-              0);
-    }
-
-
-    return stroke;
   }
 
   /**
@@ -392,15 +335,15 @@ public class JFreeChartUtils {
             // and also set the maximum bar width
             if (itemRenderer instanceof BarRenderer) {
               final BarRenderer barRender = (BarRenderer) categoryPlot.getRenderer(datasetCounter);
-          barRender.setGradientPaintTransformer(st);
+              barRender.setGradientPaintTransformer(st);
 
-          if (barWidthPercent > 0) {
-            barRender.setMaximumBarWidth(barWidthPercent);
+              if (barWidthPercent > 0) {
+                barRender.setMaximumBarWidth(barWidthPercent);
+              }
+            }
           }
         }
       }
-    }
-  }
     }
   }
 
@@ -591,7 +534,7 @@ public class JFreeChartUtils {
   private static void setAxisMargins(final CategoryPlot categoryPlot, final ChartDocument chartDocument) {
     final ArrayList<ChartElement> axisElementsList = chartDocument.getAxisSeriesLinkInfo().getDomainAxisElements();
     if (axisElementsList != null) {
-      for(ChartElement axisElement : axisElementsList) {
+      for(final ChartElement axisElement : axisElementsList) {
         if (axisElement != null) {
           final String axisType = (String)axisElement.getAttribute("type");//$NON-NLS-1$
           if (axisType != null &&
@@ -976,8 +919,8 @@ public class JFreeChartUtils {
     return null;
   }
   
-  public static ChartElement getChildGroup(ChartElement parentGroup) {
-    ChartElement[] groupElements = parentGroup.findChildrenByName(ChartElement.TAG_NAME_GROUP);
+  public static ChartElement getChildGroup(final ChartElement parentGroup) {
+    final ChartElement[] groupElements = parentGroup.findChildrenByName(ChartElement.TAG_NAME_GROUP);
     if (groupElements.length > 0) {
       return groupElements[0];
     }
@@ -1001,12 +944,14 @@ public class JFreeChartUtils {
     ChartElement groupElement = getBaseStackedGroupElement(chartDocument);
     
     // First build the set of keys to match against
-    Set matchSet = new HashSet();
-    for (int row = 0; row<data.getRowCount(); row++) {
-      StringBuffer keyStr = new StringBuffer();
-      for (int i=0; i<getGroupDepth(groupElement); i++) {
-        String columnName = groupElement.getAttribute(ChartElement.COLUMN_NAME).toString();
-        int columnNum = data.findColumn(columnName);
+    final Set matchSet = new HashSet();
+    final int rowCount = data.getRowCount();
+    for (int row = 0; row < rowCount; row++) {
+      final StringBuffer keyStr = new StringBuffer();
+      final int groupDepth = getGroupDepth(groupElement);
+      for (int i=0; i<groupDepth; i++) {
+        final String columnName = groupElement.getAttribute(ChartElement.COLUMN_NAME).toString();
+        final int columnNum = data.findColumn(columnName);
         keyStr.append(data.getValueAt(row, columnNum)).append(SEPERATOR);
         groupElement = getChildGroup(groupElement);
       }
@@ -1015,14 +960,13 @@ public class JFreeChartUtils {
     }
     
     // Now we match them and add then to an appropriate group
-    KeyToGroupMap keyToGroupMap = new KeyToGroupMap();
+    final KeyToGroupMap keyToGroupMap = new KeyToGroupMap();
 
-    Iterator matchSetIterator = matchSet.iterator();
-    while (matchSetIterator.hasNext()) {
-      String matchStr = matchSetIterator.next().toString();
-      Iterator rowHeaderIterator = dataSet.getRowKeys().iterator();
+    for (final Object aMatchSet : matchSet) {
+      final String matchStr = aMatchSet.toString();
+      final Iterator rowHeaderIterator = dataSet.getRowKeys().iterator();
       while (rowHeaderIterator.hasNext()) {
-        String rowHeader = rowHeaderIterator.next().toString();
+        final String rowHeader = aMatchSet.toString();
         if (rowHeader.startsWith(matchStr)) {
           keyToGroupMap.mapKeyToGroup(rowHeader, matchStr);
         }
@@ -1033,17 +977,20 @@ public class JFreeChartUtils {
   }
 
   /**
-   * @param groupElement
+   * @param groupElementParam
    * @return
    */
-  private static int getGroupDepth(ChartElement groupElement) {
+  private static int getGroupDepth(final ChartElement groupElementParam) {
     int depth = 0;
-    
-    while(groupElement != null) {
-      depth ++;
-      groupElement = getChildGroup(groupElement);
+
+    if (groupElementParam != null) {
+      ChartElement groupElement = groupElementParam;
+      while(groupElement != null) {
+        depth ++;
+        groupElement = getChildGroup(groupElement);
+      }
     }
-    
+
     return depth;
   }
 }

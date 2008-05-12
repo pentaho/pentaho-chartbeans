@@ -299,18 +299,6 @@ public class JFreeChartFactoryEngine implements Serializable {
     } else {
       valueAxis = new NumberAxis();
     }
-//    final ChartElement [] labelElements = axisElement.findChildrenByName(ChartElement.TAG_NAME_LABEL);
-//    if (labelElements != null && labelElements.length > 0) {
-//      final CSSValue colorCSSValue = labelElements[0].getLayoutStyle().getValue(ChartStyleKeys.CSS_COLOR);
-//      final Color labelColor = JFreeChartUtils.getColorFromCSSValue(colorCSSValue);
-//      if (labelColor != null) {
-//        valueAxis.setLabelPaint(labelColor);
-//      }
-//    }
-//
-//    setAxisColor(axisElement, valueAxis, ChartElement.TAG_NAME_LABEL);
-//    setAxisColor(axisElement, valueAxis, ChartElement.TAG_NAME_TICK_LABEL);
-//
     return valueAxis;
   }
 

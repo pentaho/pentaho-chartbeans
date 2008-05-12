@@ -3,7 +3,7 @@
   <stylesheet>
     .bar1 {
     border-style: solid;
-    border-width: thick;
+    border-width: 1px;
     border-color: black;
     color: blue;
     font-family: sans-serif;
@@ -20,7 +20,7 @@
     .bar2 {
     color: orange;
     border-style: solid;
-    border-width: medium;
+    border-width: 4px;
     border-color: rgb(250,0,0);
     font-family: cursive;
     font-size: 16pt;    

@@ -41,7 +41,13 @@ public class ChartStyleKeys {
    * The line style for line charts (solid, dashed, etc.)
    */
   public static final StyleKey LINE_STYLE = StyleKeyRegistry.getRegistry().
-      createKey("-x-pentaho-chart-line-style", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+      createKey("-x-pentaho-chart-line-style", false, false, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+
+  /**
+   * The line width for line charts (thin, medium, thick, 5px, 0.1cm)
+   */
+  public static final StyleKey LINE_WIDTH = StyleKeyRegistry.getRegistry().
+      createKey("-x-pentaho-chart-line-width", false, false, StyleKey.All_ELEMENTS); //$NON-NLS-1$
 
   /**
    * The bar style for bar charts (bar, cylinder, stacked, etc.)
