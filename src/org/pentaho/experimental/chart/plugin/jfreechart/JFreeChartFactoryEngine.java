@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.io.Serializable;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -25,7 +24,6 @@ import org.pentaho.experimental.chart.ChartDocumentContext;
 import org.pentaho.experimental.chart.core.AxisSeriesLinkInfo;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
-import org.pentaho.experimental.chart.core.ChartSeriesDataLinkInfo;
 import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
 import org.pentaho.experimental.chart.css.styles.ChartAxisLocationType;
 import org.pentaho.experimental.chart.css.styles.ChartBarStyle;
@@ -34,15 +32,21 @@ import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.IChartPlugin;
 import org.pentaho.experimental.chart.plugin.api.ChartResult;
 import org.pentaho.experimental.chart.plugin.api.IOutput;
+import org.pentaho.experimental.chart.plugin.jfreechart.dataset.IDatasetGenerator;
+import org.pentaho.experimental.chart.plugin.jfreechart.dataset.DefaultCategoryDatasetGenerator;
 import org.pentaho.experimental.chart.plugin.jfreechart.outputs.JFreeChartOutput;
 import org.pentaho.experimental.chart.plugin.jfreechart.utils.CylinderRenderer;
 import org.pentaho.experimental.chart.plugin.jfreechart.utils.JFreeChartUtils;
 import org.pentaho.reporting.libraries.css.values.CSSConstant;
 import org.pentaho.reporting.libraries.css.values.CSSValue;
 import org.pentaho.util.messages.Messages;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class JFreeChartFactoryEngine implements Serializable {
-  
+
+  private static final Log logger = LogFactory.getLog(JFreeChartFactoryEngine.class);
+
   private static final long serialVersionUID = -1079376910255750394L;
 
   public JFreeChartFactoryEngine(){
@@ -102,42 +106,6 @@ public class JFreeChartFactoryEngine implements Serializable {
     return chart;
   }
 
-
-  /**
-   * 
-   * @param chartDocumentContext
-   * @param axisId
-   * @return
-   */
-  private Integer[] getColumnPositions(final ChartDocumentContext chartDocumentContext, final AxisSeriesLinkInfo axisSeriesLinkInfo, final Object axisId) {
-    Integer[] columnPosArr = null;
-
-    if (chartDocumentContext != null && axisSeriesLinkInfo != null && axisId != null) {
-      final ChartSeriesDataLinkInfo seriesDataLinkInfo = chartDocumentContext.getDataLinkInfo();
-      final ChartDocument chartDocument = chartDocumentContext.getChartDocument();
-
-      if (chartDocument != null && seriesDataLinkInfo != null) {
-        final ArrayList<ChartElement> seriesElementsList = axisSeriesLinkInfo.getSeriesElements(axisId);
-
-          if (seriesElementsList != null) {
-            final int size = seriesElementsList.size();
-            final ArrayList<Integer> columnPosList = new ArrayList<Integer>();
-            for (int i=0; i<size; i++) {
-              final ChartElement seriesElement = seriesElementsList.get(i);
-              final Integer columnPos = seriesDataLinkInfo.getColumnNum(seriesElement);
-              columnPosList.add(columnPos);
-            }
-            final int listLength = columnPosList.size();
-            columnPosArr = new Integer[listLength];
-            System.arraycopy(columnPosList.toArray(),0, columnPosArr, 0, listLength);
-            Arrays.sort(columnPosArr);
-          }
-        }
-      }
-      
-    return columnPosArr;
-  }
-  
   /**
    * 
    * @param chartDocumentContext
@@ -172,26 +140,27 @@ public class JFreeChartFactoryEngine implements Serializable {
     }
     
     final JFreeChart chart;
+    IDatasetGenerator jfreeDatasetGenerator = JFreeChartUtils.getDatasetGenerator(chartDocumentContext, data);
+    DefaultCategoryDatasetGenerator defaultCategoryDatasetGenerator = null;
+
+    if (jfreeDatasetGenerator == null) {
+      logger.error(Messages.getErrorString("JFreeChartFactoryEngine.ERROR_0001_DATASET_IS_NULL")); //$NON-NLS-1$
+      return null;      
+    } else {
+      if (jfreeDatasetGenerator instanceof DefaultCategoryDatasetGenerator) {
+        defaultCategoryDatasetGenerator = (DefaultCategoryDatasetGenerator) jfreeDatasetGenerator;
+      }
+    }
+
     // Note:  We'll handle url generator when we update the plot info
     if (stacked || stackedPct || stacked100Pct) {
-      chart = ChartFactory.createStackedBarChart(title, valueAxisLabel, valueAxisLabel, JFreeChartUtils.createDefaultCategoryDataset(data, chartDocument, null), orientation, legend, toolTips, false);
+      chart = ChartFactory.createStackedBarChart(title, valueAxisLabel, valueAxisLabel, defaultCategoryDatasetGenerator.createDataset(), orientation, legend, toolTips, false);
       if (JFreeChartUtils.getIsStackedGrouped(chartDocument)) {
         final GroupedStackedBarRenderer renderer = new GroupedStackedBarRenderer();
         final KeyToGroupMap map = JFreeChartUtils.createKeyToGroupMap(chartDocument, data, chart.getCategoryPlot().getDataset());
         renderer.setSeriesToGroupMap(map);
-//        SubCategoryAxis domainAxis = new SubCategoryAxis("Product / Month");
-//        domainAxis.setCategoryMargin(0.05);
-//        domainAxis.addSubCategory("North America / Canada");
-//        domainAxis.addSubCategory("North America / USA");
-//        domainAxis.addSubCategory("Asia / Russia");
-//        domainAxis.addSubCategory("Asia / China");
-//        domainAxis.addSubCategory("South America / Peru");
-//        domainAxis.addSubCategory("South America / Brazil");
-//        domainAxis.addSubCategory("Europe / Italy");
-//        domainAxis.addSubCategory("Eurpoe / Germany");
 
         final CategoryPlot plot = (CategoryPlot) chart.getPlot();
-//        plot.setDomainAxis(domainAxis);
         plot.setRenderer(renderer);
       }
       ((StackedBarRenderer)chart.getCategoryPlot().getRenderer()).setRenderAsPercentages(stackedPct || stacked100Pct);
@@ -201,11 +170,11 @@ public class JFreeChartFactoryEngine implements Serializable {
       }
     } else {   
       if (cylinder) {
-        chart = ChartFactory.createBarChart(title, valueCategoryLabel, valueAxisLabel, JFreeChartUtils.createDefaultCategoryDataset(data, chartDocument, null), orientation, legend, toolTips, false);
+        chart = ChartFactory.createBarChart(title, valueCategoryLabel, valueAxisLabel, defaultCategoryDatasetGenerator.createDataset(), orientation, legend, toolTips, false);
         final CylinderRenderer renderer = new CylinderRenderer();
         chart.getCategoryPlot().setRenderer(renderer);
       } else if (layered) { 
-        chart = ChartFactory.createBarChart(title, valueCategoryLabel, valueAxisLabel, JFreeChartUtils.createDefaultCategoryDataset(data, chartDocument, null), orientation, legend, toolTips, false);
+        chart = ChartFactory.createBarChart(title, valueCategoryLabel, valueAxisLabel, defaultCategoryDatasetGenerator.createDataset(), orientation, legend, toolTips, false);
         final LayeredBarRenderer renderer = new LayeredBarRenderer();
         renderer.setDrawBarOutline(false);
         chart.getCategoryPlot().setRenderer(renderer);
@@ -214,7 +183,7 @@ public class JFreeChartFactoryEngine implements Serializable {
         chart = ChartFactory.createBarChart(title, valueCategoryLabel, valueAxisLabel, JFreeChartUtils.createDefaultIntervalCategoryDataset(data, chartDocument), orientation, legend, toolTips, false);
         chart.getCategoryPlot().setRenderer(new IntervalBarRenderer());
       } else {
-        chart = ChartFactory.createBarChart(title, valueCategoryLabel, valueAxisLabel, JFreeChartUtils.createDefaultCategoryDataset(data, chartDocument, null), orientation, legend, toolTips, false);
+        chart = ChartFactory.createBarChart(title, valueCategoryLabel, valueAxisLabel, defaultCategoryDatasetGenerator.createDataset(), orientation, legend, toolTips, false);
       }
     }
 
@@ -235,12 +204,12 @@ public class JFreeChartFactoryEngine implements Serializable {
 
       for (int i=0; i<rangeAxisCount; i++) {
         final ChartElement axisElement = rangeAxisArrayList.get(i);
-        // If there is only one range axis then we do not need to create a new dataset (that uses certain column data)
+        // If there is only one range axis then we do not need to create a new jfreeDataset (that uses certain column data)
         // Instead we just need to update certain attributes like label text, tick label color etc.
         if (rangeAxisCount > 1) {
-          // Create new dataset since there are more than one range axis and get the data corresponding to
+          // Create new jfreeDataset since there are more than one range axis and get the data corresponding to
           // certain columns
-          final DefaultCategoryDataset currDataset = getDatasetForAxis(chartDocumentContext, axisElement, axisSeriesLinkInfo, data);
+          final DefaultCategoryDataset currDataset = defaultCategoryDatasetGenerator.createDataset(axisElement, axisSeriesLinkInfo);
           plot.setDataset(i, currDataset);
           plot.mapDatasetToRangeAxis(i, i);
         }
@@ -258,36 +227,8 @@ public class JFreeChartFactoryEngine implements Serializable {
     return chart;
   }
 
-
-  /**
-   * Returns custom dataset based on certain column positions. The column positions are retrieved by iterating
-   * over series elements looking for a specific/given axis id.
-   * @param chartDocumentContext
-   * @param axisElement
-   * @param axisSeriesLinkInfo
-   * @param data
-   * @return DefaultCategoryDataset that has information from specific column positions.
-   */
-  private DefaultCategoryDataset getDatasetForAxis(final ChartDocumentContext chartDocumentContext,
-                                                   final ChartElement axisElement,
-                                                   final AxisSeriesLinkInfo axisSeriesLinkInfo,
-                                                   final ChartTableModel data) {
-    final ChartDocument chartDocument = chartDocumentContext.getChartDocument();
-    /*
-     * First we get the column pos information for each range axis from the columns array list.
-     * And then we create the default category dataset based on the columns positions retrieved above.
-     */
-    // Get current axis element's axis id.
-    final Object axisID = axisElement.getAttribute("id");//$NON-NLS-1$
-    // Get the column positions for current axis element by looking into each series for given axis id.
-    final Integer[] columnPosArr = getColumnPositions(chartDocumentContext, axisSeriesLinkInfo, axisID);
-    // Create custom dataset based on the given column positions.
-    return JFreeChartUtils.createDefaultCategoryDataset(data, chartDocument, columnPosArr);
-  }
-
   /**
    * Creates a Range Axis
-   * @param plot
    * @param axisElement
    * @return Returns the new range axis.
    */
@@ -361,6 +302,5 @@ public class JFreeChartFactoryEngine implements Serializable {
    */
   private JFreeChart makeLineChart(final ChartTableModel data, final ChartDocument chartDocument) {
     return null;
-  }
-  
+  } 
 }

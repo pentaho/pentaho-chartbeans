@@ -37,11 +37,10 @@ import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.urls.StandardCategoryURLGenerator;
 import org.jfree.data.KeyToGroupMap;
 import org.jfree.data.category.CategoryDataset;
-import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.category.DefaultIntervalCategoryDataset;
 import org.jfree.ui.GradientPaintTransformType;
 import org.jfree.ui.StandardGradientPaintTransformer;
-import org.pentaho.experimental.chart.ChartBoot;
+import org.pentaho.experimental.chart.ChartDocumentContext;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
 import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
@@ -52,7 +51,9 @@ import org.pentaho.experimental.chart.css.styles.ChartOrientationStyle;
 import org.pentaho.experimental.chart.css.styles.ChartSeriesType;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.api.ChartItemLabelGenerator;
-import org.pentaho.reporting.libraries.base.config.Configuration;
+import org.pentaho.experimental.chart.plugin.jfreechart.dataset.IDatasetGenerator;
+import org.pentaho.experimental.chart.plugin.jfreechart.dataset.DatasetGeneratorFactory;
+import org.pentaho.experimental.chart.plugin.jfreechart.dataset.DefaultCategoryDatasetGenerator;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
 import org.pentaho.reporting.libraries.css.keys.border.BorderStyleKeys;
 import org.pentaho.reporting.libraries.css.keys.font.FontSizeConstant;
@@ -79,97 +80,18 @@ public class JFreeChartUtils {
   private JFreeChartUtils() {
   }
 
-  /**
-   * This method iterates through the rows and columns to populate a DefaultCategoryDataset.
-   * Since a CategoryDataset stores values based on a multikey hash we supply as the keys
-   * either the metadata column name or the column number and the metadata row name or row number
-   * as the keys.
-   * <p/>
-   * As it's processing the data from the ChartTableModel into the DefaultCategoryDataset it
-   * applies the scale specified in the
-   *
-   * @param data          - ChartTablemodel that represents the data that will be charted
-   * @param chartDocument - Contains actual chart definition
-   * @param columnIndexArr - Contains column position information. When not null, we would get data from specified columns.
-   * @return DefaultCategoryDataset that can be used as a source for JFreeChart
-   */
-  public static DefaultCategoryDataset createDefaultCategoryDataset(final ChartTableModel data, final ChartDocument chartDocument, final Integer[] columnIndexArr) {
-    final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-    final int rowCount = data.getRowCount();
-    final Configuration config = ChartBoot.getInstance().getGlobalConfig();
-    final String noRowNameSpecified = config.getConfigProperty("org.pentaho.experimental.chart.namespace.row_name_not_defined"); //$NON-NLS-1$
-    final int colCount = data.getColumnCount();
-    final String noColumnName = config.getConfigProperty("org.pentaho.experimental.chart.namespace.column_name_not_defined"); //$NON-NLS-1$
-    final double scale = JFreeChartUtils.getScale(chartDocument);
-
-    // Only if we have to separate datasets then do we do some column processing in the given data
-    // else we simply process all rows and all columns
-    if (columnIndexArr != null) {
-      final int columnIndexArrLength = columnIndexArr.length;
-      for (int row = 0; row < rowCount; row++) {
-        int columnIndexArrCounter = 0;
-        for (int column = 0; column < colCount; column++) {
-          if (columnIndexArrCounter < columnIndexArrLength) {
-            // if the current column is what we want in the dataset (based on column indexes in columnIndexArr),
-            // then process the data
-            // Else move to the next column
-            if (column == columnIndexArr[columnIndexArrCounter]) {
-              setDataset(dataset, chartDocument, data, row, column, noRowNameSpecified, noColumnName, scale);
-              // Increment the counter so that we can process the next column in the columnIndexArr
-              columnIndexArrCounter++;
-            }
-          } else {
-            // if we have reached beyond the last element in the column index array then simply start processing
-            // the next row of data.
-            break;
-          }
-        }
-      }      
+  public static IDatasetGenerator getDatasetGenerator(final ChartDocumentContext chartDocumentContext, final ChartTableModel data) {
+    final DatasetGeneratorFactory DatasetGeneratorFactory = new DatasetGeneratorFactory();
+    final IDatasetGenerator jfreeDataset = DatasetGeneratorFactory.generateDatasetCreator(chartDocumentContext, data);
+    DefaultCategoryDatasetGenerator datasetGenerator = null;
+    if (jfreeDataset instanceof DefaultCategoryDatasetGenerator) {
+      datasetGenerator = (DefaultCategoryDatasetGenerator) jfreeDataset;
     }
-    // If we do not want to process entire data as is (without dividing the dataset)
-    // then simply process all the dataset
-    else {
-    for (int row = 0; row < rowCount; row++) {
-      for (int column = 0; column < colCount; column++) {
-          setDataset(dataset, chartDocument, data, row, column, noRowNameSpecified, noColumnName, scale);
-        }
-      }
-    }
-    return dataset;
+    return datasetGenerator;
   }
 
-  /**
-   * 
-   * @param dataset
-   * @param data
-   * @param row
-   * @param column
-   * @param noRowNameSpecified
-   * @param noColumnName
-   * @param scale
-   */
-  private static void setDataset(final DefaultCategoryDataset dataset,
-                                 final ChartDocument chartDocument,
-                                 final ChartTableModel data,
-                                 final int row,
-                                 final int column,
-                                 final String noRowNameSpecified,
-                                 final String noColumnName,
-                                 final double scale) {
-        final String rawColumnName = getColumnName(data, column);
-        final String columnName = rawColumnName != null ? rawColumnName : noColumnName + column ;
-        final Object rawRowName = getRawRowName(data, chartDocument, row);
-        final String rowName = rawRowName != null ? String.valueOf(rawRowName): (noRowNameSpecified + row); 
-        final Object rawValue = data.getValueAt(row, column);
-        if (rawValue instanceof Number) {
-        final Number number = (Number) rawValue;
-          double value = number.doubleValue();
-          value *= scale;
-          dataset.setValue(value, rowName, columnName);
-      }
-    }
 
-  private static Object getRawRowName(final ChartTableModel data, final ChartDocument chartDocument, final int row) {
+  public static Object getRawRowName(final ChartTableModel data, final ChartDocument chartDocument, final int row) {
     final StringBuffer syntheticColumnName = new StringBuffer();
     if (getIsStackedGrouped(chartDocument)) {
         ChartElement currentGroup = getBaseStackedGroupElement(chartDocument);
@@ -188,7 +110,7 @@ public class JFreeChartUtils {
    * @param column
    * @return
    */
-  private static String getColumnName(final ChartTableModel data, final int column) {
+  public static String getColumnName(final ChartTableModel data, final int column) {
     return data.getColumnName(column) == null ? Integer.toBinaryString(column) : data.getColumnName(column);
   }
 
@@ -198,7 +120,7 @@ public class JFreeChartUtils {
    * @param chartDocument Contains actual chart definition
    * @return Returns the scale for the current plot
    */
-  private static double getScale(final ChartDocument chartDocument) {
+  public static double getScale(final ChartDocument chartDocument) {
     return ((CSSNumericValue)chartDocument.getPlotElement().getLayoutStyle().getValue(ChartStyleKeys.SCALE_NUM)).getValue();
   }
 
@@ -374,7 +296,6 @@ public class JFreeChartUtils {
    *                      not defined or not found
    * @return int value of the real column in the data.
    */
-  @SuppressWarnings({"ReuseOfLocalVariable"})
   private static int getSeriesColumn(final ChartElement seriesElement, final ChartTableModel data, final int columnDefault) {
     Object positionAttr = seriesElement.getAttribute(ChartElement.COLUMN_POSITION);
     final int column;
