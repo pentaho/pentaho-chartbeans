@@ -34,6 +34,7 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
+import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.chart.urls.StandardCategoryURLGenerator;
 import org.jfree.data.KeyToGroupMap;
 import org.jfree.data.category.CategoryDataset;
@@ -183,6 +184,29 @@ public class JFreeChartUtils {
       }
     }
   }
+  
+  /**
+   * @param categoryPlot
+   * @param seriesElements
+   * 
+   * Sets the line width for each of the series that is defined as a lineRenderer
+   */
+  private static void setSeriesLineWidth(CategoryPlot categoryPlot, ChartElement[] seriesElements) {
+    final int length = seriesElements.length;
+    final StrokeFactory strokeFacObj = StrokeFactory.getStrokeFactoryObject();
+    for (int i = 0; i < length; i++) {
+      final ChartElement currElement = seriesElements[i];
+
+      if (categoryPlot.getRenderer() instanceof LineAndShapeRenderer) {
+        final LineAndShapeRenderer lineAndShapeRenderer = (LineAndShapeRenderer) categoryPlot.getRenderer();
+        final BasicStroke lineStyleStroke = strokeFacObj.getLineStroke(currElement);
+        if (lineStyleStroke != null) {
+          lineAndShapeRenderer.setSeriesStroke(i, lineStyleStroke);
+        }
+      }
+    }
+  }
+
 
   /**
    * Sets the series item label(s) defined in the chartDocument
@@ -539,7 +563,9 @@ public class JFreeChartUtils {
     JFreeChartUtils.setSeriesItemLabel(categoryPlot, seriesElements, data);
     JFreeChartUtils.setSeriesPaint(categoryPlot, seriesElements, data);
     JFreeChartUtils.setSeriesBarOutline(categoryPlot, seriesElements);
+    JFreeChartUtils.setSeriesLineWidth(categoryPlot, seriesElements);
   }
+
 
   /**
    * Creates a GradientPaint object from the current series element using

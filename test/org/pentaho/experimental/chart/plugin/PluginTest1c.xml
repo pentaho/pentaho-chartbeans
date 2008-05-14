@@ -1,0 +1,38 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+
+  <stylesheet>
+    .line1 {
+    color: blue;
+    -x-pentaho-chart-series-type: line;
+    -x-pentaho-chart-categorical: true;
+    -x-pentaho-chart-line-style: dashed;
+    -x-pentaho-chart-line-width: 4px;
+    }
+
+    .line2 {
+    color: yellow;
+    -x-pentaho-chart-series-type: line;
+    -x-pentaho-chart-categorical: true;
+    -x-pentaho-chart-line-style: solid;
+    -x-pentaho-chart-line-width: 6px;
+    }
+
+    .line3 {
+    color: green;
+    -x-pentaho-chart-series-type: line;
+    -x-pentaho-chart-categorical: true;
+    -x-pentaho-chart-line-style: dashed;
+    -x-pentaho-chart-line-width: 8px;
+    }
+  </stylesheet>
+
+  <title>Test for Line charts</title>
+  
+  <series name="budget" class="line1" column-pos="2"/>
+
+  <series name="sales" class="line2" column-name="sales"/>
+
+  <series name="forecast" class="line3" column-pos="0"/>
+
+  <plot style="-x-pentaho-chart-orientation: horizontal; -x-pentaho-chart-drill-url-template: url(http://localhost:8080/Pentaho/JPivot); -x-pentaho-chart-scale: 1"/>
+</chart>

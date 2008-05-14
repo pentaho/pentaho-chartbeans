@@ -49,7 +49,7 @@ public class JFreeChartFactoryEngine implements Serializable {
 
   private static final long serialVersionUID = -1079376910255750394L;
 
-  public JFreeChartFactoryEngine(){
+  public JFreeChartFactoryEngine() {
   }
 
   public IOutput makeChart(final ChartTableModel data, final ChartDocumentContext chartDocumentContext, final ChartResult chartResult) {
@@ -70,13 +70,13 @@ public class JFreeChartFactoryEngine implements Serializable {
       }
     } else if (currentChartType == ChartSeriesType.LINE) {
       try {
-        return new JFreeChartOutput(makeLineChart(data, chartDocument));
+        return new JFreeChartOutput(makeLineChart(data, chartDocumentContext));
       } catch (Exception e) {
         chartResult.setErrorCode(IChartPlugin.RESULT_ERROR);
         chartResult.setDescription(e.getLocalizedMessage());
       }
     }
-  
+
     return null;
   }
 
@@ -138,7 +138,7 @@ public class JFreeChartFactoryEngine implements Serializable {
       layered |= value.equals(ChartBarStyle.LAYERED);
       stacked100Pct |= value.equals(ChartBarStyle.STACK_100_PERCENT);
     }
-    
+
     final JFreeChart chart;
     IDatasetGenerator jfreeDatasetGenerator = JFreeChartUtils.getDatasetGenerator(chartDocumentContext, data);
     DefaultCategoryDatasetGenerator defaultCategoryDatasetGenerator = null;
@@ -163,17 +163,17 @@ public class JFreeChartFactoryEngine implements Serializable {
         final CategoryPlot plot = (CategoryPlot) chart.getPlot();
         plot.setRenderer(renderer);
       }
-      ((StackedBarRenderer)chart.getCategoryPlot().getRenderer()).setRenderAsPercentages(stackedPct || stacked100Pct);
+      ((StackedBarRenderer) chart.getCategoryPlot().getRenderer()).setRenderAsPercentages(stackedPct || stacked100Pct);
       if (stacked100Pct) {
         final NumberAxis rangeAxis = (NumberAxis) chart.getCategoryPlot().getRangeAxis();
         rangeAxis.setNumberFormatOverride(NumberFormat.getPercentInstance());
       }
-    } else {   
+    } else {
       if (cylinder) {
         chart = ChartFactory.createBarChart(title, valueCategoryLabel, valueAxisLabel, defaultCategoryDatasetGenerator.createDataset(), orientation, legend, toolTips, false);
         final CylinderRenderer renderer = new CylinderRenderer();
         chart.getCategoryPlot().setRenderer(renderer);
-      } else if (layered) { 
+      } else if (layered) {
         chart = ChartFactory.createBarChart(title, valueCategoryLabel, valueAxisLabel, defaultCategoryDatasetGenerator.createDataset(), orientation, legend, toolTips, false);
         final LayeredBarRenderer renderer = new LayeredBarRenderer();
         renderer.setDrawBarOutline(false);
@@ -200,9 +200,9 @@ public class JFreeChartFactoryEngine implements Serializable {
     final int rangeAxisCount = rangeAxisArrayList.size();
 
     if (chart != null && rangeAxisCount > 0) {
-      final CategoryPlot plot = (CategoryPlot)chart.getPlot();
+      final CategoryPlot plot = (CategoryPlot) chart.getPlot();
 
-      for (int i=0; i<rangeAxisCount; i++) {
+      for (int i = 0; i < rangeAxisCount; i++) {
         final ChartElement axisElement = rangeAxisArrayList.get(i);
         // If there is only one range axis then we do not need to create a new jfreeDataset (that uses certain column data)
         // Instead we just need to update certain attributes like label text, tick label color etc.
@@ -215,7 +215,7 @@ public class JFreeChartFactoryEngine implements Serializable {
         }
 
         final ValueAxis valueAxis = createRangeAxis(axisElement);
-        if(valueAxis != null) {
+        if (valueAxis != null) {
           plot.setRangeAxis(i, valueAxis);
           setAxisColor(axisElement, valueAxis, ChartElement.TAG_NAME_LABEL);
           setAxisColor(axisElement, valueAxis, ChartElement.TAG_NAME_TICK_LABEL);
@@ -233,7 +233,7 @@ public class JFreeChartFactoryEngine implements Serializable {
    * @return Returns the new range axis.
    */
   private ValueAxis createRangeAxis(final ChartElement axisElement) {
-    final String axisLabel = (String)axisElement.getAttribute("label");//$NON-NLS-1$
+    final String axisLabel = (String) axisElement.getAttribute("label");//$NON-NLS-1$
     final ValueAxis valueAxis;
     if (axisLabel != null) {
       valueAxis = new NumberAxis(axisLabel);
@@ -250,7 +250,7 @@ public class JFreeChartFactoryEngine implements Serializable {
    * @param labelType
    */
   private void setAxisColor(final ChartElement axisElement, final ValueAxis valueAxis, final String labelType) {
-    final ChartElement [] labelElements = axisElement.findChildrenByName(labelType);
+    final ChartElement[] labelElements = axisElement.findChildrenByName(labelType);
     if (labelElements != null && labelElements.length > 0) {
       final CSSValue colorCSSValue = labelElements[0].getLayoutStyle().getValue(ChartStyleKeys.CSS_COLOR);
       final Color axisLabelColor = JFreeChartUtils.getColorFromCSSValue(colorCSSValue);
@@ -258,7 +258,7 @@ public class JFreeChartFactoryEngine implements Serializable {
         if (ChartElement.TAG_NAME_LABEL.equalsIgnoreCase(labelType)) {
           valueAxis.setLabelPaint(axisLabelColor);
         } else if (ChartElement.TAG_NAME_TICK_LABEL.equalsIgnoreCase(labelType)) {
-          valueAxis.setTickLabelPaint(axisLabelColor);          
+          valueAxis.setTickLabelPaint(axisLabelColor);
         }
       }
     }
@@ -275,10 +275,10 @@ public class JFreeChartFactoryEngine implements Serializable {
                                      final int axisCounter) {
     final CSSValue cssValue = axisElement.getLayoutStyle().getValue(ChartStyleKeys.AXIS_LOCATION);
     final String side = cssValue.getCSSText();
-    if (side != null && (cssValue.equals(ChartAxisLocationType.PRIMARY))){
+    if (side != null && (cssValue.equals(ChartAxisLocationType.PRIMARY))) {
       plot.setRangeAxisLocation(axisCounter, AxisLocation.BOTTOM_OR_LEFT);
     } else {
-      plot.setRangeAxisLocation(axisCounter, AxisLocation.TOP_OR_RIGHT);                        
+      plot.setRangeAxisLocation(axisCounter, AxisLocation.TOP_OR_RIGHT);
     }
   }
 
@@ -287,7 +287,7 @@ public class JFreeChartFactoryEngine implements Serializable {
    * @param plot
    * @param index
    */
-  private void setRenderer(final CategoryPlot plot, final int index ) {
+  private void setRenderer(final CategoryPlot plot, final int index) {
     if (plot.getRenderer() instanceof GroupedStackedBarRenderer) {
     } else if (plot.getRenderer() instanceof CylinderRenderer) {
     } else if (plot.getRenderer() instanceof LayeredBarRenderer) {
@@ -300,7 +300,51 @@ public class JFreeChartFactoryEngine implements Serializable {
   /* (non-Javadoc)
    * @see org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine#makeLineChart(org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.api.IOutput)
    */
-  private JFreeChart makeLineChart(final ChartTableModel data, final ChartDocument chartDocument) {
-    return null;
-  } 
+  private JFreeChart makeLineChart(final ChartTableModel data, final ChartDocumentContext chartDocumentContext) {
+    final ChartDocument chartDocument = chartDocumentContext.getChartDocument();
+    final String title = JFreeChartUtils.getTitle(chartDocument);
+    final String valueCategoryLabel = JFreeChartUtils.getValueCategoryLabel(chartDocument);
+    final String valueAxisLabel = JFreeChartUtils.getValueAxisLabel(chartDocument);
+    final PlotOrientation orientation = JFreeChartUtils.getPlotOrientation(chartDocument);
+    final boolean legend = JFreeChartUtils.getShowLegend(chartDocument);
+    final boolean toolTips = JFreeChartUtils.getShowToolTips(chartDocument);
+    final JFreeChart chart = createLineChartSubtype(chartDocumentContext, data, title, valueCategoryLabel, valueAxisLabel, orientation, legend, toolTips);
+    JFreeChartUtils.setPlotAttributes(chart.getCategoryPlot(), chartDocument, data);
+
+    return chart;
+  }
+
+  /**
+   * @param chartDocumentContext
+   * @param data
+   * @param title
+   * @param valueCategoryLabel
+   * @param valueAxisLabel
+   * @param orientation
+   * @param legend
+   * @param toolTips
+   * @return
+   */
+  private JFreeChart createLineChartSubtype(ChartDocumentContext chartDocumentContext, ChartTableModel data, String title, String valueCategoryLabel, String valueAxisLabel, PlotOrientation orientation, boolean legend, boolean toolTips) {
+    final ChartDocument chartDocument = chartDocumentContext.getChartDocument();
+
+    JFreeChart chart = null;
+
+    IDatasetGenerator jfreeDatasetGenerator = JFreeChartUtils.getDatasetGenerator(chartDocumentContext, data);
+    DefaultCategoryDatasetGenerator defaultCategoryDatasetGenerator = null;
+
+    if (jfreeDatasetGenerator == null) {
+      logger.error(Messages.getErrorString("JFreeChartFactoryEngine.ERROR_0001_DATASET_IS_NULL")); //$NON-NLS-1$
+      return null;      
+    } else {
+      if (jfreeDatasetGenerator instanceof DefaultCategoryDatasetGenerator) {
+        defaultCategoryDatasetGenerator = (DefaultCategoryDatasetGenerator) jfreeDatasetGenerator;
+      }
+    }
+
+    chart = ChartFactory.createLineChart(title, valueAxisLabel, valueAxisLabel, defaultCategoryDatasetGenerator.createDataset(), orientation, legend, toolTips, toolTips);
+
+    return chart;
+  }
+
 }

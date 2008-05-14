@@ -230,6 +230,7 @@ public class PluginTest extends TestCase {
     final String[] fileNames = new String[] {
       "PluginTest1a.xml", //$NON-NLS-1$
       "PluginTest1b.xml", //$NON-NLS-1$
+      "PluginTest1c.xml", //$NON-NLS-1$ 
       "PluginTest2a.xml", //$NON-NLS-1$
       "PluginTest2b.xml", //$NON-NLS-1$
       "PluginTest2c.xml", //$NON-NLS-1$
