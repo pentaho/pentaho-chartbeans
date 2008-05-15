@@ -17,6 +17,7 @@
     -x-pentaho-chart-line-style: solid;
     -x-pentaho-chart-line-width: 6px;
     -x-pentaho-chart-line-visible: no;
+    -x-pentaho-chart-marker-visible: yes;
     }
 
     .line3 {
@@ -25,6 +26,7 @@
     -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-line-style: dashed;
     -x-pentaho-chart-line-width: 8px;
+    -x-pentaho-chart-marker-visible: yes;
     }
   </stylesheet>
 
@@ -36,5 +38,5 @@
 
   <series name="forecast" class="line3" column-pos="0"/>
 
-  <plot style="-x-pentaho-chart-orientation: horizontal; -x-pentaho-chart-drill-url-template: url(http://localhost:8080/Pentaho/JPivot); -x-pentaho-chart-scale: 1"/>
+  <plot style="-x-pentaho-chart-orientation: vertical; -x-pentaho-chart-drill-url-template: url(http://localhost:8080/Pentaho/JPivot); -x-pentaho-chart-scale: 1"/>
 </chart>

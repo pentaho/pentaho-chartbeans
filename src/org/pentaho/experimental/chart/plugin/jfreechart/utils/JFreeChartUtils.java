@@ -49,6 +49,7 @@ import org.pentaho.experimental.chart.css.styles.ChartCSSFontSizeMappingConstant
 import org.pentaho.experimental.chart.css.styles.ChartGradientType;
 import org.pentaho.experimental.chart.css.styles.ChartItemLabelVisibleType;
 import org.pentaho.experimental.chart.css.styles.ChartLineVisibleType;
+import org.pentaho.experimental.chart.css.styles.ChartMarkerVisibleType;
 import org.pentaho.experimental.chart.css.styles.ChartOrientationStyle;
 import org.pentaho.experimental.chart.css.styles.ChartSeriesType;
 import org.pentaho.experimental.chart.data.ChartTableModel;
@@ -200,7 +201,6 @@ public class JFreeChartUtils {
 
       if (categoryPlot.getRenderer() instanceof LineAndShapeRenderer) {
         final LineAndShapeRenderer lineAndShapeRenderer = (LineAndShapeRenderer) categoryPlot.getRenderer();
-        // TODO this is where we will set the line visibility (lineAndShapeRenderer.setSeriesLinesVisible(i, XXXX);
         final String visibleStr = currElement.getLayoutStyle().getValue(ChartStyleKeys.LINE_VISIBLE).getCSSText();
         lineAndShapeRenderer.setSeriesLinesVisible(i, ChartLineVisibleType.YES.getCSSText().equalsIgnoreCase(visibleStr));
         final BasicStroke lineStyleStroke = strokeFacObj.getLineStroke(currElement);
@@ -225,8 +225,8 @@ public class JFreeChartUtils {
 
       if (categoryPlot.getRenderer() instanceof LineAndShapeRenderer) {
         final LineAndShapeRenderer lineAndShapeRenderer = (LineAndShapeRenderer) categoryPlot.getRenderer();
-        // TODO this is where we will set the marker visibility
-        
+        final String visibleStr = currElement.getLayoutStyle().getValue(ChartStyleKeys.MARKER_VISIBLE).getCSSText();
+        lineAndShapeRenderer.setSeriesShapesVisible(i, ChartMarkerVisibleType.YES.getCSSText().equalsIgnoreCase(visibleStr));
       }
     }
   }
