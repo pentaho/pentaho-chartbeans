@@ -48,6 +48,7 @@ import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
 import org.pentaho.experimental.chart.css.styles.ChartCSSFontSizeMappingConstants;
 import org.pentaho.experimental.chart.css.styles.ChartGradientType;
 import org.pentaho.experimental.chart.css.styles.ChartItemLabelVisibleType;
+import org.pentaho.experimental.chart.css.styles.ChartLineVisibleType;
 import org.pentaho.experimental.chart.css.styles.ChartOrientationStyle;
 import org.pentaho.experimental.chart.css.styles.ChartSeriesType;
 import org.pentaho.experimental.chart.data.ChartTableModel;
@@ -75,7 +76,7 @@ import org.pentaho.reporting.libraries.css.values.CSSValuePair;
 public class JFreeChartUtils {
 
   private static final Log logger = LogFactory.getLog(JFreeChartUtils.class);
-
+  
   private static final char SEPERATOR = '/';
   private static final String DOMAIN_AXIS="domain";//$NON-NLS-1$
   private JFreeChartUtils() {
@@ -191,7 +192,7 @@ public class JFreeChartUtils {
    * 
    * Sets the line width for each of the series that is defined as a lineRenderer
    */
-  private static void setSeriesLineWidth(CategoryPlot categoryPlot, ChartElement[] seriesElements) {
+  private static void setSeriesLineStyles(CategoryPlot categoryPlot, ChartElement[] seriesElements) {
     final int length = seriesElements.length;
     final StrokeFactory strokeFacObj = StrokeFactory.getStrokeFactoryObject();
     for (int i = 0; i < length; i++) {
@@ -199,6 +200,9 @@ public class JFreeChartUtils {
 
       if (categoryPlot.getRenderer() instanceof LineAndShapeRenderer) {
         final LineAndShapeRenderer lineAndShapeRenderer = (LineAndShapeRenderer) categoryPlot.getRenderer();
+        // TODO this is where we will set the line visibility (lineAndShapeRenderer.setSeriesLinesVisible(i, XXXX);
+        final String visibleStr = currElement.getLayoutStyle().getValue(ChartStyleKeys.LINE_VISIBLE).getCSSText();
+        lineAndShapeRenderer.setSeriesLinesVisible(i, ChartLineVisibleType.YES.getCSSText().equalsIgnoreCase(visibleStr));
         final BasicStroke lineStyleStroke = strokeFacObj.getLineStroke(currElement);
         if (lineStyleStroke != null) {
           lineAndShapeRenderer.setSeriesStroke(i, lineStyleStroke);
@@ -206,6 +210,27 @@ public class JFreeChartUtils {
       }
     }
   }
+
+  /**
+   * @param categoryPlot
+   * @param seriesElements
+   * 
+   * Set the line marker attributes
+   */
+  private static void setSeriesMarkerStyles(CategoryPlot categoryPlot, ChartElement[] seriesElements) {
+    final int length = seriesElements.length;
+    final StrokeFactory strokeFacObj = StrokeFactory.getStrokeFactoryObject();
+    for (int i = 0; i < length; i++) {
+      final ChartElement currElement = seriesElements[i];
+
+      if (categoryPlot.getRenderer() instanceof LineAndShapeRenderer) {
+        final LineAndShapeRenderer lineAndShapeRenderer = (LineAndShapeRenderer) categoryPlot.getRenderer();
+        // TODO this is where we will set the marker visibility
+        
+      }
+    }
+  }
+
 
 
   /**
@@ -563,8 +588,10 @@ public class JFreeChartUtils {
     JFreeChartUtils.setSeriesItemLabel(categoryPlot, seriesElements, data);
     JFreeChartUtils.setSeriesPaint(categoryPlot, seriesElements, data);
     JFreeChartUtils.setSeriesBarOutline(categoryPlot, seriesElements);
-    JFreeChartUtils.setSeriesLineWidth(categoryPlot, seriesElements);
+    JFreeChartUtils.setSeriesLineStyles(categoryPlot, seriesElements);
+    JFreeChartUtils.setSeriesMarkerStyles(categoryPlot, seriesElements);
   }
+
 
 
   /**

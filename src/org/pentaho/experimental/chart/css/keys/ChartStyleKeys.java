@@ -44,6 +44,11 @@ public class ChartStyleKeys {
       createKey("-x-pentaho-chart-line-style", false, false, StyleKey.All_ELEMENTS); //$NON-NLS-1$
 
   /**
+   * The visibility of the line
+   */
+  public static final StyleKey LINE_VISIBLE = StyleKeyRegistry.getRegistry().
+  createKey("-x-pentaho-chart-line-visible", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+  /**
    * The line width for line charts (thin, medium, thick, 5px, 0.1cm)
    */
   public static final StyleKey LINE_WIDTH = StyleKeyRegistry.getRegistry().

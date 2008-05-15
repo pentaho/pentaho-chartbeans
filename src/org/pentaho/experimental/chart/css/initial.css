@@ -9,6 +9,7 @@
 * {
   -x-pentaho-chart-series-type: bar;
   -x-pentaho-chart-orientation: vertical;
+  -x-pentaho-chart-line-visible: yes;
   -x-pentaho-chart-line-style: solid;
   -x-pentaho-chart-line-width: thin;
   -x-pentaho-chart-bar-style: bar;
