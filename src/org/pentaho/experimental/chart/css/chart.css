@@ -42,6 +42,7 @@ series {
   -x-pentaho-chart-line-width: thin;
   -x-pentaho-chart-line-visible: yes;
   -x-pentaho-chart-marker-visible: no;
+  -x-pentaho-chart-marker-shape: rectangle;
   -x-pentaho-chart-bar-style: bar;
   -x-pentaho-chart-bar-max-width: 50%;
   -x-pentaho-chart-drill-url-template: none;

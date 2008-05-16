@@ -11,6 +11,7 @@
   -x-pentaho-chart-orientation: vertical;
   -x-pentaho-chart-line-visible: yes;
   -x-pentaho-chart-marker-visible: no;
+  -x-pentaho-chart-marker-shape: rectangle;
   -x-pentaho-chart-line-style: solid;
   -x-pentaho-chart-line-width: thin;
   -x-pentaho-chart-bar-style: bar;

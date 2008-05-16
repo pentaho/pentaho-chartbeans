@@ -32,7 +32,7 @@ public class StrokeFactory {
    * Returns a singleton StrokeFactory object.
    * @return StrokeFactory Returns a singleton object of this class.
    */
-  public static synchronized StrokeFactory getStrokeFactoryObject() {
+  public static synchronized StrokeFactory getInstance() {
     if (StrokeFactory.strokeFacObj == null) {
       StrokeFactory.strokeFacObj = new StrokeFactory();
     }

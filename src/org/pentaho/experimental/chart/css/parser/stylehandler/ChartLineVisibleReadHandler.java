@@ -20,7 +20,7 @@ import org.pentaho.experimental.chart.css.styles.ChartLineVisibleType;
 import org.pentaho.reporting.libraries.css.parser.stylehandler.OneOfConstantsReadHandler;
 
 /**
- * The style parser for the <code>-x-pentaho-chart-item-label-visible</code> style.
+ * The style parser for the <code>-x-pentaho-chart-line-visible</code> style.
  *
  * @author Ravi Hasija
  */

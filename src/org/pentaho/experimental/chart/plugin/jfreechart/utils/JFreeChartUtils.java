@@ -54,9 +54,9 @@ import org.pentaho.experimental.chart.css.styles.ChartOrientationStyle;
 import org.pentaho.experimental.chart.css.styles.ChartSeriesType;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.api.ChartItemLabelGenerator;
-import org.pentaho.experimental.chart.plugin.jfreechart.dataset.IDatasetGenerator;
 import org.pentaho.experimental.chart.plugin.jfreechart.dataset.DatasetGeneratorFactory;
 import org.pentaho.experimental.chart.plugin.jfreechart.dataset.DefaultCategoryDatasetGenerator;
+import org.pentaho.experimental.chart.plugin.jfreechart.dataset.IDatasetGenerator;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
 import org.pentaho.reporting.libraries.css.keys.border.BorderStyleKeys;
 import org.pentaho.reporting.libraries.css.keys.font.FontSizeConstant;
@@ -167,7 +167,7 @@ public class JFreeChartUtils {
    */
   private static void setSeriesBarOutline(final CategoryPlot categoryPlot, final ChartElement[] seriesElements) {
     final int length = seriesElements.length;
-    final StrokeFactory strokeFacObj = StrokeFactory.getStrokeFactoryObject();
+    final StrokeFactory strokeFacObj = StrokeFactory.getInstance();
     for (int i = 0; i < length; i++) {
       final ChartElement currElement = seriesElements[i];
 
@@ -195,7 +195,7 @@ public class JFreeChartUtils {
    */
   private static void setSeriesLineStyles(CategoryPlot categoryPlot, ChartElement[] seriesElements) {
     final int length = seriesElements.length;
-    final StrokeFactory strokeFacObj = StrokeFactory.getStrokeFactoryObject();
+    final StrokeFactory strokeFacObj = StrokeFactory.getInstance();
     for (int i = 0; i < length; i++) {
       final ChartElement currElement = seriesElements[i];
 
@@ -219,7 +219,7 @@ public class JFreeChartUtils {
    */
   private static void setSeriesMarkerStyles(CategoryPlot categoryPlot, ChartElement[] seriesElements) {
     final int length = seriesElements.length;
-    final StrokeFactory strokeFacObj = StrokeFactory.getStrokeFactoryObject();
+    final ShapeFactory shapeFacObj = ShapeFactory.getInstance();
     for (int i = 0; i < length; i++) {
       final ChartElement currElement = seriesElements[i];
 
@@ -227,6 +227,7 @@ public class JFreeChartUtils {
         final LineAndShapeRenderer lineAndShapeRenderer = (LineAndShapeRenderer) categoryPlot.getRenderer();
         final String visibleStr = currElement.getLayoutStyle().getValue(ChartStyleKeys.MARKER_VISIBLE).getCSSText();
         lineAndShapeRenderer.setSeriesShapesVisible(i, ChartMarkerVisibleType.YES.getCSSText().equalsIgnoreCase(visibleStr));
+        lineAndShapeRenderer.setSeriesShape(i, shapeFacObj.getShape(currElement));
       }
     }
   }

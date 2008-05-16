@@ -56,6 +56,12 @@ public class ChartStyleKeys {
   createKey("-x-pentaho-chart-marker-visible", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
   
   /**
+   * The shape of the marker (ie. Rectangle, Elipse, arc, etc..)
+   */
+  public static final StyleKey MARKER_SHAPE = StyleKeyRegistry.getRegistry().
+  createKey("-x-pentaho-chart-marker-shape", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+  
+  /**
    * The line width for line charts (thin, medium, thick, 5px, 0.1cm)
    */
   public static final StyleKey LINE_WIDTH = StyleKeyRegistry.getRegistry().

@@ -18,7 +18,7 @@ package org.pentaho.experimental.chart.css.styles;
 import org.pentaho.reporting.libraries.css.values.CSSConstant;
 
 /**
- * Defines the only valid values for the <code>-x-pentaho-chart-item-label-visible</code> style
+ * Defines the only valid values for the <code>-x-pentaho-chart-marker-visible</code> style
  *
  * @author William Seyler
  */
