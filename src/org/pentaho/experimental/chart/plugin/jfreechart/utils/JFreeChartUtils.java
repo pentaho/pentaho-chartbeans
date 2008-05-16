@@ -39,6 +39,7 @@ import org.jfree.chart.urls.StandardCategoryURLGenerator;
 import org.jfree.data.KeyToGroupMap;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultIntervalCategoryDataset;
+import org.jfree.data.general.Dataset;
 import org.jfree.ui.GradientPaintTransformType;
 import org.jfree.ui.StandardGradientPaintTransformer;
 import org.pentaho.experimental.chart.ChartDocumentContext;
@@ -55,8 +56,6 @@ import org.pentaho.experimental.chart.css.styles.ChartSeriesType;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.api.ChartItemLabelGenerator;
 import org.pentaho.experimental.chart.plugin.jfreechart.dataset.DatasetGeneratorFactory;
-import org.pentaho.experimental.chart.plugin.jfreechart.dataset.DefaultCategoryDatasetGenerator;
-import org.pentaho.experimental.chart.plugin.jfreechart.dataset.IDatasetGenerator;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
 import org.pentaho.reporting.libraries.css.keys.border.BorderStyleKeys;
 import org.pentaho.reporting.libraries.css.keys.font.FontSizeConstant;
@@ -77,20 +76,15 @@ import org.pentaho.reporting.libraries.css.values.CSSValuePair;
 public class JFreeChartUtils {
 
   private static final Log logger = LogFactory.getLog(JFreeChartUtils.class);
-  
+
   private static final char SEPERATOR = '/';
   private static final String DOMAIN_AXIS="domain";//$NON-NLS-1$
   private JFreeChartUtils() {
   }
 
-  public static IDatasetGenerator getDatasetGenerator(final ChartDocumentContext chartDocumentContext, final ChartTableModel data) {
+  public static Dataset getDataset(final ChartDocumentContext chartDocumentContext, final ChartTableModel data) {
     final DatasetGeneratorFactory DatasetGeneratorFactory = new DatasetGeneratorFactory();
-    final IDatasetGenerator jfreeDataset = DatasetGeneratorFactory.generateDatasetCreator(chartDocumentContext, data);
-    DefaultCategoryDatasetGenerator datasetGenerator = null;
-    if (jfreeDataset instanceof DefaultCategoryDatasetGenerator) {
-      datasetGenerator = (DefaultCategoryDatasetGenerator) jfreeDataset;
-    }
-    return datasetGenerator;
+    return DatasetGeneratorFactory.createDataset(chartDocumentContext, data);
   }
 
 
@@ -186,7 +180,7 @@ public class JFreeChartUtils {
       }
     }
   }
-  
+
   /**
    * @param categoryPlot
    * @param seriesElements
@@ -592,8 +586,6 @@ public class JFreeChartUtils {
     JFreeChartUtils.setSeriesLineStyles(categoryPlot, seriesElements);
     JFreeChartUtils.setSeriesMarkerStyles(categoryPlot, seriesElements);
   }
-
-
 
   /**
    * Creates a GradientPaint object from the current series element using

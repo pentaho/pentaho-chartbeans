@@ -2,7 +2,7 @@ package org.pentaho.experimental.chart.plugin.api;
 
 
 import junit.framework.TestCase;
-import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.resourceloader.ResourceException;
 import org.junit.After;
 import org.junit.Before;
@@ -11,9 +11,7 @@ import org.pentaho.experimental.chart.ChartFactory;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
 import org.pentaho.experimental.chart.data.ChartTableModel;
-import org.pentaho.experimental.chart.plugin.jfreechart.dataset.IDatasetGenerator;
-import org.pentaho.experimental.chart.plugin.jfreechart.dataset.DefaultCategoryDatasetGenerator;
-import org.pentaho.experimental.chart.plugin.jfreechart.utils.JFreeChartUtils;
+import org.pentaho.experimental.chart.plugin.jfreechart.dataset.DatasetGeneratorFactory;
 
 public class TestChartItemLabelGenerator extends TestCase {
 
@@ -45,18 +43,11 @@ public class TestChartItemLabelGenerator extends TestCase {
     labelGen = new ChartItemLabelGenerator(seriesElements, chartData);
     assertNotNull(labelGen);
 
-    IDatasetGenerator jfreeDatasetGenerator = JFreeChartUtils.getDatasetGenerator(cdc, chartData);
-    DefaultCategoryDatasetGenerator defaultCategoryDatasetGenerator = null;
-
-    assertNotNull(jfreeDatasetGenerator);
-
-    if (jfreeDatasetGenerator instanceof DefaultCategoryDatasetGenerator) {
-      defaultCategoryDatasetGenerator = (DefaultCategoryDatasetGenerator) jfreeDatasetGenerator;
-    }
+    DatasetGeneratorFactory datasetGenFac = new DatasetGeneratorFactory();
+    DefaultCategoryDataset categoryDataset = datasetGenFac.createDefaultCategoryDataset(cdc, chartData);
+    assertNotNull(categoryDataset);
 
 
-    final CategoryDataset categoryDataset = defaultCategoryDatasetGenerator.createDataset();
-    
     for(int i=0; i< dataArray.length; i++) {
       for (int j=0; j<dataArray[i].length; j++) {
         labelGen.generateLabel(categoryDataset, i, j);    
