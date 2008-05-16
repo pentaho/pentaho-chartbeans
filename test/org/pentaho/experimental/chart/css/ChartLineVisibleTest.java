@@ -47,8 +47,7 @@ public class ChartLineVisibleTest extends TestCase {
       final LayoutStyle layoutStyle = child.getLayoutStyle();
       assertNotNull(layoutStyle);
       System.out.println("Expected: "+passValues[counter]+" - Got: "+layoutStyle.getValue(ChartStyleKeys.LINE_VISIBLE)); //$NON-NLS-1$ //$NON-NLS-2$
-//      assertEquals(passValues[counter++], layoutStyle.getValue(ChartStyleKeys.LINE_VISIBLE));
-      counter++;
+      assertEquals(passValues[counter++], layoutStyle.getValue(ChartStyleKeys.LINE_VISIBLE));
       child = child.getNextItem();
     }
 
