@@ -1,4 +1,4 @@
-package org.pentaho.experimental.chart.plugin.jfreechart.chart;
+package org.pentaho.experimental.chart.plugin.jfreechart.chart.bar;
 
 /**
  * These are the different high level bar chart types based on the dataset and the chart type used to create them.

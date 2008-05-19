@@ -1,4 +1,4 @@
-package org.pentaho.experimental.chart.plugin.jfreechart.chart;
+package org.pentaho.experimental.chart.plugin.jfreechart.chart.bar;
 
 import org.jfree.chart.JFreeChart;
 import org.pentaho.experimental.chart.ChartDocumentContext;
@@ -40,7 +40,7 @@ public class JFreeBarChartGeneratorFactory {
     }
 
     final JFreeBarChartGenerator barChartGenerator;
-    
+
     if (cylinder) {
       barChartGenerator = new JFreeCylinderBarChartGenerator();
     } else if (layered) {

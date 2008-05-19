@@ -147,6 +147,8 @@ public class JFreeChartUtils {
           return ChartSeriesType.BAR;
         } else if (value.equals(ChartSeriesType.LINE)) {
           return ChartSeriesType.LINE;
+        } else if (value.equals(ChartSeriesType.AREA)) {
+          return ChartSeriesType.AREA;
         }
       }
     }

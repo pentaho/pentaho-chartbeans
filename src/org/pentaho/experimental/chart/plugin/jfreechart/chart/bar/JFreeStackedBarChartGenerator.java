@@ -1,4 +1,4 @@
-package org.pentaho.experimental.chart.plugin.jfreechart.chart;
+package org.pentaho.experimental.chart.plugin.jfreechart.chart.bar;
 
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.CategoryPlot;
@@ -8,6 +8,8 @@ import org.pentaho.experimental.chart.ChartDocumentContext;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.jfreechart.utils.JFreeChartUtils;
+import org.pentaho.experimental.chart.plugin.jfreechart.chart.bar.JFreeBarChartGenerator;
+import org.pentaho.experimental.chart.plugin.jfreechart.chart.bar.JFreeBarChartTypes;
 
 /**
  * Created stacked bar chart.

@@ -13,7 +13,8 @@ import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.IChartPlugin;
 import org.pentaho.experimental.chart.plugin.api.ChartResult;
 import org.pentaho.experimental.chart.plugin.api.IOutput;
-import org.pentaho.experimental.chart.plugin.jfreechart.chart.JFreeBarChartGeneratorFactory;
+import org.pentaho.experimental.chart.plugin.jfreechart.chart.area.JFreeAreaChartGeneratorFactory;
+import org.pentaho.experimental.chart.plugin.jfreechart.chart.bar.JFreeBarChartGeneratorFactory;
 import org.pentaho.experimental.chart.plugin.jfreechart.dataset.DatasetGeneratorFactory;
 import org.pentaho.experimental.chart.plugin.jfreechart.outputs.JFreeChartOutput;
 import org.pentaho.experimental.chart.plugin.jfreechart.utils.JFreeChartUtils;
@@ -50,6 +51,13 @@ public class JFreeChartFactoryEngine implements Serializable {
         chartResult.setErrorCode(IChartPlugin.RESULT_ERROR);
         chartResult.setDescription(e.getLocalizedMessage());
       }
+    } else if (currentChartType == ChartSeriesType.AREA) {
+      try {
+        return new JFreeChartOutput((makeAreaChart(data, chartDocumentContext)));
+      } catch (Exception e) {
+        chartResult.setErrorCode(IChartPlugin.RESULT_ERROR);
+        chartResult.setDescription(e.getLocalizedMessage());
+      }
     }
   
     return null;
@@ -58,9 +66,17 @@ public class JFreeChartFactoryEngine implements Serializable {
   /* (non-Javadoc)
    * @see org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine#makeAreaChart(org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.api.IOutput)
    */
-  public void makeAreaChart(final ChartTableModel data, final ChartDocument chartDocument, final IOutput outHandler) {
-    // TODO Auto-generated method stub
+  public JFreeChart makeAreaChart(final ChartTableModel data, final ChartDocumentContext chartDocumentContext) {
+    final ChartDocument chartDocument = chartDocumentContext.getChartDocument();
+    final JFreeChart chart = createAreaChartSubtype(chartDocumentContext, data);
+    JFreeChartUtils.setPlotAttributes(chart.getCategoryPlot(), chartDocument, data);
+    return chart;
+  }
 
+  private JFreeChart createAreaChartSubtype(final ChartDocumentContext chartDocumentContext, final ChartTableModel data) {
+    final JFreeAreaChartGeneratorFactory chartFacEngine = new JFreeAreaChartGeneratorFactory();
+    final JFreeChart chart = chartFacEngine.createChart(chartDocumentContext, data);
+    return chart;
   }
 
   /* (non-Javadoc)

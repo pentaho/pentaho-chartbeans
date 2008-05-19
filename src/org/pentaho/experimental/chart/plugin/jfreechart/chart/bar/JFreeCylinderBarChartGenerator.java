@@ -1,9 +1,11 @@
-package org.pentaho.experimental.chart.plugin.jfreechart.chart;
+package org.pentaho.experimental.chart.plugin.jfreechart.chart.bar;
 
 import org.jfree.chart.JFreeChart;
 import org.pentaho.experimental.chart.ChartDocumentContext;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.jfreechart.utils.CylinderRenderer;
+import org.pentaho.experimental.chart.plugin.jfreechart.chart.bar.JFreeBarChartGenerator;
+import org.pentaho.experimental.chart.plugin.jfreechart.chart.bar.JFreeBarChartTypes;
 
 /**
  * Generates cylinder bar chart.
