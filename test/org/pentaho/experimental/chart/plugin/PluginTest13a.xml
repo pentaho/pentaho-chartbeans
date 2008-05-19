@@ -23,7 +23,7 @@
     }
   </stylesheet>
 
-  <title>Test for Line charts</title>
+  <title>Test for Area charts - Vertical</title>
   
   <series name="budget" class="area1" column-pos="0"/>
 
