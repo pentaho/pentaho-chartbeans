@@ -74,6 +74,12 @@ public class ChartStyleKeys {
       createKey("-x-pentaho-chart-bar-style", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
 
   /**
+   * The area chart style for area charts (basic, stacked, xy, etc.)
+   */
+  public static final StyleKey AREA_STYLE = StyleKeyRegistry.getRegistry().
+      createKey("-x-pentaho-chart-area-style", false, false, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+
+  /**
    * Bar width specified in terms of percentage
    */
   public static final StyleKey BAR_MAX_WIDTH = StyleKeyRegistry.getRegistry().

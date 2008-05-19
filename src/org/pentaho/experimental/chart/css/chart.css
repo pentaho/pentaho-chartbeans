@@ -39,6 +39,7 @@ axis {
 series {
   -x-pentaho-chart-series-type: bar;
   -x-pentaho-chart-line-style: solid;
+  -x-pentaho-chart-area-style: area;
   -x-pentaho-chart-line-width: thin;
   -x-pentaho-chart-line-visible: yes;
   -x-pentaho-chart-marker-visible: no;

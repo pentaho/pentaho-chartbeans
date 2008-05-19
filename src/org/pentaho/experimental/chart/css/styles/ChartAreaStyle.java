@@ -18,18 +18,15 @@ package org.pentaho.experimental.chart.css.styles;
 import org.pentaho.reporting.libraries.css.values.CSSConstant;
 
 /**
- * Defines the only valid values for the <code>-x-pentaho-chart-series-type</code> style
+ * Defines the only valid values for the <code>-x-pentaho-chart-area-style</code> style
  *
  * @author Ravi Hasija
  */
-public class ChartSeriesType {
-  public static final CSSConstant UNDEFINED = new CSSConstant("undefined"); //$NON-NLS-1$
-  public static final CSSConstant BAR = new CSSConstant("bar"); //$NON-NLS-1$
-  public static final CSSConstant PIE = new CSSConstant("pie"); //$NON-NLS-1$
-  public static final CSSConstant LINE = new CSSConstant("line"); //$NON-NLS-1$
+public class ChartAreaStyle {
   public static final CSSConstant AREA = new CSSConstant("area"); //$NON-NLS-1$
+  public static final CSSConstant STACKED = new CSSConstant("stacked"); //$NON-NLS-1$
+  public static final CSSConstant XY = new CSSConstant("xy"); //$NON-NLS-1$
 
-
-  private ChartSeriesType() {
+  private ChartAreaStyle() {
   }
 }

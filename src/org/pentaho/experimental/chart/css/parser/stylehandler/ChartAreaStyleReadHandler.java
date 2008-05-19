@@ -10,26 +10,25 @@
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or  implied. Please refer to 
  * the license for the specific language governing your rights and limitations.
  *
- * Created 3/13/2008 
- * @author David Kincade 
+ * Created 5/16/2008 
+ * @author Ravi Hasija
  */
-package org.pentaho.experimental.chart.css.styles;
 
-import org.pentaho.reporting.libraries.css.values.CSSConstant;
+package org.pentaho.experimental.chart.css.parser.stylehandler;
+
+import org.pentaho.experimental.chart.css.styles.ChartAreaStyle;
+import org.pentaho.reporting.libraries.css.parser.stylehandler.OneOfConstantsReadHandler;
 
 /**
- * Defines the only valid values for the <code>-x-pentaho-chart-series-type</code> style
+ * The style parser for the <code>-x-pentaho-chart-area-style</code> style.
  *
  * @author Ravi Hasija
  */
-public class ChartSeriesType {
-  public static final CSSConstant UNDEFINED = new CSSConstant("undefined"); //$NON-NLS-1$
-  public static final CSSConstant BAR = new CSSConstant("bar"); //$NON-NLS-1$
-  public static final CSSConstant PIE = new CSSConstant("pie"); //$NON-NLS-1$
-  public static final CSSConstant LINE = new CSSConstant("line"); //$NON-NLS-1$
-  public static final CSSConstant AREA = new CSSConstant("area"); //$NON-NLS-1$
-
-
-  private ChartSeriesType() {
+public class ChartAreaStyleReadHandler extends OneOfConstantsReadHandler {
+  public ChartAreaStyleReadHandler() {
+    super(false);
+    addValue(ChartAreaStyle.AREA);
+    addValue(ChartAreaStyle.STACKED);
+    addValue(ChartAreaStyle.XY);
   }
 }

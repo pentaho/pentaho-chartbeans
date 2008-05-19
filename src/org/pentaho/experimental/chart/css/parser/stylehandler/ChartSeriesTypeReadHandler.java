@@ -29,6 +29,7 @@ public class ChartSeriesTypeReadHandler extends OneOfConstantsReadHandler {
     super(false);
     addValue(ChartSeriesType.BAR);
     addValue(ChartSeriesType.LINE);
-    addValue(ChartSeriesType.PIE);    
+    addValue(ChartSeriesType.PIE);
+    addValue(ChartSeriesType.AREA);
   }
 }
