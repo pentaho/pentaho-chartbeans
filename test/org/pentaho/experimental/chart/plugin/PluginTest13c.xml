@@ -2,10 +2,12 @@
 
   <stylesheet>
     .area1 {
-    color: blue;
+    color: gray;
     -x-pentaho-chart-series-type: area;
     -x-pentaho-chart-area-style: area;
     -x-pentaho-chart-categorical: true;
+    -x-pentaho-chart-item-label-text: '{0,number,USD ##.##}';
+    -x-pentaho-chart-item-label-visible: yes;
     }
 
     .area2 {
@@ -14,6 +16,8 @@
     -x-pentaho-chart-area-style: area;
     -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-marker-visible: yes;
+    -x-pentaho-chart-item-label-text: '{0,number,Euro ##.##}';
+    -x-pentaho-chart-item-label-visible: yes;
     }
 
     .area3 {
@@ -22,6 +26,8 @@
     -x-pentaho-chart-area-style: area;
     -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-marker-visible: yes;
+    -x-pentaho-chart-item-label-text: '{0,number,Yen ##.##}';
+    -x-pentaho-chart-item-label-visible: yes;
     }
   </stylesheet>
 
@@ -29,7 +35,7 @@
   
   <series name="budget" class="area1" column-pos="0"/>
 
-  <series name="sales" class="area2" column-name="sales"/>
+  <series name="sales" class="area2" column-pos="1"/>
 
   <series name="forecast" class="area3" column-pos="2"/>
 

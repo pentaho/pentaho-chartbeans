@@ -30,8 +30,11 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.labels.ItemLabelAnchor;
+import org.jfree.chart.labels.ItemLabelPosition;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.AreaRenderer;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
@@ -42,6 +45,7 @@ import org.jfree.data.category.DefaultIntervalCategoryDataset;
 import org.jfree.data.general.Dataset;
 import org.jfree.ui.GradientPaintTransformType;
 import org.jfree.ui.StandardGradientPaintTransformer;
+import org.jfree.ui.TextAnchor;
 import org.pentaho.experimental.chart.ChartDocumentContext;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
@@ -228,8 +232,6 @@ public class JFreeChartUtils {
     }
   }
 
-
-
   /**
    * Sets the series item label(s) defined in the chartDocument
    *
@@ -246,10 +248,19 @@ public class JFreeChartUtils {
       for (int seriesCounter = 0; seriesCounter < numOfSeriesElements; seriesCounter++) {
       // Get and set font information only if the item label's visibility is set to true 
         if (JFreeChartUtils.showItemLabel(seriesElements[seriesCounter])) {
-          final BarRenderer barRender = (BarRenderer) categoryPlot.getRenderer(datasetCounter);
           final Font font = JFreeChartUtils.getFont(seriesElements[seriesCounter]);
-          barRender.setSeriesItemLabelFont(seriesCounter, font, true);
-          barRender.setSeriesItemLabelsVisible(seriesCounter, Boolean.TRUE, true);
+          final CategoryItemRenderer categoryItemRenderer = categoryPlot.getRenderer(datasetCounter);
+          if (categoryItemRenderer instanceof BarRenderer) {
+            final BarRenderer barRender = (BarRenderer) categoryItemRenderer;
+            barRender.setSeriesItemLabelFont(seriesCounter, font, true);
+            barRender.setSeriesItemLabelsVisible(seriesCounter, Boolean.TRUE, true);
+          } else if (categoryItemRenderer instanceof AreaRenderer) {
+            final AreaRenderer areaRender = (AreaRenderer) categoryItemRenderer;
+            areaRender.setSeriesItemLabelFont(seriesCounter, font, true);
+            areaRender.setSeriesPositiveItemLabelPosition(seriesCounter, new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12, TextAnchor.TOP_CENTER));
+            areaRender.setSeriesNegativeItemLabelPosition(seriesCounter, new ItemLabelPosition(ItemLabelAnchor.OUTSIDE6, TextAnchor.BOTTOM_CENTER));
+            areaRender.setSeriesItemLabelsVisible(seriesCounter, Boolean.TRUE, true);
+          }
         }
       }
     }
@@ -308,7 +319,7 @@ public class JFreeChartUtils {
               if (barWidthPercent > 0) {
                 barRender.setMaximumBarWidth(barWidthPercent);
               }
-            }
+            } 
           }
         }
       }

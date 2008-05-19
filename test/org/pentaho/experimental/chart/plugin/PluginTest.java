@@ -54,9 +54,6 @@ public class PluginTest extends TestCase {
 //                                               {31, 46, 23, "Europe",         "Germany",  "East"},  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
 //                                               {47, 33, 51, "Europe",         "Germany",  "West"}}; //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
 
-  private static final Object[][] dataArray = {{5.55, 10.11, 20.22, "East"}, //$NON-NLS-1$
-                                               {30.33, 40.44, 50.55, "West"}, //$NON-NLS-1$
-                                               {60.66, 70.77, 80.88, "Central"}};//$NON-NLS-1$
   private static final String MAP_EXTENSION = ".map"; //$NON-NLS-1$
   private static final String PNG_SUFFIX = ".png"; //$NON-NLS-1$
   private static final String JPG_SUFFIX = ".jpeg"; //$NON-NLS-1$
@@ -84,14 +81,13 @@ public class PluginTest extends TestCase {
     assertEquals(result.getErrorCode(), IChartPlugin.RESULT_VALIDATED);
   }
 
-  private void testRenderAsPng(final String fileName) throws Exception {
+  private void testRenderAsPng(final String fileName,
+                               final ChartTableModel data) throws Exception {
     final IChartPlugin plugin = ChartPluginFactory.getInstance("org.pentaho.experimental.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
     // At this point we have an output of the correct type
     // Now we can manipulate it to meet our needs so that we get the correct
     // output location and type.
 
-    // Now lets create some data
-    final ChartTableModel data = createChartTableModel();
     String chartFileName = TEST_FILE_PATH + fileName.substring(0, fileName.indexOf('.')) + PNG_SUFFIX;
 
     // Load / parse the chart document
@@ -115,14 +111,14 @@ public class PluginTest extends TestCase {
     }
   }
 
-  private void testRenderAsJpeg(final String fileName) throws Exception {
+  private void testRenderAsJpeg(final String fileName,
+                                  final ChartTableModel data) throws Exception {
     final IChartPlugin plugin = ChartPluginFactory.getInstance("org.pentaho.experimental.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
     // At this point we have an output of the correct type
     // Now we can manipulate it to meet our needs so that we get the correct
     // output location and type.
 
     // Now lets create some data
-    final ChartTableModel data = createChartTableModel();
     String chartFileName = TEST_FILE_PATH + fileName.substring(0, fileName.indexOf('.')) + JPG_SUFFIX;
 
     // Load / parse the chart document
@@ -146,14 +142,12 @@ public class PluginTest extends TestCase {
     }
   }
 
-  private void testRenderAsPngStream(final String fileName) throws Exception {
+  private void testRenderAsPngStream(final String fileName,
+                                       final ChartTableModel data) throws Exception {
     final IChartPlugin plugin = ChartPluginFactory.getInstance("org.pentaho.experimental.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
      // At this point we have an output of the correct type
     // Now we can manipulate it to meet our needs so that we get the correct
     // output location and type.
-
-    // Now lets create some data
-    final ChartTableModel data = createChartTableModel();
 
     // Load / parse the chart document
     final URL chartURL = this.getClass().getResource(fileName);
@@ -170,15 +164,12 @@ public class PluginTest extends TestCase {
 
   }
 
-  private void testRenderAsJpegStream(final String fileName) throws Exception {
+  private void testRenderAsJpegStream(final String fileName,
+                                      final ChartTableModel data) throws Exception {
     final IChartPlugin plugin = ChartPluginFactory.getInstance("org.pentaho.experimental.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
     // At this point we have an output of the correct type
     // Now we can manipulate it to meet our needs so that we get the correct
     // output location and type.
-
-    // Now lets create some data
-    final ChartTableModel data = createChartTableModel();
-
     // Load / parse the chart document
     final URL chartURL = this.getClass().getResource(fileName);
     final ChartDocumentContext cdc = ChartFactory.generateChart(chartURL, data);
@@ -192,7 +183,7 @@ public class PluginTest extends TestCase {
     assertTrue(os.toByteArray().length > 5000);
   }
 
-  private static ChartTableModel createChartTableModel() {
+  private static ChartTableModel createChartTableModel(final Object[][] dataArray) {
     final ChartTableModel data = new ChartTableModel();
     data.setData(dataArray);
     data.setColumnName(0, "budget"); //$NON-NLS-1$
@@ -226,12 +217,34 @@ public class PluginTest extends TestCase {
     return data;
   }
 
-  public void testRunAllFiles() {
+
+  public void testAreaChart() {
+    Object[][] dataArray = {{75.55, 85.11, 90.22, "East"}, //$NON-NLS-1$
+                            {70.33, 80.44, 85.55, "West"}, //$NON-NLS-1$
+                            {60.66, 70.77, 80.88, "Central"}};//$NON-NLS-1$
+
+    final ChartTableModel data = createChartTableModel(dataArray);
+
+    final String[] fileNames = {
+        "PluginTest13a.xml", //$NON-NLS-1$
+        "PluginTest13b.xml", //$NON-NLS-1$
+        "PluginTest13c.xml", //$NON-NLS-1$
+    };
+
+    runTests(fileNames, data);
+  }
+
+  public void testBarAndLineChart() {
+
+    final Object[][] dataArray = {{5.55, 10.11, 20.22, "East"}, //$NON-NLS-1$
+                                   {30.33, 40.44, 50.55, "West"}, //$NON-NLS-1$
+                                   {60.66, 70.77, 80.88, "Central"}};//$NON-NLS-1$
+    final ChartTableModel data = createChartTableModel(dataArray);
+
     final String[] fileNames = new String[] {
       "PluginTest1a.xml", //$NON-NLS-1$
       "PluginTest1b.xml", //$NON-NLS-1$
       "PluginTest1c.xml", //$NON-NLS-1$
-      "PluginTest1d.xml", //$NON-NLS-1$
       "PluginTest2a.xml", //$NON-NLS-1$
       "PluginTest2b.xml", //$NON-NLS-1$
       "PluginTest2c.xml", //$NON-NLS-1$
@@ -256,31 +269,37 @@ public class PluginTest extends TestCase {
       "PluginTest12c.xml", //$NON-NLS-1$
     };
     
+    runTests(fileNames, data);
+  }
+
+  private void runTests(final String[] fileNames, final ChartTableModel data) {
     for (int i = 0; i < fileNames.length; i++) {
       try {
-        testRenderAsJpeg(fileNames[i]);    
+        testRenderAsJpeg(fileNames[i], data);
       } catch (Exception e) {
         e.printStackTrace();
         fail("Failed parsing "+fileNames[i]+ " file in method testRenderAsJpeg"); //$NON-NLS-1$ //$NON-NLS-2$
       }
       try {
-        testRenderAsJpegStream(fileNames[i]);
+        testRenderAsJpegStream(fileNames[i], data);
       } catch (Exception e) {
         e.printStackTrace();
         fail("Failed parsing "+fileNames[i]+ " file in method testRenderAsJpegStream"); //$NON-NLS-1$ //$NON-NLS-2$
       }
       try {
-        testRenderAsPng(fileNames[i]);
+        testRenderAsPng(fileNames[i], data);
       } catch (Exception e) {
         e.printStackTrace();
         fail("Failed parsing "+fileNames[i]+ " file in method testRenderAsPng"); //$NON-NLS-1$ //$NON-NLS-2$
       }
       try {
-        testRenderAsPngStream(fileNames[i]);
+        testRenderAsPngStream(fileNames[i], data);
       } catch (Exception e) {
         e.printStackTrace();
         fail("Failed parsing "+fileNames[i]+ " file in method testRenderAsPngStream"); //$NON-NLS-1$ //$NON-NLS-2$
       }
     }
   }
-}
+
+} //Class ends
+

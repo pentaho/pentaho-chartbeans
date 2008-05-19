@@ -1,7 +1,6 @@
 package org.pentaho.experimental.chart.plugin.jfreechart.chart.area;
 
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.CategoryPlot;
 import org.pentaho.experimental.chart.ChartDocumentContext;
 import org.pentaho.experimental.chart.css.styles.ChartAreaStyle;
 import org.pentaho.experimental.chart.data.ChartTableModel;
@@ -16,8 +15,6 @@ import org.pentaho.experimental.chart.data.ChartTableModel;
 public class JFreeDefaultAreaChartGenerator extends JFreeAreaChartGenerator {
   public JFreeChart createChart(ChartDocumentContext chartDocContext, ChartTableModel data) {
     final JFreeChart chart = createChart(chartDocContext, data, ChartAreaStyle.AREA);
-    CategoryPlot plot = (CategoryPlot) chart.getPlot();
-    plot.setForegroundAlpha(0.5f);
     
     /*
      * NOTE: The chart object will be updated.
