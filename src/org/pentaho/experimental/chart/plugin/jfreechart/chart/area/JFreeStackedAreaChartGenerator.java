@@ -1,28 +1,26 @@
 package org.pentaho.experimental.chart.plugin.jfreechart.chart.area;
 
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.CategoryPlot;
 import org.pentaho.experimental.chart.ChartDocumentContext;
 import org.pentaho.experimental.chart.css.styles.ChartAreaStyle;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 
 /**
- * Creates basic/default area chart. Also, does some extra work like creating range axis etc.
- * </p> 
+ * Creates stacked area charts.
  * Author: Ravi Hasija
- * Date: May 16, 2008
- * Time: 12:45:07 PM
+ * Date: May 19, 2008
+ * Time: 4:37:13 PM
  */
-public class JFreeDefaultAreaChartGenerator extends JFreeAreaChartGenerator {
+public class JFreeStackedAreaChartGenerator extends JFreeAreaChartGenerator {
+  //TODO: Not working quite right. Has spaces in the final chart that look odd.
   public JFreeChart createChart(ChartDocumentContext chartDocContext, ChartTableModel data) {
-    final JFreeChart chart = createChart(chartDocContext, data, ChartAreaStyle.AREA);
-    CategoryPlot plot = (CategoryPlot) chart.getPlot();
-    plot.setForegroundAlpha(0.5f);
-    
+    final JFreeChart chart = createChart(chartDocContext, data, ChartAreaStyle.STACKED);
+
     /*
      * NOTE: The chart object will be updated.
      */
     createRangeAxis(chartDocContext, data, chart);
     return chart;
   }
+
 }

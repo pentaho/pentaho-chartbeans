@@ -35,6 +35,7 @@ public class JFreeAreaChartGeneratorFactory {
     JFreeAreaChartGenerator areaChartGenerator = null;
 
     if (stacked) {
+      areaChartGenerator = new JFreeStackedAreaChartGenerator();
     } else if (xy) {
     } else {
       areaChartGenerator = new JFreeDefaultAreaChartGenerator();

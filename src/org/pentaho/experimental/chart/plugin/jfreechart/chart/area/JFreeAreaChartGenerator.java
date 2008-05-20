@@ -51,6 +51,7 @@ public abstract class JFreeAreaChartGenerator extends JFreeChartGenerator {
 
     JFreeChart chart = null;
     if (ChartAreaStyle.STACKED.equals(chartType)) {
+      chart = ChartFactory.createStackedAreaChart(title, valueCategoryLabel, valueAxisLabel, categoryDataset, orientation, legend, toolTips, false);
     } else if (ChartAreaStyle.XY.equals(chartType)) {
     } else {
       chart = ChartFactory.createAreaChart(title, valueCategoryLabel, valueAxisLabel, categoryDataset, orientation, legend, toolTips, false);

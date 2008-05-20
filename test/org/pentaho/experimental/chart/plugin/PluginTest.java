@@ -229,6 +229,7 @@ public class PluginTest extends TestCase {
         "PluginTest13a.xml", //$NON-NLS-1$
         "PluginTest13b.xml", //$NON-NLS-1$
         "PluginTest13c.xml", //$NON-NLS-1$
+         "PluginTest13d.xml", //$NON-NLS-1$
     };
 
     runTests(fileNames, data);
