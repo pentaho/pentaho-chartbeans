@@ -28,7 +28,6 @@ public class JFreeBarChartGeneratorFactory {
 
     final ChartDocument chartDocument = chartDocContext.getChartDocument();
     final ChartElement[] elements = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_SERIES);
-    //TODO: ask if we need to break out of this loop instead of going through the entire series.
     for (final ChartElement element : elements) {
       final CSSValue value = element.getLayoutStyle().getValue(ChartStyleKeys.BAR_STYLE);
       stacked |= value.equals(ChartBarStyle.STACKED);
@@ -37,6 +36,11 @@ public class JFreeBarChartGeneratorFactory {
       interval |= value.equals(ChartBarStyle.INTERVAL);
       layered |= value.equals(ChartBarStyle.LAYERED);
       stacked100Pct |= value.equals(ChartBarStyle.STACK_100_PERCENT);
+
+      // Pick the first one that is set.
+      if (stacked || stackedPct || stacked100Pct || cylinder || interval || layered) {
+        break;
+      }
     }
 
     final JFreeBarChartGenerator barChartGenerator;

@@ -25,11 +25,14 @@ public class JFreeAreaChartGeneratorFactory {
 
     final ChartDocument chartDocument = chartDocContext.getChartDocument();
     final ChartElement[] elements = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_SERIES);
-    //TODO: ask if we need to break out of this loop instead of going through the entire series.
     for (final ChartElement element : elements) {
       final CSSValue value = element.getLayoutStyle().getValue(ChartStyleKeys.AREA_STYLE);
       stacked |= value.equals(ChartAreaStyle.STACKED);
       xy |= value.equals(ChartAreaStyle.XY);
+
+      if (stacked || xy) {
+        break;
+      }
     }
 
     JFreeAreaChartGenerator areaChartGenerator = null;
