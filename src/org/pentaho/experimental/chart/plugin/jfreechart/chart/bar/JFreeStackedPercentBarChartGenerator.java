@@ -21,7 +21,7 @@ public class JFreeStackedPercentBarChartGenerator extends JFreeStackedBarChartGe
    * @param data Current chart data
    * @return Returns JFree stacked percent bar chart.
    */
-  public JFreeChart creatChart(final ChartDocumentContext chartDocContext,
+  public JFreeChart createChart(final ChartDocumentContext chartDocContext,
                                final ChartTableModel data) {
     final JFreeChart chart = super.createChart(chartDocContext, data);
     /*
