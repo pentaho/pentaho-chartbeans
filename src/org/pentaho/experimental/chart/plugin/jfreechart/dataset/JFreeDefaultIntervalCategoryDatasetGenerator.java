@@ -13,7 +13,7 @@ import org.pentaho.experimental.chart.data.ChartTableModel;
  * Date: May 14, 2008
  * Time: 2:43:02 PM
  */
-public class IJFreeDefaultIntervalCategoryDatasetGenerator implements IJFreeDatasetGenerator, Dataset {
+public class JFreeDefaultIntervalCategoryDatasetGenerator implements IJFreeDatasetGenerator, Dataset {
 
   public Dataset createDataset(final ChartDocumentContext chartDocContext, final ChartTableModel data) {
     return null;

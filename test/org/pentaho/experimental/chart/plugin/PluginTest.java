@@ -235,6 +235,23 @@ public class PluginTest extends TestCase {
     runTests(fileNames, data);
   }
 
+  public void testPieChart() {
+    Object[][] dataArray = {{15.55}, 
+                            {30.33}, 
+                            {60.66}};
+
+    final ChartTableModel data = createChartTableModel(dataArray);
+    data.setRowName(0, "Jan"); //$NON-NLS-1$
+    data.setRowName(1, "Feb"); //$NON-NLS-1$
+    data.setRowName(2, "Mar"); //$NON-NLS-1$
+
+    final String[] fileNames = {
+        "PluginTest14a.xml", //$NON-NLS-1$
+    };
+
+    runTests(fileNames, data);
+  }
+
   public void testBarAndLineChart() {
 
     final Object[][] dataArray = {{5.55, 10.11, 20.22, "East"}, //$NON-NLS-1$

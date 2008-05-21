@@ -18,7 +18,7 @@ import org.pentaho.reporting.libraries.base.config.Configuration;
  * Date: May 12, 2008
  * Time: 4:00:35 PM
  */
-public class IJFreeDefaultCategoryDatasetGenerator implements IJFreeDatasetGenerator, Dataset {
+public class JFreeDefaultCategoryDatasetGenerator implements IJFreeDatasetGenerator, Dataset {
   /**
    * The default method that creates a dataset of DefaultCategoryDataset type.
    *

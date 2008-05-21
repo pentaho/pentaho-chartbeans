@@ -153,6 +153,8 @@ public class JFreeChartUtils {
           return ChartSeriesType.LINE;
         } else if (value.equals(ChartSeriesType.AREA)) {
           return ChartSeriesType.AREA;
+        } else if (value.equals(ChartSeriesType.PIE)) {
+          return ChartSeriesType.PIE;
         }
       }
     }
@@ -319,7 +321,7 @@ public class JFreeChartUtils {
               if (barWidthPercent > 0) {
                 barRender.setMaximumBarWidth(barWidthPercent);
               }
-            } 
+            }
           }
         }
       }
@@ -335,7 +337,7 @@ public class JFreeChartUtils {
    * @param seriesElement - Current series element
    * @return a Paint object defined by the seriesElement
    */
-  private static Paint getPaintFromSeries(final ChartElement seriesElement) {
+  public static Paint getPaintFromSeries(final ChartElement seriesElement) {
     final String gradientType = seriesElement.getLayoutStyle().getValue(ChartStyleKeys.GRADIENT_TYPE).getCSSText();
     final Paint paint;
     if (gradientType != null && !gradientType.equalsIgnoreCase("none")) { //$NON-NLS-1$ 
@@ -367,6 +369,24 @@ public class JFreeChartUtils {
       }
     }
     return column;
+  }
+
+    /**
+   * @param seriesElement - series definition that has column-pos or column-name style
+   * @param data          - the actual data (needed to locate the correct columns)
+   * @param rowDefault - default column to return if either column-pos or column-name are
+   *                      not defined or not found
+   * @return int value of the real column in the data.
+   */
+  public static int getSeriesRow(final ChartElement seriesElement, final int rowDefault) {
+    Object positionAttr = seriesElement.getAttribute(ChartElement.ROW_POSITION);
+    final int row;
+    if (positionAttr != null) {
+      row = Integer.parseInt(positionAttr.toString());
+    } else {
+      row = rowDefault;
+    }
+    return row;
   }
 
   /**
@@ -732,7 +752,7 @@ public class JFreeChartUtils {
    * @param currentSeries Current series element
    * @return Font  The font object created based on the current series font css style
    */
-  private static Font getFont(final ChartElement currentSeries) {
+  public static Font getFont(final ChartElement currentSeries) {
     Font font = null;
     if (currentSeries != null) {
       final LayoutStyle layoutStyle = currentSeries.getLayoutStyle();

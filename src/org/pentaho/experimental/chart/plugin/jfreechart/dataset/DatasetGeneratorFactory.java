@@ -1,8 +1,9 @@
 package org.pentaho.experimental.chart.plugin.jfreechart.dataset;
 
-import org.jfree.data.general.Dataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.category.DefaultIntervalCategoryDataset;
+import org.jfree.data.general.Dataset;
+import org.jfree.data.general.DefaultPieDataset;
 import org.pentaho.experimental.chart.ChartDocumentContext;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
@@ -29,6 +30,25 @@ public class DatasetGeneratorFactory {
   private final String VALUE = "value"; //$NON-NLS-1$
   private final String TIME_SERIES = "timeseries"; //$NON-NLS-1$
   private final String INTERVAL = "interval"; //$NON-NLS-1$
+  private final String PIE="pie"; //$NON-NLS-1$
+
+  /**
+   * Returns default pie dataset.
+   * </p>
+   * @param chartDocContext -- Current chart's document context.
+   * @param data            -- Data for current chart.
+   * @return Returns DefaultCategoryDataset object.
+   */
+  public DefaultPieDataset createDefaultPieDataset(final ChartDocumentContext chartDocContext,
+                                                   final ChartTableModel data) {
+    final Dataset dataset = createDataset(chartDocContext, data);
+    DefaultPieDataset pieDataset = null;
+
+    if (dataset != null && dataset instanceof DefaultPieDataset) {
+        pieDataset = (DefaultPieDataset) dataset;
+    }
+    return pieDataset;
+  }
 
   /**
    * Returns default category dataset.
@@ -55,10 +75,13 @@ public class DatasetGeneratorFactory {
    * @param data            -- Data for current chart.
    * @param columnPosArr    -- Specific columns to retrieve the data from.
    * @return Returns DefaultCategoryDataset object.
+   * @throws IllegalArgumentException -- Chart document context or data was null
+   * @throws IllegalStateException -- Chart document was null 
    */
   public DefaultCategoryDataset createDefaultCategoryDataset(final ChartDocumentContext chartDocContext,
                                                              final ChartTableModel data,
-                                                             final Integer[] columnPosArr) {
+                                                             final Integer[] columnPosArr)
+  throws IllegalArgumentException, IllegalStateException {
     final Dataset dataset = createDataset(chartDocContext, data, columnPosArr);
     DefaultCategoryDataset categoryDataset = null;
 
@@ -79,16 +102,16 @@ public class DatasetGeneratorFactory {
    * @param chartDocContext Chart document context object that holds current chart document
    * @param data Chart table model that holds the data for the chart
    * @return IJFreeDatasetCreator that is a creator of specific type of dataset.
+   * @throws IllegalArgumentException -- Chart document context or data was null
+   * @throws IllegalStateException -- Chart document was null
    */
   public Dataset createDataset(final ChartDocumentContext chartDocContext,
-                                final ChartTableModel data)
+                               final ChartTableModel data)
   throws IllegalArgumentException,
          IllegalStateException {
+    Dataset dataset = null;
 
-    Dataset dataset;
-    IJFreeDatasetGenerator datasetGenerator = null;
-    
-    if (chartDocContext == null && data == null) {
+    if (chartDocContext == null || data == null) {
       throw new IllegalArgumentException("Arguments cannot be null. ChartDocumentContext: " + chartDocContext + ", ChartTableModel: "+ data); //$NON-NLS-1$ //$NON-NLS-2$
     } else {
       final ChartDocument chartDoc = chartDocContext.getChartDocument();
@@ -98,22 +121,27 @@ public class DatasetGeneratorFactory {
       }
 
       final String datasetType = getDatasetType(chartDoc.getPlotElement());
+      IJFreeDatasetGenerator datasetGenerator = null;
 
       if (datasetType != null) {
         if (CATEGORICAL.equalsIgnoreCase(datasetType)) {
-          datasetGenerator = new IJFreeDefaultCategoryDatasetGenerator();
+          datasetGenerator = new JFreeDefaultCategoryDatasetGenerator();
+        } else if (PIE.equalsIgnoreCase(datasetType)) {
+          datasetGenerator = new JFreeDefaultPieDatasetGenerator();
         } else if (XY.equalsIgnoreCase(datasetType)) {
         } else if (VALUE.equalsIgnoreCase(datasetType)) {
         } else if (TIME_SERIES.equalsIgnoreCase(datasetType)) {
         } else if (INTERVAL.equalsIgnoreCase(datasetType)) {
-           datasetGenerator = new IJFreeDefaultIntervalCategoryDatasetGenerator();
+           datasetGenerator = new JFreeDefaultIntervalCategoryDatasetGenerator();
         }
       } else {
         // If dataset type is not defined then default to DefaultCategory dataset
-        datasetGenerator =  new IJFreeDefaultCategoryDatasetGenerator();
+        datasetGenerator = new JFreeDefaultCategoryDatasetGenerator();
       }
 
-      dataset = datasetGenerator.createDataset(chartDocContext, data);
+      if (datasetGenerator != null) {
+        dataset = datasetGenerator.createDataset(chartDocContext, data);
+      }
     }
 
     return dataset;
@@ -125,21 +153,20 @@ public class DatasetGeneratorFactory {
    *
    * @param chartDocContext Chart document context object that holds current chart document
    * @param data Chart table model that holds the data for the chart
+   * @param columnPosArr Column positions for which data would be retrieved.
    * @return IJFreeDatasetCreator that is a creator of specific type of dataset.
    * @throws IllegalArgumentException If any of the arguments are null.
+   * @throws IllegalStateException If chart document is null.
    */
   private Dataset createDataset(final ChartDocumentContext chartDocContext,
-                               final ChartTableModel data,
-                               final Integer[] columnPosArr)
+                                final ChartTableModel data,
+                                final Integer[] columnPosArr)
     throws IllegalArgumentException,
-         IllegalStateException {
+           IllegalStateException {
 
     Dataset dataset = null;
-    IJFreeDatasetGenerator datasetGenerator = null;
 
-    if (chartDocContext == null && data == null) {
-      throw new IllegalArgumentException("Arguments cannot be null. ChartDocumentContext: " + chartDocContext + ", ChartTableModel: "+ data); //$NON-NLS-1$ //$NON-NLS-2$
-    } else {
+    if (chartDocContext != null && data != null) {
       final ChartDocument chartDoc = chartDocContext.getChartDocument();
 
       if (chartDoc == null) {
@@ -147,22 +174,27 @@ public class DatasetGeneratorFactory {
       }
 
       final String datasetType = getDatasetType(chartDoc.getPlotElement());
+      IJFreeDatasetGenerator datasetGenerator = null;
 
-      if (datasetType != null) {
+      if (datasetType != null) {                             
         if (CATEGORICAL.equalsIgnoreCase(datasetType)) {
-          datasetGenerator = new IJFreeDefaultCategoryDatasetGenerator();
+          datasetGenerator = new JFreeDefaultCategoryDatasetGenerator();
         } else if (XY.equalsIgnoreCase(datasetType)) {
         } else if (VALUE.equalsIgnoreCase(datasetType)) {
         } else if (TIME_SERIES.equalsIgnoreCase(datasetType)) {
         } else if (INTERVAL.equalsIgnoreCase(datasetType)) {
-           datasetGenerator = new IJFreeDefaultIntervalCategoryDatasetGenerator();
+           datasetGenerator = new JFreeDefaultIntervalCategoryDatasetGenerator();
         }
       } else {
         // If dataset type is not defined then default to DefaultCategory dataset
-        datasetGenerator =  new IJFreeDefaultCategoryDatasetGenerator();
+        datasetGenerator =  new JFreeDefaultCategoryDatasetGenerator();
       }
 
-      dataset = datasetGenerator.createDataset(chartDocContext, data,columnPosArr);
+      if (datasetGenerator != null) {
+        dataset = datasetGenerator.createDataset(chartDocContext, data,columnPosArr);
+      }
+    } else {
+      throw new IllegalArgumentException("Arguments cannot be null. ChartDocumentContext: " + chartDocContext + ", ChartTableModel: "+ data); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     return dataset;
@@ -180,7 +212,7 @@ public class DatasetGeneratorFactory {
 
     // Iterate through all the child items of the plot element until you find dataset element
     for (int i=0; i<childCount; i++) {
-      if (DATASET.equals(plotChildElement.getName())) {
+      if (DATASET.equals(plotChildElement.getTagName())) {
         return (String)plotChildElement.getAttribute(TYPE);
       } else {
         plotChildElement = plotChildElement.getNextItem();

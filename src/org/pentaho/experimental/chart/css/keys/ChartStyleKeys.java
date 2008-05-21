@@ -185,7 +185,13 @@ public class ChartStyleKeys {
    * Axis location (primary/secondary)
    */
   public static final StyleKey AXIS_LOCATION = StyleKeyRegistry.getRegistry().
-      createKey("-x-pentaho-chart-axis-location", false, false, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+        createKey("-x-pentaho-chart-axis-location", false, false, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+
+  /**
+   * Set the pie explode percent. It defaults to zero.
+   */
+  public static final StyleKey PIE_EXPLODE_PERCENT = StyleKeyRegistry.getRegistry().
+        createKey("-x-pentaho-chart-pie-explode-percent", false, false, StyleKey.All_ELEMENTS); //$NON-NLS-1$
 
   private ChartStyleKeys() {
   }
