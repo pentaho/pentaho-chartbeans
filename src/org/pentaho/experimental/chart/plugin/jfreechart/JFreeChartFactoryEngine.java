@@ -15,6 +15,7 @@ import org.pentaho.experimental.chart.plugin.api.ChartResult;
 import org.pentaho.experimental.chart.plugin.api.IOutput;
 import org.pentaho.experimental.chart.plugin.jfreechart.chart.area.JFreeAreaChartGeneratorFactory;
 import org.pentaho.experimental.chart.plugin.jfreechart.chart.bar.JFreeBarChartGeneratorFactory;
+import org.pentaho.experimental.chart.plugin.jfreechart.chart.line.JFreeLineChartGeneratorFactory;
 import org.pentaho.experimental.chart.plugin.jfreechart.chart.pie.JFreePieChartGeneratorFactory;
 import org.pentaho.experimental.chart.plugin.jfreechart.dataset.DatasetGeneratorFactory;
 import org.pentaho.experimental.chart.plugin.jfreechart.outputs.JFreeChartOutput;
@@ -117,36 +118,23 @@ public class JFreeChartFactoryEngine implements Serializable {
   /* (non-Javadoc)
    * @see org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine#makeLineChart(org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.api.IOutput)
    */
-  private JFreeChart makeLineChart(final ChartTableModel data, final ChartDocumentContext chartDocumentContext) {
+  public JFreeChart makeLineChart(final ChartTableModel data, final ChartDocumentContext chartDocumentContext)
+      throws Exception {
     final ChartDocument chartDocument = chartDocumentContext.getChartDocument();
-    final String title = JFreeChartUtils.getTitle(chartDocument);
-    final String valueCategoryLabel = JFreeChartUtils.getValueCategoryLabel(chartDocument);
-    final String valueAxisLabel = JFreeChartUtils.getValueAxisLabel(chartDocument);
-    final PlotOrientation orientation = JFreeChartUtils.getPlotOrientation(chartDocument);
-    final boolean legend = JFreeChartUtils.getShowLegend(chartDocument);
-    final boolean toolTips = JFreeChartUtils.getShowToolTips(chartDocument);
-    final JFreeChart chart = createLineChartSubtype(chartDocumentContext, data, title, valueCategoryLabel, valueAxisLabel, orientation, legend, toolTips);
+    final JFreeChart chart = createLineChartSubtype(chartDocumentContext, data);
     JFreeChartUtils.setPlotAttributes(chart.getCategoryPlot(), chartDocument, data);
-
+    
     return chart;
   }
 
  /**
    * @param chartDocumentContext
    * @param data
-   * @param title
-   * @param valueCategoryLabel
-   * @param valueAxisLabel
-   * @param orientation
-   * @param legend
-   * @param toolTips
-   * @return
+   * @return the newly created JFreeChart object
    */
-  private JFreeChart createLineChartSubtype(ChartDocumentContext chartDocumentContext, ChartTableModel data, String title, String valueCategoryLabel, String valueAxisLabel, PlotOrientation orientation, boolean legend, boolean toolTips) {
-    JFreeChart chart = null;
-    DatasetGeneratorFactory datasetGeneratorFactory = new DatasetGeneratorFactory();
-    DefaultCategoryDataset dataset = datasetGeneratorFactory.createDefaultCategoryDataset(chartDocumentContext, data);
-    chart = ChartFactory.createLineChart(title, valueAxisLabel, valueAxisLabel, dataset, orientation, legend, toolTips, toolTips);
+  private JFreeChart createLineChartSubtype(ChartDocumentContext chartDocumentContext, ChartTableModel data) {
+    final JFreeLineChartGeneratorFactory chartFacEngine = new JFreeLineChartGeneratorFactory();
+    final JFreeChart chart = chartFacEngine.createChart(chartDocumentContext, data);
     return chart;
   }
 

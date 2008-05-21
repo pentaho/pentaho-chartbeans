@@ -3,7 +3,10 @@ package org.pentaho.experimental.chart.plugin.jfreechart.utils;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 
+import org.jfree.chart.renderer.AbstractRenderer;
 import org.pentaho.experimental.chart.core.ChartElement;
+import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
+import org.pentaho.experimental.chart.css.styles.ChartMarkerShapeType;
 
 /**
  * This class provides a Shape object base on the element data.
@@ -13,6 +16,8 @@ import org.pentaho.experimental.chart.core.ChartElement;
  */
 public class ShapeFactory {
   private static ShapeFactory shapeFacObj;
+  public static final Shape DEFAULT_RECTANGLE_SHAPE = AbstractRenderer.DEFAULT_SHAPE;
+  public static final Shape DEFAULT_ELLIPSE_SHAPE = new Ellipse2D.Double(-3.0, -3.0, 6.0, 6.0);
 
   private ShapeFactory() {
   }
@@ -39,10 +44,15 @@ public class ShapeFactory {
   }
 
   public Shape getShape(ChartElement element) {
-//    if (element == null) {
-//      return null;
-//    }
-//    return null;
-    return new Ellipse2D.Float(-10, -10, 20, 20); 
+    if (element == null) {
+      return null;
+    }
+    String shapeStr = element.getLayoutStyle().getValue(ChartStyleKeys.MARKER_SHAPE).getCSSText();
+    if (ChartMarkerShapeType.RECTANGLE.getCSSText().equalsIgnoreCase(shapeStr)) {
+      return DEFAULT_RECTANGLE_SHAPE;
+    } else if (ChartMarkerShapeType.ELLIPSE.getCSSText().equalsIgnoreCase(shapeStr)) {
+      return DEFAULT_ELLIPSE_SHAPE;
+    }
+    return null;
   }
 }
