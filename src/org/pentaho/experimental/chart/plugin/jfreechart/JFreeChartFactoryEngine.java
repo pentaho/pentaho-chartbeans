@@ -2,12 +2,11 @@ package org.pentaho.experimental.chart.plugin.jfreechart;
 
 import java.io.Serializable;
 
-import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.category.DefaultCategoryDataset;
 import org.pentaho.experimental.chart.ChartDocumentContext;
 import org.pentaho.experimental.chart.core.ChartDocument;
+import org.pentaho.experimental.chart.core.ChartElement;
+import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
 import org.pentaho.experimental.chart.css.styles.ChartSeriesType;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.IChartPlugin;
@@ -17,10 +16,10 @@ import org.pentaho.experimental.chart.plugin.jfreechart.chart.area.JFreeAreaChar
 import org.pentaho.experimental.chart.plugin.jfreechart.chart.bar.JFreeBarChartGeneratorFactory;
 import org.pentaho.experimental.chart.plugin.jfreechart.chart.line.JFreeLineChartGeneratorFactory;
 import org.pentaho.experimental.chart.plugin.jfreechart.chart.pie.JFreePieChartGeneratorFactory;
-import org.pentaho.experimental.chart.plugin.jfreechart.dataset.DatasetGeneratorFactory;
 import org.pentaho.experimental.chart.plugin.jfreechart.outputs.JFreeChartOutput;
 import org.pentaho.experimental.chart.plugin.jfreechart.utils.JFreeChartUtils;
 import org.pentaho.reporting.libraries.css.values.CSSConstant;
+import org.pentaho.reporting.libraries.css.values.CSSValue;
 import org.pentaho.util.messages.Messages;
 
 public class JFreeChartFactoryEngine implements Serializable {
@@ -32,7 +31,7 @@ public class JFreeChartFactoryEngine implements Serializable {
 
   public IOutput makeChart(final ChartTableModel data, final ChartDocumentContext chartDocumentContext, final ChartResult chartResult) {
     final ChartDocument chartDocument = chartDocumentContext.getChartDocument();
-    final CSSConstant currentChartType = JFreeChartUtils.determineChartType(chartDocument);
+    final CSSConstant currentChartType = determineChartType(chartDocument);
     if (currentChartType == ChartSeriesType.UNDEFINED) {
       chartResult.setErrorCode(IChartPlugin.ERROR_INDETERMINATE_CHART_TYPE);
       chartResult.setDescription(Messages.getErrorString("JFreeChartPlugin.ERROR_0001_CHART_TYPE_INDETERMINABLE")); //$NON-NLS-1$
@@ -138,4 +137,29 @@ public class JFreeChartFactoryEngine implements Serializable {
     return chart;
   }
 
+  /**
+   * Determines what type of chart that should be rendered.  It is possible that this method
+   * could somehow be moved up into the AbstractChartPlugin
+   *
+   * @param chartDocument that defines what type of chart to use
+   * @return a ChartType that represents the type of chart the chartDocument is requesting.
+   */
+  public CSSConstant determineChartType(final ChartDocument chartDocument) {
+    final ChartElement[] elements = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_SERIES);
+    for (final ChartElement element : elements) {
+      final CSSValue value = element.getLayoutStyle().getValue(ChartStyleKeys.CHART_TYPE);
+      if (value != null) {
+        if (value.equals(ChartSeriesType.BAR)) {
+          return ChartSeriesType.BAR;
+        } else if (value.equals(ChartSeriesType.LINE)) {
+          return ChartSeriesType.LINE;
+        } else if (value.equals(ChartSeriesType.AREA)) {
+          return ChartSeriesType.AREA;
+        } else if (value.equals(ChartSeriesType.PIE)) {
+          return ChartSeriesType.PIE;
+        }
+      }
+    }
+    return ChartSeriesType.UNDEFINED;
+  }
 }

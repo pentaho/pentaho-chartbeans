@@ -33,7 +33,6 @@ import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.labels.ItemLabelAnchor;
 import org.jfree.chart.labels.ItemLabelPosition;
 import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.AreaRenderer;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
@@ -41,12 +40,9 @@ import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.chart.urls.StandardCategoryURLGenerator;
 import org.jfree.data.KeyToGroupMap;
 import org.jfree.data.category.CategoryDataset;
-import org.jfree.data.category.DefaultIntervalCategoryDataset;
-import org.jfree.data.general.Dataset;
 import org.jfree.ui.GradientPaintTransformType;
 import org.jfree.ui.StandardGradientPaintTransformer;
 import org.jfree.ui.TextAnchor;
-import org.pentaho.experimental.chart.ChartDocumentContext;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
 import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
@@ -55,11 +51,8 @@ import org.pentaho.experimental.chart.css.styles.ChartGradientType;
 import org.pentaho.experimental.chart.css.styles.ChartItemLabelVisibleType;
 import org.pentaho.experimental.chart.css.styles.ChartLineVisibleType;
 import org.pentaho.experimental.chart.css.styles.ChartMarkerVisibleType;
-import org.pentaho.experimental.chart.css.styles.ChartOrientationStyle;
-import org.pentaho.experimental.chart.css.styles.ChartSeriesType;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.api.ChartItemLabelGenerator;
-import org.pentaho.experimental.chart.plugin.jfreechart.dataset.DatasetGeneratorFactory;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
 import org.pentaho.reporting.libraries.css.keys.border.BorderStyleKeys;
 import org.pentaho.reporting.libraries.css.keys.font.FontSizeConstant;
@@ -67,7 +60,6 @@ import org.pentaho.reporting.libraries.css.keys.font.FontStyle;
 import org.pentaho.reporting.libraries.css.keys.font.FontStyleKeys;
 import org.pentaho.reporting.libraries.css.keys.font.RelativeFontSize;
 import org.pentaho.reporting.libraries.css.values.CSSColorValue;
-import org.pentaho.reporting.libraries.css.values.CSSConstant;
 import org.pentaho.reporting.libraries.css.values.CSSFunctionValue;
 import org.pentaho.reporting.libraries.css.values.CSSNumericType;
 import org.pentaho.reporting.libraries.css.values.CSSNumericValue;
@@ -85,12 +77,6 @@ public class JFreeChartUtils {
   private static final String DOMAIN_AXIS="domain";//$NON-NLS-1$
   private JFreeChartUtils() {
   }
-
-  public static Dataset getDataset(final ChartDocumentContext chartDocumentContext, final ChartTableModel data) {
-    final DatasetGeneratorFactory DatasetGeneratorFactory = new DatasetGeneratorFactory();
-    return DatasetGeneratorFactory.createDataset(chartDocumentContext, data);
-  }
-
 
   public static Object getRawRowName(final ChartTableModel data, final ChartDocument chartDocument, final int row) {
     final StringBuffer syntheticColumnName = new StringBuffer();
@@ -123,42 +109,6 @@ public class JFreeChartUtils {
    */
   public static double getScale(final ChartDocument chartDocument) {
     return ((CSSNumericValue)chartDocument.getPlotElement().getLayoutStyle().getValue(ChartStyleKeys.SCALE_NUM)).getValue();
-  }
-
-  /**
-   * @param data          - Data for the chart
-   * @param chartDocument - Actual chart definiton
-   * @return
-   */
-  public static DefaultIntervalCategoryDataset createDefaultIntervalCategoryDataset(final ChartTableModel data, final ChartDocument chartDocument) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  /**
-   * Determines what type of chart that should be rendered.  It is possible that this method
-   * could somehow be moved up into the AbstractChartPlugin
-   *
-   * @param chartDocument that defines what type of chart to use
-   * @return a ChartType that represents the type of chart the chartDocument is requesting.
-   */
-  public static CSSConstant determineChartType(final ChartDocument chartDocument) {
-    final ChartElement[] elements = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_SERIES);
-    for (final ChartElement element : elements) {
-      final CSSValue value = element.getLayoutStyle().getValue(ChartStyleKeys.CHART_TYPE);
-      if (value != null) {
-        if (value.equals(ChartSeriesType.BAR)) {
-          return ChartSeriesType.BAR;
-        } else if (value.equals(ChartSeriesType.LINE)) {
-          return ChartSeriesType.LINE;
-        } else if (value.equals(ChartSeriesType.AREA)) {
-          return ChartSeriesType.AREA;
-        } else if (value.equals(ChartSeriesType.PIE)) {
-          return ChartSeriesType.PIE;
-        }
-      }
-    }
-    return ChartSeriesType.UNDEFINED;
   }
 
   /**
@@ -195,7 +145,7 @@ public class JFreeChartUtils {
    * 
    * Sets the line width for each of the series that is defined as a lineRenderer
    */
-  private static void setSeriesLineStyles(CategoryPlot categoryPlot, ChartElement[] seriesElements) {
+  private static void setSeriesLineStyles(final CategoryPlot categoryPlot, final ChartElement[] seriesElements) {
     final int length = seriesElements.length;
     final StrokeFactory strokeFacObj = StrokeFactory.getInstance();
     for (int i = 0; i < length; i++) {
@@ -219,7 +169,7 @@ public class JFreeChartUtils {
    * 
    * Set the line marker attributes
    */
-  private static void setSeriesMarkerStyles(CategoryPlot categoryPlot, ChartElement[] seriesElements) {
+  private static void setSeriesMarkerStyles(final CategoryPlot categoryPlot, final ChartElement[] seriesElements) {
     final int length = seriesElements.length;
     final ShapeFactory shapeFacObj = ShapeFactory.getInstance();
     for (int i = 0; i < length; i++) {
@@ -373,13 +323,12 @@ public class JFreeChartUtils {
 
     /**
    * @param seriesElement - series definition that has column-pos or column-name style
-   * @param data          - the actual data (needed to locate the correct columns)
    * @param rowDefault - default column to return if either column-pos or column-name are
    *                      not defined or not found
    * @return int value of the real column in the data.
    */
   public static int getSeriesRow(final ChartElement seriesElement, final int rowDefault) {
-    Object positionAttr = seriesElement.getAttribute(ChartElement.ROW_POSITION);
+    final Object positionAttr = seriesElement.getAttribute(ChartElement.ROW_POSITION);
     final int row;
     if (positionAttr != null) {
       row = Integer.parseInt(positionAttr.toString());
@@ -406,40 +355,6 @@ public class JFreeChartUtils {
   }
 
   /**
-   * @param chartDocument that contains a orientation on the Plot element
-   * @return PlotOrientation.VERTICAL or .HORIZONTAL or Null if not defined.
-   */
-  public static PlotOrientation getPlotOrientation(final ChartDocument chartDocument) {
-    PlotOrientation plotOrient = null;
-    final ChartElement plotElement = chartDocument.getPlotElement();
-
-    if (plotElement != null) {
-      final LayoutStyle layoutStyle = plotElement.getLayoutStyle();
-      final CSSValue value = layoutStyle.getValue(ChartStyleKeys.ORIENTATION);
-
-      if (value != null) {
-        final String orientatValue = value.toString();
-
-        if (orientatValue.equalsIgnoreCase(ChartOrientationStyle.VERTICAL.getCSSText())) {
-          plotOrient = PlotOrientation.VERTICAL;
-        } else if (orientatValue.equalsIgnoreCase(ChartOrientationStyle.HORIZONTAL.getCSSText())) {
-          plotOrient = PlotOrientation.HORIZONTAL;
-        }
-      }
-    }
-    return plotOrient;
-  }
-
-  /**
-   * @param chartDocument - ChartDocument that defines what the series should look like
-   * @return a boolean that indicates of if a legend should be included in the chart
-   */
-  public static boolean getShowLegend(final ChartDocument chartDocument) {
-    // TODO determine this from the chartDocument
-    return true;
-  }
-
-  /**
    * If the chart URL template is defined in the plot tag with url value, then return true. False otherwise.
    *
    * @param chartDocument - ChartDocument that defines what the series should look like
@@ -458,53 +373,6 @@ public class JFreeChartUtils {
       }
     }
     return showURL;
-  }
-
-  /**
-   * Returns a boolean value that indicates if the chart should generate tooltips
-   *
-   * @param chartDocument - ChartDocument that defines what the series should look like
-   * @return true if we want to show tool tips
-   */
-  public static boolean getShowToolTips(final ChartDocument chartDocument) {
-    // TODO determine this from the chartDocument
-    return true;
-  }
-
-  /**
-   * Gets the title of the chart defined in the chartDocument
-   *
-   * @param chartDocument - ChartDocument that defines what the series should look like
-   * @return String - the title
-   */
-  public static String getTitle(final ChartDocument chartDocument) {
-    final ChartElement[] children = chartDocument.getRootElement().findChildrenByName("title"); //$NON-NLS-1$
-    if (children != null && children.length > 0) {
-      return children[0].getText();
-    }
-    return null;
-  }
-
-  /**
-   * Returns the ValueCategoryLabel of the chart.
-   *
-   * @param chartDocument - ChartDocument that defines what the series should look like
-   * @return String - the value category label
-   */
-  public static String getValueCategoryLabel(final ChartDocument chartDocument) {
-    // TODO determine this from the chartDocument
-    return "Category Label"; //$NON-NLS-1$ 
-  }
-
-  /**
-   * Returns the ValueAxisLabel of the chart.
-   *
-   * @param chartDocument - ChartDocument that defines what the series should look like
-   * @return String - the value axis label
-   */
-  public static String getValueAxisLabel(final ChartDocument chartDocument) {
-    // TODO determine this from the chartDocument
-    return "Value Axis Label"; //$NON-NLS-1$ 
   }
 
   /**

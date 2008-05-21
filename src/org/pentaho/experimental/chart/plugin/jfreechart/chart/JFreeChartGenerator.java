@@ -119,7 +119,7 @@ public abstract class JFreeChartGenerator implements IJFreeChartGenerator {
    * @param chartDocument that contains a orientation on the Plot element
    * @return PlotOrientation.VERTICAL or .HORIZONTAL or Null if not defined.
    */
-  public static PlotOrientation getPlotOrientation(final ChartDocument chartDocument) {
+  public PlotOrientation getPlotOrientation(final ChartDocument chartDocument) {
     PlotOrientation plotOrient = null;
     final ChartElement plotElement = chartDocument.getPlotElement();
 

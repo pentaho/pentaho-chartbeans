@@ -194,7 +194,7 @@ public class JFreePieChartGenerator extends JFreeChartGenerator {
         percent = Double.parseDouble(percentStr)/100;
       } catch (NumberFormatException ne) {
         logger.warn(Messages.getString("JFreePieChartGenerator.WARN_EXPLODE_PERCENT_NOT_DEFINED_CORRECTLY", percentStr, null)); //$NON-NLS-1$
-        //Setting the default to 10D
+        //Setting the default to 10%
         percent = 0.1D;
       }
 
