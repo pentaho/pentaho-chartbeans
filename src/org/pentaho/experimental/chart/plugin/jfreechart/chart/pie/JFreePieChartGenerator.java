@@ -16,11 +16,13 @@ import org.pentaho.experimental.chart.ChartDocumentContext;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
 import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
+import org.pentaho.experimental.chart.css.styles.ChartItemLabelVisibleType;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.jfreechart.chart.JFreeChartGenerator;
 import org.pentaho.experimental.chart.plugin.jfreechart.utils.JFreeChartUtils;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
 import org.pentaho.reporting.libraries.css.values.CSSValue;
+import org.pentaho.reporting.libraries.css.values.CSSStringValue;
 import org.pentaho.util.messages.Messages;
 
 /**
@@ -65,8 +67,8 @@ public class JFreePieChartGenerator extends JFreeChartGenerator {
     piePlot.setNoDataMessage("No data available"); //$NON-NLS-1$
     piePlot.setCircular(false);
     piePlot.setLabelGap(0.02);
-    generateSectionLabels(piePlot,3);
-    setLabelPlacingInsideChart(piePlot, true);
+    final ChartElement plotElement =  chartDocument.getPlotElement();
+    setLabelPlacingInsideChart(piePlot, plotElement);
     setSeriesAttributes(piePlot, chartDocument, data);    
   }
 
@@ -83,6 +85,7 @@ public class JFreePieChartGenerator extends JFreeChartGenerator {
     setSeriesPaint(piePlot, seriesElements, data);
     setLabelFont(piePlot, seriesElements);
     setExplode(piePlot, seriesElements, data);
+    generateSectionLabels(piePlot, seriesElements);
   }
 
   private void setSeriesPaint(final PiePlot plot,
@@ -124,33 +127,47 @@ public class JFreePieChartGenerator extends JFreeChartGenerator {
    * Generates the labels for the chart along with the formatting.
    * </p>
    * @param piePlot -- PiePlot for the current Pie Chart.
-   * @param style   -- Defines the formatting for the labels.
+   * @param seriesElements - Array of all the series elements defined in the chart definition document.
    */
   private void generateSectionLabels(final PiePlot piePlot,
-                                     final int style) {
+                                     final ChartElement[] seriesElements) {
 
-    final PieSectionLabelGenerator generator;
-    if (style == 1) {
-      generator = new StandardPieSectionLabelGenerator("{1}"); //$NON-NLS-1$ 
-    } else if (style == 2) {
-      generator = new StandardPieSectionLabelGenerator("{2}", new DecimalFormat("0"), new DecimalFormat("0.00%")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    } else if (style == 3) {
-      generator = new StandardPieSectionLabelGenerator("{1} = {2}", new DecimalFormat("0.00"), new DecimalFormat("0.00%")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    } else {
-      generator = new StandardPieSectionLabelGenerator();
+    final int length = seriesElements.length;
+    PieSectionLabelGenerator generator = null;
+    for (int i = 0; i < length; i++) {
+      final ChartElement seriesElement = seriesElements[i];
+      final LayoutStyle layoutStyle = seriesElement.getLayoutStyle();
+      /*
+       * NOTE: The message format can have following codes: {0} {1} {2} {3}.
+       * For eg: {1} = {2}, {1} val {2}, {1} =>> {3} etc are okay.
+       *      : {1xyz} {2  } is not okay.
+       * Anything outside of it would not be formatted correctlt by StandardPieSectionLabelGenerator
+       */
+      final String messageFormat = ((CSSStringValue) layoutStyle.getValue(ChartStyleKeys.ITEM_LABEL_TEXT)).getValue();
+
+      if (messageFormat != null) {
+        generator = new StandardPieSectionLabelGenerator(messageFormat, new DecimalFormat("0.00"), new DecimalFormat("0.00%"));//$NON-NLS-1$ //$NON-NLS-2$
+        break;
+      } else {
+        generator = new StandardPieSectionLabelGenerator();
+      }
     }
-    piePlot.setLabelGenerator(generator);
+    if (generator != null) {
+      piePlot.setLabelGenerator(generator);
+    }
   }
 
   /**
    * Places the label inside or outside the chart.
    * <p/> 
    * @param piePlot -- PiePlot for the current Pie Chart.
-   * @param inside  -- true if the label needs to be placed inside the chart, false otherwise.
+   * @param plotElement -- Plot Element from the current chart document.
    */
   private void setLabelPlacingInsideChart(final PiePlot piePlot,
-                                          final boolean inside) {
-    if (inside) {
+                                          final ChartElement plotElement) {
+    final LayoutStyle layoutStyle = plotElement.getLayoutStyle();
+    final CSSValue inside = layoutStyle.getValue(ChartStyleKeys.PIE_LABELS_INSIDE_CHART);
+    if (ChartItemLabelVisibleType.YES.equals(inside)) {
       piePlot.setSimpleLabels(true);
     }
   }

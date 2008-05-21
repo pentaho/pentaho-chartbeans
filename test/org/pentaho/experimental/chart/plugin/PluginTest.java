@@ -246,7 +246,12 @@ public class PluginTest extends TestCase {
     data.setRowName(2, "Mar"); //$NON-NLS-1$
 
     final String[] fileNames = {
-        "PluginTest14a.xml", //$NON-NLS-1$
+            "PluginTest14a.xml", //$NON-NLS-1$
+            "PluginTest14b.xml", //$NON-NLS-1$
+            "PluginTest14c.xml", //$NON-NLS-1$
+            "PluginTest14d.xml", //$NON-NLS-1$
+            "PluginTest14e.xml", //$NON-NLS-1$
+            "PluginTest14f.xml", //$NON-NLS-1$
     };
 
     runTests(fileNames, data);

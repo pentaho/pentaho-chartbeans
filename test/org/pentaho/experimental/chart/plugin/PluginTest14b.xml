@@ -3,6 +3,7 @@
   <stylesheet>
     .pie1 {
     color: gray;
+    font-style: italic;
     -x-pentaho-chart-series-type: pie;
     }
 
@@ -17,7 +18,7 @@
     }
   </stylesheet>
 
-  <title>Test for Pie chart - Labels outside the chart</title>
+  <title>Test for Pie charts - Labels inside the chart</title>
   
   <series name="budget" class="pie1" row-pos="0"/>
 
@@ -25,7 +26,9 @@
 
   <series name="forecast" class="pie3" row-pos="2"/>
 
-  <plot style="-x-pentaho-chart-drill-url-template: url(http://localhost:8080/Pentaho/JPivot); -x-pentaho-chart-scale: 1">
+  <plot style="-x-pentaho-chart-drill-url-template: url(http://localhost:8080/Pentaho/JPivot);
+               -x-pentaho-chart-scale: 1;
+               -x-pentaho-chart-pie-labels-inside-chart: yes;">
     <dataset type="pie"/>
   </plot>
 </chart>

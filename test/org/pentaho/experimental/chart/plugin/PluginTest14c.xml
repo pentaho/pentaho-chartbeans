@@ -2,22 +2,27 @@
 
   <stylesheet>
     .pie1 {
-    color: gray;
+    color: red;
+    font-family: sans-serif;
+    font-variant: small-caps;
+    font-size: 16pt;
+    font-style: italic;
+    -x-pentaho-chart-item-label-text: '{1}';
     -x-pentaho-chart-series-type: pie;
     }
 
     .pie2 {
-    color: yellow;
+    color: blue;
     -x-pentaho-chart-series-type: pie;
     }
 
     .pie3 {
-    color: green;
+    color: yellow;
     -x-pentaho-chart-series-type: pie;
     }
   </stylesheet>
 
-  <title>Test for Pie chart - Labels outside the chart</title>
+  <title>Test for Pie charts - Number labels</title>
   
   <series name="budget" class="pie1" row-pos="0"/>
 

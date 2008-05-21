@@ -34,5 +34,6 @@
   -x-pentaho-chart-axis-item-margin: 20%;    
   -x-pentaho-chart-axis-location: primary;
   -x-pentaho-chart-pie-explode-percent: 0%;
+  -x-pentaho-chart-pie-labels-inside-chart: no;  
 }
 
