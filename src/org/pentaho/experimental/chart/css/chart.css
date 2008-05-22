@@ -22,7 +22,7 @@ title {
 plot {
 	-x-pentaho-chart-orientation: vertical;
   -x-pentaho-chart-drill-url-template: none;	
-  -x-pentaho-chart-scale: 1;
+  -x-pentaho-chart-scale: 1;	
   -x-pentaho-chart-pie-labels-inside-chart: no;
 }
 
@@ -44,7 +44,10 @@ series {
   -x-pentaho-chart-line-width: thin;
   -x-pentaho-chart-line-visible: yes;
   -x-pentaho-chart-marker-visible: no;
+  -x-pentaho-chart-marker-filled: yes;
   -x-pentaho-chart-marker-shape: rectangle;
+  -x-pentaho-chart-marker-width: 6 px;
+  -x-pentaho-chart-marker-height: 6 px;
   -x-pentaho-chart-bar-style: bar;
   -x-pentaho-chart-bar-max-width: 50%;
   -x-pentaho-chart-drill-url-template: none;

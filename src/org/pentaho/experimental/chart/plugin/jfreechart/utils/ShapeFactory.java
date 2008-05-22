@@ -2,8 +2,8 @@ package org.pentaho.experimental.chart.plugin.jfreechart.utils;
 
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
 
-import org.jfree.chart.renderer.AbstractRenderer;
 import org.pentaho.experimental.chart.core.ChartElement;
 import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
 import org.pentaho.experimental.chart.css.styles.ChartMarkerShapeType;
@@ -16,8 +16,6 @@ import org.pentaho.experimental.chart.css.styles.ChartMarkerShapeType;
  */
 public class ShapeFactory {
   private static ShapeFactory shapeFacObj;
-  public static final Shape DEFAULT_RECTANGLE_SHAPE = AbstractRenderer.DEFAULT_SHAPE;
-  public static final Shape DEFAULT_ELLIPSE_SHAPE = new Ellipse2D.Double(-3.0, -3.0, 6.0, 6.0);
 
   private ShapeFactory() {
   }
@@ -43,16 +41,20 @@ public class ShapeFactory {
     throw new CloneNotSupportedException();
   }
 
-  public Shape getShape(ChartElement element) {
+  public synchronized Shape getShape(ChartElement element) {
     if (element == null) {
       return null;
     }
     String shapeStr = element.getLayoutStyle().getValue(ChartStyleKeys.MARKER_SHAPE).getCSSText();
+    double height = Double.parseDouble(element.getLayoutStyle().getValue(ChartStyleKeys.MARKER_HEIGHT).getCSSText());
+    double width = Double.parseDouble(element.getLayoutStyle().getValue(ChartStyleKeys.MARKER_WIDTH).getCSSText());
+
     if (ChartMarkerShapeType.RECTANGLE.getCSSText().equalsIgnoreCase(shapeStr)) {
-      return DEFAULT_RECTANGLE_SHAPE;
+      return new Rectangle2D.Double(-(width/2), -(height/2), width, height);
     } else if (ChartMarkerShapeType.ELLIPSE.getCSSText().equalsIgnoreCase(shapeStr)) {
-      return DEFAULT_ELLIPSE_SHAPE;
+      return new Ellipse2D.Double(-(width/2), -(height/2), width, height);
     }
     return null;
   }
+
 }

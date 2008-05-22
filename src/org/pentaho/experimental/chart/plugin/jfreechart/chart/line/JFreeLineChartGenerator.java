@@ -33,6 +33,7 @@ import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.jfreechart.chart.JFreeChartGenerator;
+import org.pentaho.experimental.chart.plugin.jfreechart.utils.ChartMarkerFilledType;
 import org.pentaho.experimental.chart.plugin.jfreechart.utils.ShapeFactory;
 import org.pentaho.experimental.chart.plugin.jfreechart.utils.StrokeFactory;
 
@@ -79,14 +80,13 @@ public class JFreeLineChartGenerator extends JFreeChartGenerator {
     setSeriesLineStyles(categoryPlot, seriesElements);
   }
 
- /**
-  * Set the line marker attributes
-  * </p>
-  * @param categoryPlot   -- The category plot from the current chart object. Category plot will be updated.
-  * @param seriesElements -- Series elements from the current chart definition.
-  */
-  public static void setSeriesMarkerStyles(final CategoryPlot categoryPlot,
-                                           final ChartElement[] seriesElements) {
+  /**
+   * @param categoryPlot
+   * @param seriesElements
+   * 
+   * Set the line marker attributes
+   */
+  private static void setSeriesMarkerStyles(CategoryPlot categoryPlot, ChartElement[] seriesElements) {
     final int length = seriesElements.length;
     final ShapeFactory shapeFacObj = ShapeFactory.getInstance();
     for (int i = 0; i < length; i++) {
@@ -94,11 +94,29 @@ public class JFreeLineChartGenerator extends JFreeChartGenerator {
 
       if (categoryPlot.getRenderer() instanceof LineAndShapeRenderer) {
         final LineAndShapeRenderer lineAndShapeRenderer = (LineAndShapeRenderer) categoryPlot.getRenderer();
-        final String visibleStr = currElement.getLayoutStyle().getValue(ChartStyleKeys.MARKER_VISIBLE).getCSSText();
-        lineAndShapeRenderer.setSeriesShapesVisible(i, ChartMarkerVisibleType.YES.getCSSText().equalsIgnoreCase(visibleStr));
+        lineAndShapeRenderer.setSeriesShapesVisible(i, isMarkerVisible(currElement));
         lineAndShapeRenderer.setSeriesShape(i, shapeFacObj.getShape(currElement));
+        lineAndShapeRenderer.setSeriesShapesFilled(i, isShapeFilled(currElement));
       }
     }
+  }
+
+  /**
+   * @param currElement
+   * @return
+   */
+  private static boolean isMarkerVisible(ChartElement currElement) {
+    final String visibleStr = currElement.getLayoutStyle().getValue(ChartStyleKeys.MARKER_VISIBLE).getCSSText();
+    return ChartMarkerVisibleType.YES.getCSSText().equalsIgnoreCase(visibleStr);
+  }
+  
+  /**
+   * @param currElement
+   * @return
+   */
+  private static boolean isShapeFilled(ChartElement currElement) {
+    final String filledStr = currElement.getLayoutStyle().getValue(ChartStyleKeys.MARKER_FILLED).getCSSText();
+    return ChartMarkerFilledType.YES.getCSSText().equalsIgnoreCase(filledStr);
   }
 
   /**

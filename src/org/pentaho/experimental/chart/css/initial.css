@@ -11,7 +11,10 @@
   -x-pentaho-chart-orientation: vertical;
   -x-pentaho-chart-line-visible: yes;
   -x-pentaho-chart-marker-visible: no;
+  -x-pentaho-chart-marker-filled: yes;
   -x-pentaho-chart-marker-shape: rectangle;
+  -x-pentaho-chart-marker-width: 6 px;
+  -x-pentaho-chart-marker-height: 6 px;
   -x-pentaho-chart-line-style: solid;
   -x-pentaho-chart-area-style: area;
   -x-pentaho-chart-line-width: thin;

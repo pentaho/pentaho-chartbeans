@@ -8,6 +8,7 @@
     -x-pentaho-chart-line-width: 1px;
     -x-pentaho-chart-marker-visible: yes;
     -x-pentaho-chart-marker-shape: rectangle;
+    -x-pentaho-chart-marker-height: 10 px;
     }
 
     .line2 {
@@ -26,6 +27,8 @@
     -x-pentaho-chart-line-width: 1px;
     -x-pentaho-chart-marker-visible: yes;
     -x-pentaho-chart-marker-shape: ellipse;
+    -x-pentaho-chart-marker-height: 10 px;
+    -x-pentaho-chart-marker-filled: no
     }
   </stylesheet>
 

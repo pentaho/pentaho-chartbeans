@@ -22,7 +22,7 @@ public class ChartMarkerShapeTest extends TestCase {
     ChartBoot.getInstance().start();
   }
   
-  public void testOrientationStyle() throws Exception {
+  public void testMarkerShapeStyle() throws Exception {
     final ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource("ChartMarkerShapeTest.xml")); //$NON-NLS-1$
     final ChartDocument cd = cdc.getChartDocument();
     assertNotNull(cd);

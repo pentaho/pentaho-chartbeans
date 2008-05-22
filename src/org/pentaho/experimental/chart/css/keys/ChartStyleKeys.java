@@ -47,20 +47,38 @@ public class ChartStyleKeys {
    * The visibility of the line
    */
   public static final StyleKey LINE_VISIBLE = StyleKeyRegistry.getRegistry().
-  createKey("-x-pentaho-chart-line-visible", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+      createKey("-x-pentaho-chart-line-visible", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
   
   /**
    * The visibility of the markers
    */
   public static final StyleKey MARKER_VISIBLE = StyleKeyRegistry.getRegistry().
-  createKey("-x-pentaho-chart-marker-visible", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+      createKey("-x-pentaho-chart-marker-visible", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+  
+  /**
+   * Wether or not the marker is filled
+   */
+  public static final StyleKey MARKER_FILLED = StyleKeyRegistry.getRegistry().
+      createKey("-x-pentaho-chart-marker-filled", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
   
   /**
    * The shape of the marker (ie. Rectangle, Elipse, arc, etc..)
    */
   public static final StyleKey MARKER_SHAPE = StyleKeyRegistry.getRegistry().
-  createKey("-x-pentaho-chart-marker-shape", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+      createKey("-x-pentaho-chart-marker-shape", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
   
+  /**
+   * The the top and bottom boundary rectangle size
+   */
+  public static final StyleKey MARKER_WIDTH = StyleKeyRegistry.getRegistry().
+      createKey("-x-pentaho-chart-marker-width", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+
+  /**
+   * The left and right boundary rectangle size 
+   */
+  public static final StyleKey MARKER_HEIGHT = StyleKeyRegistry.getRegistry().
+      createKey("-x-pentaho-chart-marker-height", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+
   /**
    * The line width for line charts (thin, medium, thick, 5px, 0.1cm)
    */

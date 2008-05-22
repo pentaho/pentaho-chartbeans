@@ -23,7 +23,7 @@ public class ChartMarkerVisibleTest extends TestCase {
     ChartBoot.getInstance().start();
   }
   
-  public void testItemLabelVisible() throws IllegalStateException, ResourceException {
+  public void testMarkerVisible() throws IllegalStateException, ResourceException {
     final ChartDocumentContext cdc = ChartFactory.generateChart(getClass().getResource("ChartMarkerVisibleTest.xml")); //$NON-NLS-1$
     final ChartDocument cd = cdc.getChartDocument();
     assertNotNull(cd);

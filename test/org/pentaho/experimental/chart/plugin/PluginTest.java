@@ -265,31 +265,31 @@ public class PluginTest extends TestCase {
     final ChartTableModel data = createChartTableModel(dataArray);
 
     final String[] fileNames = new String[] {
-      "PluginTest1a.xml", //$NON-NLS-1$
-      "PluginTest1b.xml", //$NON-NLS-1$
+//      "PluginTest1a.xml", //$NON-NLS-1$
+//      "PluginTest1b.xml", //$NON-NLS-1$
       "PluginTest1c.xml", //$NON-NLS-1$
-      "PluginTest2a.xml", //$NON-NLS-1$
-      "PluginTest2b.xml", //$NON-NLS-1$
-      "PluginTest2c.xml", //$NON-NLS-1$
-      "PluginTest2d.xml", //$NON-NLS-1$
-      "PluginTest2e.xml", //$NON-NLS-1$
-//      "PluginTest2f.xml", //$NON-NLS-1$
-      "PluginTest3.xml", //$NON-NLS-1$
-      "PluginTest4.xml", //$NON-NLS-1$
-      "PluginTest5.xml", //$NON-NLS-1$
-      "PluginTest6.xml", //$NON-NLS-1$
-      "PluginTest7.xml", //$NON-NLS-1$
-      "PluginTest8a.xml", //$NON-NLS-1$
-      "PluginTest8b.xml", //$NON-NLS-1$
-      "PluginTest9.xml", //$NON-NLS-1$
-      "PluginTest10a.xml", //$NON-NLS-1$
-      "PluginTest11a.xml", //$NON-NLS-1$
-      "PluginTest11b.xml", //$NON-NLS-1$
-      "PluginTest11c.xml", //$NON-NLS-1$
-      "PluginTest11d.xml", //$NON-NLS-1$
-      "PluginTest12a.xml", //$NON-NLS-1$
-      "PluginTest12b.xml", //$NON-NLS-1$
-      "PluginTest12c.xml", //$NON-NLS-1$
+//      "PluginTest2a.xml", //$NON-NLS-1$
+//      "PluginTest2b.xml", //$NON-NLS-1$
+//      "PluginTest2c.xml", //$NON-NLS-1$
+//      "PluginTest2d.xml", //$NON-NLS-1$
+//      "PluginTest2e.xml", //$NON-NLS-1$
+//      "PluginTest2f.xml", //$NON-NLS-1$  // don't uncomment since it can't use the default data.
+//      "PluginTest3.xml", //$NON-NLS-1$
+//      "PluginTest4.xml", //$NON-NLS-1$
+//      "PluginTest5.xml", //$NON-NLS-1$
+//      "PluginTest6.xml", //$NON-NLS-1$
+//      "PluginTest7.xml", //$NON-NLS-1$
+//      "PluginTest8a.xml", //$NON-NLS-1$
+//      "PluginTest8b.xml", //$NON-NLS-1$
+//      "PluginTest9.xml", //$NON-NLS-1$
+//      "PluginTest10a.xml", //$NON-NLS-1$
+//      "PluginTest11a.xml", //$NON-NLS-1$
+//      "PluginTest11b.xml", //$NON-NLS-1$
+//      "PluginTest11c.xml", //$NON-NLS-1$
+//      "PluginTest11d.xml", //$NON-NLS-1$
+//      "PluginTest12a.xml", //$NON-NLS-1$
+//      "PluginTest12b.xml", //$NON-NLS-1$
+//      "PluginTest12c.xml", //$NON-NLS-1$
     };
     
     runTests(fileNames, data);
