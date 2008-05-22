@@ -77,7 +77,7 @@ public class JFreeChartFactoryEngine implements Serializable {
   public JFreeChart makeAreaChart(final ChartTableModel data, final ChartDocumentContext chartDocumentContext) {
     final ChartDocument chartDocument = chartDocumentContext.getChartDocument();
     final JFreeChart chart = createAreaChartSubtype(chartDocumentContext, data);
-    JFreeChartUtils.setPlotAttributes(chart.getCategoryPlot(), chartDocument, data);
+    JFreeChartUtils.setPlotAttributes(chart.getCategoryPlot(), chartDocument);
     return chart;
   }
 
@@ -103,7 +103,7 @@ public class JFreeChartFactoryEngine implements Serializable {
       throws Exception {
     final ChartDocument chartDocument = chartDocumentContext.getChartDocument();
     final JFreeChart chart = createBarChartSubtype(chartDocumentContext, data);
-    JFreeChartUtils.setPlotAttributes(chart.getCategoryPlot(), chartDocument, data);
+    JFreeChartUtils.setPlotAttributes(chart.getCategoryPlot(), chartDocument);
 
     return chart;
   }
@@ -121,7 +121,7 @@ public class JFreeChartFactoryEngine implements Serializable {
       throws Exception {
     final ChartDocument chartDocument = chartDocumentContext.getChartDocument();
     final JFreeChart chart = createLineChartSubtype(chartDocumentContext, data);
-    JFreeChartUtils.setPlotAttributes(chart.getCategoryPlot(), chartDocument, data);
+    JFreeChartUtils.setPlotAttributes(chart.getCategoryPlot(), chartDocument);
     
     return chart;
   }

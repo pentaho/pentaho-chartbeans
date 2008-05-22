@@ -20,16 +20,13 @@ package org.pentaho.experimental.chart.plugin.jfreechart.utils;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GradientPaint;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.urls.StandardCategoryURLGenerator;
 import org.jfree.data.KeyToGroupMap;
@@ -63,7 +60,6 @@ public class JFreeChartUtils {
   private static final Log logger = LogFactory.getLog(JFreeChartUtils.class);
 
   private static final char SEPERATOR = '/';
-  private static final String DOMAIN_AXIS="domain";//$NON-NLS-1$
   private JFreeChartUtils() {
   }
 
@@ -183,64 +179,9 @@ public class JFreeChartUtils {
    *
    * @param categoryPlot  - a CategoryPlot to manipulate
    * @param chartDocument - ChartDocument that contains the information for manipulating the plot
-   * @param data          - The actual data
    */
-  public static void setPlotAttributes(final CategoryPlot categoryPlot, final ChartDocument chartDocument, final ChartTableModel data) {
+  public static void setPlotAttributes(final CategoryPlot categoryPlot, final ChartDocument chartDocument) {
     JFreeChartUtils.setURLGeneration(categoryPlot.getRenderer(), chartDocument);
-    JFreeChartUtils.setAxisMargins(categoryPlot, chartDocument);
-  }
-
-  /**
-   * This method allows to manipulate bar width indirectly by sepecifying percentages for lower margin,
-   * upper margin, category margin and item margin. Definitions of these margins and how they effect bar width
-   * are available in the JFreeChart documentation.
-   *
-   * @param categoryPlot  The plot object for the current chart
-   * @param chartDocument Current chart defintion
-   */
-  private static void setAxisMargins(final CategoryPlot categoryPlot, final ChartDocument chartDocument) {
-    final ArrayList<ChartElement> axisElementsList = chartDocument.getAxisSeriesLinkInfo().getDomainAxisElements();
-    if (axisElementsList != null) {
-      for(final ChartElement axisElement : axisElementsList) {
-        if (axisElement != null) {
-          final String axisType = (String)axisElement.getAttribute("type");//$NON-NLS-1$
-          if (axisType != null &&
-              DOMAIN_AXIS.equalsIgnoreCase(axisType)) {
-            final LayoutStyle layoutStyle = axisElement.getLayoutStyle();
-      final CSSValue lowerMarginValue = layoutStyle.getValue(ChartStyleKeys.MARGIN_LOWER);
-      final CSSValue upperMarginValue = layoutStyle.getValue(ChartStyleKeys.MARGIN_UPPER);
-      final CSSValue itemMarginValue = layoutStyle.getValue(ChartStyleKeys.MARGIN_ITEM);
-      final CSSValue categoryMarginValue = layoutStyle.getValue(ChartStyleKeys.MARGIN_CATEGORY);
-
-      // The lower, upper and category margins can be controlled through category axis
-      final CategoryAxis categoryAxis = categoryPlot.getDomainAxis();
-      if (lowerMarginValue != null) {
-        final double lowerMargin = ((CSSNumericValue) lowerMarginValue).getValue() / 100;
-        categoryAxis.setLowerMargin(lowerMargin);
-      }
-      if (upperMarginValue != null) {
-        final double upperMargin = ((CSSNumericValue) upperMarginValue).getValue() / 100;
-        categoryAxis.setUpperMargin(upperMargin);
-      }
-      if (categoryMarginValue != null) {
-        final double categoryMargin = ((CSSNumericValue) categoryMarginValue).getValue() / 100;
-        categoryAxis.setCategoryMargin(categoryMargin);
-      }
-
-      if (itemMarginValue != null) {
-        final double itemMargin = ((CSSNumericValue) itemMarginValue).getValue() / 100;
-              final int datasetCount = categoryPlot.getDatasetCount();
-              for(int i=0; i< datasetCount; i++) {
-        if (categoryPlot.getRenderer() instanceof BarRenderer) {
-                  final BarRenderer barRenderer = (BarRenderer) categoryPlot.getRenderer(i);
-          barRenderer.setItemMargin(itemMargin);
-                }
-              }
-        }
-      }
-    }
-  }
-    }
   }
 
   /**

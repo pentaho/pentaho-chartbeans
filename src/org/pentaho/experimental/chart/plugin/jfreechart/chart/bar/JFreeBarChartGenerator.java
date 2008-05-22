@@ -2,17 +2,20 @@ package org.pentaho.experimental.chart.plugin.jfreechart.chart.bar;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.util.ArrayList;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.category.DefaultIntervalCategoryDataset;
 import org.pentaho.experimental.chart.ChartDocumentContext;
+import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
 import org.pentaho.experimental.chart.data.ChartTableModel;
@@ -21,6 +24,8 @@ import org.pentaho.experimental.chart.plugin.jfreechart.utils.JFreeChartUtils;
 import org.pentaho.experimental.chart.plugin.jfreechart.utils.StrokeFactory;
 import org.pentaho.reporting.libraries.css.keys.border.BorderStyleKeys;
 import org.pentaho.reporting.libraries.css.values.CSSValue;
+import org.pentaho.reporting.libraries.css.values.CSSNumericValue;
+import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
 import org.pentaho.util.messages.Messages;
 
 /**
@@ -32,6 +37,7 @@ import org.pentaho.util.messages.Messages;
  */
 public abstract class JFreeBarChartGenerator extends JFreeChartGenerator {
   private static final Log logger = LogFactory.getLog(JFreeBarChartGenerator.class);
+  private static final String DOMAIN_AXIS="domain";//$NON-NLS-1$
 
   /**
    * Creates the JFree chart based on the chart document, data provided and
@@ -78,7 +84,8 @@ public abstract class JFreeBarChartGenerator extends JFreeChartGenerator {
     final ChartElement[] seriesElements = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_SERIES);
     final CategoryPlot categoryPlot = chart.getCategoryPlot();
     if (seriesElements != null && categoryPlot != null) {
-      setSeriesAttributes(seriesElements, data, categoryPlot);  
+      setSeriesAttributes(seriesElements, data, categoryPlot);
+      setAxisMargins(chartDocument, categoryPlot);
     }
 
     return chart;
@@ -126,4 +133,56 @@ public abstract class JFreeBarChartGenerator extends JFreeChartGenerator {
       }
     }
   }
-}
+
+  /**
+   * This method allows to manipulate bar width indirectly by sepecifying percentages for lower margin,
+   * upper margin, category margin and item margin. Definitions of these margins and how they effect bar width
+   * are available in the JFreeChart documentation.
+   *
+   * @param chartDocument Current chart defintion
+   * @param categoryPlot  The plot object for the current chart
+   */
+  private void setAxisMargins(final ChartDocument chartDocument,
+                              final CategoryPlot categoryPlot) {
+    final ArrayList<ChartElement> axisElementsList = chartDocument.getAxisSeriesLinkInfo().getDomainAxisElements();
+    if (axisElementsList != null) {
+      for(final ChartElement axisElement : axisElementsList) {
+        if (axisElement != null) {
+          final String axisType = (String)axisElement.getAttribute("type");//$NON-NLS-1$
+          if (axisType != null && DOMAIN_AXIS.equalsIgnoreCase(axisType)) {
+            final LayoutStyle layoutStyle = axisElement.getLayoutStyle();
+            final CSSValue lowerMarginValue = layoutStyle.getValue(ChartStyleKeys.MARGIN_LOWER);
+            final CSSValue upperMarginValue = layoutStyle.getValue(ChartStyleKeys.MARGIN_UPPER);
+            final CSSValue itemMarginValue = layoutStyle.getValue(ChartStyleKeys.MARGIN_ITEM);
+            final CSSValue categoryMarginValue = layoutStyle.getValue(ChartStyleKeys.MARGIN_CATEGORY);
+
+            // The lower, upper and category margins can be controlled through category axis
+            final CategoryAxis categoryAxis = categoryPlot.getDomainAxis();
+            if (lowerMarginValue != null) {
+              final double lowerMargin = ((CSSNumericValue) lowerMarginValue).getValue() / 100;
+              categoryAxis.setLowerMargin(lowerMargin);
+            }
+            if (upperMarginValue != null) {
+              final double upperMargin = ((CSSNumericValue) upperMarginValue).getValue() / 100;
+              categoryAxis.setUpperMargin(upperMargin);
+            }
+            if (categoryMarginValue != null) {
+              final double categoryMargin = ((CSSNumericValue) categoryMarginValue).getValue() / 100;
+              categoryAxis.setCategoryMargin(categoryMargin);
+            }
+            if (itemMarginValue != null) {
+              final double itemMargin = ((CSSNumericValue) itemMarginValue).getValue() / 100;
+              final int datasetCount = categoryPlot.getDatasetCount();
+              for(int i=0; i< datasetCount; i++) {
+                if (categoryPlot.getRenderer() instanceof BarRenderer) {
+                  final BarRenderer barRenderer = (BarRenderer) categoryPlot.getRenderer(i);
+                  barRenderer.setItemMargin(itemMargin);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }                    
+} // Class ends here.
