@@ -94,7 +94,7 @@ public class JFreePieChartGenerator extends JFreeChartGenerator {
     final int length = seriesElements.length;
     for (int i = 0; i < length; i++) {
       final ChartElement seriesElement = seriesElements[i];
-     final Paint paint = JFreeChartUtils.getPaintFromSeries(seriesElement);
+     final Paint paint = getPaintFromSeries(seriesElement);
       if (paint != null) {
         final Comparable rowName = data.getRowName(i);
         if (rowName != null) {

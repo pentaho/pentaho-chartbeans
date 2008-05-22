@@ -5,10 +5,12 @@ import org.apache.commons.logging.LogFactory;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.pentaho.experimental.chart.ChartDocumentContext;
 import org.pentaho.experimental.chart.css.styles.ChartAreaStyle;
 import org.pentaho.experimental.chart.core.ChartDocument;
+import org.pentaho.experimental.chart.core.ChartElement;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.jfreechart.chart.JFreeChartGenerator;
 import org.pentaho.reporting.libraries.css.values.CSSConstant;
@@ -43,7 +45,7 @@ public abstract class JFreeAreaChartGenerator extends JFreeChartGenerator {
     final boolean legend = getShowLegend(chartDocument);
     final boolean toolTips = getShowToolTips(chartDocument);
 
-    DefaultCategoryDataset categoryDataset = datasetGeneratorFactory.createDefaultCategoryDataset(chartDocContext, data);
+    final DefaultCategoryDataset categoryDataset = datasetGeneratorFactory.createDefaultCategoryDataset(chartDocContext, data);
     if (categoryDataset == null) {
       logger.error(Messages.getErrorString("JFreeChartFactoryEngine.ERROR_0001_DATASET_IS_NULL")); //$NON-NLS-1$
       return null;
@@ -56,6 +58,30 @@ public abstract class JFreeAreaChartGenerator extends JFreeChartGenerator {
     } else {
       chart = ChartFactory.createAreaChart(title, valueCategoryLabel, valueAxisLabel, categoryDataset, orientation, legend, toolTips, false);
     }
+
+    if (chart != null) {
+      final ChartElement[] seriesElements = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_SERIES);
+      final CategoryPlot categoryPlot = chart.getCategoryPlot();
+      if (seriesElements != null && categoryPlot != null) {
+        setSeriesAttributes(seriesElements, data, categoryPlot);
+      }
+    }
+
     return chart;
+  }
+
+  /**
+    * Main method for setting ALL the series attributes.  This method is a stating
+    * method for calling all the other helper methods.
+    *
+    * @param categoryPlot  - Plot for the current chart.
+    * @param data          - Actual data.
+    * @param seriesElements - Series elements from the chart.
+    */  
+  private void setSeriesAttributes(final ChartElement[] seriesElements,
+                                   final ChartTableModel data,
+                                   final CategoryPlot categoryPlot) {
+    setSeriesItemLabel(categoryPlot, seriesElements, data);
+    setSeriesPaint(categoryPlot, seriesElements, data);
   }
 }

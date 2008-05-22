@@ -17,11 +17,9 @@
 
 package org.pentaho.experimental.chart.plugin.jfreechart.utils;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GradientPaint;
-import java.awt.Paint;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -30,31 +28,22 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jfree.chart.axis.CategoryAxis;
-import org.jfree.chart.labels.ItemLabelAnchor;
-import org.jfree.chart.labels.ItemLabelPosition;
 import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.renderer.category.AreaRenderer;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
-import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.chart.urls.StandardCategoryURLGenerator;
 import org.jfree.data.KeyToGroupMap;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.ui.GradientPaintTransformType;
 import org.jfree.ui.StandardGradientPaintTransformer;
-import org.jfree.ui.TextAnchor;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
 import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
 import org.pentaho.experimental.chart.css.styles.ChartCSSFontSizeMappingConstants;
 import org.pentaho.experimental.chart.css.styles.ChartGradientType;
 import org.pentaho.experimental.chart.css.styles.ChartItemLabelVisibleType;
-import org.pentaho.experimental.chart.css.styles.ChartLineVisibleType;
-import org.pentaho.experimental.chart.css.styles.ChartMarkerVisibleType;
 import org.pentaho.experimental.chart.data.ChartTableModel;
-import org.pentaho.experimental.chart.plugin.api.ChartItemLabelGenerator;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
-import org.pentaho.reporting.libraries.css.keys.border.BorderStyleKeys;
 import org.pentaho.reporting.libraries.css.keys.font.FontSizeConstant;
 import org.pentaho.reporting.libraries.css.keys.font.FontStyle;
 import org.pentaho.reporting.libraries.css.keys.font.FontStyleKeys;
@@ -89,7 +78,7 @@ public class JFreeChartUtils {
           currentGroup = getChildGroup(currentGroup);
         }
     }
-    
+
     return syntheticColumnName.append(data.getRowMetadata(row, "row-name")).toString(); //$NON-NLS-1$
   }
   /**
@@ -111,201 +100,14 @@ public class JFreeChartUtils {
     return ((CSSNumericValue)chartDocument.getPlotElement().getLayoutStyle().getValue(ChartStyleKeys.SCALE_NUM)).getValue();
   }
 
-  /**
-   * Paints the series border/outline.
-   *
-   * @param categoryPlot   The plot that has the renderer object
-   * @param seriesElements The series elements from the chart document
-   */
-  private static void setSeriesBarOutline(final CategoryPlot categoryPlot, final ChartElement[] seriesElements) {
-    final int length = seriesElements.length;
-    final StrokeFactory strokeFacObj = StrokeFactory.getInstance();
-    for (int i = 0; i < length; i++) {
-      final ChartElement currElement = seriesElements[i];
-
-      if (categoryPlot.getRenderer() instanceof BarRenderer) {
-        final BarRenderer barRender = (BarRenderer) categoryPlot.getRenderer();
-        final BasicStroke borderStyleStroke = strokeFacObj.getBorderStroke(currElement);
-        if (borderStyleStroke != null) {
-          final CSSValue borderColorValue = currElement.getLayoutStyle().getValue(BorderStyleKeys.BORDER_TOP_COLOR);
-          final Color borderColor = JFreeChartUtils.getColorFromCSSValue(borderColorValue);
-          if (borderColor != null) {
-            barRender.setSeriesOutlinePaint(i, borderColor, true);
-          }
-          barRender.setSeriesOutlineStroke(i, borderStyleStroke, true);
-          barRender.setDrawBarOutline(true);
-        }
-      }
-    }
-  }
-
-  /**
-   * @param categoryPlot
-   * @param seriesElements
-   * 
-   * Sets the line width for each of the series that is defined as a lineRenderer
-   */
-  private static void setSeriesLineStyles(final CategoryPlot categoryPlot, final ChartElement[] seriesElements) {
-    final int length = seriesElements.length;
-    final StrokeFactory strokeFacObj = StrokeFactory.getInstance();
-    for (int i = 0; i < length; i++) {
-      final ChartElement currElement = seriesElements[i];
-
-      if (categoryPlot.getRenderer() instanceof LineAndShapeRenderer) {
-        final LineAndShapeRenderer lineAndShapeRenderer = (LineAndShapeRenderer) categoryPlot.getRenderer();
-        final String visibleStr = currElement.getLayoutStyle().getValue(ChartStyleKeys.LINE_VISIBLE).getCSSText();
-        lineAndShapeRenderer.setSeriesLinesVisible(i, ChartLineVisibleType.YES.getCSSText().equalsIgnoreCase(visibleStr));
-        final BasicStroke lineStyleStroke = strokeFacObj.getLineStroke(currElement);
-        if (lineStyleStroke != null) {
-          lineAndShapeRenderer.setSeriesStroke(i, lineStyleStroke);
-        }
-      }
-    }
-  }
-
-  /**
-   * @param categoryPlot
-   * @param seriesElements
-   * 
-   * Set the line marker attributes
-   */
-  private static void setSeriesMarkerStyles(final CategoryPlot categoryPlot, final ChartElement[] seriesElements) {
-    final int length = seriesElements.length;
-    final ShapeFactory shapeFacObj = ShapeFactory.getInstance();
-    for (int i = 0; i < length; i++) {
-      final ChartElement currElement = seriesElements[i];
-
-      if (categoryPlot.getRenderer() instanceof LineAndShapeRenderer) {
-        final LineAndShapeRenderer lineAndShapeRenderer = (LineAndShapeRenderer) categoryPlot.getRenderer();
-        final String visibleStr = currElement.getLayoutStyle().getValue(ChartStyleKeys.MARKER_VISIBLE).getCSSText();
-        lineAndShapeRenderer.setSeriesShapesVisible(i, ChartMarkerVisibleType.YES.getCSSText().equalsIgnoreCase(visibleStr));
-        lineAndShapeRenderer.setSeriesShape(i, shapeFacObj.getShape(currElement));
-      }
-    }
-  }
-
-  /**
-   * Sets the series item label(s) defined in the chartDocument
-   *
-   * @param categoryPlot   - Plot for the current chart
-   * @param seriesElements - Array of Series elements
-   * @param data           - the data
-   */
-  private static void setSeriesItemLabel(final CategoryPlot categoryPlot, final ChartElement[] seriesElements, final ChartTableModel data) {
-    final int numOfDatasets = categoryPlot.getDatasetCount();
-    for (int datasetCounter =0 ; datasetCounter < numOfDatasets; datasetCounter++) {
-      categoryPlot.getRenderer(datasetCounter).setBaseItemLabelGenerator(new ChartItemLabelGenerator(seriesElements, data));
-
-      final int numOfSeriesElements = seriesElements.length;
-      for (int seriesCounter = 0; seriesCounter < numOfSeriesElements; seriesCounter++) {
-      // Get and set font information only if the item label's visibility is set to true 
-        if (JFreeChartUtils.showItemLabel(seriesElements[seriesCounter])) {
-          final Font font = JFreeChartUtils.getFont(seriesElements[seriesCounter]);
-          final CategoryItemRenderer categoryItemRenderer = categoryPlot.getRenderer(datasetCounter);
-          if (categoryItemRenderer instanceof BarRenderer) {
-            final BarRenderer barRender = (BarRenderer) categoryItemRenderer;
-            barRender.setSeriesItemLabelFont(seriesCounter, font, true);
-            barRender.setSeriesItemLabelsVisible(seriesCounter, Boolean.TRUE, true);
-          } else if (categoryItemRenderer instanceof AreaRenderer) {
-            final AreaRenderer areaRender = (AreaRenderer) categoryItemRenderer;
-            areaRender.setSeriesItemLabelFont(seriesCounter, font, true);
-            areaRender.setSeriesPositiveItemLabelPosition(seriesCounter, new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12, TextAnchor.TOP_CENTER));
-            areaRender.setSeriesNegativeItemLabelPosition(seriesCounter, new ItemLabelPosition(ItemLabelAnchor.OUTSIDE6, TextAnchor.BOTTOM_CENTER));
-            areaRender.setSeriesItemLabelsVisible(seriesCounter, Boolean.TRUE, true);
-          }
-        }
-      }
-    }
-  }
-
-  /**
-   * Sets the paint(gradient color) on all the series listed by the
-   * chartDocument.
-   *
-   * @param categoryPlot   - the active plot
-   * @param seriesElements - Array of series elements that contains series tags
-   * @param data           - The actual chart data
-   */
-  private static void setSeriesPaint(final CategoryPlot categoryPlot, final ChartElement[] seriesElements, final ChartTableModel data) {
-    StandardGradientPaintTransformer st = null;
-
-    final int length = seriesElements.length;
-    for (int i = 0; i < length; i++) {
-      final ChartElement seriesElement = seriesElements[i];
-      final Paint paint = JFreeChartUtils.getPaintFromSeries(seriesElement);
-      if (paint != null) {
-        final int column = JFreeChartUtils.getSeriesColumn(seriesElement, data, i);
-        final int datasetCount = categoryPlot.getDatasetCount();
-        for (int datasetCounter=0; datasetCounter<datasetCount; datasetCounter++) {
-          categoryPlot.getRenderer(datasetCounter).setSeriesPaint(column, paint);
-        }
-        /*
-        * JFreeChart engine cannot currently implement more than one gradient type except
-        * when it's none. That is we cannot have one gradient as CENTER_VERTICAL and another
-        * one as CENTER_HORIZONTAL.
-        *
-        * For example:
-        *    series1: none
-        *    series2: VERTICAL
-        *    series3: none
-        *    series4: HORIZONTAL
-        * JfreeChart can render none as none, but can implement only one of the gradient
-        * styles defined for bar2 and bar4. In our implementation we are accepting the first
-        * not-none gradient type and then rendering bar2 and bar4 with VERTICAL.
-        *
-        *  Check for specific renderer instances since only certain specific renderers allow
-        *  setting gradient paint transform.
-        */
-        if (st == null) {
-          st = JFreeChartUtils.getStandardGradientPaintTrans(seriesElements[i]);
-          final float barWidthPercent = JFreeChartUtils.getMaximumBarWidth(seriesElements[i]);
-          for (int datasetCounter = 0; datasetCounter < datasetCount; datasetCounter++) {
-            final CategoryItemRenderer itemRenderer = categoryPlot.getRenderer(datasetCounter);
-
-            // If the renderer is of type BarRenderer then set the gradient paint transform
-            // and also set the maximum bar width
-            if (itemRenderer instanceof BarRenderer) {
-              final BarRenderer barRender = (BarRenderer) categoryPlot.getRenderer(datasetCounter);
-              barRender.setGradientPaintTransformer(st);
-
-              if (barWidthPercent > 0) {
-                barRender.setMaximumBarWidth(barWidthPercent);
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
-  /**
-   * This method checks to see if there is a gradient type other than "none" set on seriesElement.
-   * If the series element has a gradient set on it then it returns that.  Otherwise if a color
-   * is defined then that is returned.  If no color or gradient is set then this method returns
-   * a null
-   *
-   * @param seriesElement - Current series element
-   * @return a Paint object defined by the seriesElement
-   */
-  public static Paint getPaintFromSeries(final ChartElement seriesElement) {
-    final String gradientType = seriesElement.getLayoutStyle().getValue(ChartStyleKeys.GRADIENT_TYPE).getCSSText();
-    final Paint paint;
-    if (gradientType != null && !gradientType.equalsIgnoreCase("none")) { //$NON-NLS-1$ 
-      paint = JFreeChartUtils.getGradientPaint(seriesElement);
-    } else {
-      paint = (Paint) seriesElement.getLayoutStyle().getValue(ChartStyleKeys.CSS_COLOR);
-    }
-    return paint;
-  }
-
-  /**
+ /**
    * @param seriesElement - series definition that has column-pos or column-name style
    * @param data          - the actual data (needed to locate the correct columns)
    * @param columnDefault - default column to return if either column-pos or column-name are
    *                      not defined or not found
    * @return int value of the real column in the data.
    */
-  private static int getSeriesColumn(final ChartElement seriesElement, final ChartTableModel data, final int columnDefault) {
+  public static int getSeriesColumn(final ChartElement seriesElement, final ChartTableModel data, final int columnDefault) {
     Object positionAttr = seriesElement.getAttribute(ChartElement.COLUMN_POSITION);
     final int column;
     if (positionAttr != null) {
@@ -386,7 +188,6 @@ public class JFreeChartUtils {
   public static void setPlotAttributes(final CategoryPlot categoryPlot, final ChartDocument chartDocument, final ChartTableModel data) {
     JFreeChartUtils.setURLGeneration(categoryPlot.getRenderer(), chartDocument);
     JFreeChartUtils.setAxisMargins(categoryPlot, chartDocument);
-    JFreeChartUtils.setSeriesAttributes(categoryPlot, chartDocument, data);
   }
 
   /**
@@ -469,23 +270,6 @@ public class JFreeChartUtils {
       }
     }
     return null;
-  }
-
-  /**
-   * Main method for setting ALL the series attributes.  This method is a stating
-   * method for calling all the other helper methods.
-   *
-   * @param categoryPlot  - Plot for the current chart
-   * @param chartDocument - ChartDocument that defines what the series should look like
-   * @param data          - Actual data
-   */
-  private static void setSeriesAttributes(final CategoryPlot categoryPlot, final ChartDocument chartDocument, final ChartTableModel data) {
-    final ChartElement[] seriesElements = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_SERIES);
-    JFreeChartUtils.setSeriesItemLabel(categoryPlot, seriesElements, data);
-    JFreeChartUtils.setSeriesPaint(categoryPlot, seriesElements, data);
-    JFreeChartUtils.setSeriesBarOutline(categoryPlot, seriesElements);
-    JFreeChartUtils.setSeriesLineStyles(categoryPlot, seriesElements);
-    JFreeChartUtils.setSeriesMarkerStyles(categoryPlot, seriesElements);
   }
 
   /**
@@ -629,7 +413,7 @@ public class JFreeChartUtils {
       // Creating the requisite font and setting the default size of 10. This will be overwritten below.
       font = new Font(fontFamily, fontStyle, 10);
 
-      // Modifying the size of the font since we cannot create a Font with size of type float. 
+      // Modifying the size of the font since we cannot create a Font with size of type float.
       // We can only modify it's size to float value and not create it with float value.
       font = font.deriveFont(JFreeChartUtils.getFontSize(currentSeries));
     }
@@ -643,7 +427,7 @@ public class JFreeChartUtils {
    * @param layoutStyle The layout style for the current series element.
    * @return int  Represents Java based font style.
    */
-  private static int getFontStyle(final LayoutStyle layoutStyle) {
+  public static int getFontStyle(final LayoutStyle layoutStyle) {
     final String fontStyleStr = layoutStyle.getValue(FontStyleKeys.FONT_STYLE).getCSSText();
     // Font Style default
     int fontStyle = Font.PLAIN;
@@ -664,7 +448,7 @@ public class JFreeChartUtils {
    * @param element The current series element that would be looked for the font style
    * @return float   The font size for the current series element.
    */
-  private static float getFontSize(final ChartElement element) {
+  public static float getFontSize(final ChartElement element) {
     final LayoutStyle layoutStyle = element.getLayoutStyle();
     final CSSValue fontSizeValue = layoutStyle.getValue(FontStyleKeys.FONT_SIZE);
 
@@ -746,7 +530,7 @@ public class JFreeChartUtils {
    * @param element Current series element.
    * @return true/false
    */
-  private static boolean showItemLabel(final ChartElement element) {
+  public static boolean showItemLabel(final ChartElement element) {
     boolean showItemLabel = false;
 
     final CSSValue itemLabelVisible = element.getLayoutStyle().getValue(ChartStyleKeys.ITEM_LABEL_VISIBLE);
@@ -763,7 +547,7 @@ public class JFreeChartUtils {
    * @param seriesElement Maximum bar width setting for current series element
    * @return Returns the current maximum bar width setting
    */
-  private static float getMaximumBarWidth(final ChartElement seriesElement) {
+  public static float getMaximumBarWidth(final ChartElement seriesElement) {
     float maxWidth = 0;
     final LayoutStyle layoutStyle = seriesElement.getLayoutStyle();
     final CSSValue maxWidthValue = layoutStyle.getValue(ChartStyleKeys.BAR_MAX_WIDTH);

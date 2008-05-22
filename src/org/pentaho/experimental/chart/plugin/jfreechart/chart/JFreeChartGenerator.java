@@ -1,6 +1,8 @@
 package org.pentaho.experimental.chart.plugin.jfreechart.chart;
 
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.Paint;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -8,13 +10,18 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.labels.ItemLabelAnchor;
+import org.jfree.chart.labels.ItemLabelPosition;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.AreaRenderer;
 import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.renderer.category.GroupedStackedBarRenderer;
 import org.jfree.chart.renderer.category.LayeredBarRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.ui.StandardGradientPaintTransformer;
+import org.jfree.ui.TextAnchor;
 import org.pentaho.experimental.chart.ChartDocumentContext;
 import org.pentaho.experimental.chart.core.AxisSeriesLinkInfo;
 import org.pentaho.experimental.chart.core.ChartDocument;
@@ -24,6 +31,7 @@ import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
 import org.pentaho.experimental.chart.css.styles.ChartAxisLocationType;
 import org.pentaho.experimental.chart.css.styles.ChartOrientationStyle;
 import org.pentaho.experimental.chart.data.ChartTableModel;
+import org.pentaho.experimental.chart.plugin.api.ChartItemLabelGenerator;
 import org.pentaho.experimental.chart.plugin.jfreechart.dataset.DatasetGeneratorFactory;
 import org.pentaho.experimental.chart.plugin.jfreechart.utils.CylinderRenderer;
 import org.pentaho.experimental.chart.plugin.jfreechart.utils.JFreeChartUtils;
@@ -316,5 +324,123 @@ public abstract class JFreeChartGenerator implements IJFreeChartGenerator {
       final AreaRenderer areaRenderer = new AreaRenderer();
       plot.setRenderer(index, areaRenderer);
     }
-  }  
+  }
+
+  /**
+   * Sets the paint(gradient color) on all the series listed by the
+   * chartDocument.
+   *
+   * @param categoryPlot   - the active plot
+   * @param seriesElements - Array of series elements that contains series tags
+   * @param data           - The actual chart data
+   */
+  protected void setSeriesPaint(final CategoryPlot categoryPlot,
+                                final ChartElement[] seriesElements,
+                                final ChartTableModel data) {
+    StandardGradientPaintTransformer st = null;
+
+    final int length = seriesElements.length;
+    for (int i = 0; i < length; i++) {
+      final ChartElement seriesElement = seriesElements[i];
+      final Paint paint = getPaintFromSeries(seriesElement);
+      if (paint != null) {
+        final int column = JFreeChartUtils.getSeriesColumn(seriesElement, data, i);
+        final int datasetCount = categoryPlot.getDatasetCount();
+        for (int datasetCounter=0; datasetCounter<datasetCount; datasetCounter++) {
+          categoryPlot.getRenderer(datasetCounter).setSeriesPaint(column, paint);
+        }
+        /*
+        * JFreeChart engine cannot currently implement more than one gradient type except
+        * when it's none. That is we cannot have one gradient as CENTER_VERTICAL and another
+        * one as CENTER_HORIZONTAL.
+        *
+        * For example:
+        *    series1: none
+        *    series2: VERTICAL
+        *    series3: none
+        *    series4: HORIZONTAL
+        * JfreeChart can render none as none, but can implement only one of the gradient
+        * styles defined for bar2 and bar4. In our implementation we are accepting the first
+        * not-none gradient type and then rendering bar2 and bar4 with VERTICAL.
+        *
+        *  Check for specific renderer instances since only certain specific renderers allow
+        *  setting gradient paint transform.
+        */
+        if (st == null) {
+          st = JFreeChartUtils.getStandardGradientPaintTrans(seriesElements[i]);
+          final float barWidthPercent = JFreeChartUtils.getMaximumBarWidth(seriesElements[i]);
+          for (int datasetCounter = 0; datasetCounter < datasetCount; datasetCounter++) {
+            final CategoryItemRenderer itemRenderer = categoryPlot.getRenderer(datasetCounter);
+
+            // If the renderer is of type BarRenderer then set the gradient paint transform
+            // and also set the maximum bar width
+            if (itemRenderer instanceof BarRenderer) {
+              final BarRenderer barRender = (BarRenderer) categoryPlot.getRenderer(datasetCounter);
+              barRender.setGradientPaintTransformer(st);
+
+              if (barWidthPercent > 0) {
+                barRender.setMaximumBarWidth(barWidthPercent);
+              }
+            }
+          }
+        }
+      }
+    }
+  } //setSeriesPaint() ends here
+
+  /**
+   * Sets the series item label(s) defined in the chartDocument
+   *
+   * @param categoryPlot   - Plot for the current chart
+   * @param seriesElements - Array of Series elements
+   * @param data           - the data
+   */
+  protected void setSeriesItemLabel(final CategoryPlot categoryPlot,
+                                    final ChartElement[] seriesElements,
+                                    final ChartTableModel data) {
+    final int numOfDatasets = categoryPlot.getDatasetCount();
+    for (int datasetCounter =0 ; datasetCounter < numOfDatasets; datasetCounter++) {
+      categoryPlot.getRenderer(datasetCounter).setBaseItemLabelGenerator(new ChartItemLabelGenerator(seriesElements, data));
+
+      final int numOfSeriesElements = seriesElements.length;
+      for (int seriesCounter = 0; seriesCounter < numOfSeriesElements; seriesCounter++) {
+      // Get and set font information only if the item label's visibility is set to true
+        if (JFreeChartUtils.showItemLabel(seriesElements[seriesCounter])) {
+          final Font font = JFreeChartUtils.getFont(seriesElements[seriesCounter]);
+          final CategoryItemRenderer categoryItemRenderer = categoryPlot.getRenderer(datasetCounter);
+          if (categoryItemRenderer instanceof BarRenderer) {
+            final BarRenderer barRender = (BarRenderer) categoryItemRenderer;
+            barRender.setSeriesItemLabelFont(seriesCounter, font, true);
+            barRender.setSeriesItemLabelsVisible(seriesCounter, Boolean.TRUE, true);
+          } else if (categoryItemRenderer instanceof AreaRenderer) {
+            final AreaRenderer areaRender = (AreaRenderer) categoryItemRenderer;
+            areaRender.setSeriesItemLabelFont(seriesCounter, font, true);
+            areaRender.setSeriesPositiveItemLabelPosition(seriesCounter, new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12, TextAnchor.TOP_CENTER));
+            areaRender.setSeriesNegativeItemLabelPosition(seriesCounter, new ItemLabelPosition(ItemLabelAnchor.OUTSIDE6, TextAnchor.BOTTOM_CENTER));
+            areaRender.setSeriesItemLabelsVisible(seriesCounter, Boolean.TRUE, true);
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * This method checks to see if there is a gradient type other than "none" set on seriesElement.
+   * If the series element has a gradient set on it then it returns that.  Otherwise if a color
+   * is defined then that is returned.  If no color or gradient is set then this method returns
+   * a null
+   *
+   * @param seriesElement - Current series element
+   * @return a Paint object defined by the seriesElement
+   */
+  public Paint getPaintFromSeries(final ChartElement seriesElement) {
+    final String gradientType = seriesElement.getLayoutStyle().getValue(ChartStyleKeys.GRADIENT_TYPE).getCSSText();
+    final Paint paint;
+    if (gradientType != null && !gradientType.equalsIgnoreCase("none")) { //$NON-NLS-1$
+      paint = JFreeChartUtils.getGradientPaint(seriesElement);
+    } else {
+      paint = (Paint) seriesElement.getLayoutStyle().getValue(ChartStyleKeys.CSS_COLOR);
+    }
+    return paint;
+  }
 }
