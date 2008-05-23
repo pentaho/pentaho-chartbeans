@@ -60,6 +60,12 @@ public class ChartStyleKeys {
    */
   public static final StyleKey MARKER_FILLED = StyleKeyRegistry.getRegistry().
       createKey("-x-pentaho-chart-marker-filled", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+ 
+  /**
+   * fill color for the marker.  If "default" then it will use the series color
+   */
+  public static final StyleKey MARKER_FILL_COLOR = StyleKeyRegistry.getRegistry().
+      createKey("-x-pentaho-chart-marker-fill-color", false, true, StyleKey.All_ELEMENTS);
   
   /**
    * The shape of the marker (ie. Rectangle, Elipse, arc, etc..)
