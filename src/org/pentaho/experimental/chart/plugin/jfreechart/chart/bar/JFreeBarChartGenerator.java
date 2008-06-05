@@ -103,7 +103,7 @@ public abstract class JFreeBarChartGenerator extends JFreeChartGenerator {
                                    final CategoryPlot categoryPlot) {
     setSeriesItemLabel(categoryPlot, seriesElements, data);
     setSeriesPaint(categoryPlot, seriesElements, data);
-    setSeriesBarOutline(categoryPlot, seriesElements);
+    setSeriesBarOutline(categoryPlot, seriesElements, data);
   }
 
  /**
@@ -112,12 +112,12 @@ public abstract class JFreeBarChartGenerator extends JFreeChartGenerator {
    * @param categoryPlot   The plot that has the renderer object
    * @param seriesElements The series elements from the chart document
    */
-  private static void setSeriesBarOutline(final CategoryPlot categoryPlot, final ChartElement[] seriesElements) {
+  private static void setSeriesBarOutline(final CategoryPlot categoryPlot, final ChartElement[] seriesElements, ChartTableModel data) {
     final int length = seriesElements.length;
     final StrokeFactory strokeFacObj = StrokeFactory.getInstance();
     for (int i = 0; i < length; i++) {
       final ChartElement currElement = seriesElements[i];
-
+      final int column = JFreeChartUtils.getSeriesColumn(currElement, data, i);
       if (categoryPlot.getRenderer() instanceof BarRenderer) {
         final BarRenderer barRender = (BarRenderer) categoryPlot.getRenderer();
         final BasicStroke borderStyleStroke = strokeFacObj.getBorderStroke(currElement);
@@ -125,9 +125,9 @@ public abstract class JFreeBarChartGenerator extends JFreeChartGenerator {
           final CSSValue borderColorValue = currElement.getLayoutStyle().getValue(BorderStyleKeys.BORDER_TOP_COLOR);
           final Color borderColor = JFreeChartUtils.getColorFromCSSValue(borderColorValue);
           if (borderColor != null) {
-            barRender.setSeriesOutlinePaint(i, borderColor, true);
+            barRender.setSeriesOutlinePaint(column, borderColor, true);
           }
-          barRender.setSeriesOutlineStroke(i, borderStyleStroke, true);
+          barRender.setSeriesOutlineStroke(column, borderStyleStroke, true);
           barRender.setDrawBarOutline(true);
         }
       }
