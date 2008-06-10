@@ -77,9 +77,11 @@ public abstract class JFreeBarChartGenerator extends JFreeChartGenerator {
       chart = ChartFactory.createStackedBarChart(title, valueCategoryLabel, valueAxisLabel, categoryDataset, orientation, legend, toolTips, false);
     } else if (JFreeBarChartTypes.INTERVAL.equalsIgnoreCase(chartType)) {
       chart = ChartFactory.createBarChart(title, valueCategoryLabel, valueAxisLabel, intervalCategoryDataset, orientation, legend, toolTips, false);
+    } else if (JFreeBarChartTypes.WATERFALL.equalsIgnoreCase(chartType)) {
+      chart = ChartFactory.createBarChart(title, valueCategoryLabel, valueAxisLabel, intervalCategoryDataset, orientation, legend, toolTips, false);
     } else {
       chart = ChartFactory.createBarChart(title, valueCategoryLabel, valueAxisLabel, categoryDataset, orientation, legend, toolTips, false);
-    }
+    } 
 
     final ChartElement[] seriesElements = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_SERIES);
     final CategoryPlot categoryPlot = chart.getCategoryPlot();

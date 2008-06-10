@@ -9,4 +9,5 @@
 	<series style="-x-pentaho-chart-bar-style: stack-percent"/>	
   <series style="-x-pentaho-chart-bar-style: stack-100percent"/>	
   <series style="-x-pentaho-chart-bar-style: stack-100perc"/>	<!-- misspelled -->
+  <series style="-x-pentaho-chart-bar-style: waterfall"/>
 </chart>

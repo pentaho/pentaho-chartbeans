@@ -274,6 +274,7 @@ public class PluginTest extends TestCase {
       "PluginTest2d.xml", //$NON-NLS-1$
       "PluginTest2e.xml", //$NON-NLS-1$
 //      "PluginTest2f.xml", //$NON-NLS-1$
+      "PluginTest2g.xml", //$NON-NLS-1$
       "PluginTest3.xml", //$NON-NLS-1$
       "PluginTest4.xml", //$NON-NLS-1$
       "PluginTest5.xml", //$NON-NLS-1$

@@ -65,7 +65,7 @@ public class ChartStyleKeys {
    * fill color for the marker.  If "default" then it will use the series color
    */
   public static final StyleKey MARKER_FILL_COLOR = StyleKeyRegistry.getRegistry().
-      createKey("-x-pentaho-chart-marker-fill-color", false, true, StyleKey.All_ELEMENTS);
+      createKey("-x-pentaho-chart-marker-fill-color", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
   
   /**
    * The shape of the marker (ie. Rectangle, Elipse, arc, etc..)
@@ -223,6 +223,30 @@ public class ChartStyleKeys {
   public static final StyleKey PIE_LABELS_INSIDE_CHART = StyleKeyRegistry.getRegistry().
         createKey("-x-pentaho-chart-pie-labels-inside-chart", false, false, StyleKey.All_ELEMENTS); //$NON-NLS-1$
 
+  /**
+   * Set the color of the first bar in waterfall chart.
+   */
+  public static final StyleKey FIRST_BAR_COLOR = StyleKeyRegistry.getRegistry().
+        createKey("-x-pentaho-chart-first-bar-color", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+  
+  /**
+   * Set the color for the last bar paint in waterfall chart.
+   */
+  public static final StyleKey LAST_BAR_COLOR = StyleKeyRegistry.getRegistry().
+        createKey("-x-pentaho-chart-last-bar-color", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+  
+  /**
+   * Set the color to the positive bar in waterfall chart.
+   */
+  public static final StyleKey POSITIVE_BAR_COLOR = StyleKeyRegistry.getRegistry().
+        createKey("-x-pentaho-chart-positive-bar-color", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+  
+  /**
+   * Set the color to the negative bar in waterfall chart.
+   */
+  public static final StyleKey NEGATIVE_BAR_COLOR = StyleKeyRegistry.getRegistry().
+        createKey("-x-pentaho-chart-negative-bar-color", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+  
   private ChartStyleKeys() {
   }
 }

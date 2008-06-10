@@ -118,7 +118,7 @@ class BaseChartTableModel extends AbstractTableModel implements ChartData {
     if (row >= 0) {
       rowName = (String) metadataMap.get(ROW, row, NAME);
     } else {
-      logger.error(Messages.getErrorString("ChartTableModel.ERROR_0009_INVALID_ROW_NUMBER", "" + row));
+      logger.error(Messages.getErrorString("ChartTableModel.ERROR_0009_INVALID_ROW_NUMBER", "" + row)); //$NON-NLS-2$
     }
     return rowName;
   }

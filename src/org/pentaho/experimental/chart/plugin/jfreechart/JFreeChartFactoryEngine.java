@@ -66,8 +66,8 @@ public class JFreeChartFactoryEngine implements Serializable {
         chartResult.setErrorCode(IChartPlugin.RESULT_ERROR);
         chartResult.setDescription(e.getLocalizedMessage());
       }
-    }
   
+    }
     return null;
   }
 

@@ -28,8 +28,9 @@ public class ChartSeriesType {
   public static final CSSConstant PIE = new CSSConstant("pie"); //$NON-NLS-1$
   public static final CSSConstant LINE = new CSSConstant("line"); //$NON-NLS-1$
   public static final CSSConstant AREA = new CSSConstant("area"); //$NON-NLS-1$
+  public static final CSSConstant WATERFALL = new CSSConstant ("waterfall"); //$NON-NLS-1$
 
 
-  private ChartSeriesType() {
-  }
+//  public ChartSeriesType() {
+//  }
 }

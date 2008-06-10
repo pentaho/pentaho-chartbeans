@@ -11,6 +11,7 @@ public class JFreeBarChartTypes {
   public static final String DEFAULT="default";  //$NON-NLS-1$
   public static final String STACKED="stacked";  //$NON-NLS-1$
   public static final String INTERVAL="interval";  //$NON-NLS-1$
+  public static final String WATERFALL = "waterfall";  //$NON-NLS-1$
 
   /**
    * To avoid instantiation from outside world.

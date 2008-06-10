@@ -1,0 +1,5 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+	<plot style="-x-pentaho-chart-first-bar-color: red"/>
+	<plot style="-x-pentaho-chart-first-bar-color: blue"/>
+	<plot style="-x-pentaho-chart-first-bar-color: green"/>
+</chart>

@@ -24,6 +24,7 @@ public class JFreeBarChartGeneratorFactory {
     boolean cylinder = false;
     boolean interval = false;
     boolean layered = false;
+    boolean waterfall = false;
     boolean stacked100Pct = false;
 
     final ChartDocument chartDocument = chartDocContext.getChartDocument();
@@ -35,10 +36,11 @@ public class JFreeBarChartGeneratorFactory {
       cylinder |= value.equals(ChartBarStyle.CYLINDER);
       interval |= value.equals(ChartBarStyle.INTERVAL);
       layered |= value.equals(ChartBarStyle.LAYERED);
+      waterfall |= value.equals(ChartBarStyle.WATERFALL);
       stacked100Pct |= value.equals(ChartBarStyle.STACK_100_PERCENT);
 
       // Pick the first one that is set.
-      if (stacked || stackedPct || stacked100Pct || cylinder || interval || layered) {
+      if (stacked || stackedPct || stacked100Pct || cylinder || interval || layered || waterfall) {
         break;
       }
     }
@@ -55,6 +57,8 @@ public class JFreeBarChartGeneratorFactory {
       barChartGenerator = new JFreeStackedPercentBarChartGenerator();
     } else if (stacked100Pct) {
       barChartGenerator = new JFreeStacked100PercentBarChartGenerator();
+    } else if (waterfall) {
+      barChartGenerator = new JFreeWaterfallBarChartGenerator();
     } else {
       barChartGenerator = new JFreeDefaultBarChartGenerator();
     }
