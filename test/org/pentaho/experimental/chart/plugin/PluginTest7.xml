@@ -3,7 +3,7 @@
   <stylesheet>
     .bar1 {
     color: black;
-    -x-pentaho-chart-gradient: blue, red POINTS 1,10 2,20;
+    -x-pentaho-chart-gradient: blue, red points 1,10 2,20;
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: stacked;
     -x-pentaho-chart-bar-max-width: 10%;
@@ -11,7 +11,7 @@
 
     .bar2 {
     color: blue;
-    -x-pentaho-chart-gradient: black, blue POINTS 1,10 2,20;
+    -x-pentaho-chart-gradient: black, blue points 1,10 2,20;
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: stacked;
     -x-pentaho-chart-bar-max-width: 10%;

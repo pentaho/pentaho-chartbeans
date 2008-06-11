@@ -16,6 +16,8 @@
 package org.pentaho.experimental.chart.css.styles;
 
 import org.pentaho.reporting.libraries.css.values.CSSConstant;
+import org.pentaho.reporting.libraries.css.values.CSSValue;
+import org.pentaho.reporting.libraries.css.values.CSSAutoValue;
 
 /**
  * Defines the only valid values for the <code>-x-pentaho-chart-axis-type-dimension</code> style
@@ -23,7 +25,7 @@ import org.pentaho.reporting.libraries.css.values.CSSConstant;
  * @author Ravi Hasija
  */
 public class ChartAxisDimension {
-  public static final CSSConstant AUTO = new CSSConstant("auto"); //$NON-NLS-1$
+  public static final CSSValue AUTO = CSSAutoValue.getInstance(); //$NON-NLS-1$
   public static final CSSConstant DOMAIN = new CSSConstant("domain"); //$NON-NLS-1$
   public static final CSSConstant RANGE = new CSSConstant("range"); //$NON-NLS-1$  
 

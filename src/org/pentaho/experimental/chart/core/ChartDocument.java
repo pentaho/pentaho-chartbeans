@@ -18,8 +18,8 @@ package org.pentaho.experimental.chart.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jfree.resourceloader.ResourceKey;
-import org.jfree.resourceloader.ResourceManager;
+import org.pentaho.reporting.libraries.resourceloader.ResourceKey;
+import org.pentaho.reporting.libraries.resourceloader.ResourceManager;
 import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
 import org.pentaho.reporting.libraries.base.util.StringUtils;
 import org.pentaho.reporting.libraries.css.values.CSSValue;

@@ -37,6 +37,7 @@ import org.pentaho.experimental.chart.plugin.jfreechart.utils.CylinderRenderer;
 import org.pentaho.experimental.chart.plugin.jfreechart.utils.JFreeChartUtils;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
 import org.pentaho.reporting.libraries.css.values.CSSValue;
+import org.pentaho.reporting.libraries.css.keys.color.ColorStyleKeys;
 
 /**
  * Top Level class that is extended by different chart type creators.
@@ -135,14 +136,10 @@ public abstract class JFreeChartGenerator implements IJFreeChartGenerator {
       final LayoutStyle layoutStyle = plotElement.getLayoutStyle();
       final CSSValue value = layoutStyle.getValue(ChartStyleKeys.ORIENTATION);
 
-      if (value != null) {
-        final String orientatValue = value.toString();
-
-        if (orientatValue.equalsIgnoreCase(ChartOrientationStyle.VERTICAL.getCSSText())) {
-          plotOrient = PlotOrientation.VERTICAL;
-        } else if (orientatValue.equalsIgnoreCase(ChartOrientationStyle.HORIZONTAL.getCSSText())) {
-          plotOrient = PlotOrientation.HORIZONTAL;
-        }
+      if (ChartOrientationStyle.VERTICAL.equals(value)) {
+        plotOrient = PlotOrientation.VERTICAL;
+      } else if (ChartOrientationStyle.HORIZONTAL.equals(value)) {
+        plotOrient = PlotOrientation.HORIZONTAL;
       }
     }
     return plotOrient;
@@ -226,7 +223,7 @@ public abstract class JFreeChartGenerator implements IJFreeChartGenerator {
                             final String labelType) {
     final ChartElement [] labelElements = axisElement.findChildrenByName(labelType);
     if (labelElements != null && labelElements.length > 0) {
-      final CSSValue colorCSSValue = labelElements[0].getLayoutStyle().getValue(ChartStyleKeys.CSS_COLOR);
+      final CSSValue colorCSSValue = labelElements[0].getLayoutStyle().getValue(ColorStyleKeys.COLOR);
       final Color axisLabelColor = JFreeChartUtils.getColorFromCSSValue(colorCSSValue);
       if (axisLabelColor != null) {
         if (ChartElement.TAG_NAME_LABEL.equalsIgnoreCase(labelType)) {
@@ -439,7 +436,7 @@ public abstract class JFreeChartGenerator implements IJFreeChartGenerator {
     if (gradientType != null && !gradientType.equalsIgnoreCase("none")) { //$NON-NLS-1$
       paint = JFreeChartUtils.getGradientPaint(seriesElement);
     } else {
-      paint = (Paint) seriesElement.getLayoutStyle().getValue(ChartStyleKeys.CSS_COLOR);
+      paint = (Paint) seriesElement.getLayoutStyle().getValue(ColorStyleKeys.COLOR);
     }
     return paint;
   }

@@ -2,7 +2,7 @@
 
   <stylesheet>
     .bar1 {
-    -x-pentaho-chart-gradient: red, white CENTER_HORIZONTAL 1,10 2,20;		
+    -x-pentaho-chart-gradient: red, white center-horizontal 1,10 2,20;
     border-style: solid;
     border-width: thick;
     border-color: black;
@@ -12,7 +12,7 @@
     font-size: 8pt;
     font-style: italic;
     -x-pentaho-chart-item-label-text: '{0,number,$##.##}';
-    -x-pentaho-chart-item-label-visible: yes;
+    -x-pentaho-chart-item-label-visible: visible;
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
     }
@@ -27,8 +27,8 @@
     font-variant: normal;
     font-style: normal;
     -x-pentaho-chart-item-label-text: '{0} {1}';
-    -x-pentaho-chart-item-label-visible: yes;
-    -x-pentaho-chart-gradient: red, white CENTER_HORIZONTAL 1,10 2,20;		
+    -x-pentaho-chart-item-label-visible: visible;
+    -x-pentaho-chart-gradient: red, white center-horizontal 1,10 2,20;
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
     }
@@ -42,8 +42,8 @@
     font-style: oblique;    
     font-variant: small-caps;
     -x-pentaho-chart-item-label-text: '{0,number,$##.##}';
-    -x-pentaho-chart-item-label-visible: yes;
-    -x-pentaho-chart-gradient: red, white CENTER_HORIZONTAL 1,10 2,20;		    
+    -x-pentaho-chart-item-label-visible: visible;
+    -x-pentaho-chart-gradient: red, white center-horizontal 1,10 2,20;		    
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
     }

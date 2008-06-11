@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
-import org.jfree.resourceloader.ResourceException;
+import org.pentaho.reporting.libraries.resourceloader.ResourceException;
 import org.pentaho.experimental.chart.core.parser.ChartXMLParser;
 
 /**

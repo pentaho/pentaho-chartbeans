@@ -3,7 +3,7 @@
   <stylesheet>
     .bar1 {
     color: blue;
-    -x-pentaho-chart-gradient: red, green CENTER_VERTICAL 1,10 2,20;		
+    -x-pentaho-chart-gradient: red, green center-vertical 1,10 2,20;
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
     -x-pentaho-chart-bar-max-width: 10%;
@@ -11,7 +11,7 @@
 
     .bar2 {
     color: orange;
-    -x-pentaho-chart-gradient: red, blue CENTER_VERTICAL 1,10 2,20;		
+    -x-pentaho-chart-gradient: red, blue center-vertical 1,10 2,20;
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
     -x-pentaho-chart-bar-max-width: 10%;
@@ -19,7 +19,7 @@
 
     .bar3 {
     color: green;
-    -x-pentaho-chart-gradient: red, white CENTER_VERTICAL 1,10 2,20;		    
+    -x-pentaho-chart-gradient: red, white center-vertical 1,10 2,20;		    
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
     -x-pentaho-chart-bar-max-width: 10%;

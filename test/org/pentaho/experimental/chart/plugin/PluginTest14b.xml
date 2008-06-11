@@ -28,7 +28,7 @@
 
   <plot style="-x-pentaho-chart-drill-url-template: url(http://localhost:8080/Pentaho/JPivot);
                -x-pentaho-chart-scale: 1;
-               -x-pentaho-chart-pie-labels-inside-chart: yes;">
+               -x-pentaho-chart-pie-labels-inside-chart: visible;">
     <dataset type="pie"/>
   </plot>
 </chart>

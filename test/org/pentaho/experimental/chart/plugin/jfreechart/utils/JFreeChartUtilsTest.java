@@ -8,8 +8,7 @@ import java.awt.Color;
 import java.awt.GradientPaint;
 
 import junit.framework.TestCase;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.resourceloader.ResourceException;
+import org.pentaho.reporting.libraries.resourceloader.ResourceException;
 import org.jfree.ui.GradientPaintTransformType;
 import org.junit.After;
 import org.junit.Before;

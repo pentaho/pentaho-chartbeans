@@ -24,8 +24,8 @@ import org.pentaho.reporting.libraries.css.values.CSSConstant;
  *
  */
 public class ChartMarkerFilledType {
-  public static final CSSConstant NO = new CSSConstant("no"); //$NON-NLS-1$
-  public static final CSSConstant YES = new CSSConstant("yes"); //$NON-NLS-1$
+  public static final CSSConstant EMPTY = new CSSConstant("empty"); //$NON-NLS-1$
+  public static final CSSConstant FILLED = new CSSConstant("filled"); //$NON-NLS-1$
 
   private ChartMarkerFilledType() {
   }

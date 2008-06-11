@@ -27,8 +27,8 @@ import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
 import org.pentaho.reporting.libraries.css.model.StyleKey;
 import org.pentaho.reporting.libraries.css.values.CSSValue;
 import org.pentaho.util.collections.HeirarchicalLinkedListItem;
-import org.jfree.xmlns.common.AttributeMap;
-import org.jfree.xmlns.LibXmlInfo;
+import org.pentaho.reporting.libraries.xmlns.common.AttributeMap;
+import org.pentaho.reporting.libraries.xmlns.LibXmlInfo;
 
 /**
  * Defines the element information for the elements in the chart definition file
@@ -190,13 +190,13 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
   }
 
   /**
-   * Indicates if style information has been set on the <code>ChartElement</code>
+   * Indicates if style information contained in the attributes has been resolved into 
    *
    * @return <code>true</code> if this <code>ChartElement</code> contains style information,
    *         <code>false</code> otherwise
    */
-  public boolean containsStyleInformation() {
-    return !(this.layoutStyle.isClean());
+  public boolean isStyleResolved() {
+    return this.layoutStyle.isEmpty() == false;
   }
 
   /**
@@ -365,13 +365,11 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
   }
 
   public Map getCounters() {
-    // TODO Auto-generated method stub
-    return null;
+    return Empty.MAP;
   }
 
   public Locale getLanguage() {
-    // TODO Auto-generated method stub
-    return null;
+    return Locale.getDefault();
   }
 
   public LayoutStyle getLayoutStyle() {
@@ -391,13 +389,11 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
   }
 
   public LayoutElement getPreviousLayoutElement() {
-    // TODO Auto-generated method stub
-    return null;
+    return getPreviousItem();
   }
 
   public LayoutElement getParentLayoutElement() {
-    // TODO Auto-generated method stub
-    return null;
+    return getParentItem();
   }
 
   public void addChildElement(final ChartElement chartElement) {
@@ -506,7 +502,7 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
    * Returns all child <code>ChartElements</code> to this <code>ChartElement</code> which
    * has the specified <code>tagName</code>.
    *
-   * @param tagName the name of the tag used in searching
+   * @param tagNameToMatch the name of the tag used in searching
    * @return an array of <code>ChartElement</code> objects that match the search criteria
    */
   public ChartElement[] findChildrenByName(final String tagNameToMatch) {

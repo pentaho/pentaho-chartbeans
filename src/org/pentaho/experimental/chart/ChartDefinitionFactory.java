@@ -15,9 +15,9 @@
  */
 package org.pentaho.experimental.chart;
 
-import org.jfree.resourceloader.ResourceException;
-import org.jfree.resourceloader.ResourceKey;
-import org.jfree.resourceloader.ResourceManager;
+import org.pentaho.reporting.libraries.resourceloader.ResourceException;
+import org.pentaho.reporting.libraries.resourceloader.ResourceKey;
+import org.pentaho.reporting.libraries.resourceloader.ResourceManager;
 import org.pentaho.experimental.chart.core.ChartDocument;
 
 /**

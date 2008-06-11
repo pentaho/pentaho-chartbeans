@@ -29,11 +29,11 @@ public class PieLabelsInsideChartTypeTest extends TestCase {
     assertNotNull(element);
 
     final CSSConstant[] passValues = new CSSConstant[] {
-      ChartItemLabelVisibleType.YES,
-      ChartItemLabelVisibleType.NO,
-      ChartItemLabelVisibleType.NO,
-      ChartItemLabelVisibleType.NO,
-      ChartItemLabelVisibleType.NO,
+      ChartItemLabelVisibleType.VISIBLE,
+      ChartItemLabelVisibleType.HIDDEN,
+      ChartItemLabelVisibleType.HIDDEN,
+      ChartItemLabelVisibleType.HIDDEN,
+      ChartItemLabelVisibleType.HIDDEN,
     };
 
 
@@ -45,7 +45,7 @@ public class PieLabelsInsideChartTypeTest extends TestCase {
       final LayoutStyle layoutStyle = child.getLayoutStyle();
       assertNotNull(layoutStyle);
       System.out.println("Expected: "+passValues[counter]+" - Got: "+layoutStyle.getValue(ChartStyleKeys.PIE_LABELS_INSIDE_CHART)); //$NON-NLS-1$ //$NON-NLS-2$
-      assertEquals(passValues[counter++].getCSSText(), layoutStyle.getValue(ChartStyleKeys.PIE_LABELS_INSIDE_CHART).getCSSText());
+      assertEquals(passValues[counter++], layoutStyle.getValue(ChartStyleKeys.PIE_LABELS_INSIDE_CHART));
       child = child.getNextItem();
     }
 

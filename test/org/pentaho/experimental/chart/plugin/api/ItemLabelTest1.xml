@@ -4,7 +4,7 @@
     .bar1 {
     color: blue;
     -x-pentaho-chart-item-label-text: '{0,number,##.##} cms';
-    -x-pentaho-chart-gradient: red, white CENTER_HORIZONTAL 1,10 2,20;		
+    -x-pentaho-chart-gradient: red, white center-horizontal 1,10 2,20;
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;    
     -x-pentaho-chart-bar-max-width: 10%;
@@ -13,7 +13,7 @@
     .bar2 {
     color: orange;
     -x-pentaho-chart-item-label-text: '{0,number,##.##} ms';
-    -x-pentaho-chart-gradient: red, white CENTER_HORIZONTAL 1,10 2,20;		
+    -x-pentaho-chart-gradient: red, white center-horizontal 1,10 2,20;
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
     -x-pentaho-chart-bar-max-width: 10%;
@@ -22,7 +22,7 @@
     .bar3 {
     color: green;
     -x-pentaho-chart-item-label-text: '{0,number,##.##} kms';
-    -x-pentaho-chart-gradient: red, white CENTER_HORIZONTAL 1,10 2,20;		    
+    -x-pentaho-chart-gradient: red, white center-horizontal 1,10 2,20;		    
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
     -x-pentaho-chart-bar-max-width: 10%;

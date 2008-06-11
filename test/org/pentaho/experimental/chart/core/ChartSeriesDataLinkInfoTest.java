@@ -4,7 +4,7 @@ package org.pentaho.experimental.chart.core;
 import java.net.URL;
 
 import junit.framework.TestCase;
-import org.jfree.resourceloader.ResourceException;
+import org.pentaho.reporting.libraries.resourceloader.ResourceException;
 import org.pentaho.experimental.chart.core.parser.ChartXMLParser;
 import org.pentaho.experimental.chart.data.ChartTableModel;
 

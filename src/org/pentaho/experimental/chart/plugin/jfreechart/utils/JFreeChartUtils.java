@@ -45,6 +45,7 @@ import org.pentaho.reporting.libraries.css.keys.font.FontSizeConstant;
 import org.pentaho.reporting.libraries.css.keys.font.FontStyle;
 import org.pentaho.reporting.libraries.css.keys.font.FontStyleKeys;
 import org.pentaho.reporting.libraries.css.keys.font.RelativeFontSize;
+import org.pentaho.reporting.libraries.css.keys.font.FontWeight;
 import org.pentaho.reporting.libraries.css.values.CSSColorValue;
 import org.pentaho.reporting.libraries.css.values.CSSFunctionValue;
 import org.pentaho.reporting.libraries.css.values.CSSNumericType;
@@ -244,7 +245,7 @@ public class JFreeChartUtils {
         final float y2 = (float) ((CSSNumericValue) gradEnd.getSecondValue()).getValue();
 
         gradPaint = new GradientPaint(x1, y1, gradColors[0], x2, y2, gradColors[1]);
-      } else if (!gradType.getCSSText().equalsIgnoreCase((ChartGradientType.NONE).getCSSText())) {
+      } else if (!gradType.equals(ChartGradientType.NONE)) {
         /*
          * For gradient types like HORIZONTAL, VERTICAL, etc we do not consider x1, y1 
          * and x2, y2 as start and end points since the renderer would figure that out
@@ -369,15 +370,23 @@ public class JFreeChartUtils {
    * @return int  Represents Java based font style.
    */
   public static int getFontStyle(final LayoutStyle layoutStyle) {
-    final String fontStyleStr = layoutStyle.getValue(FontStyleKeys.FONT_STYLE).getCSSText();
+    final CSSValue fontStyle = layoutStyle.getValue(FontStyleKeys.FONT_STYLE);
+    final CSSValue fontWeight = layoutStyle.getValue(FontStyleKeys.FONT_WEIGHT);
+
     // Font Style default
-    int fontStyle = Font.PLAIN;
-    if (fontStyleStr.equalsIgnoreCase((FontStyle.ITALIC).getCSSText())) {
-      fontStyle = Font.ITALIC;
-    } else if (fontStyleStr.equalsIgnoreCase((FontStyle.NORMAL).getCSSText())) {
-      fontStyle = Font.BOLD;
+    int styleFlag = Font.PLAIN;
+
+    if (FontStyle.ITALIC.equals(fontStyle))
+    {
+      styleFlag |= Font.ITALIC;
     }
-    return fontStyle;
+
+    if (FontWeight.BOLD.equals(fontWeight))
+    {
+      // todo: Font weight can also be a numeric value.
+      styleFlag |= Font.BOLD;
+    }
+    return styleFlag;
   }
 
   /**
@@ -476,7 +485,7 @@ public class JFreeChartUtils {
 
     final CSSValue itemLabelVisible = element.getLayoutStyle().getValue(ChartStyleKeys.ITEM_LABEL_VISIBLE);
 
-    if (ChartItemLabelVisibleType.YES.equals(itemLabelVisible)) {
+    if (ChartItemLabelVisibleType.VISIBLE.equals(itemLabelVisible)) {
       showItemLabel = true;
     }
     return showItemLabel;

@@ -16,7 +16,7 @@
 package org.pentaho.experimental.chart.core;
 
 import junit.framework.TestCase;
-import org.jfree.resourceloader.ResourceException;
+import org.pentaho.reporting.libraries.resourceloader.ResourceException;
 import org.pentaho.experimental.chart.ChartDocumentContext;
 import org.pentaho.experimental.chart.ChartFactory;
 

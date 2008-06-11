@@ -18,8 +18,8 @@ package org.pentaho.experimental.chart.core.parser;
 import org.pentaho.experimental.chart.core.ChartElement;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.jfree.xmlns.parser.StringReadHandler;
-import org.jfree.xmlns.parser.XmlReadHandler;
+import org.pentaho.reporting.libraries.xmlns.parser.StringReadHandler;
+import org.pentaho.reporting.libraries.xmlns.parser.XmlReadHandler;
 
 /**
  * Used in the parsing of the chart definition xml document. This class will perform the creation of a

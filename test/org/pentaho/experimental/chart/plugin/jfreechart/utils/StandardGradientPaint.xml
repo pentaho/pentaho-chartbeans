@@ -20,7 +20,7 @@
   
     .bar3 {
     color: blue;
-    -x-pentaho-chart-gradient: red, white POINTS 1,10 2,20;	<!-- points, would default to none -->
+    -x-pentaho-chart-gradient: red, white points 1,10 2,20;	<!-- points, would default to none -->
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
     -x-pentaho-chart-bar-max-width: 10%;
@@ -28,7 +28,7 @@
   
     .bar4 {
     color: blue;
-    -x-pentaho-chart-gradient: red, white HORIZONTAL 1,10 2,20;		
+    -x-pentaho-chart-gradient: red, white horizontal 1,10 2,20;
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
     -x-pentaho-chart-bar-max-width: 10%;
@@ -36,7 +36,7 @@
 
     .bar5 {
     color: orange;
-    -x-pentaho-chart-gradient: red, white VERTICAL 1,10 2,20;		
+    -x-pentaho-chart-gradient: red, white vertical 1,10 2,20;		
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
     -x-pentaho-chart-bar-max-width: 10%;
@@ -44,7 +44,7 @@
 
     .bar6 {
     color: green;
-    -x-pentaho-chart-gradient: red, white CENTER_HORIZONTAL 1,10 2,20;		    
+    -x-pentaho-chart-gradient: red, white center-horizontal 1,10 2,20;		    
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
     -x-pentaho-chart-bar-max-width: 10%;
@@ -52,7 +52,7 @@
     
     .bar7 {
     color: blue;
-    -x-pentaho-chart-gradient: red, white CENTER_VERTICAL 1,10 2,20;		
+    -x-pentaho-chart-gradient: red, white center-vertical 1,10 2,20;		
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
     -x-pentaho-chart-bar-max-width: 10%;

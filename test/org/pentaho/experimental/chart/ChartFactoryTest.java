@@ -15,8 +15,10 @@
  */
 package org.pentaho.experimental.chart;
 
+import java.util.HashSet;
+import java.util.Arrays;
+
 import junit.framework.TestCase;
-import org.jfree.resourceloader.ResourceException;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
 import org.pentaho.experimental.chart.core.parser.ChartXMLParser;
@@ -24,19 +26,22 @@ import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
 import org.pentaho.reporting.libraries.css.model.StyleKey;
 import org.pentaho.reporting.libraries.css.model.StyleKeyRegistry;
 import org.pentaho.reporting.libraries.css.resolver.StyleResolver;
+import org.pentaho.reporting.libraries.resourceloader.ResourceException;
 
 /**
  * Unit tests for the ChartFactory class.
  *
  * @author David Kincade
  */
-public class ChartFactoryTest extends TestCase {
+public class ChartFactoryTest extends TestCase
+{
   /**
    * Performs the ChartBoot before performing the tests
    *
    * @throws Exception
    */
-  protected void setUp() throws Exception {
+  protected void setUp() throws Exception
+  {
     super.setUp();
 
     // Boot the charting library - required for parsing configuration
@@ -59,14 +64,16 @@ public class ChartFactoryTest extends TestCase {
    *   </stylesheet>
    * </pre>
    */
-  public void testLoadStyleSheet() throws ResourceException {
+  public void testLoadStyleSheet() throws ResourceException
+  {
     ChartFactory.generateChart(getClass().getResource("test1.xml"));
   }
 
   /**
    * Tests the style resolution to make sure the <code>StyleResolver</code> class is initialized correctly
    */
-  public void testStyleResolver() throws ResourceException {
+  public void testStyleResolver() throws ResourceException
+  {
     // Create the chart for testing
     final ChartDocument cd = new ChartXMLParser().parseChartDocument(this.getClass().getResource("style_test.xml"));
     assertNotNull(cd);
@@ -124,33 +131,37 @@ public class ChartFactoryTest extends TestCase {
     // The parent tag (chart) and the 1st child tag (title) should have some different styles due to the "default"
     // style information for the <title> tag in the chart.css file
     final StyleKey[] allKeys = StyleKeyRegistry.getRegistry().getKeys();
-    for (int i = 0; i < allKeys.length; ++i) {
-      boolean different = false;
-      for (int j = 0; j < different1Keys.length && !different; ++j) {
-        different = allKeys[i].equals(different1Keys[j]);
-      }
-
-      if (different) {
+    final HashSet different1Set = new HashSet(Arrays.asList(different1Keys));
+    for (int i = 0; i < allKeys.length; ++i)
+    {
+      final boolean shouldBeDifferent = different1Set.contains(allKeys[i]);
+      if (shouldBeDifferent)
+      {
         assertNotSame("parent & child1 - The style information for key [" + allKeys[i] + "] should be different - but it is not! value=[" + parentLayoutStyle.getValue(allKeys[i]) + "]",
             parentLayoutStyle.getValue(allKeys[i]), child1LayoutStyle.getValue(allKeys[i]));
-      } else {
+      }
+      else
+      {
         assertEquals("parent & child1 - The style information for key [" + allKeys[i] + "] should be the same - but it is not!",
             parentLayoutStyle.getValue(allKeys[i]), child1LayoutStyle.getValue(allKeys[i]));
       }
     }
 
-    // The parent tag (chart) and the 2nd child tag (plot) should only have one difference due to the style
-    // information added to the plot tag in the style_text.xml document
-    for (int i = 0; i < allKeys.length; ++i) {
-      boolean different = false;
-      for (int j = 0; j < different2Keys.length && !different; ++j) {
-        different = allKeys[i].equals(different2Keys[j]);
-      }
+    // The parent tag (chart) and the 2nd child tag (plot) should only have one
+    // difference due to the style information added to the plot tag in the style_text.xml document
+    final HashSet different2Set = new HashSet(Arrays.asList(different2Keys));
+    different2Set.addAll(Arrays.asList(different1Keys));
+    for (int i = 0; i < allKeys.length; ++i)
+    {
+      final boolean shouldBeDifferent = different2Set.contains(allKeys[i]);
 
-      if (different) {
+      if (shouldBeDifferent)
+      {
         assertNotSame("The style information for key [" + allKeys[i] + "] should be different - but it is not! value=[" + parentLayoutStyle.getValue(allKeys[i]) + "]",
             child1LayoutStyle.getValue(allKeys[i]), child2LayoutStyle.getValue(allKeys[i]));
-      } else {
+      }
+      else
+      {
         assertEquals("The style information for key [" + allKeys[i] + "] should be the same - but it is not!",
             child1LayoutStyle.getValue(allKeys[i]), child2LayoutStyle.getValue(allKeys[i]));
       }

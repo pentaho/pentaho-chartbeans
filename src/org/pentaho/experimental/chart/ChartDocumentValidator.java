@@ -32,18 +32,19 @@ public class ChartDocumentValidator {
   /**
    * The ChartDocument being validated
    */
-  private final ChartDocument chartDoc;
+  private ChartDocument chartDoc;
 
   /**
    * The list of messages that indicate problems with the chart document
    */
-  private final List<String> messages = new ArrayList<String>();
+  private final List<String> messages;
 
   /**
    * Constructs a validator for the specified ChartDocument
    * @param chartDoc
    */
   public ChartDocumentValidator(final ChartDocument chartDoc) {
+    this();
     this.chartDoc = chartDoc;
     revalidate();
   }
@@ -52,7 +53,7 @@ public class ChartDocumentValidator {
    * Package level constructor for unit testing only
    */
   ChartDocumentValidator() {
-    chartDoc = null;
+    messages = new ArrayList<String>();
   }
 
   /**

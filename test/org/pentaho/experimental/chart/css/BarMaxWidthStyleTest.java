@@ -9,6 +9,8 @@ import org.pentaho.experimental.chart.core.ChartElement;
 import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
 import org.pentaho.reporting.libraries.css.values.CSSConstant;
+import org.pentaho.reporting.libraries.css.values.CSSNumericValue;
+import org.pentaho.reporting.libraries.css.values.CSSNumericType;
 
 public class BarMaxWidthStyleTest extends TestCase {
 
@@ -27,11 +29,11 @@ public class BarMaxWidthStyleTest extends TestCase {
     final ChartElement element = cd.getRootElement();
     assertNotNull(element);
 
-    final CSSConstant[] passValues = new CSSConstant[]{
-        new CSSConstant("50 %"), //$NON-NLS-1$
-        new CSSConstant("100 %"), //$NON-NLS-1$
-        new CSSConstant("75 %"), //$NON-NLS-1$
-        new CSSConstant("50 %"), //$NON-NLS-1$
+    final CSSNumericValue[] passValues = new CSSNumericValue[]{
+        CSSNumericValue.createValue(CSSNumericType.PERCENTAGE, 50), //$NON-NLS-1$
+        CSSNumericValue.createValue(CSSNumericType.PERCENTAGE, 100), //$NON-NLS-1$
+        CSSNumericValue.createValue(CSSNumericType.PERCENTAGE, 75), //$NON-NLS-1$
+        CSSNumericValue.createValue(CSSNumericType.PERCENTAGE, 50), //$NON-NLS-1$
     };
     
     int counter = 0;

@@ -15,8 +15,8 @@
  */
 package org.pentaho.experimental.chart;
 
-import org.jfree.resourceloader.LibLoaderInfo;
-import org.jfree.xmlns.LibXmlInfo;
+import org.pentaho.reporting.libraries.resourceloader.LibLoaderInfo;
+import org.pentaho.reporting.libraries.xmlns.LibXmlInfo;
 import org.pentaho.reporting.libraries.base.LibBaseInfo;
 import org.pentaho.reporting.libraries.base.versioning.ProjectInformation;
 import org.pentaho.reporting.libraries.css.LibCssInfo;

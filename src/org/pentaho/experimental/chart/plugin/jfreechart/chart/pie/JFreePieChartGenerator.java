@@ -167,7 +167,7 @@ public class JFreePieChartGenerator extends JFreeChartGenerator {
                                           final ChartElement plotElement) {
     final LayoutStyle layoutStyle = plotElement.getLayoutStyle();
     final CSSValue inside = layoutStyle.getValue(ChartStyleKeys.PIE_LABELS_INSIDE_CHART);
-    if (ChartItemLabelVisibleType.YES.equals(inside)) {
+    if (ChartItemLabelVisibleType.VISIBLE.equals(inside)) {
       piePlot.setSimpleLabels(true);
     }
   }

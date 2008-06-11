@@ -27,7 +27,7 @@ import org.pentaho.reporting.libraries.css.parser.stylehandler.OneOfConstantsRea
 public class ChartMarkerVisibleReadHandler extends OneOfConstantsReadHandler {
   public ChartMarkerVisibleReadHandler() {
     super(false);
-    addValue(ChartMarkerVisibleType.NO);
-    addValue(ChartMarkerVisibleType.YES);
+    addValue(ChartMarkerVisibleType.HIDDEN);
+    addValue(ChartMarkerVisibleType.VISIBLE);
   }
 }

@@ -16,14 +16,14 @@ title {
   font-style: italic;
   text-align: center;
   color: darkslategray;
-  background-color: YELLOW;
+  background-color: yellow;
 }
 
 plot {
   -x-pentaho-chart-orientation: vertical;
   -x-pentaho-chart-drill-url-template: none;	
   -x-pentaho-chart-scale: 1;	
-  -x-pentaho-chart-pie-labels-inside-chart: no;
+  -x-pentaho-chart-pie-labels-inside-chart: hidden;
   -x-pentaho-chart-first-bar-color: auto;
   -x-pentaho-chart-last-bar-color: auto;
   -x-pentaho-chart-negative-bar-color: auto; 
@@ -46,9 +46,9 @@ series {
   -x-pentaho-chart-line-style: solid;
   -x-pentaho-chart-area-style: area;
   -x-pentaho-chart-line-width: thin;
-  -x-pentaho-chart-line-visible: yes;
-  -x-pentaho-chart-marker-visible: no;
-  -x-pentaho-chart-marker-filled: yes;
+  -x-pentaho-chart-line-visible: visible;
+  -x-pentaho-chart-marker-visible: hidden;
+  -x-pentaho-chart-marker-filled: filled;
   -x-pentaho-chart-marker-fill-color: auto;
   -x-pentaho-chart-marker-shape: rectangle;
   -x-pentaho-chart-marker-width: 6 px;
@@ -56,7 +56,7 @@ series {
   -x-pentaho-chart-bar-style: bar;
   -x-pentaho-chart-bar-max-width: 50%;
   -x-pentaho-chart-drill-url-template: none;
-  -x-pentaho-chart-item-label-visible: no;
+  -x-pentaho-chart-item-label-visible: hidden;
   -x-pentaho-chart-item-label-text: '{0}';
   -x-pentaho-chart-gradient-type: none;  
   -x-pentaho-chart-gradient-color: black, white;  

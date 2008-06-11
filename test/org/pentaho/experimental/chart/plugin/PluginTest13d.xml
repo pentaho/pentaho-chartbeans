@@ -7,7 +7,7 @@
     -x-pentaho-chart-area-style: stacked;
     -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-item-label-text: '{0,number,Yen ##.##}';
-    -x-pentaho-chart-item-label-visible: yes;
+    -x-pentaho-chart-item-label-visible: visible;
     }
 
     .area2 {
@@ -16,7 +16,7 @@
     -x-pentaho-chart-area-style: stacked;
     -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-item-label-text: '{0,number,Yen ##.##}';
-    -x-pentaho-chart-item-label-visible: yes;
+    -x-pentaho-chart-item-label-visible: visible;
     }
 
     .area3 {
@@ -25,7 +25,7 @@
     -x-pentaho-chart-area-style: stacked;
     -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-item-label-text: '{0,number,Yen ##.##}';
-    -x-pentaho-chart-item-label-visible: yes;
+    -x-pentaho-chart-item-label-visible: visible;
     }
   </stylesheet>
 

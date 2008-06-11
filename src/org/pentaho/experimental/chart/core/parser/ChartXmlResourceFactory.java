@@ -15,7 +15,7 @@
  */
 package org.pentaho.experimental.chart.core.parser;
 
-import org.jfree.xmlns.parser.AbstractXmlResourceFactory;
+import org.pentaho.reporting.libraries.xmlns.parser.AbstractXmlResourceFactory;
 import org.pentaho.experimental.chart.ChartBoot;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.reporting.libraries.base.config.Configuration;

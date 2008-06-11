@@ -36,6 +36,7 @@ import org.pentaho.experimental.chart.plugin.jfreechart.chart.JFreeChartGenerato
 import org.pentaho.experimental.chart.plugin.jfreechart.utils.ChartMarkerFilledType;
 import org.pentaho.experimental.chart.plugin.jfreechart.utils.ShapeFactory;
 import org.pentaho.experimental.chart.plugin.jfreechart.utils.StrokeFactory;
+import org.pentaho.reporting.libraries.css.values.CSSValue;
 
 /**
  * @author wseyler
@@ -106,8 +107,8 @@ public class JFreeLineChartGenerator extends JFreeChartGenerator {
    * @return
    */
   private static boolean isMarkerVisible(ChartElement currElement) {
-    final String visibleStr = currElement.getLayoutStyle().getValue(ChartStyleKeys.MARKER_VISIBLE).getCSSText();
-    return ChartMarkerVisibleType.YES.getCSSText().equalsIgnoreCase(visibleStr);
+    final CSSValue visibleStr = currElement.getLayoutStyle().getValue(ChartStyleKeys.MARKER_VISIBLE);
+    return ChartMarkerVisibleType.VISIBLE.equals(visibleStr);
   }
   
   /**
@@ -115,8 +116,8 @@ public class JFreeLineChartGenerator extends JFreeChartGenerator {
    * @return
    */
   private static boolean isShapeFilled(ChartElement currElement) {
-    final String filledStr = currElement.getLayoutStyle().getValue(ChartStyleKeys.MARKER_FILLED).getCSSText();
-    return ChartMarkerFilledType.YES.getCSSText().equalsIgnoreCase(filledStr);
+    final CSSValue filledStr = currElement.getLayoutStyle().getValue(ChartStyleKeys.MARKER_FILLED);
+    return ChartMarkerFilledType.FILLED.equals(filledStr);
   }
 
   /**
@@ -134,8 +135,8 @@ public class JFreeLineChartGenerator extends JFreeChartGenerator {
 
       if (categoryPlot.getRenderer() instanceof LineAndShapeRenderer) {
         final LineAndShapeRenderer lineAndShapeRenderer = (LineAndShapeRenderer) categoryPlot.getRenderer();
-        final String visibleStr = currElement.getLayoutStyle().getValue(ChartStyleKeys.LINE_VISIBLE).getCSSText();
-        lineAndShapeRenderer.setSeriesLinesVisible(i, ChartLineVisibleType.YES.getCSSText().equalsIgnoreCase(visibleStr));
+        final CSSValue visibleStr = currElement.getLayoutStyle().getValue(ChartStyleKeys.LINE_VISIBLE);
+        lineAndShapeRenderer.setSeriesLinesVisible(i, ChartLineVisibleType.VISIBLE.equals(visibleStr));
         final BasicStroke lineStyleStroke = strokeFacObj.getLineStroke(currElement);
         if (lineStyleStroke != null) {
           lineAndShapeRenderer.setSeriesStroke(i, lineStyleStroke);

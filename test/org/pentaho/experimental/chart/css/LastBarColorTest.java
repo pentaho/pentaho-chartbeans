@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2008, Your Corporation. All Rights Reserved.
+ */
+
 package org.pentaho.experimental.chart.css;
 
 import java.awt.Color;
@@ -12,6 +16,10 @@ import org.pentaho.experimental.chart.core.ChartElement;
 import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
 import org.pentaho.reporting.libraries.css.values.CSSColorValue;
+import org.pentaho.reporting.libraries.css.values.CSSValue;
+import org.pentaho.reporting.libraries.css.values.CSSFunctionValue;
+import org.pentaho.reporting.libraries.css.values.CSSNumericValue;
+import org.pentaho.reporting.libraries.css.values.CSSNumericType;
 
 public class LastBarColorTest extends TestCase {
 
@@ -30,10 +38,18 @@ public class LastBarColorTest extends TestCase {
     final ChartElement element = cd.getRootElement();
     assertNotNull(element);
 
-    final CSSColorValue[] passValues = new CSSColorValue[]{
+    final CSSValue[] passValues = new CSSValue[]{
         new CSSColorValue(Color.RED),
         new CSSColorValue(Color.BLUE),
-        new CSSColorValue(Color.GREEN)
+//        new CSSColorValue(Color.GREEN)
+
+        // The Charting-engine currently does not evaluate CSS-functions, so there is no way how a "rgb(..)" function
+        // can appear as a color value.
+        new CSSFunctionValue("rgb",
+            new CSSValue[]{
+                CSSNumericValue.createValue(CSSNumericType.NUMBER, 0),
+                CSSNumericValue.createValue(CSSNumericType.NUMBER, 255),
+                CSSNumericValue.createValue(CSSNumericType.NUMBER, 0)})
     };
     
     int counter = 0;
@@ -43,8 +59,9 @@ public class LastBarColorTest extends TestCase {
     while(child != null) {
       final LayoutStyle layoutStyle = child.getLayoutStyle();
       assertNotNull(layoutStyle);
-      System.out.println("Expected: "+passValues[counter]+" - Got: "+layoutStyle.getValue(ChartStyleKeys.LAST_BAR_COLOR)); //$NON-NLS-1$ //$NON-NLS-2$
-      assertEquals(passValues[counter++], layoutStyle.getValue(ChartStyleKeys.LAST_BAR_COLOR));
+      final CSSValue value = layoutStyle.getValue(ChartStyleKeys.LAST_BAR_COLOR);
+      System.out.println("Expected: "+passValues[counter]+" - Got: "+ value); //$NON-NLS-1$ //$NON-NLS-2$
+      assertEquals(passValues[counter++], value);
       child = child.getNextItem();
     }
 

@@ -23,8 +23,8 @@ import org.pentaho.reporting.libraries.css.values.CSSConstant;
  * @author William Seyler
  */
 public class ChartMarkerVisibleType {
-  public static final CSSConstant NO = new CSSConstant("no"); //$NON-NLS-1$
-  public static final CSSConstant YES = new CSSConstant("yes"); //$NON-NLS-1$
+  public static final CSSConstant HIDDEN = new CSSConstant("hidden"); //$NON-NLS-1$
+  public static final CSSConstant VISIBLE = new CSSConstant("visible"); //$NON-NLS-1$
 
   private ChartMarkerVisibleType() {
   }

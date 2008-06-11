@@ -24,11 +24,11 @@ import org.pentaho.reporting.libraries.css.values.CSSConstant;
  */
 public class ChartGradientType {
   public static final CSSConstant NONE = new CSSConstant("none"); //$NON-NLS-1$
-  public static final CSSConstant VERTICAL = new CSSConstant("VERTICAL"); //$NON-NLS-1$
-  public static final CSSConstant HORIZONTAL = new CSSConstant("HORIZONTAL"); //$NON-NLS-1$
-  public static final CSSConstant CENTER_HORIZONTAL = new CSSConstant("CENTER_HORIZONTAL"); //$NON-NLS-1$
-  public static final CSSConstant CENTER_VERTICAL = new CSSConstant("CENTER_VERTICAL"); //$NON-NLS-1$
-  public static final CSSConstant POINTS = new CSSConstant("POINTS"); //$NON-NLS-1$  
+  public static final CSSConstant VERTICAL = new CSSConstant("vertical"); //$NON-NLS-1$
+  public static final CSSConstant HORIZONTAL = new CSSConstant("horizontal"); //$NON-NLS-1$
+  public static final CSSConstant CENTER_HORIZONTAL = new CSSConstant("center-horizontal"); //$NON-NLS-1$
+  public static final CSSConstant CENTER_VERTICAL = new CSSConstant("center-vertical"); //$NON-NLS-1$
+  public static final CSSConstant POINTS = new CSSConstant("points"); //$NON-NLS-1$  
 
   private ChartGradientType() {
   }

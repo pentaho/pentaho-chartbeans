@@ -15,9 +15,9 @@
  */
 package org.pentaho.experimental.chart.core.parser;
 
-import org.jfree.xmlns.parser.XmlDocumentInfo;
-import org.jfree.xmlns.parser.XmlFactoryModule;
-import org.jfree.xmlns.parser.XmlReadHandler;
+import org.pentaho.reporting.libraries.xmlns.parser.XmlDocumentInfo;
+import org.pentaho.reporting.libraries.xmlns.parser.XmlFactoryModule;
+import org.pentaho.reporting.libraries.xmlns.parser.XmlReadHandler;
 
 /**
  * The factory class that will return the correct document read handler to the XML document parsing system.

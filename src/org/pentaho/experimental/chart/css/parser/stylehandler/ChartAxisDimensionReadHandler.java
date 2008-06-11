@@ -27,7 +27,6 @@ import org.pentaho.reporting.libraries.css.parser.stylehandler.OneOfConstantsRea
 public class ChartAxisDimensionReadHandler extends OneOfConstantsReadHandler {
   public ChartAxisDimensionReadHandler() {
     super(true);
-    addValue(ChartAxisDimension.AUTO);
     addValue(ChartAxisDimension.DOMAIN);
     addValue(ChartAxisDimension.RANGE);
   }

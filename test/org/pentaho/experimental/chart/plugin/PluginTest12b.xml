@@ -2,7 +2,7 @@
 
   <stylesheet>
     .bar1 {
-    -x-pentaho-chart-gradient: red, white CENTER_HORIZONTAL 1,10 2,20;
+    -x-pentaho-chart-gradient: red, white center-horizontal 1,10 2,20;
     font-family: sans-serif;
     font-variant: small-caps;
     font-size: 8pt;
@@ -12,7 +12,7 @@
     }
 
     .bar2 {
-    -x-pentaho-chart-gradient: red, black CENTER_HORIZONTAL 1,10 2,20;
+    -x-pentaho-chart-gradient: red, black center-horizontal 1,10 2,20;
     font-family: cursive;
     font-size: 16pt;    
     font-variant: normal;
@@ -22,7 +22,7 @@
     }
 
     .bar3 {
-    -x-pentaho-chart-gradient: red, yellow CENTER_HORIZONTAL 1,10 2,20;
+    -x-pentaho-chart-gradient: red, yellow center-horizontal 1,10 2,20;
     font-size: smaller;
     font-style: oblique;    
     font-variant: small-caps;

@@ -10,6 +10,9 @@ import org.pentaho.experimental.chart.core.ChartElement;
 import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
 import org.pentaho.reporting.libraries.css.values.CSSConstant;
+import org.pentaho.reporting.libraries.css.values.CSSNumericValue;
+import org.pentaho.reporting.libraries.css.values.CSSNumericType;
+import org.pentaho.reporting.libraries.css.values.CSSValue;
 
 public class ChartMarkerWidthTest extends TestCase {
 
@@ -28,11 +31,11 @@ public class ChartMarkerWidthTest extends TestCase {
     final ChartElement element = cd.getRootElement();
     assertNotNull(element);
 
-    final CSSConstant[] passValues = new CSSConstant[]{
-        new CSSConstant("1"), //$NON-NLS-1$
-        new CSSConstant("3"), //$NON-NLS-1$
-        new CSSConstant("5"), //$NON-NLS-1$
-        new CSSConstant("7"), //$NON-NLS-1$
+    final CSSValue[] passValues = new CSSValue[]{
+        CSSNumericValue.createValue(CSSNumericType.NUMBER, 1), //$NON-NLS-1$
+        CSSNumericValue.createValue(CSSNumericType.NUMBER, 3), //$NON-NLS-1$
+        CSSNumericValue.createValue(CSSNumericType.NUMBER, 5), //$NON-NLS-1$
+        CSSNumericValue.createValue(CSSNumericType.NUMBER, 7), //$NON-NLS-1$
     };
     
     int counter = 0;
@@ -43,7 +46,7 @@ public class ChartMarkerWidthTest extends TestCase {
       final LayoutStyle layoutStyle = child.getLayoutStyle();
       assertNotNull(layoutStyle);
       System.out.println("Expected: "+passValues[counter]+" - Got: "+layoutStyle.getValue(ChartStyleKeys.MARKER_WIDTH)); //$NON-NLS-1$ //$NON-NLS-2$
-      assertEquals(passValues[counter++].getCSSText(), layoutStyle.getValue(ChartStyleKeys.MARKER_WIDTH).getCSSText());
+      assertEquals(passValues[counter++], layoutStyle.getValue(ChartStyleKeys.MARKER_WIDTH));
       child = child.getNextItem();
     }
 

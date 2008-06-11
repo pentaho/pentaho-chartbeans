@@ -46,7 +46,7 @@ public class ChartSeriesTypeTest extends TestCase {
       final LayoutStyle layoutStyle = child.getLayoutStyle();
       assertNotNull(layoutStyle);
       System.out.println("Expected: "+passValues[counter]+" - Got: "+layoutStyle.getValue(ChartStyleKeys.CHART_TYPE)); //$NON-NLS-1$ //$NON-NLS-2$
-      assertEquals(passValues[counter++].getCSSText(), layoutStyle.getValue(ChartStyleKeys.CHART_TYPE).getCSSText());
+      assertEquals(passValues[counter++], layoutStyle.getValue(ChartStyleKeys.CHART_TYPE));
       child = child.getNextItem();
     }
 

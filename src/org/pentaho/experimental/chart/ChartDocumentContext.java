@@ -18,9 +18,6 @@ package org.pentaho.experimental.chart;
 import java.awt.Image;
 import java.util.ArrayList;
 
-import org.jfree.resourceloader.ResourceKey;
-import org.jfree.resourceloader.ResourceKeyCreationException;
-import org.jfree.resourceloader.ResourceManager;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
 import org.pentaho.experimental.chart.core.ChartSeriesDataLinkInfo;
@@ -29,13 +26,17 @@ import org.pentaho.reporting.libraries.css.dom.StyleReference;
 import org.pentaho.reporting.libraries.css.model.StyleKeyRegistry;
 import org.pentaho.reporting.libraries.css.namespace.DefaultNamespaceCollection;
 import org.pentaho.reporting.libraries.css.namespace.NamespaceCollection;
+import org.pentaho.reporting.libraries.resourceloader.ResourceKey;
+import org.pentaho.reporting.libraries.resourceloader.ResourceKeyCreationException;
+import org.pentaho.reporting.libraries.resourceloader.ResourceManager;
 
 /**
  * The <code>DocumentContext</code> for the Charting systen.
  *
  * @author David Kincade
  */
-public class ChartDocumentContext implements DocumentContext {
+public class ChartDocumentContext implements DocumentContext
+{
   private final ResourceManager resourceManager;
   private final ChartDocument chartDocument;
   private final ResourceKey resourceKey;
@@ -51,7 +52,8 @@ public class ChartDocumentContext implements DocumentContext {
   /**
    * Constructs a chart document context based on a chart document
    */
-  public ChartDocumentContext(final ChartDocument chart) throws ResourceKeyCreationException {
+  public ChartDocumentContext(final ChartDocument chart) throws ResourceKeyCreationException
+  {
     // Save the information from the chart
     this.chartDocument = chart;
     this.resourceManager = chart.getResourceManager();
@@ -65,7 +67,8 @@ public class ChartDocumentContext implements DocumentContext {
   /**
    * Returns the ChartDocument
    */
-  public ChartDocument getChartDocument() {
+  public ChartDocument getChartDocument()
+  {
     return chartDocument;
   }
 
@@ -76,7 +79,8 @@ public class ChartDocumentContext implements DocumentContext {
    *         from the chart definition. The objects are in the same order as they are encountered in the
    *         chart definition file.
    */
-  public StyleReference[] getStyleReferences() {
+  public StyleReference[] getStyleReferences()
+  {
     return createStyleReferences(chartDocument);
   }
 
@@ -91,7 +95,8 @@ public class ChartDocumentContext implements DocumentContext {
    * @return the resource manager.
    * @see ChartDocumentContext#getSupportedResourceTypes()
    */
-  public ResourceManager getResourceManager() {
+  public ResourceManager getResourceManager()
+  {
     return resourceManager;
   }
 
@@ -103,7 +108,8 @@ public class ChartDocumentContext implements DocumentContext {
    * @return the context key
    * @see ResourceManager#deriveKey(ResourceKey, String)
    */
-  public ResourceKey getContextKey() {
+  public ResourceKey getContextKey()
+  {
     return resourceKey;
   }
 
@@ -113,7 +119,8 @@ public class ChartDocumentContext implements DocumentContext {
    * @return the supported resource types.
    * @see ResourceManager#create(ResourceKey, ResourceKey, Class[])
    */
-  public Class[] getSupportedResourceTypes() {
+  public Class[] getSupportedResourceTypes()
+  {
     return ChartDocumentContext.SUPPORTED_TYPES.clone();
   }
 
@@ -125,7 +132,8 @@ public class ChartDocumentContext implements DocumentContext {
    * @see org.pentaho.reporting.libraries.css.namespace.NamespaceDefinition
    * @see NamespaceCollection#getDefinition(String)
    */
-  public NamespaceCollection getNamespaces() {
+  public NamespaceCollection getNamespaces()
+  {
     return namespaceCollection;
   }
 
@@ -135,7 +143,8 @@ public class ChartDocumentContext implements DocumentContext {
    *
    * @return the stylekey registry to use.
    */
-  public StyleKeyRegistry getStyleKeyRegistry() {
+  public StyleKeyRegistry getStyleKeyRegistry()
+  {
     return StyleKeyRegistry.getRegistry();
   }
 
@@ -143,12 +152,13 @@ public class ChartDocumentContext implements DocumentContext {
    * Creats a list of <code>StyleReference</code> objects based off the information in the chart document
    * NOTE: this method is protected for unit testing only
    *
-   * @param chartDocument the chart document from which the style references will be extracted
+   * @param chartDoc the chart document from which the style references will be extracted
    * @return a list of ordered <code>StyleReferences</code>. The order in the list will be the same as the
    *         order the style information was encountered in the chart document.
    */
   //TODO: Do we really need chart document as a parameter here?
-  protected StyleReference[] createStyleReferences(final ChartDocument chartDoc) {
+  protected StyleReference[] createStyleReferences(final ChartDocument chartDoc)
+  {
     // Get the set of top-level document items which contain style sheet information
     final ChartElement[] styleSheetElements = chartDoc.getRootElement().findChildrenByName(ChartElement.TAG_NAME_STYLESHEET);
 
@@ -157,17 +167,20 @@ public class ChartDocumentContext implements DocumentContext {
 
     // Process the list of style sheet chart definitions
     final int elementsLength = styleSheetElements.length;
-    for (int i = 0; i < elementsLength; ++i) {
+    for (int i = 0; i < elementsLength; ++i)
+    {
       // Get the URL from the href attributes
       final String hrefText = (String) styleSheetElements[i].getAttribute("href");//$NON-NLS-1$
-      if (hrefText != null) {
+      if (hrefText != null)
+      {
         final StyleReference linkStyleReference = new StyleReference(StyleReference.LINK, hrefText);
         styleReferenceList.add(linkStyleReference);
       }
 
       // Get the style sheet information that was contained in the tag itself as text
       final String styleSheetText = styleSheetElements[i].getText();
-      if (styleSheetText != null) {
+      if (styleSheetText != null)
+      {
         final StyleReference inlineStyleReference = new StyleReference(StyleReference.INLINE, styleSheetText);
         styleReferenceList.add(inlineStyleReference);
       }
@@ -177,11 +190,13 @@ public class ChartDocumentContext implements DocumentContext {
     return styleReferenceList.toArray(new StyleReference[styleReferenceList.size()]);
   }
 
-  public ChartSeriesDataLinkInfo getDataLinkInfo() {
+  public ChartSeriesDataLinkInfo getDataLinkInfo()
+  {
     return dataLinkInfo;
   }
 
-  public void setDataLinkInfo(final ChartSeriesDataLinkInfo dataLinkInfo) {
+  public void setDataLinkInfo(final ChartSeriesDataLinkInfo dataLinkInfo)
+  {
     this.dataLinkInfo = dataLinkInfo;
   }
 

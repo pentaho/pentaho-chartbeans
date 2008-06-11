@@ -15,9 +15,9 @@
  */
 package org.pentaho.experimental.chart;
 
-import org.jfree.resourceloader.ResourceKey;
-import org.jfree.resourceloader.ResourceKeyCreationException;
-import org.jfree.resourceloader.ResourceManager;
+import org.pentaho.reporting.libraries.resourceloader.ResourceKey;
+import org.pentaho.reporting.libraries.resourceloader.ResourceKeyCreationException;
+import org.pentaho.reporting.libraries.resourceloader.ResourceManager;
 import org.pentaho.reporting.libraries.base.config.Configuration;
 import org.pentaho.reporting.libraries.base.util.StringUtils;
 import org.pentaho.reporting.libraries.css.namespace.NamespaceDefinition;
@@ -73,11 +73,11 @@ public class ChartNamespaceDefinition implements NamespaceDefinition {
   }
 
   public String[] getClassAttribute(final String element) {
-    return classAttributeNames;
+    return classAttributeNames.clone();
   }
 
   public String[] getStyleAttribute(final String element) {
-    return styleAttributeNames;
+    return styleAttributeNames.clone();
   }
 
   public ResourceKey getDefaultStyleSheetLocation() {

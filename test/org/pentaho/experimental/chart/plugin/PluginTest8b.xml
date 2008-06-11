@@ -8,8 +8,8 @@
     font-size: 8pt;
     font-style: italic;
     -x-pentaho-chart-item-label-text: '{0,number,$##.##}';
-    -x-pentaho-chart-item-label-visible: yes;
-    -x-pentaho-chart-gradient: red, white CENTER_HORIZONTAL 1,10 2,20;		
+    -x-pentaho-chart-item-label-visible: visible;
+    -x-pentaho-chart-gradient: red, white center-horizontal 1,10 2,20;
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
     -x-pentaho-chart-bar-max-width: 10%;
@@ -22,8 +22,8 @@
     font-variant: normal;
     font-style: normal;
     -x-pentaho-chart-item-label-text: '{0,number,Euro ##.##}';
-    -x-pentaho-chart-item-label-visible: yes;
-    -x-pentaho-chart-gradient: red, white CENTER_HORIZONTAL 1,10 2,20;		
+    -x-pentaho-chart-item-label-visible: visible;
+    -x-pentaho-chart-gradient: red, white center-horizontal 1,10 2,20;
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
     -x-pentaho-chart-bar-max-width: 10%;
@@ -35,8 +35,8 @@
     font-style: normal;    
     font-variant: small-caps;
     -x-pentaho-chart-item-label-text: '{0,number,$##.##} {1}';
-    -x-pentaho-chart-item-label-visible: yes;
-    -x-pentaho-chart-gradient: red, white CENTER_HORIZONTAL 1,10 2,20;		    
+    -x-pentaho-chart-item-label-visible: visible;
+    -x-pentaho-chart-gradient: red, white center-horizontal 1,10 2,20;		    
     -x-pentaho-chart-series-type: bar;
     -x-pentaho-chart-bar-style: bar;
     -x-pentaho-chart-bar-max-width: 10%;

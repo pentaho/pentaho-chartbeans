@@ -29,28 +29,32 @@ import org.w3c.css.sac.LexicalUnit;
  *
  * @author Ravi Hasija
  */
-public class ChartGradientColorReadHandler implements CSSValueReadHandler {
-  public ChartGradientColorReadHandler() {
+public class ChartGradientColorReadHandler implements CSSValueReadHandler
+{
+  public ChartGradientColorReadHandler()
+  {
   }
 
-  public CSSValue createValue(final StyleKey name, final LexicalUnit unit) {
+  public CSSValue createValue(final StyleKey name, final LexicalUnit unit)
+  {
     final CSSValue firstValue = ColorReadHandler.createColorValue(unit);
     CSSValue secondValue = null;
 
-    if (firstValue != null) {
+    if (firstValue != null)
+    {
       // Parse the comma and move to the next field
       final LexicalUnit secondUnit = CSSValueFactory.parseComma(unit);
-      if (secondUnit != null) {
+      if (secondUnit != null)
+      {
         secondValue = ColorReadHandler.createColorValue(secondUnit);
       }
     }
 
-    CSSValuePair result = null;
-
-    if (firstValue != null && secondValue != null) {
-      result = new CSSValuePair(firstValue, secondValue);
+    if (firstValue != null && secondValue != null)
+    {
+      return new CSSValuePair(firstValue, secondValue);
     }
 
-    return result;
+    return null;
   }
 }

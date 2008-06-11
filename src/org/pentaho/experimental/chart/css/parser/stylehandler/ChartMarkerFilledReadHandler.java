@@ -27,7 +27,7 @@ import org.pentaho.reporting.libraries.css.parser.stylehandler.OneOfConstantsRea
 public class ChartMarkerFilledReadHandler extends OneOfConstantsReadHandler {
   public ChartMarkerFilledReadHandler() {
     super(false);
-    addValue(ChartMarkerFilledType.NO);
-    addValue(ChartMarkerFilledType.YES);
+    addValue(ChartMarkerFilledType.EMPTY);
+    addValue(ChartMarkerFilledType.FILLED);
   }
 }

@@ -6,7 +6,7 @@
     -x-pentaho-chart-series-type: line;
     -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-line-width: 1px;
-    -x-pentaho-chart-marker-visible: yes;
+    -x-pentaho-chart-marker-visible: visible;
     -x-pentaho-chart-marker-shape: rectangle;
     -x-pentaho-chart-marker-height: 10 px;
     }
@@ -15,8 +15,8 @@
     color: yellow;
     -x-pentaho-chart-series-type: line;
     -x-pentaho-chart-categorical: true;
-    -x-pentaho-chart-line-visible: no;
-    -x-pentaho-chart-marker-visible: yes;
+    -x-pentaho-chart-line-visible: hidden;
+    -x-pentaho-chart-marker-visible: visible;
     -x-pentaho-chart-marker-shape: ellipse;
     }
 
@@ -25,10 +25,10 @@
     -x-pentaho-chart-series-type: line;
     -x-pentaho-chart-categorical: true;
     -x-pentaho-chart-line-width: 1px;
-    -x-pentaho-chart-marker-visible: yes;
+    -x-pentaho-chart-marker-visible: visible;
     -x-pentaho-chart-marker-shape: ellipse;
     -x-pentaho-chart-marker-height: 10 px;
-    -x-pentaho-chart-marker-filled: no
+    -x-pentaho-chart-marker-filled: empty
     }
   </stylesheet>
 

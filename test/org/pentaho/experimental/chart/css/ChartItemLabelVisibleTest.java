@@ -1,7 +1,7 @@
 package org.pentaho.experimental.chart.css;
 
 import junit.framework.TestCase;
-import org.jfree.resourceloader.ResourceException;
+import org.pentaho.reporting.libraries.resourceloader.ResourceException;
 import org.pentaho.experimental.chart.ChartBoot;
 import org.pentaho.experimental.chart.ChartDocumentContext;
 import org.pentaho.experimental.chart.ChartFactory;
@@ -30,12 +30,12 @@ public class ChartItemLabelVisibleTest extends TestCase {
     assertNotNull(element);
 
     final CSSConstant[] passValues = new CSSConstant[]{
-        ChartItemLabelVisibleType.NO,
-        ChartItemLabelVisibleType.NO,
-        ChartItemLabelVisibleType.YES,
-        ChartItemLabelVisibleType.NO,
-        ChartItemLabelVisibleType.NO,
-        ChartItemLabelVisibleType.NO,        
+        ChartItemLabelVisibleType.HIDDEN,
+        ChartItemLabelVisibleType.HIDDEN,
+        ChartItemLabelVisibleType.VISIBLE,
+        ChartItemLabelVisibleType.HIDDEN,
+        ChartItemLabelVisibleType.HIDDEN,
+        ChartItemLabelVisibleType.HIDDEN,
     };
     
     int counter = 0;

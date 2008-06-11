@@ -29,11 +29,11 @@ public class ChartGradientColorStyleTest extends TestCase {
 
   private CSSFunctionValue getCSSFunctionValue(final int r, final int g, final int b) {
     
-    return new CSSFunctionValue("color", //$NON-NLS-1$
-                                                  new CSSValue[] {CSSNumericValue.createValue(CSSNumericType.NUMBER,r), 
-                                                                  CSSNumericValue.createValue(CSSNumericType.NUMBER,g), 
-                                                                  CSSNumericValue.createValue(CSSNumericType.NUMBER,b)    
-                                                                 });
+    return new CSSFunctionValue("rgb", //$NON-NLS-1$
+            new CSSValue[] {CSSNumericValue.createValue(CSSNumericType.NUMBER,r),
+                            CSSNumericValue.createValue(CSSNumericType.NUMBER,g),
+                            CSSNumericValue.createValue(CSSNumericType.NUMBER,b)    
+                           });
   }
   
   public void testChartGradientColorStyle() throws Exception {
@@ -67,10 +67,13 @@ public class ChartGradientColorStyleTest extends TestCase {
     while(child != null) {
       final LayoutStyle layoutStyle = child.getLayoutStyle();
       assertNotNull(layoutStyle);
-      System.out.println("Expected: " + passValues[counter].getCSSText() + //$NON-NLS-1$ 
-          " - Got: "+layoutStyle.getValue(ChartStyleKeys.GRADIENT_COLOR).getCSSText()); //$NON-NLS-1$ 
+      final CSSValue value = layoutStyle.getValue(ChartStyleKeys.GRADIENT_COLOR);
+      assertNotNull(value);
       
-      final CSSValuePair valuePair = (CSSValuePair) layoutStyle.getValue(ChartStyleKeys.GRADIENT_COLOR);
+      System.out.println("Expected: " + passValues[counter].getCSSText() + //$NON-NLS-1$
+          " - Got: "+ value.getCSSText()); //$NON-NLS-1$ 
+      
+      final CSSValuePair valuePair = (CSSValuePair) value;
       final CSSValue gotValue1      = valuePair.getFirstValue();
       final CSSValue expectedValue1 = passValues[counter].getFirstValue();
       assertEquals("Counter# " + counter + " COLOR#1 does not match: ", expectedValue1, gotValue1); //$NON-NLS-1$ //$NON-NLS-2$

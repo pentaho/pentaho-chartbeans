@@ -1,7 +1,7 @@
 package org.pentaho.experimental.chart.css;
 
 import junit.framework.TestCase;
-import org.jfree.resourceloader.ResourceException;
+import org.pentaho.reporting.libraries.resourceloader.ResourceException;
 import org.pentaho.experimental.chart.ChartBoot;
 import org.pentaho.experimental.chart.ChartDocumentContext;
 import org.pentaho.experimental.chart.ChartFactory;
@@ -11,6 +11,7 @@ import org.pentaho.experimental.chart.css.keys.ChartStyleKeys;
 import org.pentaho.experimental.chart.css.styles.ChartAxisDimension;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
 import org.pentaho.reporting.libraries.css.values.CSSConstant;
+import org.pentaho.reporting.libraries.css.values.CSSValue;
 
 public class ChartAxisDimensionTest extends TestCase {
 
@@ -29,7 +30,7 @@ public class ChartAxisDimensionTest extends TestCase {
     final ChartElement element = cd.getRootElement();
     assertNotNull(element);
 
-    final CSSConstant[] passValues = new CSSConstant[]{
+    final CSSValue[] passValues = new CSSValue[]{
         ChartAxisDimension.AUTO,
         ChartAxisDimension.DOMAIN,
         ChartAxisDimension.RANGE,

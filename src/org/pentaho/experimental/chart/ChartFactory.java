@@ -15,8 +15,8 @@
  */
 package org.pentaho.experimental.chart;
 
-import org.jfree.resourceloader.ResourceException;
-import org.jfree.resourceloader.ResourceManager;
+import org.pentaho.reporting.libraries.resourceloader.ResourceException;
+import org.pentaho.reporting.libraries.resourceloader.ResourceManager;
 import org.pentaho.experimental.chart.core.ChartDocument;
 import org.pentaho.experimental.chart.core.ChartElement;
 import org.pentaho.experimental.chart.core.ChartSeriesDataLinkInfoFactory;
@@ -103,7 +103,7 @@ public class ChartFactory {
     ChartElement element = chart.getRootElement();
     while (element != null) {
       // Resolve this element's style (if it hasn't been done before)
-      if (!element.containsStyleInformation()) {
+      if (element.isStyleResolved() == false) {
         sr.resolveStyle(element);
       }
 
