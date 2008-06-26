@@ -41,15 +41,7 @@ public class LastBarColorTest extends TestCase {
     final CSSValue[] passValues = new CSSValue[]{
         new CSSColorValue(Color.RED),
         new CSSColorValue(Color.BLUE),
-//        new CSSColorValue(Color.GREEN)
-
-        // The Charting-engine currently does not evaluate CSS-functions, so there is no way how a "rgb(..)" function
-        // can appear as a color value.
-        new CSSFunctionValue("rgb",
-            new CSSValue[]{
-                CSSNumericValue.createValue(CSSNumericType.NUMBER, 0),
-                CSSNumericValue.createValue(CSSNumericType.NUMBER, 255),
-                CSSNumericValue.createValue(CSSNumericType.NUMBER, 0)})
+        new CSSColorValue(0, 255, 0)
     };
     
     int counter = 0;

@@ -454,7 +454,7 @@ public class JFreeChartUtils {
     // We will hit the code below only in case of percent or pt
     if (fontSizeValue instanceof CSSNumericValue) {
       final CSSNumericValue fontSize = (CSSNumericValue) fontSizeValue;
-      final CSSNumericType fontSizeType = fontSize.getType();
+      final CSSNumericType fontSizeType = fontSize.getNumericType();
       if (CSSNumericType.PERCENTAGE.equals(fontSizeType)) {
         final ChartElement parentElement = element.getParentItem();
         final float parentSize = JFreeChartUtils.getFontSize(parentElement);

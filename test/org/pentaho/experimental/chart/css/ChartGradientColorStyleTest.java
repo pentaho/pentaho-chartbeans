@@ -27,13 +27,9 @@ public class ChartGradientColorStyleTest extends TestCase {
     ChartBoot.getInstance().start();
   }
 
-  private CSSFunctionValue getCSSFunctionValue(final int r, final int g, final int b) {
+  private CSSValue getCSSFunctionValue(final int r, final int g, final int b) {
     
-    return new CSSFunctionValue("rgb", //$NON-NLS-1$
-            new CSSValue[] {CSSNumericValue.createValue(CSSNumericType.NUMBER,r),
-                            CSSNumericValue.createValue(CSSNumericType.NUMBER,g),
-                            CSSNumericValue.createValue(CSSNumericType.NUMBER,b)    
-                           });
+    return new CSSColorValue(r, g, b);
   }
   
   public void testChartGradientColorStyle() throws Exception {

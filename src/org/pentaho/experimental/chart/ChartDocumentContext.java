@@ -23,6 +23,7 @@ import org.pentaho.experimental.chart.core.ChartElement;
 import org.pentaho.experimental.chart.core.ChartSeriesDataLinkInfo;
 import org.pentaho.reporting.libraries.css.dom.DocumentContext;
 import org.pentaho.reporting.libraries.css.dom.StyleReference;
+import org.pentaho.reporting.libraries.css.dom.LayoutOutputMetaData;
 import org.pentaho.reporting.libraries.css.model.StyleKeyRegistry;
 import org.pentaho.reporting.libraries.css.namespace.DefaultNamespaceCollection;
 import org.pentaho.reporting.libraries.css.namespace.NamespaceCollection;
@@ -146,6 +147,11 @@ public class ChartDocumentContext implements DocumentContext
   public StyleKeyRegistry getStyleKeyRegistry()
   {
     return StyleKeyRegistry.getRegistry();
+  }
+
+  public LayoutOutputMetaData getOutputMetaData()
+  {
+    return null;
   }
 
   /**
