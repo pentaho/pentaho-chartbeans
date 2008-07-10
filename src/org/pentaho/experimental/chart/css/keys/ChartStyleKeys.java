@@ -241,6 +241,12 @@ public class ChartStyleKeys {
   public static final StyleKey NEGATIVE_BAR_COLOR = StyleKeyRegistry.getRegistry().
         createKey("-x-pentaho-chart-negative-bar-color", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
   
+  /**
+   * The multi style for bar charts (bar, cylinder, stacked, etc.)
+   */
+  public static final StyleKey MULTI_STYLE = StyleKeyRegistry.getRegistry().
+      createKey("-x-pentaho-chart-multi-style", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+  
   private ChartStyleKeys() {
   }
 }

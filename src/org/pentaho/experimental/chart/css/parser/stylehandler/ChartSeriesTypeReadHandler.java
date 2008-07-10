@@ -31,6 +31,7 @@ public class ChartSeriesTypeReadHandler extends OneOfConstantsReadHandler {
     addValue(ChartSeriesType.LINE);
     addValue(ChartSeriesType.PIE);
     addValue(ChartSeriesType.AREA);
+    addValue(ChartSeriesType.MULTI);
    
   }
 }

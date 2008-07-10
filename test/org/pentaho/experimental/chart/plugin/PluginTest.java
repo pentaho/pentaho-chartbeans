@@ -295,7 +295,25 @@ public class PluginTest extends TestCase {
     
     runTests(fileNames, data);
   }
+  public void testMultiChart() {
+    final Object[][] dataArray = { 
+        { 5.55, 10.11, 20.22, "East" }, //$NON-NLS-1$
+        { 30.33, 40.44, 50.55, "West" }, //$NON-NLS-1$
+        { 60.66, 70.77, 80.88, "Central" } };//$NON-NLS-1$
+    
+    final ChartTableModel data = createChartTableModel(dataArray);
+    data.setRowName(0, "Jan"); //$NON-NLS-1$
+    data.setRowName(1, "Feb"); //$NON-NLS-1$
+    data.setRowName(2, "Mar"); //$NON-NLS-1$
+    
+    final String[] fileNames = {
 
+                "PluginTest15a.xml", //$NON-NLS-1$
+
+    };
+
+    runTests(fileNames, data);
+  }
   private void runTests(final String[] fileNames, final ChartTableModel data) {
     for (int i = 0; i < fileNames.length; i++) {
       try {

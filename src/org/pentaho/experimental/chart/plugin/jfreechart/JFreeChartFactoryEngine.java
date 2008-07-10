@@ -15,6 +15,7 @@ import org.pentaho.experimental.chart.plugin.api.IOutput;
 import org.pentaho.experimental.chart.plugin.jfreechart.chart.area.JFreeAreaChartGeneratorFactory;
 import org.pentaho.experimental.chart.plugin.jfreechart.chart.bar.JFreeBarChartGeneratorFactory;
 import org.pentaho.experimental.chart.plugin.jfreechart.chart.line.JFreeLineChartGeneratorFactory;
+import org.pentaho.experimental.chart.plugin.jfreechart.chart.multi.JFreeMultiChartGeneratorFactory;
 import org.pentaho.experimental.chart.plugin.jfreechart.chart.pie.JFreePieChartGeneratorFactory;
 import org.pentaho.experimental.chart.plugin.jfreechart.outputs.JFreeChartOutput;
 import org.pentaho.experimental.chart.plugin.jfreechart.utils.JFreeChartUtils;
@@ -66,7 +67,13 @@ public class JFreeChartFactoryEngine implements Serializable {
         chartResult.setErrorCode(IChartPlugin.RESULT_ERROR);
         chartResult.setDescription(e.getLocalizedMessage());
       }
-  
+    } else if (currentChartType == ChartSeriesType.MULTI) {
+      try {
+        return new JFreeChartOutput((makeMultiChart(data, chartDocumentContext)));
+      } catch (Exception e) {
+        chartResult.setErrorCode(IChartPlugin.RESULT_ERROR);
+        chartResult.setDescription(e.getLocalizedMessage());
+      }
     }
     return null;
   }
@@ -136,7 +143,22 @@ public class JFreeChartFactoryEngine implements Serializable {
     final JFreeChart chart = chartFacEngine.createChart(chartDocumentContext, data);
     return chart;
   }
+  
+  /* (non-Javadoc)
+   * @see org.pentaho.experimental.chart.plugin.api.engine.ChartFactoryEngine#makeAreaChart(org.pentaho.experimental.chart.data.ChartTableModel, org.pentaho.experimental.chart.core.ChartDocument, org.pentaho.experimental.chart.plugin.api.IOutput)
+   */
+  public JFreeChart makeMultiChart(final ChartTableModel data, final ChartDocumentContext chartDocumentContext) {
+    final ChartDocument chartDocument = chartDocumentContext.getChartDocument();
+    final JFreeChart chart = createMultiChartSubtype(chartDocumentContext, data);
+    JFreeChartUtils.setPlotAttributes(chart.getCategoryPlot(), chartDocument);
+    return chart;
+  }
 
+  private JFreeChart createMultiChartSubtype(final ChartDocumentContext chartDocumentContext, final ChartTableModel data) {
+    final JFreeMultiChartGeneratorFactory chartFacEngine = new JFreeMultiChartGeneratorFactory();
+    final JFreeChart chart = chartFacEngine.createChart(chartDocumentContext, data);
+    return chart;
+  }
   /**
    * Determines what type of chart that should be rendered.  It is possible that this method
    * could somehow be moved up into the AbstractChartPlugin
@@ -157,6 +179,8 @@ public class JFreeChartFactoryEngine implements Serializable {
           return ChartSeriesType.AREA;
         } else if (value.equals(ChartSeriesType.PIE)) {
           return ChartSeriesType.PIE;
+        } else if (value.equals(ChartSeriesType.MULTI)) {
+          return ChartSeriesType.MULTI;
         }
       }
     }

@@ -39,5 +39,7 @@
   -x-pentaho-chart-axis-location: primary;
   -x-pentaho-chart-pie-explode-percent: 0%;
   -x-pentaho-chart-pie-labels-inside-chart: hidden;
+  -x-pentaho-chart-series-type: multi;
+  -x-pentaho-chart-multi-style: multi; 
 }
 
