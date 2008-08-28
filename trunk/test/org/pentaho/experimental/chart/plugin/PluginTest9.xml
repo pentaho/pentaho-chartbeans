@@ -1,0 +1,61 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+
+  <stylesheet>
+    .bar1 {
+    -x-pentaho-chart-gradient: red, white center-horizontal 1,10 2,20;
+    border-style: solid;
+    border-width: thick;
+    border-color: black;
+    color: blue;
+    font-family: sans-serif;
+    font-variant: small-caps;
+    font-size: 8pt;
+    font-style: italic;
+    -x-pentaho-chart-item-label-text: '{0,number,$##.##}';
+    -x-pentaho-chart-item-label-visible: visible;
+    -x-pentaho-chart-series-type: bar;
+    -x-pentaho-chart-bar-style: bar;
+    }
+
+    .bar2 {
+    color: orange;
+    border-style: solid;
+    border-width: medium;
+    border-color: rgb(250,0,255);
+    font-family: cursive;
+    font-size: 16pt;    
+    font-variant: normal;
+    font-style: normal;
+    -x-pentaho-chart-item-label-text: '{0} {1}';
+    -x-pentaho-chart-item-label-visible: visible;
+    -x-pentaho-chart-gradient: red, white center-horizontal 1,10 2,20;
+    -x-pentaho-chart-series-type: bar;
+    -x-pentaho-chart-bar-style: bar;
+    }
+
+    .bar3 {
+    color: green;
+		border-style: dashed;
+    border-width: thick;    
+    border-color: #FF0000;
+    font-size: smaller;
+    font-style: oblique;    
+    font-variant: small-caps;
+    -x-pentaho-chart-item-label-text: '{0,number,$##.##}';
+    -x-pentaho-chart-item-label-visible: visible;
+    -x-pentaho-chart-gradient: red, white center-horizontal 1,10 2,20;		    
+    -x-pentaho-chart-series-type: bar;
+    -x-pentaho-chart-bar-style: bar;
+    }
+  </stylesheet>
+
+  <title>Border Style and Border Size Test</title>
+  
+  <series name="budget" class="bar1" column-pos="2"/>
+
+  <series name="sales" class="bar2" column-name="sales"/>
+
+  <series name="forecast" class="bar3" column-pos="0"/>
+
+  <plot style="-x-pentaho-chart-orientation: horizontal"/>
+</chart>

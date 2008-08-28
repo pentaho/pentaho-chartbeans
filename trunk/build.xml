@@ -1,0 +1,177 @@
+<!-- ======================================================================
+     Build Script for the Charting API
+     ====================================================================== -->
+<project name="charting" default="compile" basedir=".">
+	<description>Charting API build process..</description>
+
+  <!-- Load the properties ... use override 1st since it will "override" the build.properties -->
+  <property file="override.properties" />
+	<property file="build.properties" />
+
+  <!-- Setup the default directory structures -->
+  <property name="build.dir"         value="./build"/>
+  <property name="dist.dir"          value="./dist"/>
+  <property name="src.dir"           value="./src"/>
+  <property name="test.dir"          value="./test"/>
+  <property name="build.bin.dir"     value="${build.dir}/bin"/>
+  <property name="test.src.dir"      value="./test"/>
+  <property name="lib.dir"           value="./lib"/>
+  <property name="test.bin.dir"      value="${build.dir}/test"/>
+  <property name="test.output.dir"   value="${build.dir}/test-output"/>
+  <property name="javadoc.dir"       value="${dist.dir}/javadoc"/>
+
+  <!-- Setup the version number -->
+  <tstamp/>
+  <buildnumber/>
+  <property name="version.major"       value="0"/>
+  <property name="version.minor"       value="0"/>
+  <property name="version.milestone"   value="0"/>
+  <property name="version.build"       value="${build.number}"/>
+  <property name="version"             value="${version.major}.${version.minor}.${version.milestone}-${version.build}"/>
+
+  <!-- Setup the default compile options -->
+  <property name="optimized" value="false"/>
+  <property name="debugging" value="true"/>
+
+  <!-- The classpath for compiling the source code -->
+  <path id="compile.classpath">
+    <fileset dir="${lib.dir}">
+      <include name="*.jar"/>
+    </fileset>
+  </path>
+
+  <!-- The classpath for compiling the unit tests -->
+  <path id="test.compile.classpath">
+    <path refid="compile.classpath"/>
+    <dirset dir="${build.bin.dir}"/>
+    <fileset dir="${lib.dir}/test">
+      <include name="**/*.*"/>
+    </fileset>
+  </path>
+
+  <!-- The classpath for running the unit tests -->
+  <path id="test.run.classpath">
+    <path refid="test.compile.classpath"/>
+    <dirset dir="${test.bin.dir}"/>
+  </path>
+
+
+  <!--
+    Cleans up after previous builds
+   -->
+  <target name="clean" description="Cleans up from previous builds">
+    <delete dir="${build.dir}"/>
+  </target>
+
+  <!--
+    Initializes the build process by making sure all the necessary directories are in place
+    and validating all the property system variables have been set.
+  -->
+  <target name="initialize" description="Initializes the build process">
+    <fail message="Java Compile Path not Set - please set 'javac.path' in override.properties" unless="javac.path"/>
+  </target>
+
+
+  <!--
+    Compiles the source code in the build directory
+  -->
+  <target name="compile" depends="initialize" description="Compiles the Charting API into a set of class files">
+    <!-- Make sure the proper directories exist -->
+    <mkdir dir="${build.bin.dir}"/>
+
+    <!-- Compile the source into the build directory -->
+    <javac
+        classpathref="compile.classpath"
+        srcdir="${src.dir}"
+        destdir="${build.bin.dir}"
+        deprecation="${build.deprecation}"
+        debug="${build.debug}"
+        optimize="${build.optimize}"
+        target="${build.target}"
+        source="${build.source}">
+      </javac>
+
+    <!-- Make sure we get all the non-java files from the src directory -->
+    <copy todir="${build.bin.dir}">
+      <fileset dir="${src.dir}">
+        <include name="**/*.*"/>
+        <exclude name="**/*.java"/>
+      </fileset>
+    </copy>
+  </target>
+
+
+  <!--
+    Jars the build
+  -->
+  <target name="jar" depends="compile" description="Creats a jar file which contains the classes">
+    <!-- create the jar file -->
+    <mkdir dir="${dist.dir}"/>
+    <jar destfile="${dist.dir}/pentaho-chart-api-${version}.jar" basedir="${build.bin.dir}"/>
+  </target>
+
+
+  <!--
+    Compiles all the unit tests
+  -->
+  <target name="compile-tests" depends="compile" description="Compiles the unit tests">
+    <!-- Make sure the proper directories exist -->
+    <mkdir dir="${test.bin.dir}"/>
+
+    <!-- Compile the tests into the build directory -->
+    <javac
+        classpathref="test.compile.classpath"
+        srcdir="${test.dir}"
+        destdir="${test.bin.dir}"
+        deprecation="${build.deprecation}"
+        debug="${build.debug}"
+        optimize="${build.optimize}"
+        target="${build.target}"
+        source="${build.source}">
+    </javac>
+
+    <!-- Copy all the supporting files -->
+    <copy todir="${test.bin.dir}">
+      <fileset dir="${test.dir}">
+        <include name="**/*.*"/>
+        <exclude name="**/*.java"/>
+      </fileset>
+    </copy>
+  </target>
+  
+
+  <!--
+    Runs all the unit tests in the test directory
+  -->
+  <target name="test" depends="compile-tests" description="Runs the unit tests">
+    <delete dir="${test.output.dir}"/>
+    <mkdir dir="${test.output.dir}"/>
+    
+    <junit printsummary="yes" errorproperty="junit-error" failureproperty="junit-failure">
+      <classpath refid="test.run.classpath"/>
+      <formatter type="xml"/> <!-- output tests in xml for automated build to report on -->
+      <batchtest fork="yes" todir="${test.output.dir}">
+        <fileset dir="${test.src.dir}" casesensitive="yes">
+          <include name="**/Test*.java"/>
+          <include name="**/*Test.java"/>
+        </fileset>
+      </batchtest>
+    </junit>
+
+    <!-- don't fail the build if tests fail, for sake of automated build
+  	<fail message="JUNIT ERRORS" if="junit-error"/>
+    <fail message="JUNIT FAILURE" if="junit-failure"/>
+    -->
+
+  </target>
+
+
+  <!--
+    Creates javadoc
+   -->
+  <target name="javadoc" depends="compile" description="Creates the javadoc for the project">
+    <mkdir dir="${javadoc.dir}"/>
+    <javadoc sourcepath="${src.dir}" destdir="${javadoc.dir}/" classpathref="compile.classpath"/>
+  </target>
+
+</project>

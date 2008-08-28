@@ -1,0 +1,11 @@
+/*
+ * This is the 2nd file in the style test. It changes the color of the test1 class to "RED"
+ * and it includes test3.css.
+ */
+
+@import "test3.css";
+
+.test1 {
+  color: RED
+}
+

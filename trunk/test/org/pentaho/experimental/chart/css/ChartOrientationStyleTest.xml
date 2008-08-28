@@ -1,0 +1,6 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+<plot/> 
+<plot style="-x-pentaho-chart-orientation: horizontal"/>
+<plot style="-x-pentaho-chart-orientation: vertical"/>
+<plot style="-x-pentaho-chart-orientation: wrongorientationstyle"/>
+</chart>

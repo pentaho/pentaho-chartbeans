@@ -1,0 +1,13 @@
+THESE ARE NOTES ABOUT THE CHARTING PROJECT...
+
+* all packages should be marked "experimental" so we don't have to support anything we are developing until we are ready
+
+* (libcss) org.pentaho.reporting.libraries.css.initial.css - this file contains all the "known" style tags
+  that can be used as style infomration. This also contains the default value for each tag.
+
+* org.pentaho.experimantal.chart.css.chart.css - this is a file that contains the default style information
+  for all the "known" tags
+
+* libcss.properties - This file contains a number of different properties:
+   * org.jfree.layouting.parser.handlers.<style> - defines the parser class for <style>
+   * 

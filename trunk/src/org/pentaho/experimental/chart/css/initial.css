@@ -1,0 +1,45 @@
+/**
+ * This file contains the inital stylesheet properties for the
+ * charting API. The style-rules here do not get matched,
+ * so no matter what selector you put in, they always get matched
+ * as *ANY_NODE* selector.
+ */
+
+/** Series Styles */
+* {
+  -x-pentaho-chart-series-type: bar;
+  -x-pentaho-chart-orientation: vertical;
+  -x-pentaho-chart-line-visible: visible;
+  -x-pentaho-chart-marker-visible: hidden;
+  -x-pentaho-chart-marker-filled: filled;
+  -x-pentaho-chart-marker-fill-color: auto;
+  -x-pentaho-chart-marker-shape: rectangle;
+  -x-pentaho-chart-marker-width: 6 px;
+  -x-pentaho-chart-marker-height: 6 px;
+  -x-pentaho-chart-line-style: solid;
+  -x-pentaho-chart-area-style: area;
+  -x-pentaho-chart-line-width: thin;
+  -x-pentaho-chart-bar-style: bar;
+  -x-pentaho-chart-bar-max-width: 50%;
+  -x-pentaho-chart-drill-url-template: none;
+  -x-pentaho-chart-axis-type-dimension: auto;
+  -x-pentaho-chart-axis-type-position: primary;
+  -x-pentaho-chart-axis-type-order: 1;
+  -x-pentaho-chart-item-label-visible: hidden;
+  -x-pentaho-chart-item-label-text: '{0}';
+  -x-pentaho-chart-gradient-type: none;
+  -x-pentaho-chart-gradient-color: black, white;  
+  -x-pentaho-chart-gradient-start: 0, 0;  
+  -x-pentaho-chart-gradient-end: 1, 1;  
+  -x-pentaho-chart-scale: 1;  
+  -x-pentaho-chart-axis-lower-margin: 5%;
+  -x-pentaho-chart-axis-upper-margin: 5%;
+  -x-pentaho-chart-axis-category-margin: 20%;
+  -x-pentaho-chart-axis-item-margin: 20%;    
+  -x-pentaho-chart-axis-location: primary;
+  -x-pentaho-chart-pie-explode-percent: 0%;
+  -x-pentaho-chart-pie-labels-inside-chart: hidden;
+  -x-pentaho-chart-series-type: multi;
+  -x-pentaho-chart-multi-style: multi; 
+}
+

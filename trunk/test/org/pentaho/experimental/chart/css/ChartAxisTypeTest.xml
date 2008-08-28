@@ -1,0 +1,13 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+		<axis style="-x-pentaho-chart-axis-type: auto primary 1"/>		
+		<axis style="-x-pentaho-chart-axis-type: auto secondary 2"/>				
+		<axis style="-x-pentaho-chart-axis-type: domain primary 3"/>		
+		<axis style="-x-pentaho-chart-axis-type: domain secondary 4"/>				
+		<axis style="-x-pentaho-chart-axis-type: range primary 5"/>		
+		<axis style="-x-pentaho-chart-axis-type: range secondary 6"/>				
+		<axis style="-x-pentaho-chart-axis-type: aut prim 1.1"/> <!-- all are misspelled, should resort to defaults -->
+		<axis style="-x-pentaho-chart-axis-type: "/> <!-- is null, so should fall back to default -->						
+		<axis style="-x-pentaho-chart-axis-type: secondary 1"/> <!-- no dimension specified, will default everything -->
+		<axis style="-x-pentaho-chart-axis-type: domain  1"/> <!-- no position specified, will default everything (auto, primary, 1)-->
+		<axis style="-x-pentaho-chart-axis-type: domain secondary "/> <!-- no order specified, will get defaults for all -->
+</chart>

@@ -1,0 +1,9 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+	<series style="-x-pentaho-chart-gradient-end: , "/> <!-- values should be numbers, will get default values-->	
+	<series style="-x-pentaho-chart-gradient-end: 1, 10"/>
+	<series style="-x-pentaho-chart-gradient-end: 0.5, 99.90"/>
+	<series style="-x-pentaho-chart-gradient-end: 0, 1"/>
+	<series style="-x-pentaho-chart-gradient-end: "/> <!-- null, so should get defualt values -->
+	<series style="-x-pentaho-chart-gradient-end: wrong, wrong"/> <!-- values should be numbers, will get default values-->
+	<series style="-x-pentaho-chart-gradient-end: junk, 99.90junk"/> <!-- values should be numbers, will get default values-->
+</chart>

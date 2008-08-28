@@ -1,0 +1,8 @@
+/*
+ * This is the first external stylesheet for the style test.
+ * It adds a new attribute to the test1 class called border.
+ */
+
+.test1 {
+  border-left: SOLID
+}

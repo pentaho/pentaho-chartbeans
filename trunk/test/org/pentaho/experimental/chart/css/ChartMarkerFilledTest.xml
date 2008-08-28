@@ -1,0 +1,8 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+    <series/>
+	<series style="-x-pentaho-chart-marker-filled: empty"/>
+	<series style="-x-pentaho-chart-marker-filled: filled"/>
+	<series style="-x-pentaho-chart-marker-filled: "/>
+	<series style="-x-pentaho-chart-marker-filled: junk"/>	
+	<series style="-x-pentaho-chart-marker-filled: n"/>	<!-- misspelled -->
+</chart>

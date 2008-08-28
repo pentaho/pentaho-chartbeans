@@ -1,0 +1,7 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+	<axis style="-x-pentaho-chart-axis-type-dimension: auto"/>
+	<axis style="-x-pentaho-chart-axis-type-dimension: domain"/>
+	<axis style="-x-pentaho-chart-axis-type-dimension: range"/>		
+	<axis style="-x-pentaho-chart-axis-type-dimension: junk"/><!-- would default to auto -->
+	<axis style="-x-pentaho-chart-axis-type-dimension: dom"/><!-- misspelled, would default to auto -->
+</chart>

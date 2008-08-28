@@ -1,0 +1,7 @@
+<chart>
+  <axis xml:id="primary left" type="range" side="primary" order="1"/>
+  <series column-name="sales" axis-id="primary left"/>
+
+  <axis xml:id="2" type="range" side="secondary" order="1" style="" class=""/>
+  <series column-name="forecast" axis-id="2"/>
+</chart>

@@ -1,0 +1,70 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+
+  <stylesheet>
+    .bar1 {
+    color: blue;
+    -x-pentaho-chart-series-type: bar;
+    -x-pentaho-chart-bar-style: stacked;
+    -x-pentaho-chart-bar-max-width: 10%;
+    }
+
+    .bar2 {
+		color: yellow;
+    -x-pentaho-chart-series-type: bar;
+    -x-pentaho-chart-bar-style: stacked;
+    -x-pentaho-chart-bar-max-width: 10%;
+    }
+
+    .bar3 {
+    color: green;
+    -x-pentaho-chart-series-type: bar;
+    -x-pentaho-chart-bar-style: stacked;
+    -x-pentaho-chart-bar-max-width: 10%;
+    }
+    
+    .bar4 {
+    color: orange;
+    -x-pentaho-chart-series-type: bar;
+    -x-pentaho-chart-bar-style: stacked;
+    -x-pentaho-chart-bar-max-width: 10%;
+    }
+    
+    .bar5 {
+    color: red;
+    -x-pentaho-chart-series-type: bar;
+    -x-pentaho-chart-bar-style: stacked;
+    -x-pentaho-chart-bar-max-width: 10%;
+    }
+    
+    .bar6 {
+    color: black;
+    -x-pentaho-chart-series-type: bar;
+    -x-pentaho-chart-bar-style: stacked;
+    -x-pentaho-chart-bar-max-width: 10%;
+    }
+  </stylesheet>
+
+  <title>Layered Bars</title>
+  
+  <series name="budget" class="bar1" column-pos="2"/>
+
+  <series name="sales" class="bar2" column-name="sales"/>
+
+  <series name="forecast" class="bar3" column-pos="0"/>
+  
+  <series name="continent" class="bar4" column-name="continent"/>
+  
+  <series name="country" class="bar5" column-name="country"/>
+  
+  <series name="measure" class="bar6" column-name="territory"/>
+
+  <plot style="-x-pentaho-chart-orientation: vertical; -x-pentaho-chart-drill-url-template: url(http://localhost:8080/Pentaho/JPivot)"/>
+
+  <group column-name="continent">
+    <group column-name="country">
+      <group column-name="territory" stacked="true">
+      </group>
+    </group>
+  </group>
+  
+</chart>

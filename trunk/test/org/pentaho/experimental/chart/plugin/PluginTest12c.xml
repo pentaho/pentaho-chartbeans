@@ -1,0 +1,57 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0" categorical="true" byrow="off">
+
+  <stylesheet>
+    .bar1 {
+    color: red;
+    -x-pentaho-chart-gradient: red, yellow center-horizontal 1,10 2,20;
+    font-family: sans-serif;
+    font-variant: small-caps;
+    font-size: 8pt;
+    font-style: italic;
+    -x-pentaho-chart-item-label-text: '{0,number,$##.##}';
+    -x-pentaho-chart-item-label-visible: visible;
+    -x-pentaho-chart-series-type: bar;
+    -x-pentaho-chart-bar-style: bar;
+    }
+
+    .bar2 {
+    color: blue;
+    -x-pentaho-chart-gradient: red, green center-horizontal 1,10 2,20;
+    font-family: cursive;
+    font-size: 16pt;    
+    font-variant: normal;
+    font-style: normal;
+    -x-pentaho-chart-item-label-text: '{0,number,$##.##}';
+    -x-pentaho-chart-item-label-visible: visible;
+    -x-pentaho-chart-series-type: bar;
+    -x-pentaho-chart-bar-style: bar;
+    }
+
+    .bar3 {
+    color: green;
+    -x-pentaho-chart-gradient: red, black center-horizontal 1,10 2,20;
+    font-size: smaller;
+    font-style: oblique;    
+    font-variant: small-caps;
+    -x-pentaho-chart-item-label-text: '{0,number,$##.##}';
+    -x-pentaho-chart-item-label-visible: visible;
+    -x-pentaho-chart-series-type: bar;
+    -x-pentaho-chart-bar-style: bar;
+    }
+  </stylesheet>
+
+  <title>2 Range axis - one left and one right</title>
+  
+  <series name="budget" class="bar1" column-pos="2" axis-id="axis_range1"/>
+
+  <series name="sales" class="bar2" column-name="sales" axis-id="axis_range1"/>
+
+  <series name="forecast" class="bar3" column-pos="0" axis-id="axis_range2"/>
+  
+  <axis id="axis_domain1" type="domain"/>
+	  
+  <plot style="-x-pentaho-chart-orientation: vertical;"/>
+
+  <axis id="axis_range1" type="range" label="Country" style="-x-pentaho-chart-axis-location: primary"/>
+  <axis id="axis_range2" type="range" label="State" style="-x-pentaho-chart-axis-location: secondary"/>  
+</chart>

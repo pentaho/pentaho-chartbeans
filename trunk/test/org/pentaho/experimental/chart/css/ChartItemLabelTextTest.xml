@@ -1,0 +1,6 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+		<series style="-x-pentaho-chart-item-label-text: '{0,$###,###.##} this is a label {1, format}'"/>
+		<series style="-x-pentaho-chart-item-label-text: '{0}'"/> <!-- default value -->
+		<series style="-x-pentaho-chart-item-label-text: ''"/> <!-- This is NOT a null string -->
+		<series style="-x-pentaho-chart-item-label-text:"/> <!-- This is NULL and should get the default -->
+</chart>
