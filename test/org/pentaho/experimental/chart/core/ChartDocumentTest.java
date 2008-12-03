@@ -16,6 +16,8 @@
 package org.pentaho.experimental.chart.core;
 
 import junit.framework.TestCase;
+
+import org.pentaho.reporting.libraries.css.model.StyleKeyRegistry;
 import org.pentaho.reporting.libraries.resourceloader.ResourceException;
 import org.pentaho.experimental.chart.ChartDocumentContext;
 import org.pentaho.experimental.chart.ChartFactory;
@@ -26,6 +28,11 @@ import org.pentaho.experimental.chart.ChartFactory;
  * @author David Kincade
  */
 public class ChartDocumentTest extends TestCase {
+	
+  public void setUp() {
+    StyleKeyRegistry.performBoot();  
+  }	
+  	
   /**
    * Tests for the <code>booleanAttributeValue()</code> method
    */
@@ -71,6 +78,7 @@ public class ChartDocumentTest extends TestCase {
    * Tests for the <code>isCategorical()</code> method
    */
   public void testIsCategorical() throws ResourceException {
+	  
     // Load a chart where the chart element is not the root, but categorical is true
     ChartDocumentContext cdc = ChartFactory.generateChart(this.getClass().getResource("ChartDocumentTest1.xml"));
     assertEquals(false, cdc.getChartDocument().isCategorical());
