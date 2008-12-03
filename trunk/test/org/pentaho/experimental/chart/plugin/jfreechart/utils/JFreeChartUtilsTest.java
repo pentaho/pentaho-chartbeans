@@ -8,6 +8,8 @@ import java.awt.Color;
 import java.awt.GradientPaint;
 
 import junit.framework.TestCase;
+
+import org.pentaho.reporting.libraries.css.model.StyleKeyRegistry;
 import org.pentaho.reporting.libraries.resourceloader.ResourceException;
 import org.jfree.ui.GradientPaintTransformType;
 import org.junit.After;
@@ -35,6 +37,7 @@ public class JFreeChartUtilsTest extends TestCase {
    */
   @Before
   public void setUp() throws Exception {
+	  StyleKeyRegistry.performBoot();	  
   }
 
   /**
