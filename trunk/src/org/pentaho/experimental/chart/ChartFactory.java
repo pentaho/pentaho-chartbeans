@@ -50,6 +50,26 @@ public class ChartFactory {
     return ChartFactory.generateChart(chartURL, null);
   }
 
+  public static ChartDocument getChartDocument(final URL chartURL)  throws ResourceException {
+    return getChartDocument(chartURL, true);
+  }
+  
+  public static ChartDocument getChartDocument(final URL chartURL, boolean cascadeStyles) throws ResourceException {
+    // Parse the chart
+    final ChartXMLParser chartParser = new ChartXMLParser();
+    final ChartDocument chart = chartParser.parseChartDocument(chartURL);
+
+    if (cascadeStyles) {
+      // Create a ChartDocumentContext
+      final ChartDocumentContext cdc = new ChartDocumentContext(chart);
+
+      // Resolve the style information
+      ChartFactory.resolveStyles(chart, cdc);
+    }
+    
+    return chart;
+  }
+  
   /**
    * Creats a chart based on the chart definition and the table model
    * TODO: document / complete
@@ -60,21 +80,13 @@ public class ChartFactory {
    * @throws InvalidChartDefinition indicates an error with chart definition
    */
   public static ChartDocumentContext generateChart(final URL chartURL, final ChartTableModel tableModel) throws ResourceException {
-    // Parse the chart
-    final ChartXMLParser chartParser = new ChartXMLParser();
-    final ChartDocument chart = chartParser.parseChartDocument(chartURL);
-
+    final ChartDocument chart = getChartDocument(chartURL);
     // Create a ChartDocumentContext
     final ChartDocumentContext cdc = new ChartDocumentContext(chart);
-
-    // Resolve the style information
-    ChartFactory.resolveStyles(chart, cdc);
-
     // Link the series tags with the tabel model
     if (tableModel != null) {
       cdc.setDataLinkInfo(ChartSeriesDataLinkInfoFactory.generateSeriesDataLinkInfo(chart, tableModel));
     }
-
     // temporary
     return cdc;
   }
