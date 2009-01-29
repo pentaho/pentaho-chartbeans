@@ -98,8 +98,11 @@ public abstract class JFreeChartGenerator implements IJFreeChartGenerator {
    * @return String - the value category label
    */
   public static String getValueCategoryLabel(final ChartDocument chartDocument) {
-    // TODO determine this from the chartDocument
-    return "Category Label"; //$NON-NLS-1$
+    final ChartElement[] children = chartDocument.getRootElement().findChildrenByName("domainLabel"); //$NON-NLS-1$
+    if (children != null && children.length > 0) {
+      return children[0].getText();
+    }
+    return null;
   }
 
   /**
@@ -109,8 +112,11 @@ public abstract class JFreeChartGenerator implements IJFreeChartGenerator {
    * @return String - the value axis label
    */
   public static String getValueAxisLabel(final ChartDocument chartDocument) {
-    // TODO determine this from the chartDocument
-    return "Value Axis Label"; //$NON-NLS-1$
+    final ChartElement[] children = chartDocument.getRootElement().findChildrenByName("rangeLabel"); //$NON-NLS-1$
+    if (children != null && children.length > 0) {
+      return children[0].getText();
+    }
+    return null;
   }
 
   /**
