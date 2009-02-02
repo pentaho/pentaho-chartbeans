@@ -80,7 +80,10 @@ public class ChartFactory {
    * @throws InvalidChartDefinition indicates an error with chart definition
    */
   public static ChartDocumentContext generateChart(final URL chartURL, final ChartTableModel tableModel) throws ResourceException {
-    final ChartDocument chart = getChartDocument(chartURL);
+    return generateChart(getChartDocument(chartURL), tableModel);
+  }
+
+  public static ChartDocumentContext generateChart(ChartDocument chart, final ChartTableModel tableModel) throws ResourceException {
     // Create a ChartDocumentContext
     final ChartDocumentContext cdc = new ChartDocumentContext(chart);
     // Link the series tags with the tabel model
@@ -90,7 +93,7 @@ public class ChartFactory {
     // temporary
     return cdc;
   }
-
+  
   /**
    * Returns the initialized <code>StyleResolver</code>.
    * NOTE: this method is protected for testing purposes only

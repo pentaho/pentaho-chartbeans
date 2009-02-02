@@ -23,13 +23,15 @@ public class OutputUtils
 {
   public static void persistChart(IOutput output,
                            String filePath,
-                           IOutput.OutputTypes fileType)
+                           IOutput.OutputTypes fileType,
+                           int width,
+                           int height)
       throws PersistenceException, IOException
   {
     final FileOutputStream stream = new FileOutputStream(filePath);
     try
     {
-      output.persistChart(stream , fileType);
+      output.persistChart(stream , fileType, width, height);
     }
     finally {
       stream.close();

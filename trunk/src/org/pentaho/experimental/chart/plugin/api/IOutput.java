@@ -27,7 +27,7 @@ public interface IOutput
    * @return
    * @throws PersistenceException
    */
-  public OutputStream persistChart(OutputStream outputStream, OutputTypes fileType) throws PersistenceException;
+  public OutputStream persistChart(OutputStream outputStream, OutputTypes fileType, int width, int height) throws PersistenceException;
 
   /**
    * Persists the current Map to the outputStream using the mapname for the generated map.

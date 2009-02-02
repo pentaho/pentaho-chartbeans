@@ -100,7 +100,7 @@ public class PluginTest extends TestCase {
 
     // Render and save the plot
     IOutput output = plugin.renderChartDocument(cdc, data);
-    OutputUtils.persistChart(output, chartFileName, IOutput.OutputTypes.FILE_TYPE_PNG);
+    OutputUtils.persistChart(output, chartFileName, IOutput.OutputTypes.FILE_TYPE_PNG, 400, 400);
     final File chartFile = new File(chartFileName);
     assertTrue(chartFile.exists());
     assertTrue(chartFile.length() > 5000);
@@ -131,7 +131,7 @@ public class PluginTest extends TestCase {
 
     // Render and save the plot
     IOutput output = plugin.renderChartDocument(cdc, data);
-    OutputUtils.persistChart(output, chartFileName, IOutput.OutputTypes.FILE_TYPE_JPEG);
+    OutputUtils.persistChart(output, chartFileName, IOutput.OutputTypes.FILE_TYPE_JPEG, 400, 400);
     final File chartFile = new File(chartFileName);
     assertTrue(chartFile.exists());
     assertTrue(chartFile.length() > 5000);
@@ -160,7 +160,7 @@ public class PluginTest extends TestCase {
     // Render and save the plot
     IOutput output = plugin.renderChartDocument(cdc, data);
 
-    final ByteArrayOutputStream newOutputStream = (ByteArrayOutputStream) output.persistChart(new ByteArrayOutputStream(), IOutput.OutputTypes.FILE_TYPE_PNG);
+    final ByteArrayOutputStream newOutputStream = (ByteArrayOutputStream) output.persistChart(new ByteArrayOutputStream(), IOutput.OutputTypes.FILE_TYPE_PNG, 400, 400);
     assertTrue(newOutputStream.toByteArray().length > 5000);
 
   }
@@ -179,7 +179,7 @@ public class PluginTest extends TestCase {
     assertNotNull(cdc.getDataLinkInfo());
 
     // Render and save the plot
-    ByteArrayOutputStream os = (ByteArrayOutputStream) plugin.renderChartDocument(cdc, data).persistChart(new ByteArrayOutputStream(), IOutput.OutputTypes.FILE_TYPE_JPEG);
+    ByteArrayOutputStream os = (ByteArrayOutputStream) plugin.renderChartDocument(cdc, data).persistChart(new ByteArrayOutputStream(), IOutput.OutputTypes.FILE_TYPE_JPEG, 400, 400);
 
     assertTrue(os.toByteArray().length > 5000);
   }
@@ -369,7 +369,7 @@ public class PluginTest extends TestCase {
 
     // Render and save the plot
     IOutput output = plugin.renderChartDocument(cdc, data);
-    OutputUtils.persistChart(output, chartFileName, IOutput.OutputTypes.DATA_TYPE_STREAM);
+    OutputUtils.persistChart(output, chartFileName, IOutput.OutputTypes.DATA_TYPE_STREAM, 400, 400);
     final File chartFile = new File(chartFileName);
     assertTrue(chartFile.exists());
     System.out.println(chartFile.getAbsolutePath());

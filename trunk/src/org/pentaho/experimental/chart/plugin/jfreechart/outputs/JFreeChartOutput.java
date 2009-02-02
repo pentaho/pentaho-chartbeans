@@ -76,11 +76,12 @@ public class JFreeChartOutput implements IOutput {
   /* (non-Javadoc)
    * @see org.pentaho.experimental.chart.plugin.api.IOutput#persistChart(java.io.OutputStream, int)
    */
-  public OutputStream persistChart(OutputStream outputStream, IOutput.OutputTypes fileType) throws PersistenceException {
+  public OutputStream persistChart(OutputStream outputStream, IOutput.OutputTypes fileType, int width, int height) throws PersistenceException {
     info = new ChartRenderingInfo(new StandardEntityCollection());
     if (outputStream == null) {
       outputStream = new ByteArrayOutputStream();
     }
+    
     try {
       outputStream.flush();
     } catch (IOException e1) {
@@ -88,13 +89,13 @@ public class JFreeChartOutput implements IOutput {
     }
     if (fileType == IOutput.OutputTypes.FILE_TYPE_JPEG) {
       try {
-        ChartUtilities.writeChartAsJPEG(outputStream, chart, 400, 400, info);
+        ChartUtilities.writeChartAsJPEG(outputStream, chart, width, height, info);
       } catch (IOException e) {
         throw new PersistenceException(e);
       }
     } else if (fileType == IOutput.OutputTypes.FILE_TYPE_PNG) {
       try {
-        ChartUtilities.writeChartAsPNG(outputStream, chart, 400, 400, info);
+        ChartUtilities.writeChartAsPNG(outputStream, chart, width, height, info);
       } catch (IOException e) {
         throw new PersistenceException(e);
       }
