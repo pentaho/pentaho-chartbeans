@@ -32,7 +32,7 @@ public class XmlChartOutput implements IOutput
   }
 
   public OutputStream persistChart(final OutputStream outputStream,
-                                   final OutputTypes fileType) throws PersistenceException
+                                   final OutputTypes fileType, int width, int height) throws PersistenceException
   {
     try
     {
