@@ -32,6 +32,7 @@ import org.pentaho.experimental.chart.data.ChartTableModel;
 import org.pentaho.experimental.chart.plugin.api.ChartResult;
 import org.pentaho.experimental.chart.plugin.api.IOutput;
 import org.pentaho.experimental.chart.plugin.jfreechart.utils.JFreeChartUtils;
+import org.pentaho.experimental.chart.plugin.xml.XmlChartPlugin;
 
 /**
  * @author wseyler
@@ -317,6 +318,12 @@ public class PluginTest extends TestCase {
   private void runTests(final String[] fileNames, final ChartTableModel data) {
     for (int i = 0; i < fileNames.length; i++) {
       try {
+        testRenderAsXml(fileNames[i], data);
+      } catch (Exception e) {
+        e.printStackTrace();
+        fail("Failed parsing "+fileNames[i]+ " file in method testRenderAsXml"); //$NON-NLS-1$ //$NON-NLS-2$
+      }
+      try {
         testRenderAsJpeg(fileNames[i], data);
       } catch (Exception e) {
         e.printStackTrace();
@@ -343,5 +350,29 @@ public class PluginTest extends TestCase {
     }
   }
 
+
+  private void testRenderAsXml(final String fileName,
+                               final ChartTableModel data) throws Exception {
+    final IChartPlugin plugin = new XmlChartPlugin(); //$NON-NLS-1$
+    // At this point we have an output of the correct type
+    // Now we can manipulate it to meet our needs so that we get the correct
+    // output location and type.
+
+    String chartFileName = TEST_FILE_PATH + fileName.substring(0, fileName.indexOf('.')) + ".xml";
+
+    // Load / parse the chart document
+    final URL chartURL = this.getClass().getResource(fileName);
+    final ChartDocumentContext cdc = ChartFactory.generateChart(chartURL, data);
+    assertNotNull(cdc);
+    assertNotNull(cdc.getChartDocument());
+    assertNotNull(cdc.getDataLinkInfo());
+
+    // Render and save the plot
+    IOutput output = plugin.renderChartDocument(cdc, data);
+    OutputUtils.persistChart(output, chartFileName, IOutput.OutputTypes.DATA_TYPE_STREAM);
+    final File chartFile = new File(chartFileName);
+    assertTrue(chartFile.exists());
+    System.out.println(chartFile.getAbsolutePath());
+  }
 } //Class ends
 
