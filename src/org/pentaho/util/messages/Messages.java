@@ -8,7 +8,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 public class Messages {
-  private static final String BUNDLE_NAME = "org.pentaho.experimental.chart.locale.messages"; //$NON-NLS-1$
+  private static final String BUNDLE_NAME = "org.pentaho.chart.locale.messages"; //$NON-NLS-1$
   private static final Map locales = Collections.synchronizedMap(new HashMap());
   private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
