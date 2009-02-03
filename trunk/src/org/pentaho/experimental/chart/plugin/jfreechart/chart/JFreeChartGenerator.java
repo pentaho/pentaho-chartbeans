@@ -437,7 +437,8 @@ public abstract class JFreeChartGenerator implements IJFreeChartGenerator {
    * @return a Paint object defined by the seriesElement
    */
   public Paint getPaintFromSeries(final ChartElement seriesElement) {
-    final String gradientType = seriesElement.getLayoutStyle().getValue(ChartStyleKeys.GRADIENT_TYPE).getCSSText();
+    CSSValue cssValue = seriesElement.getLayoutStyle().getValue(ChartStyleKeys.GRADIENT_TYPE);
+    final String gradientType = cssValue != null ? cssValue.getCSSText() : null;
     final Paint paint;
     if (gradientType != null && !gradientType.equalsIgnoreCase("none")) { //$NON-NLS-1$
       paint = JFreeChartUtils.getGradientPaint(seriesElement);
