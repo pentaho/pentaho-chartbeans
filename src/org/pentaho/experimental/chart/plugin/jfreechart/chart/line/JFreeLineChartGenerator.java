@@ -136,7 +136,7 @@ public class JFreeLineChartGenerator extends JFreeChartGenerator {
       if (categoryPlot.getRenderer() instanceof LineAndShapeRenderer) {
         final LineAndShapeRenderer lineAndShapeRenderer = (LineAndShapeRenderer) categoryPlot.getRenderer();
         final CSSValue visibleStr = currElement.getLayoutStyle().getValue(ChartStyleKeys.LINE_VISIBLE);
-        lineAndShapeRenderer.setSeriesLinesVisible(i, ChartLineVisibleType.VISIBLE.equals(visibleStr));
+        lineAndShapeRenderer.setSeriesLinesVisible(i, !ChartLineVisibleType.HIDDEN.equals(visibleStr));
         final BasicStroke lineStyleStroke = strokeFacObj.getLineStroke(currElement);
         if (lineStyleStroke != null) {
           lineAndShapeRenderer.setSeriesStroke(i, lineStyleStroke);

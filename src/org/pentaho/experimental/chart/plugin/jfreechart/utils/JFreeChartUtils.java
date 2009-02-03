@@ -326,13 +326,13 @@ public class JFreeChartUtils {
     if (layoutStyle != null) {
       final CSSValue gradType = layoutStyle.getValue(ChartStyleKeys.GRADIENT_TYPE);
 
-      if (gradType.equals((ChartGradientType.HORIZONTAL))) {
+      if (ChartGradientType.HORIZONTAL.equals(gradType)) {
         trans = new StandardGradientPaintTransformer(GradientPaintTransformType.HORIZONTAL);
-      } else if (gradType.equals((ChartGradientType.VERTICAL))) {
+      } else if (ChartGradientType.VERTICAL.equals(gradType)) {
         trans = new StandardGradientPaintTransformer(GradientPaintTransformType.VERTICAL);
-      } else if (gradType.equals((ChartGradientType.CENTER_HORIZONTAL))) {
+      } else if (ChartGradientType.CENTER_HORIZONTAL.equals(gradType)) {
         trans = new StandardGradientPaintTransformer(GradientPaintTransformType.CENTER_HORIZONTAL);
-      } else if (gradType.equals((ChartGradientType.CENTER_VERTICAL))) {
+      } else if (ChartGradientType.CENTER_VERTICAL.equals(gradType)) {
         trans = new StandardGradientPaintTransformer(GradientPaintTransformType.CENTER_VERTICAL);
       }
     }

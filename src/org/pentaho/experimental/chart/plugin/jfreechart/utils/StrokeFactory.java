@@ -95,7 +95,8 @@ public class StrokeFactory {
    * @return BasicStroke  The basic stroke object that implements the style and width.
    */
   private BasicStroke getBasicStroke(final ChartElement chartElement, final StyleKey styleStyleKey, final StyleKey widthStyleKey) {
-    final String borderWidth = chartElement.getLayoutStyle().getValue(widthStyleKey).getCSSText();
+    CSSValue cssValue = chartElement.getLayoutStyle().getValue(widthStyleKey);
+    final String borderWidth = (cssValue != null ? cssValue.getCSSText() : null);
 
     float width = 0f;
     if (borderWidth != null) {
@@ -118,21 +119,21 @@ public class StrokeFactory {
     final CSSValue borderStyle = chartElement.getLayoutStyle().getValue(styleStyleKey);
     BasicStroke stroke = null;
 
-    if (borderStyle.equals(BorderStyle.SOLID)) {
+    if (BorderStyle.SOLID.equals(borderStyle)) {
       stroke = new BasicStroke(width);
-    } else if (borderStyle.equals(BorderStyle.DASHED)) {
+    } else if (BorderStyle.DASHED.equals(borderStyle)) {
       stroke = new BasicStroke(width, BasicStroke.CAP_BUTT,
               BasicStroke.JOIN_MITER,
               10.0F,
               new float[]{10.0F, 3.0F},
               0.F);
-    } else if (borderStyle.equals(BorderStyle.DOT_DASH)) {
+    } else if (BorderStyle.DOT_DASH.equals(borderStyle)) {
       stroke = new BasicStroke(width, BasicStroke.CAP_BUTT,
               BasicStroke.JOIN_MITER,
               10.0F,
               new float[]{10.0F, 3.0F, 2.0F, 2.0F},
               0.F);
-    } else if (borderStyle.equals(BorderStyle.DOTTED)) {
+    } else if (BorderStyle.DOTTED.equals(borderStyle)) {
       stroke = new BasicStroke(width, BasicStroke.CAP_ROUND,
               BasicStroke.JOIN_ROUND,
               0,

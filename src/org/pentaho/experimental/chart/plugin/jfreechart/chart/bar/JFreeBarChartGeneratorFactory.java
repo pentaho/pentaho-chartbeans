@@ -31,13 +31,13 @@ public class JFreeBarChartGeneratorFactory {
     final ChartElement[] elements = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_SERIES);
     for (final ChartElement element : elements) {
       final CSSValue value = element.getLayoutStyle().getValue(ChartStyleKeys.BAR_STYLE);
-      stacked |= value.equals(ChartBarStyle.STACKED);
-      stackedPct |= value.equals(ChartBarStyle.STACK_PERCENT);
-      cylinder |= value.equals(ChartBarStyle.CYLINDER);
-      interval |= value.equals(ChartBarStyle.INTERVAL);
-      layered |= value.equals(ChartBarStyle.LAYERED);
-      waterfall |= value.equals(ChartBarStyle.WATERFALL);
-      stacked100Pct |= value.equals(ChartBarStyle.STACK_100_PERCENT);
+      stacked |= ChartBarStyle.STACKED.equals(value);
+      stackedPct |= ChartBarStyle.STACK_PERCENT.equals(value);
+      cylinder |= ChartBarStyle.CYLINDER.equals(value);
+      interval |= ChartBarStyle.INTERVAL.equals(value);
+      layered |= ChartBarStyle.LAYERED.equals(value);
+      waterfall |= ChartBarStyle.WATERFALL.equals(value);
+      stacked100Pct |= ChartBarStyle.STACK_100_PERCENT.equals(value);
 
       // Pick the first one that is set.
       if (stacked || stackedPct || stacked100Pct || cylinder || interval || layered || waterfall) {
