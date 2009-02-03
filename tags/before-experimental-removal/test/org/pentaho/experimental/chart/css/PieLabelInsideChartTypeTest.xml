@@ -1,0 +1,7 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+  <plot style="-x-pentaho-chart-pie-labels-inside-chart: visible"/>
+  <plot style="-x-pentaho-chart-pie-labels-inside-chart: junk"/>
+  <plot style="-x-pentaho-chart-pie-labels-inside-chart: no123"/>
+  <plot style="-x-pentaho-chart-pie-labels-inside-chart: hidden"/>
+  <plot style="-x-pentaho-chart-pie-labels-inside-chart: "/>
+</chart>

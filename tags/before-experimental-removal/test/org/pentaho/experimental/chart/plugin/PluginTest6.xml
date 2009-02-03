@@ -1,0 +1,48 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+
+  <stylesheet>
+    .bar1 {
+    color: blue;
+    font-family: sans-serif;
+    font-variant: small-caps;
+    font-size: 10pt;
+    font-style: italic;
+    -x-pentaho-chart-gradient: blue, yellow horizontal 1,10 2,20;
+    -x-pentaho-chart-series-type: bar;
+    -x-pentaho-chart-bar-style: bar;
+    -x-pentaho-chart-bar-max-width: 10%;
+    }
+
+    .bar2 {
+    color: orange;
+    font-size: 10pt;    
+    font-variant: normal;
+    font-style: normal;
+    -x-pentaho-chart-gradient: blue, green horizontal 1,10 2,20;
+    -x-pentaho-chart-series-type: bar;
+    -x-pentaho-chart-bar-style: bar;
+    -x-pentaho-chart-bar-max-width: 10%;
+    }
+
+    .bar3 {
+    color: green;
+    font-size: smaller;
+    font-style: normal;    
+    font-variant: small-caps;
+    -x-pentaho-chart-gradient: blue, red horizontal 1,10 2,20;		    
+    -x-pentaho-chart-series-type: bar;
+    -x-pentaho-chart-bar-style: bar;
+    -x-pentaho-chart-bar-max-width: 10%;
+    }
+  </stylesheet>
+
+  <title>Gradient Demo#3</title>
+  
+  <series name="budget" class="bar1" column-pos="2"/>
+
+  <series name="sales" class="bar2" column-name="sales"/>
+
+  <series name="forecast" class="bar3" column-pos="0"/>
+
+  <plot style="-x-pentaho-chart-orientation: horizontal"/>
+</chart>

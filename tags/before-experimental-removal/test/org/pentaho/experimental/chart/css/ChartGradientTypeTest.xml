@@ -1,0 +1,11 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+	<series/>
+	<series style="-x-pentaho-chart-gradient-type: none"/>
+	<series style="-x-pentaho-chart-gradient-type: horizontal"/>
+	<series style="-x-pentaho-chart-gradient-type: vertical"/>
+	<series style="-x-pentaho-chart-gradient-type: center-horizontal"/>
+	<series style="-x-pentaho-chart-gradient-type: center-vertical"/>
+	<series style="-x-pentaho-chart-gradient-type: points"/>
+	<series style="-x-pentaho-chart-gradient-type: POI"/><!-- misspelled -->
+	<series style="-x-pentaho-chart-gradient-type: junk"/>	
+</chart>

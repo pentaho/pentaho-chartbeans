@@ -1,0 +1,9 @@
+<!--
+  ~ Copyright (c) 2008, Your Corporation. All Rights Reserved.
+  -->
+
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+	<plot style="-x-pentaho-chart-last-bar-color: red"/>
+	<plot style="-x-pentaho-chart-last-bar-color: blue"/>
+	<plot style="-x-pentaho-chart-last-bar-color: rgb(0, 255, 0)"/>
+</chart>

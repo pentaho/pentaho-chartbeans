@@ -1,0 +1,13 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+	<series style="-x-pentaho-chart-bar-style: bar"/>
+	<series/>
+	<series style="-x-pentaho-chart-bar-style: cylinder"/>
+	<series style="-x-pentaho-chart-bar-style: interval"/>	
+	<series style="-x-pentaho-chart-bar-style: stacked"/>
+	<series style="-x-pentaho-chart-bar-style: layered"/>	
+	<series style="-x-pentaho-chart-bar-style: junk"/>	
+	<series style="-x-pentaho-chart-bar-style: stack-percent"/>	
+  <series style="-x-pentaho-chart-bar-style: stack-100percent"/>	
+  <series style="-x-pentaho-chart-bar-style: stack-100perc"/>	<!-- misspelled -->
+  <series style="-x-pentaho-chart-bar-style: waterfall"/>
+</chart>

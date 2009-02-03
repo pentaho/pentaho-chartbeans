@@ -1,0 +1,44 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+
+  <stylesheet>
+    .line1 {
+    color: blue;
+    -x-pentaho-chart-series-type: line;
+    -x-pentaho-chart-categorical: true;
+    -x-pentaho-chart-line-width: 1px;
+    -x-pentaho-chart-marker-visible: visible;
+    -x-pentaho-chart-marker-shape: rectangle;
+    -x-pentaho-chart-marker-height: 10 px;
+    }
+
+    .line2 {
+    color: yellow;
+    -x-pentaho-chart-series-type: line;
+    -x-pentaho-chart-categorical: true;
+    -x-pentaho-chart-line-visible: hidden;
+    -x-pentaho-chart-marker-visible: visible;
+    -x-pentaho-chart-marker-shape: ellipse;
+    }
+
+    .line3 {
+    color: green;
+    -x-pentaho-chart-series-type: line;
+    -x-pentaho-chart-categorical: true;
+    -x-pentaho-chart-line-width: 1px;
+    -x-pentaho-chart-marker-visible: visible;
+    -x-pentaho-chart-marker-shape: ellipse;
+    -x-pentaho-chart-marker-height: 10 px;
+    -x-pentaho-chart-marker-filled: empty
+    }
+  </stylesheet>
+
+  <title>Test for Line charts</title>
+  
+  <series name="budget" class="line1"/>
+
+  <series name="sales" class="line2"/>
+
+  <series name="forecast" class="line3"/>
+
+  <plot style="-x-pentaho-chart-orientation: vertical; -x-pentaho-chart-drill-url-template: url(http://localhost:8080/Pentaho/JPivot); -x-pentaho-chart-scale: 1"/>
+</chart>
