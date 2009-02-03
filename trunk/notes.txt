@@ -1,7 +1,5 @@
 THESE ARE NOTES ABOUT THE CHARTING PROJECT...
 
-* all packages should be marked "experimental" so we don't have to support anything we are developing until we are ready
-
 * (libcss) org.pentaho.reporting.libraries.css.initial.css - this file contains all the "known" style tags
   that can be used as style infomration. This also contains the default value for each tag.
 
