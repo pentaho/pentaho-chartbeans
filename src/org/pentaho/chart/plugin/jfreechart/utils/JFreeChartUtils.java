@@ -350,14 +350,17 @@ public class JFreeChartUtils {
     Font font = null;
     if (currentSeries != null) {
       final LayoutStyle layoutStyle = currentSeries.getLayoutStyle();
-      final String fontFamily = layoutStyle.getValue(FontStyleKeys.FONT_FAMILY).getCSSText();
-      final int fontStyle = JFreeChartUtils.getFontStyle(layoutStyle);
-      // Creating the requisite font and setting the default size of 10. This will be overwritten below.
-      font = new Font(fontFamily, fontStyle, 10);
+      CSSValue cssValue = layoutStyle.getValue(FontStyleKeys.FONT_FAMILY);
+      String fontFamily = cssValue != null ? cssValue.getCSSText() : null;
+      if (fontFamily != null) {
+        int fontStyle = JFreeChartUtils.getFontStyle(layoutStyle);
+        // Creating the requisite font and setting the default size of 10. This will be overwritten below.
+        font = new Font(fontFamily, fontStyle, 10);
 
-      // Modifying the size of the font since we cannot create a Font with size of type float.
-      // We can only modify it's size to float value and not create it with float value.
-      font = font.deriveFont(JFreeChartUtils.getFontSize(currentSeries));
+        // Modifying the size of the font since we cannot create a Font with size of type float.
+        // We can only modify it's size to float value and not create it with float value.
+        font = font.deriveFont(JFreeChartUtils.getFontSize(currentSeries));
+      }
     }
     return font;
   }

@@ -143,7 +143,8 @@ public class JFreePieChartGenerator extends JFreeChartGenerator {
        *      : {1xyz} {2  } is not okay.
        * Anything outside of it would not be formatted correctlt by StandardPieSectionLabelGenerator
        */
-      final String messageFormat = ((CSSStringValue) layoutStyle.getValue(ChartStyleKeys.ITEM_LABEL_TEXT)).getValue();
+      CSSValue cssValue = layoutStyle.getValue(ChartStyleKeys.ITEM_LABEL_TEXT);
+      final String messageFormat = cssValue != null ? ((CSSStringValue)cssValue).getValue() : null;
 
       if (messageFormat != null) {
         generator = new StandardPieSectionLabelGenerator(messageFormat, new DecimalFormat("0.00"), new DecimalFormat("0.00%"));//$NON-NLS-1$ //$NON-NLS-2$
@@ -187,22 +188,24 @@ public class JFreePieChartGenerator extends JFreeChartGenerator {
       final ChartElement seriesElement = seriesElements[i];
       final LayoutStyle layoutStyle = seriesElement.getLayoutStyle();
       final CSSValue pieExplodePercent = layoutStyle.getValue(ChartStyleKeys.PIE_EXPLODE_PERCENT);
-      String percentStr = pieExplodePercent.getCSSText();
-      percentStr = percentStr.substring(0, percentStr.indexOf("%")); //$NON-NLS-1$
-      double percent;
-      try {
-        percent = Double.parseDouble(percentStr)/100;
-      } catch (NumberFormatException ne) {
-        logger.warn(Messages.getString("JFreePieChartGenerator.WARN_EXPLODE_PERCENT_NOT_DEFINED_CORRECTLY", percentStr, null)); //$NON-NLS-1$
-        //Setting the default to 10%
-        percent = 0.1D;
-      }
+      if (pieExplodePercent != null) {
+        String percentStr = pieExplodePercent.getCSSText();
+        percentStr = percentStr.substring(0, percentStr.indexOf("%")); //$NON-NLS-1$
+        double percent;
+        try {
+          percent = Double.parseDouble(percentStr)/100;
+        } catch (NumberFormatException ne) {
+          logger.warn(Messages.getString("JFreePieChartGenerator.WARN_EXPLODE_PERCENT_NOT_DEFINED_CORRECTLY", percentStr, null)); //$NON-NLS-1$
+          //Setting the default to 10%
+          percent = 0.1D;
+        }
 
-      if (percent > 0) {
-        final int rowPos = JFreeChartUtils.getSeriesRow(seriesElement, i);
-        final Comparable key = data.getRowName(rowPos);
-        if (key != null) {
-          piePlot.setExplodePercent(key, percent);
+        if (percent > 0) {
+          final int rowPos = JFreeChartUtils.getSeriesRow(seriesElement, i);
+          final Comparable key = data.getRowName(rowPos);
+          if (key != null) {
+            piePlot.setExplodePercent(key, percent);
+          }
         }
       }
     }
