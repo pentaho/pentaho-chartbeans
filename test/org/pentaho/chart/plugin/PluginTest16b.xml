@@ -1,0 +1,30 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0" byrow="off">
+
+  <stylesheet>
+    .dial1 {
+      -x-pentaho-chart-series-type: dial;
+    }
+  </stylesheet>
+
+  <title>Test for Dial charts</title>
+  
+  <series name="whatever" class="dial1" row-pos="0" />
+
+  <plot style="border-top-width: 3px; border-top-color: red; border-top-style: solid;">
+    <dialpointer type="pointer" style="color: gray; border-color: black; height: 70%; width: 5%;" />
+    <dialcap style="border-top-color: red; color: green; border-top-width: 1px; width: 6%; border-top-style: solid;" />
+    <scale lowerbound="-20.0" upperbound="20.0" startangle="-135.0" extent="-180.0">
+      <ticklabel style="font-family: monospace; color: hotpink; font-size: 12pt; font-style: italic; font-weight: bold;" />
+      <majortick increment="5.0" style="width: 2px; color: seagreen;" />
+      <minortick count="2" style="width: 1px; color: purple;" />
+    </scale>
+    <annotation style="font-family: arial;">Temperature</annotation>
+    <dialvalueindicator style="border-top-style: solid; border-top-width: 3px; border-top-color: sienna; color: tomato; background-color: snow; font-family: arial;" />
+    <dialranges>
+      <dialrange begin="-40.0" end="10.0" style="background-color: green; opacity: 50%;" />
+      <dialrange begin="10.0" end="40.0" style="background-color: orange; opacity: 50%;" />
+      <dialrange begin="40.0" end="60.0" style="background-color: red; opacity: 50%;" />
+    </dialranges>
+    <dataset type="value"/>
+  </plot>
+</chart>

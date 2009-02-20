@@ -5,4 +5,5 @@
 <series style="-x-pentaho-chart-series-type: pie"/>
 <series style="-x-pentaho-chart-series-type: junk"/>
 <series style="-x-pentaho-chart-series-type: ba"/><!-- misspelled -->
+<series style="-x-pentaho-chart-series-type: dial"/>
 </chart>

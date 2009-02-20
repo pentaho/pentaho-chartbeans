@@ -2,6 +2,8 @@ package org.pentaho.chart.plugin.jfreechart.utils;
 
 import java.awt.BasicStroke;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.pentaho.chart.core.ChartElement;
 import org.pentaho.chart.css.keys.ChartStyleKeys;
 import org.pentaho.reporting.libraries.css.keys.border.BorderStyle;
@@ -17,6 +19,9 @@ import org.pentaho.reporting.libraries.css.values.CSSValue;
  * Time: 12:18:40 PM
  */
 public class StrokeFactory {
+  
+  private static final Log logger = LogFactory.getLog(StrokeFactory.class);
+  
   private static StrokeFactory strokeFacObj;
   private static final float THIN = 1f;
   private static final float MEDIUM = 2f;
@@ -117,6 +122,11 @@ public class StrokeFactory {
     }
 
     final CSSValue borderStyle = chartElement.getLayoutStyle().getValue(styleStyleKey);
+    if (BorderStyle.NONE.getCSSText().equals(borderStyle.getCSSText())) {
+      // TODO mlowery figure out why logging won't output a "lesser" priority for this call
+      logger.warn(String.format("************style %s has value %s; stroke will be null", styleStyleKey.name, BorderStyle.NONE.getCSSText()));
+    }
+    
     BasicStroke stroke = null;
 
     if (BorderStyle.SOLID.equals(borderStyle)) {

@@ -130,6 +130,7 @@ public class DatasetGeneratorFactory {
           datasetGenerator = new JFreeDefaultPieDatasetGenerator();
         } else if (XY.equalsIgnoreCase(datasetType)) {
         } else if (VALUE.equalsIgnoreCase(datasetType)) {
+          datasetGenerator = new JFreeDefaultValueDatasetGenerator();
         } else if (TIME_SERIES.equalsIgnoreCase(datasetType)) {
         } else if (INTERVAL.equalsIgnoreCase(datasetType)) {
            datasetGenerator = new JFreeDefaultIntervalCategoryDatasetGenerator();
