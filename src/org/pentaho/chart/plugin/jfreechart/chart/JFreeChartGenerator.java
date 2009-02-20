@@ -42,6 +42,7 @@ import org.pentaho.reporting.libraries.css.keys.color.ColorStyleKeys;
 /**
  * Top Level class that is extended by different chart type creators.
  *
+ * <pre>
  *                            JFreeChartGenerator
  *                                   |
  *                     -----------------------------------------------------------------------------
@@ -55,7 +56,7 @@ import org.pentaho.reporting.libraries.css.keys.color.ColorStyleKeys;
  * ---------------------------
  * |                         |
  * JFreeStackedPercent    JFreeStacked100Percent
- * </p>
+ * </pre>
  *
  * Author: Ravi Hasija
  * Date: May 14, 2008
