@@ -14,6 +14,7 @@ import org.pentaho.chart.plugin.api.ChartResult;
 import org.pentaho.chart.plugin.api.IOutput;
 import org.pentaho.chart.plugin.jfreechart.chart.area.JFreeAreaChartGeneratorFactory;
 import org.pentaho.chart.plugin.jfreechart.chart.bar.JFreeBarChartGeneratorFactory;
+import org.pentaho.chart.plugin.jfreechart.chart.dial.JFreeDialChartGeneratorFactory;
 import org.pentaho.chart.plugin.jfreechart.chart.line.JFreeLineChartGeneratorFactory;
 import org.pentaho.chart.plugin.jfreechart.chart.multi.JFreeMultiChartGeneratorFactory;
 import org.pentaho.chart.plugin.jfreechart.chart.pie.JFreePieChartGeneratorFactory;
@@ -74,6 +75,13 @@ public class JFreeChartFactoryEngine implements Serializable {
         chartResult.setErrorCode(IChartPlugin.RESULT_ERROR);
         chartResult.setDescription(e.getLocalizedMessage());
       }
+    } else if (currentChartType == ChartSeriesType.DIAL) {
+      try {
+        return new JFreeChartOutput((makeDialChart(data, chartDocumentContext)));
+      } catch (Exception e) {
+        chartResult.setErrorCode(IChartPlugin.RESULT_ERROR);
+        chartResult.setDescription(e.getLocalizedMessage());
+      }
     }
     return null;
   }
@@ -103,6 +111,12 @@ public class JFreeChartFactoryEngine implements Serializable {
     return chart;
   }
 
+  public JFreeChart makeDialChart(final ChartTableModel data, final ChartDocumentContext chartDocumentContext) {
+    final JFreeDialChartGeneratorFactory chartFacEngine = new JFreeDialChartGeneratorFactory();
+    final JFreeChart chart = chartFacEngine.createChart(chartDocumentContext, data);
+    return chart;
+  }
+  
   /* (non-Javadoc)
    * @see org.pentaho.chart.plugin.api.engine.ChartFactoryEngine#makeBarChart(org.pentaho.chart.data.ChartTableModel, org.pentaho.chart.core.ChartDocument, org.pentaho.chart.plugin.api.IOutput)
    */
@@ -181,6 +195,8 @@ public class JFreeChartFactoryEngine implements Serializable {
           return ChartSeriesType.PIE;
         } else if (value.equals(ChartSeriesType.MULTI)) {
           return ChartSeriesType.MULTI;
+        } else if (value.equals(ChartSeriesType.DIAL)) {
+          return ChartSeriesType.DIAL;
         }
       }
     }

@@ -30,6 +30,7 @@ public class ChartSeriesType {
   public static final CSSConstant AREA = new CSSConstant("area"); //$NON-NLS-1$
   public static final CSSConstant WATERFALL = new CSSConstant ("waterfall"); //$NON-NLS-1$
   public static final CSSConstant MULTI = new CSSConstant ("multi");  //$NON-NLS-1$
+  public static final CSSConstant DIAL = new CSSConstant ("dial");  //$NON-NLS-1$
 
 //  public ChartSeriesType() {
 //  }

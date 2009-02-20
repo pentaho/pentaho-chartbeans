@@ -35,7 +35,8 @@ public class ChartSeriesTypeTest extends TestCase {
         ChartSeriesType.LINE, 
         ChartSeriesType.PIE, 
         ChartSeriesType.BAR,
-        ChartSeriesType.BAR
+        ChartSeriesType.BAR,
+        ChartSeriesType.DIAL
         };
     
     
