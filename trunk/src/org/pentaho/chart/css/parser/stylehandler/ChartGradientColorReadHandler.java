@@ -25,7 +25,7 @@ import org.pentaho.reporting.libraries.css.values.CSSValuePair;
 import org.w3c.css.sac.LexicalUnit;
 
 /**
- * The style parser for the <code>-x-pentaho-chart-axis-type-dimension</code> style.
+ * The style parser for the <code>-x-pentaho-chart-gradient-color</code> style.
  *
  * @author Ravi Hasija
  */
