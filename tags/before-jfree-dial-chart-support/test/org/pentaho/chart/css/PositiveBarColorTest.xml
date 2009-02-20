@@ -1,0 +1,5 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+	<plot style="-x-pentaho-chart-positive-bar-color: black"/>
+	<plot style="-x-pentaho-chart-positive-bar-color: cyan"/>
+	<plot style="-x-pentaho-chart-positive-bar-color: magenta"/>
+</chart>

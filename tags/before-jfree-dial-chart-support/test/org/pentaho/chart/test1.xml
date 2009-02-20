@@ -1,0 +1,15 @@
+<!-- this is a test chart for testing the parsing / processing of style information -->
+
+<chart>
+  <stylesheet>
+    .test1 { width: 100px; color: BLUE }
+  </stylesheet>
+
+  <stylesheet href="test1.css"/>
+  <!-- contains .test1 { border: SOLID } -->
+
+  <stylesheet
+      href="test2.css">  <!-- contains .test1 { color: RED } and link to test3.css which contains .test2 { width: 150px; color: BLACK } -->
+    .test2 { width: 200 px }
+  </stylesheet>
+</chart>

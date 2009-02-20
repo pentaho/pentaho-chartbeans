@@ -1,0 +1,34 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+
+  <stylesheet>
+    
+    .multi1 {
+    color: blue; 
+    -x-pentaho-chart-series-type: multi;
+    -x-pentaho-chart-multi-style: multi; 
+    }
+
+    .multi2 {
+    color: yellow; 
+    -x-pentaho-chart-series-type: multi;
+    -x-pentaho-chart-multi-style: multi; 
+    }
+
+    .multi3 {
+    color: green; 
+    -x-pentaho-chart-series-type: multi;
+    -x-pentaho-chart-multi-style: multi; 
+    }
+    
+  </stylesheet>
+
+  <title>Test for Multi charts - Vertical</title>
+  
+  <series name="budget" class="multi1" column-pos="0"/>
+
+  <series name="sales" class="multi2" column-pos="1"/>
+
+  <series name="forecast" class="multi3" column-pos="2"/> 
+
+  <plot style="-x-pentaho-chart-orientation: vertical; -x-pentaho-chart-scale: 1"/>
+</chart>

@@ -1,0 +1,8 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+  <series/>
+  <series style="-x-pentaho-chart-pie-explode-percent: 100%"/>
+  <series style="-x-pentaho-chart-pie-explode-percent: 75%"/>
+  <series style="-x-pentaho-chart-pie-explode-percent: 5%"/>
+  <series style="-x-pentaho-chart-pie-explode-percent: junk%"/>
+  <series style="-x-pentaho-chart-pie-explode-percent: "/>
+</chart>

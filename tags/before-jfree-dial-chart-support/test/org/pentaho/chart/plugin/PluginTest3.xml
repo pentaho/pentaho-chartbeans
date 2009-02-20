@@ -1,0 +1,25 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+  <stylesheet>
+    series {
+    -x-pentaho-chart-series-type: bar;
+    -x-pentaho-chart-bar-style: bar;
+    -x-pentaho-chart-bar-max-width: 10%;
+    }
+    .bar1 {
+    color: blue;
+    }
+    .bar2 {
+    color: orange;
+    }
+
+    .bar3 {
+    color: green;
+    }
+  </stylesheet>
+
+  <title>Color per category</title>
+  <series name="budget" class="bar1" column-pos="2"/>
+  <series name="sales" class="bar2" column-name="sales"/>
+  <series name="forecast" class="bar3" column-pos="0"/>
+  <plot style="-x-pentaho-chart-orientation: horizontal"/>
+</chart>

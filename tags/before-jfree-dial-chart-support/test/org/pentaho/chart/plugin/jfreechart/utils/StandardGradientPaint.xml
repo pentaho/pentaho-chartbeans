@@ -1,0 +1,72 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+
+  <stylesheet>
+  
+    .bar1 {
+    color: blue;
+    -x-pentaho-chart-gradient: red, white CENTER_VEICAL 1,10 2,20;	<!-- misspelled, would default to none -->
+    -x-pentaho-chart-series-type: bar;
+    -x-pentaho-chart-bar-style: bar;
+    -x-pentaho-chart-bar-max-width: 10%;
+    }
+
+    .bar2 {
+    color: blue;
+    -x-pentaho-chart-gradient: red, white none 1,10 2,20;	<!-- misspelled, would default to none -->
+    -x-pentaho-chart-series-type: bar;
+    -x-pentaho-chart-bar-style: bar;
+    -x-pentaho-chart-bar-max-width: 10%;
+    }
+  
+    .bar3 {
+    color: blue;
+    -x-pentaho-chart-gradient: red, white points 1,10 2,20;	<!-- points, would default to none -->
+    -x-pentaho-chart-series-type: bar;
+    -x-pentaho-chart-bar-style: bar;
+    -x-pentaho-chart-bar-max-width: 10%;
+    }
+  
+    .bar4 {
+    color: blue;
+    -x-pentaho-chart-gradient: red, white horizontal 1,10 2,20;
+    -x-pentaho-chart-series-type: bar;
+    -x-pentaho-chart-bar-style: bar;
+    -x-pentaho-chart-bar-max-width: 10%;
+    }
+
+    .bar5 {
+    color: orange;
+    -x-pentaho-chart-gradient: red, white vertical 1,10 2,20;		
+    -x-pentaho-chart-series-type: bar;
+    -x-pentaho-chart-bar-style: bar;
+    -x-pentaho-chart-bar-max-width: 10%;
+    }
+
+    .bar6 {
+    color: green;
+    -x-pentaho-chart-gradient: red, white center-horizontal 1,10 2,20;		    
+    -x-pentaho-chart-series-type: bar;
+    -x-pentaho-chart-bar-style: bar;
+    -x-pentaho-chart-bar-max-width: 10%;
+    }
+    
+    .bar7 {
+    color: blue;
+    -x-pentaho-chart-gradient: red, white center-vertical 1,10 2,20;		
+    -x-pentaho-chart-series-type: bar;
+    -x-pentaho-chart-bar-style: bar;
+    -x-pentaho-chart-bar-max-width: 10%;
+    }
+    
+  </stylesheet>
+
+  <title>My Test Chart Name</title>
+  
+  <series name="budget" class="bar1" column-pos="2"/>
+
+  <series name="sales" class="bar2" column-name="sales"/>
+
+  <series name="forecast" class="bar3" column-pos="0"/>
+
+  <plot style="-x-pentaho-chart-orientation: horizontal"/>
+</chart>

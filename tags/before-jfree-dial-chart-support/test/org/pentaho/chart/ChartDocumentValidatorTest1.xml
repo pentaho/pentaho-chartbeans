@@ -1,0 +1,55 @@
+<chart>
+  <!----------------------------------
+  for use with the following data:
+  +--------+-----------+-------------+-------+
+  | month  |  product  |    region   | sales |
+  +--------+-----------+-------------+-------+
+  | Jan 04 | Product 1 | US          |   400 |
+  | Jan 04 | Product 1 | Europe      |   300 |
+  | Jan 04 | Product 1 | Asia        |   450 |
+  | Jan 04 | Product 1 | Middle East |   250 |
+  | Jan 04 | Product 2 | US          |   180 |
+  | Jan 04 | Product 2 | Europe      |   160 |
+  | Jan 04 | Product 2 | Asia        |   150 |
+  | Jan 04 | Product 2 | Middle East |   160 |
+  | Jan 04 | Product 3 | US          |   750 |
+  | Jan 04 | Product 3 | Europe      |   700 |
+  | Jan 04 | Product 3 | Asia        |   650 |
+  | Jan 04 | Product 3 | Middle East |   600 |
+  | Feb 04 | Product 1 | US          |   400 |
+  | Feb 04 | Product 1 | Europe      |   300 |
+  | Feb 04 | Product 1 | Asia        |   450 |
+  | Feb 04 | Product 1 | Middle East |   250 |
+  | Feb 04 | Product 2 | US          |   180 |
+  | Feb 04 | Product 2 | Europe      |   160 |
+  | Feb 04 | Product 2 | Asia        |   150 |
+  | Feb 04 | Product 2 | Middle East |   160 |
+  | Feb 04 | Product 3 | US          |   750 |
+  | Feb 04 | Product 3 | Europe      |   700 |
+  | Feb 04 | Product 3 | Asia        |   650 |
+  | Feb 04 | Product 3 | Middle East |   600 |
+  | Mar 04 | Product 1 | US          |   400 |
+  | Mar 04 | Product 1 | Europe      |   300 |
+  | Mar 04 | Product 1 | Asia        |   450 |
+  | Mar 04 | Product 1 | Middle East |   250 |
+  | Mar 04 | Product 2 | US          |   180 |
+  | Mar 04 | Product 2 | Europe      |   160 |
+  | Mar 04 | Product 2 | Asia        |   150 |
+  | Mar 04 | Product 2 | Middle East |   160 |
+  | Mar 04 | Product 3 | US          |   750 |
+  | Mar 04 | Product 3 | Europe      |   700 |
+  | Mar 04 | Product 3 | Asia        |   650 |
+  | Mar 04 | Product 3 | Middle East |   600 |
+  +--------+-----------+-------------+-------+
+
+  ----------------------------------->
+
+  <series column-name="sales" style="-x-pentaho-chart-bar-style: stacked;"/>
+
+  <group column-name="month">
+    <group column-name="product">
+      <group column-name="region" stacked="true">
+      </group>
+    </group>
+  </group>
+</chart>

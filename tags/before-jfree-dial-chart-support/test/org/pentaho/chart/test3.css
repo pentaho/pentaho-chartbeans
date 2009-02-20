@@ -1,0 +1,8 @@
+/*
+ * The 3rd style sheet in the style sheet test. It sets the width and color styles on the test2 class
+ */
+
+.test2 {
+  width: 150px;
+  color: GREEN
+}

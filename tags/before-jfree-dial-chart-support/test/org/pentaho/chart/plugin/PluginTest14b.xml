@@ -1,0 +1,34 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0" byrow="off">
+
+  <stylesheet>
+    .pie1 {
+    color: gray;
+    font-style: italic;
+    -x-pentaho-chart-series-type: pie;
+    }
+
+    .pie2 {
+    color: yellow;
+    -x-pentaho-chart-series-type: pie;
+    }
+
+    .pie3 {
+    color: green;
+    -x-pentaho-chart-series-type: pie;
+    }
+  </stylesheet>
+
+  <title>Test for Pie charts - Labels inside the chart</title>
+  
+  <series name="budget" class="pie1" row-pos="0"/>
+
+  <series name="sales" class="pie2" row-pos="1"/>
+
+  <series name="forecast" class="pie3" row-pos="2"/>
+
+  <plot style="-x-pentaho-chart-drill-url-template: url(http://localhost:8080/Pentaho/JPivot);
+               -x-pentaho-chart-scale: 1;
+               -x-pentaho-chart-pie-labels-inside-chart: visible;">
+    <dataset type="pie"/>
+  </plot>
+</chart>

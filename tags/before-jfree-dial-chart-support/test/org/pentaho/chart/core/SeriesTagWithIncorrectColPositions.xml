@@ -1,0 +1,37 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+	
+	<!-- Following is a series of incorrect data positions -->
+	<series column-pos="-1"/>
+	<series column-pos="-11111111111111111111111111111111111111111111"/>
+	<series column-pos="11111111111111111111111111111111111111111111"/>
+	<series column-pos="some"/>
+	<series column-pos="-111.00"/>
+	<series column-pos="-123.13"/>
+	<series column-pos="111.10"/>
+	<series column-pos="true"/>
+	<series column-pos="null"/>
+	<series column-pos=""/>
+	<series column-pos="    "/>
+	<series column-pos="  5  "/>
+	
+  <stylesheet>
+    axis {
+    color: #FFF000;
+    font-family: sans-serif;
+    }
+    axis label {
+    font-weight: bold;
+    }
+    axis[type="numeric"] {
+    format: "#.00%";
+    }
+    axis[type="datetime"] {
+    format: "MM/dd hh:mm a";
+    }
+    axis.myAxis {
+    color: blue;
+    font-family: "Comic Sans MS";
+    }
+
+  </stylesheet>
+</chart>

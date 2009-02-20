@@ -1,0 +1,6 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+  <series/>
+  <series style="-x-pentaho-chart-drill-url-template: none"/>
+  <series style="-x-pentaho-chart-drill-url-template: url(DrillUrlTest.xml)"/>
+  <series style="-x-pentaho-chart-drill-url-template: url(DoesNotExist.file)"/>
+</chart>

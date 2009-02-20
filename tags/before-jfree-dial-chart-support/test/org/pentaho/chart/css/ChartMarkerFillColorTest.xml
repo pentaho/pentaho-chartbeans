@@ -1,0 +1,5 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+	<series style="-x-pentaho-chart-marker-fill-color: white"/>
+	<series style="-x-pentaho-chart-marker-fill-color: black"/>
+	<series style="-x-pentaho-chart-marker-fill-color: red"/>
+</chart>

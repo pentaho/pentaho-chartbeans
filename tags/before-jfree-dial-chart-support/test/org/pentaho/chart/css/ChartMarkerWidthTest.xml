@@ -1,0 +1,6 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+	<series style="-x-pentaho-chart-marker-width: 1 px"/>
+	<series style="-x-pentaho-chart-marker-width: 3 px"/>
+	<series style="-x-pentaho-chart-marker-width: 5 px"/>
+    <series style="-x-pentaho-chart-marker-width: 7 px"/>
+</chart>

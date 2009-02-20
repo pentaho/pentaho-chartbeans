@@ -1,0 +1,8 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+	<series/>
+	<series style="-x-pentaho-chart-item-label-visible: hidden"/>
+	<series style="-x-pentaho-chart-item-label-visible: visible"/>
+	<series style="-x-pentaho-chart-item-label-visible: "/>
+	<series style="-x-pentaho-chart-item-label-visible: junk"/>	
+	<series style="-x-pentaho-chart-item-label-visible: n"/>	<!-- misspelled -->
+</chart>

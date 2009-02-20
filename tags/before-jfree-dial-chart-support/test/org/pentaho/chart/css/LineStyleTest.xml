@@ -1,0 +1,10 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+  <stylesheet>
+    .test { -x-pentaho-chart-line-style: dot-dot-dash } 
+  </stylesheet>
+  <series/>
+  <series style="-x-pentaho-chart-line-style: dashed"/>
+  <series class="test"/>
+  <series style="-x-pentaho-chart-line-style: junk"/>
+  <series/>
+</chart>

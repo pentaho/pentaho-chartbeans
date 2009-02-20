@@ -1,0 +1,5 @@
+<chart categorical="true" byrow="on">
+	<stylesheet/>
+	<plot style="-x-pentaho-chart-orientation: horizontal; -x-pentaho-chart-drill-url-template: url(DrillUrlTest.xml)"/>
+  <junk/>
+</chart>

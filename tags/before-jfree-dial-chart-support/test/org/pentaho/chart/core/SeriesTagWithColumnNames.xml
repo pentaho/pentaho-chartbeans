@@ -1,0 +1,37 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+	
+	<!-- Following is a series of incorrect data positions -->
+	<series column-name="    "/> <!-- This should not be in the hash -->
+	<series column-name=" null   "/> <!-- This should not be in the hash -->
+	<series column-name="  0  "/> <!-- This should not be in the hash -->
+	<series column-name="First Name"/>
+	<series column-name="Last Name  "/>
+	<series column-name="Fav Sport"/>	
+	<series column-name="Num of Years"/>
+	<series column-name="    Proffesional        "/>
+	<series column-name="Budget"/> <!-- This should not be in the hash -->
+	<series column-name="44"/> <!-- This should not be in the hash -->
+	<series column-name="445"/> <!-- This should not be in the hash -->
+	
+	
+  <stylesheet>
+    axis {
+    color: #FFF000;
+    font-family: sans-serif;
+    }
+    axis label {
+    font-weight: bold;
+    }
+    axis[type="numeric"] {
+    format: "#.00%";
+    }
+    axis[type="datetime"] {
+    format: "MM/dd hh:mm a";
+    }
+    axis.myAxis {
+    color: blue;
+    font-family: "Comic Sans MS";
+    }
+
+  </stylesheet>
+</chart>
