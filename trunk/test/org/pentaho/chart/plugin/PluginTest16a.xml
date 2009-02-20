@@ -13,24 +13,23 @@
   
   <series name="whatever" class="dial1" row-pos="0" />
 
-  <plot style="border-top-width: 3px; border-top-color: #8d8d8d; border-bottom-color: #5d5d5d; color: #fff; border-top-style: solid;">
-    <dialpointer style="color: peru; border-color: springgreen; height: 75%; width: 4%;" />
-    <dialcap style="border-top-color: red; color: green; border-top-width: 1px; width: 6%; border-top-style: solid;" />
-    <scale lowerbound="-20.0" upperbound="20.0" startangle="-135.0" extent="-180.0">
+  <!-- need to add gradient support -->
+  <plot style="-x-pentaho-chart-gradient-color: #fcfcfc, #d7d8da; border-top-width: 2px; border-top-color: #8d8d8d; border-bottom-color: #5d5d5d; color: white; border-top-style: solid;">
+  <!-- dial pointer border width not currently supported in JFreeChart -->
+    <dialpointer style="color: #636363; border-top-color: #5d5d5d; border-top-width: 2px; border-top-style: solid; height: 90%; width: 5%;" />
+    <dialcap style="border-top-color: #5d5d5d; color: #636363; border-top-width: 2px; width: 6%; border-top-style: solid;" />
+    <scale lowerbound="-20.0" upperbound="20.0" startangle="-150.0" extent="-240.0">
       <!-- need to implement tick widths and lengths -->
-      <ticklabel style="font-family: monospace; color: hotpink; font-size: 12pt; font-style: italic; font-weight: bold;" />
-      <majortick increment="5.0" style="width: 2px; color: seagreen;" />
-      <minortick count="2" style="width: 1px; color: purple;" />
+      <ticklabel style="font-family: 'arial'; color: black; font-size: 14pt;" />
+      <majortick increment="5.0" style="width: 2px; color: black;" />
+      <minortick count="2" style="width: 1px; color: #8b8b8b;" />
     </scale>
-    <annotation style="font-family: 'arial'; font-size: 20pt;">Temperature</annotation>
-    <dialvalueindicator style="border-top-style: solid; border-top-width: 3px; border-top-color: sienna; color: tomato; background-color: snow; font-family: 'arial';" />
+    <annotation style="font-family: 'arial'; font-size: 16pt; color: black;">Temperature</annotation>
+    <dialvalueindicator style="border-top-style: solid; border-top-width: 1px; border-top-color: #8b8b8b; color: black; background-color: white; font-family: 'arial'; font-size: 12pt;" />
     <dialranges>
-      <dialrange lowerbound="-20.0" upperbound="-15.0" style="color: red" />
-      <dialrange lowerbound="-15.0" upperbound="-10.0" style="color: magenta" />
-      <dialrange lowerbound="-10.0" upperbound="-5.0" style="color: orange" />
-      <dialrange lowerbound="-5.0" upperbound="0.0" style="color: yellow" />
-      <dialrange lowerbound="0.0" upperbound="5.0" style="color: peachpuff" />
-      <dialrange lowerbound="5.0" upperbound="20.0" style="color: green" />
+      <dialrange lowerbound="-20.0" upperbound="-5.0" style="color: #009345;" />
+      <dialrange lowerbound="-5.0" upperbound="10.0" style="color: #f9ec31;" />
+      <dialrange lowerbound="10.0" upperbound="20.0" style="color: #be1e2d;" />
     </dialranges>
     <dataset type="value"/>
   </plot>
