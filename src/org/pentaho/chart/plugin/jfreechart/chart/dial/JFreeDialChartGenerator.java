@@ -13,6 +13,7 @@ import java.awt.Stroke;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -41,6 +42,7 @@ import org.jfree.util.PaintUtilities;
 import org.pentaho.chart.ChartDocumentContext;
 import org.pentaho.chart.core.ChartDocument;
 import org.pentaho.chart.core.ChartElement;
+import org.pentaho.chart.css.keys.ChartStyleKeys;
 import org.pentaho.chart.data.ChartTableModel;
 import org.pentaho.chart.plugin.jfreechart.chart.JFreeChartGenerator;
 import org.pentaho.chart.plugin.jfreechart.utils.ColorFactory;
@@ -49,6 +51,7 @@ import org.pentaho.chart.plugin.jfreechart.utils.StrokeFactory;
 import org.pentaho.reporting.libraries.css.keys.border.BorderStyleKeys;
 import org.pentaho.reporting.libraries.css.keys.box.BoxStyleKeys;
 import org.pentaho.reporting.libraries.css.values.CSSValue;
+import org.pentaho.reporting.libraries.css.values.CSSValuePair;
 
 public class JFreeDialChartGenerator extends JFreeChartGenerator {
 
@@ -95,12 +98,7 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
 
     // ~ background ==================================================================================================
 
-    GradientPaint gradientpaint = new GradientPaint(new Point(), new Color(255, 255, 255), new Point(), new Color(170,
-        170, 220));
-    DialBackground dialbackground = new DialBackground(gradientpaint); // specify Color here for no gradient
-    dialbackground
-        .setGradientPaintTransformer(new StandardGradientPaintTransformer(GradientPaintTransformType.VERTICAL));
-    dialPlot.setBackground(dialbackground);
+    setDialBackground(chartDocument, dialPlot);
 
     // ~ pointer: either pin or pointer ==============================================================================
 
@@ -131,12 +129,13 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
     if (outerBorderColor != null) {
       frameForegroundPaint = outerBorderColor;
     }
-    
-    final Color innerBorderColorTmp = ColorFactory.getInstance().getColor(plotElement, BorderStyleKeys.BORDER_BOTTOM_COLOR);
+
+    final Color innerBorderColorTmp = ColorFactory.getInstance().getColor(plotElement,
+        BorderStyleKeys.BORDER_BOTTOM_COLOR);
     if (innerBorderColorTmp != null) {
       frameInnerForegroundPaint = innerBorderColorTmp;
     }
-    
+
     final Color borderBackgroundColorTmp = ColorFactory.getInstance().getColor(plotElement);
     if (borderBackgroundColorTmp != null) {
       frameBackgroundPaint = borderBackgroundColorTmp;
@@ -151,9 +150,23 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
     dialPlot.setDialFrame(dialFrame);
   }
 
+  protected void setDialBackground(ChartDocument chartDocument, DialPlot dialPlot) {
+    ChartElement plotElement = getUniqueElement(chartDocument, ChartElement.TAG_NAME_PLOT);
+
+    CSSValuePair cssValue = (CSSValuePair) plotElement.getLayoutStyle().getValue(ChartStyleKeys.GRADIENT_COLOR);
+    Color beginColor = JFreeChartUtils.getColorFromCSSValue(cssValue.getFirstValue());
+    Color endColor = JFreeChartUtils.getColorFromCSSValue(cssValue.getSecondValue());
+
+    GradientPaint gradientpaint = new GradientPaint(new Point(), beginColor, new Point(), endColor);
+    DialBackground dialbackground = new DialBackground(gradientpaint); // specify Color here for no gradient
+    dialbackground
+        .setGradientPaintTransformer(new StandardGradientPaintTransformer(GradientPaintTransformType.VERTICAL));
+    dialPlot.setBackground(dialbackground);
+  }
+
   protected void setDialRange(ChartDocument chartDocument, DialPlot dialPlot) {
 
-    final double rangeInnerRadius = 0.52000000000000002D;
+    final double rangeInnerRadius = 0.4D;
     ChartElement[] rangeElements = getElements(chartDocument, "dialrange");
 
     for (int i = 0; i < rangeElements.length; i++) {
@@ -179,9 +192,10 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
     double pointerWidthRadius = 0.05; // width of base of pointer
     Color pointerFillPaint = Color.gray;
     Color pointerOutlinePaint = Color.black;
+    Stroke pointerOutlineStroke = new BasicStroke(2.0f);
     // ~ params end
 
-    DialPointer.Pointer pointer = new DialPointer.Pointer();
+    VariableStrokePointer pointer = new VariableStrokePointer();
 
     ChartElement pointerElement = getUniqueElement(chartDocument, "dialpointer");
 
@@ -206,7 +220,13 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
       pointerRadius = pointerRadiusTmp;
     }
 
+    final BasicStroke borderStyleStroke = StrokeFactory.getInstance().getBorderStroke(pointerElement);
+    if (borderStyleStroke != null) {
+      pointerOutlineStroke = borderStyleStroke;
+    }
+    
     pointer.setRadius(pointerRadius);
+    pointer.setOutlineStroke(pointerOutlineStroke);
     pointer.setWidthRadius(pointerWidthRadius);
     pointer.setFillPaint(pointerFillPaint);
     pointer.setOutlinePaint(pointerOutlinePaint);
@@ -494,7 +514,7 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
       Arc2D arcInner = new Arc2D.Double(arcRectInner, angleMin, angleMax - angleMin, Arc2D.OPEN);
 
       g2.setPaint(getPaint());
-      g2.setStroke(new BasicStroke(25.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
+      g2.setStroke(new BasicStroke(50.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
       g2.draw(arcInner);
     }
 
@@ -680,6 +700,76 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
 
       }
     }
+  }
+
+  /**
+   * Enhances <code>DialPointer.Pointer</code> to allow any size stroke for the outline.
+   */
+  public static class VariableStrokePointer extends DialPointer.Pointer {
+
+    private static final long serialVersionUID = 1L;
+
+    private transient Stroke outlineStroke;
+
+    public Stroke getOutlineStroke() {
+      return this.outlineStroke;
+    }
+
+    public void setOutlineStroke(Stroke outlineStroke) {
+      if (outlineStroke == null) {
+        throw new IllegalArgumentException("Null 'stroke' argument.");
+      }
+      this.outlineStroke = outlineStroke;
+      notifyListeners(new DialLayerChangeEvent(this));
+    }
+
+    @Override
+    public void draw(Graphics2D g2, DialPlot plot, Rectangle2D frame, Rectangle2D view) {
+      g2.setPaint(Color.blue);
+      g2.setStroke(this.outlineStroke);
+      Rectangle2D lengthRect = DialPlot.rectangleByRadius(frame, getRadius(), getRadius());
+      Rectangle2D widthRect = DialPlot.rectangleByRadius(frame, getWidthRadius(), getWidthRadius());
+      double value = plot.getValue(getDatasetIndex());
+      DialScale scale = plot.getScaleForDataset(getDatasetIndex());
+      double angle = scale.valueToAngle(value);
+
+      Arc2D arc1 = new Arc2D.Double(lengthRect, angle, 0, Arc2D.OPEN);
+      Point2D pt1 = arc1.getEndPoint();
+      Arc2D arc2 = new Arc2D.Double(widthRect, angle - 90.0, 180.0, Arc2D.OPEN);
+      Point2D pt2 = arc2.getStartPoint();
+      Point2D pt3 = arc2.getEndPoint();
+      Arc2D arc3 = new Arc2D.Double(widthRect, angle - 180.0, 0.0, Arc2D.OPEN);
+      Point2D pt4 = arc3.getStartPoint();
+
+      GeneralPath gp = new GeneralPath();
+      gp.moveTo((float) pt1.getX(), (float) pt1.getY());
+      gp.lineTo((float) pt2.getX(), (float) pt2.getY());
+      gp.lineTo((float) pt4.getX(), (float) pt4.getY());
+      gp.lineTo((float) pt3.getX(), (float) pt3.getY());
+      gp.closePath();
+      g2.setPaint(getFillPaint());
+      g2.fill(gp);
+
+      g2.setPaint(getOutlinePaint());
+      Line2D line = new Line2D.Double(frame.getCenterX(), frame.getCenterY(), pt1.getX(), pt1.getY());
+      g2.draw(line);
+
+      line.setLine(pt2, pt3);
+      g2.draw(line);
+
+      line.setLine(pt3, pt1);
+      g2.draw(line);
+
+      line.setLine(pt2, pt1);
+      g2.draw(line);
+
+      line.setLine(pt2, pt4);
+      g2.draw(line);
+
+      line.setLine(pt3, pt4);
+      g2.draw(line);
+    }
+
   }
 
 }
