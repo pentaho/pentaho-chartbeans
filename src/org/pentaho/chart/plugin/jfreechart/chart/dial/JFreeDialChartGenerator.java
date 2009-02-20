@@ -11,6 +11,8 @@ import java.awt.Point;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.Arc2D;
+import java.awt.geom.Area;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -21,6 +23,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.dial.DialBackground;
 import org.jfree.chart.plot.dial.DialCap;
+import org.jfree.chart.plot.dial.DialLayerChangeEvent;
 import org.jfree.chart.plot.dial.DialPlot;
 import org.jfree.chart.plot.dial.DialPointer;
 import org.jfree.chart.plot.dial.DialScale;
@@ -34,6 +37,7 @@ import org.jfree.text.TextUtilities;
 import org.jfree.ui.GradientPaintTransformType;
 import org.jfree.ui.StandardGradientPaintTransformer;
 import org.jfree.ui.TextAnchor;
+import org.jfree.util.PaintUtilities;
 import org.pentaho.chart.ChartDocumentContext;
 import org.pentaho.chart.core.ChartDocument;
 import org.pentaho.chart.core.ChartElement;
@@ -87,17 +91,7 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
 
     // ~ ranges ======================================================================================================
 
-    SingleLineDialRange standarddialrange = new SingleLineDialRange(40D, 60D, Color.red);
-    standarddialrange.setInnerRadius(0.52000000000000002D);
-    dialPlot.addLayer(standarddialrange);
-
-    SingleLineDialRange standarddialrange1 = new SingleLineDialRange(10D, 40D, Color.orange);
-    standarddialrange1.setInnerRadius(0.52000000000000002D);
-    dialPlot.addLayer(standarddialrange1);
-
-    SingleLineDialRange standarddialrange2 = new SingleLineDialRange(-40D, 10D, Color.green);
-    standarddialrange2.setInnerRadius(0.52000000000000002D);
-    dialPlot.addLayer(standarddialrange2);
+    setDialRange(chartDocument, dialPlot);
 
     // ~ background ==================================================================================================
 
@@ -110,20 +104,7 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
 
     // ~ pointer: either pin or pointer ==============================================================================
 
-    // ~ params begin
-    double pointerRadius = 0.9; // length of pointer
-    double pointerWidthRadius = 0.05; // width of base of pointer
-    Color pointerFillPaint = Color.gray;
-    Color pointerOutlinePaint = Color.black;
-    // ~ params end
-
-    DialPointer.Pointer pointer = new DialPointer.Pointer();
-    pointer.setRadius(pointerRadius);
-    pointer.setWidthRadius(pointerWidthRadius);
-    pointer.setFillPaint(pointerFillPaint);
-    pointer.setOutlinePaint(pointerOutlinePaint);
-    // DialPointer pointer = new DialPointer.Pin();
-    dialPlot.addPointer(pointer);
+    setDialPointer(chartDocument, dialPlot);
 
     return new JFreeChart(getTitle(chartDocument), dialPlot);
 
@@ -132,6 +113,8 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
   protected void setDialFrame(ChartDocument chartDocument, DialPlot dialPlot) {
     // ~ params begin
     Color frameForegroundPaint = Color.black;
+    Color frameInnerForegroundPaint = Color.black;
+    Color frameBackgroundPaint = Color.white;
     Stroke frameStroke = new BasicStroke(2.0f);
     // ~ params end
 
@@ -144,16 +127,91 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
       frameStroke = borderStyleStroke;
     }
 
-    final Color borderColor = ColorFactory.getInstance().getColor(plotElement, BorderStyleKeys.BORDER_TOP_COLOR);
-    if (borderColor != null) {
-      frameForegroundPaint = borderColor;
+    final Color outerBorderColor = ColorFactory.getInstance().getColor(plotElement, BorderStyleKeys.BORDER_TOP_COLOR);
+    if (outerBorderColor != null) {
+      frameForegroundPaint = outerBorderColor;
+    }
+    
+    final Color innerBorderColorTmp = ColorFactory.getInstance().getColor(plotElement, BorderStyleKeys.BORDER_BOTTOM_COLOR);
+    if (innerBorderColorTmp != null) {
+      frameInnerForegroundPaint = innerBorderColorTmp;
+    }
+    
+    final Color borderBackgroundColorTmp = ColorFactory.getInstance().getColor(plotElement);
+    if (borderBackgroundColorTmp != null) {
+      frameBackgroundPaint = borderBackgroundColorTmp;
     }
 
-    final SingleLineDialFrame dialFrame = new SingleLineDialFrame();
+    final DoubleLineDialFrame dialFrame = new DoubleLineDialFrame();
     dialFrame.setForegroundPaint(frameForegroundPaint);
+    dialFrame.setInnerForegroundPaint(frameInnerForegroundPaint);
     dialFrame.setStroke(frameStroke);
+    dialFrame.setBackgroundPaint(frameBackgroundPaint);
 
     dialPlot.setDialFrame(dialFrame);
+  }
+
+  protected void setDialRange(ChartDocument chartDocument, DialPlot dialPlot) {
+
+    final double rangeInnerRadius = 0.52000000000000002D;
+    ChartElement[] rangeElements = getElements(chartDocument, "dialrange");
+
+    for (int i = 0; i < rangeElements.length; i++) {
+
+      double lowerBound = Double.parseDouble((String) rangeElements[i].getAttribute("lowerbound"));
+      double upperBound = Double.parseDouble((String) rangeElements[i].getAttribute("upperbound"));
+
+      final Color rangeColorTmp = ColorFactory.getInstance().getColor(rangeElements[i]);
+      Color rangeColor = Color.BLACK;
+      if (rangeColorTmp != null) {
+        rangeColor = rangeColorTmp;
+      }
+
+      SingleLineDialRange standarddialrange = new SingleLineDialRange(lowerBound, upperBound, rangeColor);
+      standarddialrange.setInnerRadius(rangeInnerRadius);
+      dialPlot.addLayer(standarddialrange);
+    }
+  }
+
+  protected void setDialPointer(ChartDocument chartDocument, DialPlot dialPlot) {
+    // ~ params begin
+    double pointerRadius = 0.9; // length of pointer
+    double pointerWidthRadius = 0.05; // width of base of pointer
+    Color pointerFillPaint = Color.gray;
+    Color pointerOutlinePaint = Color.black;
+    // ~ params end
+
+    DialPointer.Pointer pointer = new DialPointer.Pointer();
+
+    ChartElement pointerElement = getUniqueElement(chartDocument, "dialpointer");
+
+    final Color pointerColorTmp = ColorFactory.getInstance().getColor(pointerElement);
+    if (pointerColorTmp != null) {
+      pointerFillPaint = pointerColorTmp;
+    }
+
+    final Color pointerBorderColorTmp = ColorFactory.getInstance().getColor(pointerElement,
+        BorderStyleKeys.BORDER_TOP_COLOR);
+    if (pointerBorderColorTmp != null) {
+      pointerOutlinePaint = pointerBorderColorTmp;
+    }
+
+    double pointerWidthRadiusTmp = parsePercent(pointerElement.getLayoutStyle().getValue(BoxStyleKeys.WIDTH));
+    if (pointerWidthRadiusTmp != 0) {
+      pointerWidthRadius = pointerWidthRadiusTmp;
+    }
+
+    double pointerRadiusTmp = parsePercent(pointerElement.getLayoutStyle().getValue(BoxStyleKeys.HEIGHT));
+    if (pointerRadiusTmp != 0) {
+      pointerRadius = pointerRadiusTmp;
+    }
+
+    pointer.setRadius(pointerRadius);
+    pointer.setWidthRadius(pointerWidthRadius);
+    pointer.setFillPaint(pointerFillPaint);
+    pointer.setOutlinePaint(pointerOutlinePaint);
+    // DialPointer pointer = new DialPointer.Pin();
+    dialPlot.addPointer(pointer);
   }
 
   protected void setDialTextAnnotation(ChartDocument chartDocument, DialPlot dialPlot) {
@@ -215,10 +273,7 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
       capFillPaint = capColor;
     }
 
-    // TODO mlowery cap radius can only be a percentage; add support for other units?
-    final CSSValue capRadiusValue = dialCapElement.getLayoutStyle().getValue(BoxStyleKeys.WIDTH);
-    final String capRadiusPercent = (capRadiusValue.getCSSText().substring(0, capRadiusValue.getCSSText().indexOf("%"))).trim(); //$NON-NLS-1$
-    capRadius = Double.parseDouble(capRadiusPercent) / 100;
+    capRadius = parsePercent(dialCapElement.getLayoutStyle().getValue(BoxStyleKeys.WIDTH));
 
     DialCap dialCap = new DialCap();
     dialCap.setRadius(capRadius);
@@ -226,6 +281,21 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
     dialCap.setOutlinePaint(capOutlinePaint);
     dialCap.setOutlineStroke(capOutlineStroke);
     dialPlot.setCap(dialCap);
+  }
+
+  /**
+   * Gets the numeric value inside the CSS value then treats it as a percentage.
+   */
+  protected double parsePercent(final CSSValue value) {
+    String trimmedString = value.getCSSText().trim();
+    for (int i = 0; i < trimmedString.length(); i++) {
+      char c = trimmedString.charAt(i);
+      if (!Character.isDigit(c)) {
+        double d = Double.parseDouble(trimmedString.substring(0, i));
+        return d / 100;
+      }
+    }
+    return 0;
   }
 
   protected void setDialScale(ChartDocument chartDocument, DialPlot dialPlot) {
@@ -303,6 +373,18 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
   protected ChartElement[] getElements(ChartDocument doc, String name) {
     if (ChartElement.TAG_NAME_PLOT.equals(name)) {
       return new ChartElement[] { doc.getPlotElement() };
+    } else if ("dialrange".equals(name)) {
+      ChartElement plotElem = doc.getPlotElement();
+      if (plotElem != null) {
+        ChartElement[] dialRanges = plotElem.findChildrenByName("dialranges");
+        if (dialRanges.length > 0) {
+          return dialRanges[0].findChildrenByName(name);
+        } else {
+          return null;
+        }
+      } else {
+        return null;
+      }
     } else if ("ticklabel".equals(name) || "majortick".equals(name) || "minortick".equals(name)) {
       return doc.getPlotElement().findChildrenByName("scale")[0].findChildrenByName(name);
     } else {
@@ -414,6 +496,85 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
       g2.setPaint(getPaint());
       g2.setStroke(new BasicStroke(25.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
       g2.draw(arcInner);
+    }
+
+  }
+
+  /**
+   * Same as <code>StandardDialFrame</code>, but allows the line colors to vary between the two lines.
+   */
+  public static class DoubleLineDialFrame extends StandardDialFrame {
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * The color used for the inner border around the window. This field is transient
+     * because it requires special handling for serialization.
+     */
+    private transient Paint innerForegroundPaint;
+
+    public DoubleLineDialFrame() {
+      super();
+      this.innerForegroundPaint = Color.black;
+    }
+
+    public Paint getInnerForegroundPaint() {
+      return this.innerForegroundPaint;
+    }
+
+    public void setInnerForegroundPaint(Paint paint) {
+      if (paint == null) {
+        throw new IllegalArgumentException("Null 'paint' argument."); //$NON-NLS-1$
+      }
+      this.innerForegroundPaint = paint;
+      notifyListeners(new DialLayerChangeEvent(this));
+    }
+
+    @Override
+    public void draw(Graphics2D g2, DialPlot plot, Rectangle2D frame, Rectangle2D view) {
+      Shape window = getWindow(frame);
+
+      Rectangle2D f = DialPlot.rectangleByRadius(frame, getRadius() + 0.02, getRadius() + 0.02);
+      Ellipse2D e = new Ellipse2D.Double(f.getX(), f.getY(), f.getWidth(), f.getHeight());
+
+      Area area = new Area(e);
+      Area area2 = new Area(window);
+      area.subtract(area2);
+      g2.setPaint(getBackgroundPaint());
+      g2.fill(area);
+
+      g2.setStroke(getStroke());
+      g2.setPaint(getInnerForegroundPaint());
+      g2.draw(window);
+      g2.setPaint(getForegroundPaint());
+      g2.draw(e);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (obj == this) {
+        return true;
+      }
+      if (!(obj instanceof DoubleLineDialFrame)) {
+        return false;
+      }
+      DoubleLineDialFrame that = (DoubleLineDialFrame) obj;
+      if (!PaintUtilities.equal(getBackgroundPaint(), that.getBackgroundPaint())) {
+        return false;
+      }
+      if (!PaintUtilities.equal(getForegroundPaint(), that.getForegroundPaint())) {
+        return false;
+      }
+      if (!PaintUtilities.equal(getInnerForegroundPaint(), that.getInnerForegroundPaint())) {
+        return false;
+      }
+      if (getRadius() != that.getRadius()) {
+        return false;
+      }
+      if (!this.getStroke().equals(that.getStroke())) {
+        return false;
+      }
+      return super.equals(obj);
     }
 
   }

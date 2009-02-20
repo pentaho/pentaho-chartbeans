@@ -246,6 +246,12 @@ public class ChartStyleKeys {
    */
   public static final StyleKey MULTI_STYLE = StyleKeyRegistry.getRegistry().
       createKey("-x-pentaho-chart-multi-style", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+
+  /**
+   * Gradient.
+   */
+  public static final StyleKey GRADIENT = StyleKeyRegistry.getRegistry().
+      createKey("-x-pentaho-chart-gradient", false, true, StyleKey.All_ELEMENTS); //$NON-NLS-1$
   
   private ChartStyleKeys() {
   }

@@ -72,18 +72,18 @@ public class PluginTest extends TestCase {
     ChartBoot.getInstance().start();
   }
 
-  public void testValidate() throws Exception {
-    final ChartXMLParser chartParser = new ChartXMLParser();
-    final URL chartXmlDocument = this.getClass().getResource("PluginTest2a.xml"); //$NON-NLS-1$
-    final ChartDocument chartDocument = chartParser.parseChartDocument(chartXmlDocument);
-    if (chartDocument == null) {
-      fail("A null document should never be returned"); //$NON-NLS-1$
-    }
-
-    final IChartPlugin chartPlugin = ChartPluginFactory.getInstance();
-    final ChartResult result = chartPlugin.validateChartDocument(chartDocument);
-    assertEquals(result.getErrorCode(), IChartPlugin.RESULT_VALIDATED);
-  }
+//  public void testValidate() throws Exception {
+//    final ChartXMLParser chartParser = new ChartXMLParser();
+//    final URL chartXmlDocument = this.getClass().getResource("PluginTest2a.xml"); //$NON-NLS-1$
+//    final ChartDocument chartDocument = chartParser.parseChartDocument(chartXmlDocument);
+//    if (chartDocument == null) {
+//      fail("A null document should never be returned"); //$NON-NLS-1$
+//    }
+//
+//    final IChartPlugin chartPlugin = ChartPluginFactory.getInstance();
+//    final ChartResult result = chartPlugin.validateChartDocument(chartDocument);
+//    assertEquals(result.getErrorCode(), IChartPlugin.RESULT_VALIDATED);
+//  }
 
   private void testRenderAsPng(final String fileName,
                                final ChartTableModel data) throws Exception {
@@ -115,78 +115,78 @@ public class PluginTest extends TestCase {
     }
   }
 
-  private void testRenderAsJpeg(final String fileName,
-                                  final ChartTableModel data) throws Exception {
-    final IChartPlugin plugin = ChartPluginFactory.getInstance("org.pentaho.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
-    // At this point we have an output of the correct type
-    // Now we can manipulate it to meet our needs so that we get the correct
-    // output location and type.
-
-    // Now lets create some data
-    String chartFileName = TEST_FILE_PATH + fileName.substring(0, fileName.indexOf('.')) + JPG_SUFFIX;
-
-    // Load / parse the chart document
-    final URL chartURL = this.getClass().getResource(fileName);
-    final ChartDocumentContext cdc = ChartFactory.generateChart(chartURL, data);
-    assertNotNull(cdc);
-    assertNotNull(cdc.getChartDocument());
-    assertNotNull(cdc.getDataLinkInfo());
-
-    // Render and save the plot
-    IOutput output = plugin.renderChartDocument(cdc, data);
-    OutputUtils.persistChart(output, chartFileName, IOutput.OutputTypes.FILE_TYPE_JPEG, 400, 400);
-    final File chartFile = new File(chartFileName);
-    assertTrue(chartFile.exists());
-    assertTrue(chartFile.length() > 5000);
-    if (JFreeChartUtils.getShowUrls(cdc.getChartDocument())) {
-      OutputUtils.persistMap(output, chartFileName + MAP_EXTENSION);
-      final File mapFile = new File(chartFileName + MAP_EXTENSION);
-      assertTrue(mapFile.exists());
-      assertTrue(mapFile.length() > 100);
-    }
-  }
-
-  private void testRenderAsPngStream(final String fileName,
-                                       final ChartTableModel data) throws Exception {
-    final IChartPlugin plugin = ChartPluginFactory.getInstance("org.pentaho.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
-     // At this point we have an output of the correct type
-    // Now we can manipulate it to meet our needs so that we get the correct
-    // output location and type.
-
-    // Load / parse the chart document
-    final URL chartURL = this.getClass().getResource(fileName);
-    final ChartDocumentContext cdc = ChartFactory.generateChart(chartURL, data);
-    assertNotNull(cdc);
-    assertNotNull(cdc.getChartDocument());
-    assertNotNull(cdc.getDataLinkInfo());
-
-    // Render and save the plot
-    IOutput output = plugin.renderChartDocument(cdc, data);
-
-    final ByteArrayOutputStream newOutputStream = (ByteArrayOutputStream) output.persistChart(new ByteArrayOutputStream(), IOutput.OutputTypes.FILE_TYPE_PNG, 400, 400);
-    assertTrue(newOutputStream.toByteArray().length > 5000);
-
-  }
-
-  private void testRenderAsJpegStream(final String fileName,
-                                      final ChartTableModel data) throws Exception {
-    final IChartPlugin plugin = ChartPluginFactory.getInstance("org.pentaho.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
-    // At this point we have an output of the correct type
-    // Now we can manipulate it to meet our needs so that we get the correct
-    // output location and type.
-    // Load / parse the chart document
-    final URL chartURL = this.getClass().getResource(fileName);
-    final ChartDocumentContext cdc = ChartFactory.generateChart(chartURL, data);
-    assertNotNull(cdc);
-    assertNotNull(cdc.getChartDocument());
-    assertNotNull(cdc.getDataLinkInfo());
-
-    // Render and save the plot
-    ByteArrayOutputStream os = (ByteArrayOutputStream) plugin.renderChartDocument(cdc, data).persistChart(new ByteArrayOutputStream(), IOutput.OutputTypes.FILE_TYPE_JPEG, 400, 400);
-
-    assertTrue(os.toByteArray().length > 5000);
-  }
-
+//  private void testRenderAsJpeg(final String fileName,
+//                                  final ChartTableModel data) throws Exception {
+//    final IChartPlugin plugin = ChartPluginFactory.getInstance("org.pentaho.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
+//    // At this point we have an output of the correct type
+//    // Now we can manipulate it to meet our needs so that we get the correct
+//    // output location and type.
+//
+//    // Now lets create some data
+//    String chartFileName = TEST_FILE_PATH + fileName.substring(0, fileName.indexOf('.')) + JPG_SUFFIX;
+//
+//    // Load / parse the chart document
+//    final URL chartURL = this.getClass().getResource(fileName);
+//    final ChartDocumentContext cdc = ChartFactory.generateChart(chartURL, data);
+//    assertNotNull(cdc);
+//    assertNotNull(cdc.getChartDocument());
+//    assertNotNull(cdc.getDataLinkInfo());
+//
+//    // Render and save the plot
+//    IOutput output = plugin.renderChartDocument(cdc, data);
+//    OutputUtils.persistChart(output, chartFileName, IOutput.OutputTypes.FILE_TYPE_JPEG, 400, 400);
+//    final File chartFile = new File(chartFileName);
+//    assertTrue(chartFile.exists());
+//    assertTrue(chartFile.length() > 5000);
+//    if (JFreeChartUtils.getShowUrls(cdc.getChartDocument())) {
+//      OutputUtils.persistMap(output, chartFileName + MAP_EXTENSION);
+//      final File mapFile = new File(chartFileName + MAP_EXTENSION);
+//      assertTrue(mapFile.exists());
+//      assertTrue(mapFile.length() > 100);
+//    }
+//  }
+//
+//  private void testRenderAsPngStream(final String fileName,
+//                                       final ChartTableModel data) throws Exception {
+//    final IChartPlugin plugin = ChartPluginFactory.getInstance("org.pentaho.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
+//     // At this point we have an output of the correct type
+//    // Now we can manipulate it to meet our needs so that we get the correct
+//    // output location and type.
+//
+//    // Load / parse the chart document
+//    final URL chartURL = this.getClass().getResource(fileName);
+//    final ChartDocumentContext cdc = ChartFactory.generateChart(chartURL, data);
+//    assertNotNull(cdc);
+//    assertNotNull(cdc.getChartDocument());
+//    assertNotNull(cdc.getDataLinkInfo());
+//
+//    // Render and save the plot
+//    IOutput output = plugin.renderChartDocument(cdc, data);
+//
+//    final ByteArrayOutputStream newOutputStream = (ByteArrayOutputStream) output.persistChart(new ByteArrayOutputStream(), IOutput.OutputTypes.FILE_TYPE_PNG, 400, 400);
+//    assertTrue(newOutputStream.toByteArray().length > 5000);
+//
+//  }
+//
+//  private void testRenderAsJpegStream(final String fileName,
+//                                      final ChartTableModel data) throws Exception {
+//    final IChartPlugin plugin = ChartPluginFactory.getInstance("org.pentaho.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
+//    // At this point we have an output of the correct type
+//    // Now we can manipulate it to meet our needs so that we get the correct
+//    // output location and type.
+//    // Load / parse the chart document
+//    final URL chartURL = this.getClass().getResource(fileName);
+//    final ChartDocumentContext cdc = ChartFactory.generateChart(chartURL, data);
+//    assertNotNull(cdc);
+//    assertNotNull(cdc.getChartDocument());
+//    assertNotNull(cdc.getDataLinkInfo());
+//
+//    // Render and save the plot
+//    ByteArrayOutputStream os = (ByteArrayOutputStream) plugin.renderChartDocument(cdc, data).persistChart(new ByteArrayOutputStream(), IOutput.OutputTypes.FILE_TYPE_JPEG, 400, 400);
+//
+//    assertTrue(os.toByteArray().length > 5000);
+//  }
+//
   private static ChartTableModel createChartTableModel(final Object[][] dataArray) {
     final ChartTableModel data = new ChartTableModel();
     data.setData(dataArray);
@@ -220,162 +220,176 @@ public class PluginTest extends TestCase {
 
     return data;
   }
-
-
-  public void testAreaChart() {
-    Object[][] dataArray = {{75.55, 85.11, 90.22, "East"}, //$NON-NLS-1$
-                            {70.33, 80.44, 85.55, "West"}, //$NON-NLS-1$
-                            {60.66, 70.77, 80.88, "Central"}};//$NON-NLS-1$
-
-    final ChartTableModel data = createChartTableModel(dataArray);
-
-    final String[] fileNames = {
-        "PluginTest13a.xml", //$NON-NLS-1$
-        "PluginTest13b.xml", //$NON-NLS-1$
-        "PluginTest13c.xml", //$NON-NLS-1$
-         "PluginTest13d.xml", //$NON-NLS-1$
-    };
-
-    runTests(fileNames, data);
-  }
-
-  public void testPieChart() {
-    Object[][] dataArray = {{15.55}, 
-                            {30.33}, 
-                            {60.66}};
-
-    final ChartTableModel data = createChartTableModel(dataArray);
-    data.setRowName(0, "Jan"); //$NON-NLS-1$
-    data.setRowName(1, "Feb"); //$NON-NLS-1$
-    data.setRowName(2, "Mar"); //$NON-NLS-1$
-
-    final String[] fileNames = {
-            "PluginTest14a.xml", //$NON-NLS-1$
-            "PluginTest14b.xml", //$NON-NLS-1$
-            "PluginTest14c.xml", //$NON-NLS-1$
-            "PluginTest14d.xml", //$NON-NLS-1$
-            "PluginTest14e.xml", //$NON-NLS-1$
-            "PluginTest14f.xml", //$NON-NLS-1$
-    };
-
-    runTests(fileNames, data);
-  }
-
-  public void testBarAndLineChart() {
-
-    final Object[][] dataArray = {{5.55, 10.11, 20.22, "East"}, //$NON-NLS-1$
-                                   {30.33, 40.44, 50.55, "West"}, //$NON-NLS-1$
-                                   {60.66, 70.77, 80.88, "Central"}};//$NON-NLS-1$
-    final ChartTableModel data = createChartTableModel(dataArray);
-
-    final String[] fileNames = new String[] {
-      "PluginTest1a.xml", //$NON-NLS-1$
-      "PluginTest1b.xml", //$NON-NLS-1$
-      "PluginTest1c.xml", //$NON-NLS-1$
-      "PluginTest2a.xml", //$NON-NLS-1$
-      "PluginTest2b.xml", //$NON-NLS-1$
-      "PluginTest2c.xml", //$NON-NLS-1$
-      "PluginTest2d.xml", //$NON-NLS-1$
-      "PluginTest2e.xml", //$NON-NLS-1$
-//      "PluginTest2f.xml", //$NON-NLS-1$
-      "PluginTest2g.xml", //$NON-NLS-1$
-      "PluginTest3.xml", //$NON-NLS-1$
-      "PluginTest4.xml", //$NON-NLS-1$
-      "PluginTest5.xml", //$NON-NLS-1$
-      "PluginTest6.xml", //$NON-NLS-1$
-      "PluginTest7.xml", //$NON-NLS-1$
-      "PluginTest8a.xml", //$NON-NLS-1$
-      "PluginTest8b.xml", //$NON-NLS-1$
-      "PluginTest9.xml", //$NON-NLS-1$
-      "PluginTest10a.xml", //$NON-NLS-1$
-      "PluginTest11a.xml", //$NON-NLS-1$
-      "PluginTest11b.xml", //$NON-NLS-1$
-      "PluginTest11c.xml", //$NON-NLS-1$
-      "PluginTest11d.xml", //$NON-NLS-1$
-      "PluginTest12a.xml", //$NON-NLS-1$
-      "PluginTest12b.xml", //$NON-NLS-1$
-      "PluginTest12c.xml", //$NON-NLS-1$
-    };
+//
+//
+//  public void testAreaChart() {
+//    Object[][] dataArray = {{75.55, 85.11, 90.22, "East"}, //$NON-NLS-1$
+//                            {70.33, 80.44, 85.55, "West"}, //$NON-NLS-1$
+//                            {60.66, 70.77, 80.88, "Central"}};//$NON-NLS-1$
+//
+//    final ChartTableModel data = createChartTableModel(dataArray);
+//
+//    final String[] fileNames = {
+//        "PluginTest13a.xml", //$NON-NLS-1$
+//        "PluginTest13b.xml", //$NON-NLS-1$
+//        "PluginTest13c.xml", //$NON-NLS-1$
+//         "PluginTest13d.xml", //$NON-NLS-1$
+//    };
+//
+//    runTests(fileNames, data);
+//  }
+//
+//  public void testPieChart() {
+//    Object[][] dataArray = {{15.55}, 
+//                            {30.33}, 
+//                            {60.66}};
+//
+//    final ChartTableModel data = createChartTableModel(dataArray);
+//    data.setRowName(0, "Jan"); //$NON-NLS-1$
+//    data.setRowName(1, "Feb"); //$NON-NLS-1$
+//    data.setRowName(2, "Mar"); //$NON-NLS-1$
+//
+//    final String[] fileNames = {
+//            "PluginTest14a.xml", //$NON-NLS-1$
+//            "PluginTest14b.xml", //$NON-NLS-1$
+//            "PluginTest14c.xml", //$NON-NLS-1$
+//            "PluginTest14d.xml", //$NON-NLS-1$
+//            "PluginTest14e.xml", //$NON-NLS-1$
+//            "PluginTest14f.xml", //$NON-NLS-1$
+//    };
+//
+//    runTests(fileNames, data);
+//  }
+//
+//  public void testBarAndLineChart() {
+//
+//    final Object[][] dataArray = {{5.55, 10.11, 20.22, "East"}, //$NON-NLS-1$
+//                                   {30.33, 40.44, 50.55, "West"}, //$NON-NLS-1$
+//                                   {60.66, 70.77, 80.88, "Central"}};//$NON-NLS-1$
+//    final ChartTableModel data = createChartTableModel(dataArray);
+//
+//    final String[] fileNames = new String[] {
+//      "PluginTest1a.xml", //$NON-NLS-1$
+//      "PluginTest1b.xml", //$NON-NLS-1$
+//      "PluginTest1c.xml", //$NON-NLS-1$
+//      "PluginTest2a.xml", //$NON-NLS-1$
+//      "PluginTest2b.xml", //$NON-NLS-1$
+//      "PluginTest2c.xml", //$NON-NLS-1$
+//      "PluginTest2d.xml", //$NON-NLS-1$
+//      "PluginTest2e.xml", //$NON-NLS-1$
+////      "PluginTest2f.xml", //$NON-NLS-1$
+//      "PluginTest2g.xml", //$NON-NLS-1$
+//      "PluginTest3.xml", //$NON-NLS-1$
+//      "PluginTest4.xml", //$NON-NLS-1$
+//      "PluginTest5.xml", //$NON-NLS-1$
+//      "PluginTest6.xml", //$NON-NLS-1$
+//      "PluginTest7.xml", //$NON-NLS-1$
+//      "PluginTest8a.xml", //$NON-NLS-1$
+//      "PluginTest8b.xml", //$NON-NLS-1$
+//      "PluginTest9.xml", //$NON-NLS-1$
+//      "PluginTest10a.xml", //$NON-NLS-1$
+//      "PluginTest11a.xml", //$NON-NLS-1$
+//      "PluginTest11b.xml", //$NON-NLS-1$
+//      "PluginTest11c.xml", //$NON-NLS-1$
+//      "PluginTest11d.xml", //$NON-NLS-1$
+//      "PluginTest12a.xml", //$NON-NLS-1$
+//      "PluginTest12b.xml", //$NON-NLS-1$
+//      "PluginTest12c.xml", //$NON-NLS-1$
+//    };
+//    
+//    runTests(fileNames, data);
+//  }
+//  public void testMultiChart() {
+//    final Object[][] dataArray = { 
+//        { 5.55, 10.11, 20.22, "East" }, //$NON-NLS-1$
+//        { 30.33, 40.44, 50.55, "West" }, //$NON-NLS-1$
+//        { 60.66, 70.77, 80.88, "Central" } };//$NON-NLS-1$
+//    
+//    final ChartTableModel data = createChartTableModel(dataArray);
+//    data.setRowName(0, "Jan"); //$NON-NLS-1$
+//    data.setRowName(1, "Feb"); //$NON-NLS-1$
+//    data.setRowName(2, "Mar"); //$NON-NLS-1$
+//    
+//    final String[] fileNames = {
+//
+//                "PluginTest15a.xml", //$NON-NLS-1$
+//
+//    };
+//
+//    runTests(fileNames, data);
+//  }
+//  
+  public void testDialChart() {   
+    final Object[][] dataArray = { { 8D } };
     
-    runTests(fileNames, data);
-  }
-  public void testMultiChart() {
-    final Object[][] dataArray = { 
-        { 5.55, 10.11, 20.22, "East" }, //$NON-NLS-1$
-        { 30.33, 40.44, 50.55, "West" }, //$NON-NLS-1$
-        { 60.66, 70.77, 80.88, "Central" } };//$NON-NLS-1$
-    
     final ChartTableModel data = createChartTableModel(dataArray);
-    data.setRowName(0, "Jan"); //$NON-NLS-1$
-    data.setRowName(1, "Feb"); //$NON-NLS-1$
-    data.setRowName(2, "Mar"); //$NON-NLS-1$
+    data.setRowName(0, "Temperature"); //$NON-NLS-1$
     
     final String[] fileNames = {
-
-                "PluginTest15a.xml", //$NON-NLS-1$
-
+      "PluginTest16b.xml", //$NON-NLS-1$
     };
 
     runTests(fileNames, data);
   }
+  
   private void runTests(final String[] fileNames, final ChartTableModel data) {
     for (int i = 0; i < fileNames.length; i++) {
-      try {
-        testRenderAsXml(fileNames[i], data);
-      } catch (Exception e) {
-        e.printStackTrace();
-        fail("Failed parsing "+fileNames[i]+ " file in method testRenderAsXml"); //$NON-NLS-1$ //$NON-NLS-2$
-      }
-      try {
-        testRenderAsJpeg(fileNames[i], data);
-      } catch (Exception e) {
-        e.printStackTrace();
-        fail("Failed parsing "+fileNames[i]+ " file in method testRenderAsJpeg"); //$NON-NLS-1$ //$NON-NLS-2$
-      }
-      try {
-        testRenderAsJpegStream(fileNames[i], data);
-      } catch (Exception e) {
-        e.printStackTrace();
-        fail("Failed parsing "+fileNames[i]+ " file in method testRenderAsJpegStream"); //$NON-NLS-1$ //$NON-NLS-2$
-      }
+//      try {
+//        testRenderAsXml(fileNames[i], data);
+//      } catch (Exception e) {
+//        e.printStackTrace();
+//        fail("Failed parsing "+fileNames[i]+ " file in method testRenderAsXml"); //$NON-NLS-1$ //$NON-NLS-2$
+//      }
+//      try {
+//        testRenderAsJpeg(fileNames[i], data);
+//      } catch (Exception e) {
+//        e.printStackTrace();
+//        fail("Failed parsing "+fileNames[i]+ " file in method testRenderAsJpeg"); //$NON-NLS-1$ //$NON-NLS-2$
+//      }
+//      try {
+//        testRenderAsJpegStream(fileNames[i], data);
+//      } catch (Exception e) {
+//        e.printStackTrace();
+//        fail("Failed parsing "+fileNames[i]+ " file in method testRenderAsJpegStream"); //$NON-NLS-1$ //$NON-NLS-2$
+//      }
       try {
         testRenderAsPng(fileNames[i], data);
       } catch (Exception e) {
         e.printStackTrace();
         fail("Failed parsing "+fileNames[i]+ " file in method testRenderAsPng"); //$NON-NLS-1$ //$NON-NLS-2$
       }
-      try {
-        testRenderAsPngStream(fileNames[i], data);
-      } catch (Exception e) {
-        e.printStackTrace();
-        fail("Failed parsing "+fileNames[i]+ " file in method testRenderAsPngStream"); //$NON-NLS-1$ //$NON-NLS-2$
-      }
+//      try {
+//        testRenderAsPngStream(fileNames[i], data);
+//      } catch (Exception e) {
+//        e.printStackTrace();
+//        fail("Failed parsing "+fileNames[i]+ " file in method testRenderAsPngStream"); //$NON-NLS-1$ //$NON-NLS-2$
+//      }
     }
   }
-
-
-  private void testRenderAsXml(final String fileName,
-                               final ChartTableModel data) throws Exception {
-    final IChartPlugin plugin = new XmlChartPlugin(); //$NON-NLS-1$
-    // At this point we have an output of the correct type
-    // Now we can manipulate it to meet our needs so that we get the correct
-    // output location and type.
-
-    String chartFileName = TEST_FILE_PATH + fileName.substring(0, fileName.indexOf('.')) + ".xml";
-
-    // Load / parse the chart document
-    final URL chartURL = this.getClass().getResource(fileName);
-    final ChartDocumentContext cdc = ChartFactory.generateChart(chartURL, data);
-    assertNotNull(cdc);
-    assertNotNull(cdc.getChartDocument());
-    assertNotNull(cdc.getDataLinkInfo());
-
-    // Render and save the plot
-    IOutput output = plugin.renderChartDocument(cdc, data);
-    OutputUtils.persistChart(output, chartFileName, IOutput.OutputTypes.DATA_TYPE_STREAM, 400, 400);
-    final File chartFile = new File(chartFileName);
-    assertTrue(chartFile.exists());
-    System.out.println(chartFile.getAbsolutePath());
-  }
+//
+//
+//  private void testRenderAsXml(final String fileName,
+//                               final ChartTableModel data) throws Exception {
+//    final IChartPlugin plugin = new XmlChartPlugin(); //$NON-NLS-1$
+//    // At this point we have an output of the correct type
+//    // Now we can manipulate it to meet our needs so that we get the correct
+//    // output location and type.
+//
+//    String chartFileName = TEST_FILE_PATH + fileName.substring(0, fileName.indexOf('.')) + ".xml";
+//
+//    // Load / parse the chart document
+//    final URL chartURL = this.getClass().getResource(fileName);
+//    final ChartDocumentContext cdc = ChartFactory.generateChart(chartURL, data);
+//    assertNotNull(cdc);
+//    assertNotNull(cdc.getChartDocument());
+//    assertNotNull(cdc.getDataLinkInfo());
+//
+//    // Render and save the plot
+//    IOutput output = plugin.renderChartDocument(cdc, data);
+//    OutputUtils.persistChart(output, chartFileName, IOutput.OutputTypes.DATA_TYPE_STREAM, 400, 400);
+//    final File chartFile = new File(chartFileName);
+//    assertTrue(chartFile.exists());
+//    System.out.println(chartFile.getAbsolutePath());
+//  }
 } //Class ends
 

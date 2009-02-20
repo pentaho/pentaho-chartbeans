@@ -13,7 +13,7 @@
   
   <series name="whatever" class="dial1" row-pos="0" />
 
-  <plot style="border-top-width: 3px; border-top-color: red; border-bottom-color: blue; color: white; border-top-color: red; border-top-style: solid;">
+  <plot style="border-top-width: 3px; border-top-color: #8d8d8d; border-bottom-color: #5d5d5d; color: #fff; border-top-style: solid;">
     <dialpointer style="color: peru; border-color: springgreen; height: 75%; width: 4%;" />
     <dialcap style="border-top-color: red; color: green; border-top-width: 1px; width: 6%; border-top-style: solid;" />
     <scale lowerbound="-20.0" upperbound="20.0" startangle="-135.0" extent="-180.0">

@@ -10,13 +10,14 @@ import junit.framework.TestCase;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.dial.DialCap;
 import org.jfree.chart.plot.dial.DialPlot;
+import org.jfree.chart.plot.dial.DialPointer;
 import org.jfree.chart.plot.dial.StandardDialScale;
 import org.pentaho.chart.ChartBoot;
 import org.pentaho.chart.ChartDocumentContext;
 import org.pentaho.chart.ChartFactory;
 import org.pentaho.chart.data.ChartTableModel;
 import org.pentaho.chart.plugin.jfreechart.chart.dial.JFreeDialChartGenerator;
-import org.pentaho.chart.plugin.jfreechart.chart.dial.JFreeDialChartGenerator.SingleLineDialFrame;
+import org.pentaho.chart.plugin.jfreechart.chart.dial.JFreeDialChartGenerator.DoubleLineDialFrame;
 
 
 
@@ -51,8 +52,10 @@ public class JFreeDialChartGeneratorTest extends TestCase {
   public void testPlotStyle() throws Exception {
     JFreeChart chart = getJFreeChart("PluginTest16b.xml", new Object[][] { { 8D } }); //$NON-NLS-1$
     DialPlot plot = (DialPlot) chart.getPlot(); 
-    SingleLineDialFrame frame = (SingleLineDialFrame) plot.getDialFrame();
+    DoubleLineDialFrame frame = (DoubleLineDialFrame) plot.getDialFrame();
     assertEquals(frame.getForegroundPaint(), Color.RED);
+    assertEquals(frame.getInnerForegroundPaint(), Color.BLUE);
+    assertEquals(frame.getBackgroundPaint(), Color.WHITE);
     assertEquals(String.format("expected: %s but was: %s", 3D, ((BasicStroke) frame.getStroke()).getLineWidth()), frame.getStroke(), new BasicStroke(3F));
   }
   
@@ -95,4 +98,18 @@ public class JFreeDialChartGeneratorTest extends TestCase {
     // so there is no low-level unit test for value indicator    
   }
 
+  public void testRange() throws Exception {
+    // couldn't find a way to retrieve the layer that adds the StandardDialRange (or SingleLineDialRange);
+    // so there is no low-level unit test for value indicator    
+  }
+  
+  public void testPointer() throws Exception {
+    JFreeChart chart = getJFreeChart("PluginTest16b.xml", new Object[][] { { 8D } }); //$NON-NLS-1$
+    DialPlot plot = (DialPlot) chart.getPlot(); 
+    DialPointer.Pointer pointer = (DialPointer.Pointer) plot.getPointerForDataset(0);
+    assertEquals(0.75D, pointer.getRadius());
+    assertEquals(0.04D, pointer.getWidthRadius());
+    assertEquals(new Color(205, 133, 63), pointer.getFillPaint());
+    assertEquals(new Color(0, 255, 127), pointer.getOutlinePaint());
+  }
 }
