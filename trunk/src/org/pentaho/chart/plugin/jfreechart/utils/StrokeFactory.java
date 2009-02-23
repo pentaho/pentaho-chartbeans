@@ -122,9 +122,10 @@ public class StrokeFactory {
     }
 
     final CSSValue borderStyle = chartElement.getLayoutStyle().getValue(styleStyleKey);
-    if (BorderStyle.NONE.getCSSText().equals(borderStyle.getCSSText())) {
+    if ((borderStyle == null) || BorderStyle.NONE.getCSSText().equals(borderStyle.getCSSText())) {
       // TODO mlowery figure out why logging won't output a "lesser" priority for this call
       logger.warn(String.format("************style %s has value %s; stroke will be null", styleStyleKey.name, BorderStyle.NONE.getCSSText()));
+      return null;
     }
     
     BasicStroke stroke = null;
