@@ -48,29 +48,29 @@ public class JFreeDialChartGeneratorTest extends TestCase {
   }
 
   public void testPlotStyle() throws Exception {
-    JFreeChart chart = getJFreeChart("PluginTest16b.xml", new Object[][] { { 8D } }); //$NON-NLS-1$
+    JFreeChart chart = getJFreeChart("testchart.xml", new Object[][] { { 8D } }); //$NON-NLS-1$
     DialPlot plot = (DialPlot) chart.getPlot();
     DoubleLineDialFrame frame = (DoubleLineDialFrame) plot.getDialFrame();
     assertEquals(frame.getForegroundPaint(), Color.RED);
     assertEquals(frame.getInnerForegroundPaint(), Color.BLUE);
     assertEquals(frame.getBackgroundPaint(), Color.WHITE);
-    assertEquals(String.format("expected: %s but was: %s", 3D, ((BasicStroke) frame.getStroke()).getLineWidth()), frame
+    assertEquals(String.format("expected: %s but was: %s", 3D, ((BasicStroke) frame.getStroke()).getLineWidth()), frame //$NON-NLS-1$
         .getStroke(), new BasicStroke(3F));
   }
 
   public void testCapStyle() throws Exception {
-    JFreeChart chart = getJFreeChart("PluginTest16b.xml", new Object[][] { { 8D } }); //$NON-NLS-1$
+    JFreeChart chart = getJFreeChart("testchart.xml", new Object[][] { { 8D } }); //$NON-NLS-1$
     DialPlot plot = (DialPlot) chart.getPlot();
     DialCap cap = (DialCap) plot.getCap();
     assertEquals(cap.getFillPaint(), new Color(0, 128, 0)); // CSS constant green is 0, 128, 0
     assertEquals(cap.getOutlinePaint(), Color.RED);
-    assertEquals(String.format("expected: %s but was: %s", 1D, ((BasicStroke) cap.getOutlineStroke()).getLineWidth()),
+    assertEquals(String.format("expected: %s but was: %s", 1D, ((BasicStroke) cap.getOutlineStroke()).getLineWidth()), //$NON-NLS-1$
         cap.getOutlineStroke(), new BasicStroke(1F));
     assertEquals(cap.getRadius(), 0.06D);
   }
 
   public void testScale() throws Exception {
-    JFreeChart chart = getJFreeChart("PluginTest16b.xml", new Object[][] { { 8D } }); //$NON-NLS-1$
+    JFreeChart chart = getJFreeChart("testchart.xml", new Object[][] { { 8D } }); //$NON-NLS-1$
     DialPlot plot = (DialPlot) chart.getPlot();
     StandardDialScale scale = (StandardDialScale) plot.getScale(0);
     assertEquals(-20D, scale.getLowerBound());
@@ -85,7 +85,7 @@ public class JFreeDialChartGeneratorTest extends TestCase {
     assertEquals(12, scale.getTickLabelFont().getSize());
     assertEquals(Font.ITALIC | Font.BOLD, scale.getTickLabelFont().getStyle());
     // had trouble getting a font comparison to work without breaking it down into size, style, and name
-    assertEquals("Monospaced", scale.getTickLabelFont().getName());
+    assertEquals("Monospaced", scale.getTickLabelFont().getName()); //$NON-NLS-1$
     
     assertEquals(5F, ((BasicStroke) scale.getMajorTickStroke()).getLineWidth());
     assertEquals(3F, ((BasicStroke) scale.getMinorTickStroke()).getLineWidth());
@@ -111,14 +111,14 @@ public class JFreeDialChartGeneratorTest extends TestCase {
   }
 
   public void testPointer() throws Exception {
-    JFreeChart chart = getJFreeChart("PluginTest16b.xml", new Object[][] { { 8D } }); //$NON-NLS-1$
+    JFreeChart chart = getJFreeChart("testchart.xml", new Object[][] { { 8D } }); //$NON-NLS-1$
     DialPlot plot = (DialPlot) chart.getPlot();
     VariableStrokePointer pointer = (VariableStrokePointer) plot.getPointerForDataset(0);
     assertEquals(0.75D, pointer.getRadius());
     assertEquals(0.04D, pointer.getWidthRadius());
     assertEquals(new Color(205, 133, 63), pointer.getFillPaint());
     assertEquals(new Color(0, 255, 127), pointer.getOutlinePaint());
-    assertEquals(String.format("expected: %s but was: %s", 3D, ((BasicStroke) pointer.getOutlineStroke())
+    assertEquals(String.format("expected: %s but was: %s", 3D, ((BasicStroke) pointer.getOutlineStroke()) //$NON-NLS-1$
         .getLineWidth()), pointer.getOutlineStroke(), new BasicStroke(2F));
   }
 }
