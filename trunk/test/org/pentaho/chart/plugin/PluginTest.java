@@ -318,6 +318,21 @@ public class PluginTest extends TestCase {
 
     runTests(fileNames, data);
   }
+  
+  public void testDialChart() {   
+    final Object[][] dataArray = { { 8D } };
+    
+    final ChartTableModel data = createChartTableModel(dataArray);
+    data.setRowName(0, "Temperature"); //$NON-NLS-1$
+    
+    final String[] fileNames = {
+      "PluginTest16a.xml", //$NON-NLS-1$
+      "PluginTest16b.xml", //$NON-NLS-1$
+    };
+
+    runTests(fileNames, data);
+  }
+  
   private void runTests(final String[] fileNames, final ChartTableModel data) {
     for (int i = 0; i < fileNames.length; i++) {
       try {
