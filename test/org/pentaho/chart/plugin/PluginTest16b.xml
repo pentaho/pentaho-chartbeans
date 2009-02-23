@@ -17,7 +17,6 @@
     <dialpointer style="color: peru; border-color: springgreen; height: 75%; width: 4%;" />
     <dialcap style="border-top-color: red; color: green; border-top-width: 1px; width: 6%; border-top-style: solid;" />
     <scale lowerbound="-20.0" upperbound="20.0" startangle="-135.0" extent="-180.0">
-      <!-- need to implement tick widths and lengths -->
       <ticklabel style="font-family: monospace; color: hotpink; font-size: 12pt; font-style: italic; font-weight: bold;" />
       <majortick increment="5.0" style="width: 5px; height: 10%; color: seagreen;" />
       <minortick count="2" style="width: 3px; height: 5%; color: purple;" />

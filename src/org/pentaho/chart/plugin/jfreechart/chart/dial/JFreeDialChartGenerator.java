@@ -19,8 +19,6 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.ImageObserver;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.dial.DialBackground;
 import org.jfree.chart.plot.dial.DialCap;
@@ -55,7 +53,37 @@ import org.pentaho.reporting.libraries.css.values.CSSValuePair;
 
 public class JFreeDialChartGenerator extends JFreeChartGenerator {
 
-  private static final Log logger = LogFactory.getLog(JFreeDialChartGenerator.class);
+  private static final String DIALVALUEINDICATOR = "dialvalueindicator"; //$NON-NLS-1$
+
+  private static final String DIALRANGES = "dialranges"; //$NON-NLS-1$
+
+  private static final String COUNT = "count"; //$NON-NLS-1$
+
+  private static final String MINORTICK = "minortick"; //$NON-NLS-1$
+
+  private static final String INCREMENT = "increment"; //$NON-NLS-1$
+
+  private static final String MAJORTICK = "majortick"; //$NON-NLS-1$
+
+  private static final String TICKLABEL = "ticklabel"; //$NON-NLS-1$
+
+  private static final String EXTENT = "extent"; //$NON-NLS-1$
+
+  private static final String STARTANGLE = "startangle"; //$NON-NLS-1$
+
+  private static final String SCALE = "scale"; //$NON-NLS-1$
+
+  private static final String DIALCAP = "dialcap"; //$NON-NLS-1$
+
+  private static final String ANNOTATION = "annotation"; //$NON-NLS-1$
+
+  private static final String DIALPOINTER = "dialpointer"; //$NON-NLS-1$
+
+  private static final String UPPERBOUND = "upperbound"; //$NON-NLS-1$
+
+  private static final String LOWERBOUND = "lowerbound"; //$NON-NLS-1$
+
+  private static final String DIALRANGE = "dialrange"; //$NON-NLS-1$
 
   public JFreeChart createChart(final ChartDocumentContext chartDocContext, final ChartTableModel data) {
     final ChartDocument chartDocument = chartDocContext.getChartDocument();
@@ -104,7 +132,9 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
 
     setDialPointer(chartDocument, dialPlot);
 
-    return new JFreeChart(getTitle(chartDocument), dialPlot);
+    JFreeChart chart = new JFreeChart(getTitle(chartDocument), dialPlot);
+    chart.setBackgroundPaint(Color.white);
+    return chart;
 
   }
 
@@ -167,12 +197,12 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
   protected void setDialRange(ChartDocument chartDocument, DialPlot dialPlot) {
 
     final double rangeInnerRadius = 0.4D;
-    ChartElement[] rangeElements = getElements(chartDocument, "dialrange");
+    ChartElement[] rangeElements = getElements(chartDocument, DIALRANGE);
 
     for (int i = 0; i < rangeElements.length; i++) {
 
-      double lowerBound = Double.parseDouble((String) rangeElements[i].getAttribute("lowerbound"));
-      double upperBound = Double.parseDouble((String) rangeElements[i].getAttribute("upperbound"));
+      double lowerBound = Double.parseDouble((String) rangeElements[i].getAttribute(LOWERBOUND));
+      double upperBound = Double.parseDouble((String) rangeElements[i].getAttribute(UPPERBOUND));
 
       final Color rangeColorTmp = ColorFactory.getInstance().getColor(rangeElements[i]);
       Color rangeColor = Color.BLACK;
@@ -197,7 +227,7 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
 
     VariableStrokePointer pointer = new VariableStrokePointer();
 
-    ChartElement pointerElement = getUniqueElement(chartDocument, "dialpointer");
+    ChartElement pointerElement = getUniqueElement(chartDocument, DIALPOINTER);
 
     final Color pointerColorTmp = ColorFactory.getInstance().getColor(pointerElement);
     if (pointerColorTmp != null) {
@@ -241,7 +271,7 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
     final double textAnnotationRadius = 0.69999999999999996D; // hard-coded for now
     // ~ params end
 
-    ChartElement annotationElement = getUniqueElement(chartDocument, "annotation");
+    ChartElement annotationElement = getUniqueElement(chartDocument, ANNOTATION);
     String annotation = null;
     if (annotationElement != null && annotationElement.getText() != null) {
       annotation = annotationElement.getText();
@@ -276,7 +306,7 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
 
     final StrokeFactory strokeFacObj = StrokeFactory.getInstance();
 
-    ChartElement dialCapElement = getUniqueElement(chartDocument, "dialcap");
+    ChartElement dialCapElement = getUniqueElement(chartDocument, DIALCAP);
 
     final BasicStroke borderStyleStroke = strokeFacObj.getBorderStroke(dialCapElement);
     if (borderStyleStroke != null) {
@@ -342,14 +372,14 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
     Color scaleTickLabelPaint = Color.blue;
     // ~ params end
 
-    ChartElement scaleElement = getUniqueElement(chartDocument, "scale");
+    ChartElement scaleElement = getUniqueElement(chartDocument, SCALE);
 
-    scaleUpperBound = Double.parseDouble((String) scaleElement.getAttribute("upperbound"));
-    scaleLowerBound = Double.parseDouble((String) scaleElement.getAttribute("lowerbound"));
-    scaleStartAngle = Double.parseDouble((String) scaleElement.getAttribute("startangle"));
-    scaleExtent = Double.parseDouble((String) scaleElement.getAttribute("extent"));
+    scaleUpperBound = Double.parseDouble((String) scaleElement.getAttribute(UPPERBOUND));
+    scaleLowerBound = Double.parseDouble((String) scaleElement.getAttribute(LOWERBOUND));
+    scaleStartAngle = Double.parseDouble((String) scaleElement.getAttribute(STARTANGLE));
+    scaleExtent = Double.parseDouble((String) scaleElement.getAttribute(EXTENT));
 
-    ChartElement tickLabelElement = getUniqueElement(chartDocument, "ticklabel");
+    ChartElement tickLabelElement = getUniqueElement(chartDocument, TICKLABEL);
     Color tickLabelColorTmp = ColorFactory.getInstance().getColor(tickLabelElement);
     if (tickLabelColorTmp != null) {
       scaleTickLabelPaint = tickLabelColorTmp;
@@ -360,8 +390,8 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
       scaleTickLabelFont = tickLabelFontTmp;
     }
 
-    ChartElement majorTickElement = getUniqueElement(chartDocument, "majortick");
-    scaleMajorTickIncrement = Double.parseDouble((String) majorTickElement.getAttribute("increment"));
+    ChartElement majorTickElement = getUniqueElement(chartDocument, MAJORTICK);
+    scaleMajorTickIncrement = Double.parseDouble((String) majorTickElement.getAttribute(INCREMENT));
 
     float majorTickWidthTmp = (float) parseDouble(majorTickElement.getLayoutStyle().getValue(BoxStyleKeys.WIDTH));
     if (majorTickWidthTmp != 0) {
@@ -373,8 +403,8 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
       scaleMajorTickLength = majorTickLengthTmp;
     }
 
-    ChartElement minorTickElement = getUniqueElement(chartDocument, "minortick");
-    scaleMinorTickCount = Integer.parseInt((String) minorTickElement.getAttribute("count"));
+    ChartElement minorTickElement = getUniqueElement(chartDocument, MINORTICK);
+    scaleMinorTickCount = Integer.parseInt((String) minorTickElement.getAttribute(COUNT));
 
     float minorTickWidthTmp = (float) parseDouble(minorTickElement.getLayoutStyle().getValue(BoxStyleKeys.WIDTH));
     if (minorTickWidthTmp != 0) {
@@ -417,10 +447,10 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
   protected ChartElement[] getElements(ChartDocument doc, String name) {
     if (ChartElement.TAG_NAME_PLOT.equals(name)) {
       return new ChartElement[] { doc.getPlotElement() };
-    } else if ("dialrange".equals(name)) {
+    } else if (DIALRANGE.equals(name)) {
       ChartElement plotElem = doc.getPlotElement();
       if (plotElem != null) {
-        ChartElement[] dialRanges = plotElem.findChildrenByName("dialranges");
+        ChartElement[] dialRanges = plotElem.findChildrenByName(DIALRANGES);
         if (dialRanges.length > 0) {
           return dialRanges[0].findChildrenByName(name);
         } else {
@@ -429,8 +459,8 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
       } else {
         return null;
       }
-    } else if ("ticklabel".equals(name) || "majortick".equals(name) || "minortick".equals(name)) {
-      return doc.getPlotElement().findChildrenByName("scale")[0].findChildrenByName(name);
+    } else if (TICKLABEL.equals(name) || MAJORTICK.equals(name) || MINORTICK.equals(name)) {
+      return doc.getPlotElement().findChildrenByName(SCALE)[0].findChildrenByName(name);
     } else {
       ChartElement[] elems = doc.getPlotElement().findChildrenByName(name);
       return elems;
@@ -447,7 +477,7 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
     Color valueIndicatorOutlinePaint = Color.blue;
     // ~ params end
 
-    ChartElement valIndicatorElement = getUniqueElement(chartDocument, "dialvalueindicator");
+    ChartElement valIndicatorElement = getUniqueElement(chartDocument, DIALVALUEINDICATOR);
     Color valIndicatorColorTmp = ColorFactory.getInstance().getColor(valIndicatorElement);
     if (valIndicatorColorTmp != null) {
       valueIndicatorPaint = valIndicatorColorTmp;
@@ -654,6 +684,8 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
    */
   public static class FixedStandardDialScale extends StandardDialScale {
 
+    private static final long serialVersionUID = 1L;
+
     public FixedStandardDialScale(double lowerBound, double upperBound, double startAngle, double extent,
         double majorTickIncrement, int minorTickCount) {
 
@@ -741,7 +773,7 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
 
     public void setOutlineStroke(Stroke outlineStroke) {
       if (outlineStroke == null) {
-        throw new IllegalArgumentException("Null 'stroke' argument.");
+        throw new IllegalArgumentException("Null 'stroke' argument."); //$NON-NLS-1$
       }
       this.outlineStroke = outlineStroke;
       notifyListeners(new DialLayerChangeEvent(this));
