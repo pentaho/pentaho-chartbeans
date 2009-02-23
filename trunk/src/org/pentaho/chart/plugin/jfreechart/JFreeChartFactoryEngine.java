@@ -2,6 +2,8 @@ package org.pentaho.chart.plugin.jfreechart;
 
 import java.io.Serializable;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jfree.chart.JFreeChart;
 import org.pentaho.chart.ChartDocumentContext;
 import org.pentaho.chart.core.ChartDocument;
@@ -26,6 +28,8 @@ import org.pentaho.util.messages.Messages;
 
 public class JFreeChartFactoryEngine implements Serializable {
 
+  private static final Log logger = LogFactory.getLog(JFreeChartFactoryEngine.class);
+  
   private static final long serialVersionUID = -1079376910255750394L;
 
   public JFreeChartFactoryEngine(){
@@ -79,6 +83,7 @@ public class JFreeChartFactoryEngine implements Serializable {
       try {
         return new JFreeChartOutput((makeDialChart(data, chartDocumentContext)));
       } catch (Exception e) {
+        logger.error("", e); //$NON-NLS-1$
         chartResult.setErrorCode(IChartPlugin.RESULT_ERROR);
         chartResult.setDescription(e.getLocalizedMessage());
       }

@@ -20,8 +20,10 @@ package org.pentaho.chart.plugin.jfreechart.utils;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GradientPaint;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -44,8 +46,8 @@ import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
 import org.pentaho.reporting.libraries.css.keys.font.FontSizeConstant;
 import org.pentaho.reporting.libraries.css.keys.font.FontStyle;
 import org.pentaho.reporting.libraries.css.keys.font.FontStyleKeys;
-import org.pentaho.reporting.libraries.css.keys.font.RelativeFontSize;
 import org.pentaho.reporting.libraries.css.keys.font.FontWeight;
+import org.pentaho.reporting.libraries.css.keys.font.RelativeFontSize;
 import org.pentaho.reporting.libraries.css.values.CSSColorValue;
 import org.pentaho.reporting.libraries.css.values.CSSFunctionValue;
 import org.pentaho.reporting.libraries.css.values.CSSNumericType;
@@ -59,8 +61,18 @@ import org.pentaho.reporting.libraries.css.values.CSSValuePair;
 public class JFreeChartUtils {
 
   private static final Log logger = LogFactory.getLog(JFreeChartUtils.class);
+  
+  private static Map<String, String> cssFamilyToAwtFamilyMap;
 
   private static final char SEPERATOR = '/';
+
+  static {
+    cssFamilyToAwtFamilyMap = new HashMap<String, String>();
+    cssFamilyToAwtFamilyMap.put("monospace", "Monospaced");
+    cssFamilyToAwtFamilyMap.put("serif", "Serif");
+    cssFamilyToAwtFamilyMap.put("sans-serif", "SansSerif");
+  }
+  
   private JFreeChartUtils() {
   }
 
@@ -352,6 +364,11 @@ public class JFreeChartUtils {
       final LayoutStyle layoutStyle = currentSeries.getLayoutStyle();
       CSSValue cssValue = layoutStyle.getValue(FontStyleKeys.FONT_FAMILY);
       String fontFamily = cssValue != null ? cssValue.getCSSText() : null;
+      
+      if (cssFamilyToAwtFamilyMap.get(fontFamily) != null) {
+        fontFamily = cssFamilyToAwtFamilyMap.get(fontFamily);
+      }
+      
       if (fontFamily != null) {
         int fontStyle = JFreeChartUtils.getFontStyle(layoutStyle);
         // Creating the requisite font and setting the default size of 10. This will be overwritten below.

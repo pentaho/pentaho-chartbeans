@@ -210,12 +210,12 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
       pointerOutlinePaint = pointerBorderColorTmp;
     }
 
-    double pointerWidthRadiusTmp = parsePercent(pointerElement.getLayoutStyle().getValue(BoxStyleKeys.WIDTH));
+    double pointerWidthRadiusTmp = parseDouble(pointerElement.getLayoutStyle().getValue(BoxStyleKeys.WIDTH)) / 100;
     if (pointerWidthRadiusTmp != 0) {
       pointerWidthRadius = pointerWidthRadiusTmp;
     }
 
-    double pointerRadiusTmp = parsePercent(pointerElement.getLayoutStyle().getValue(BoxStyleKeys.HEIGHT));
+    double pointerRadiusTmp = parseDouble(pointerElement.getLayoutStyle().getValue(BoxStyleKeys.HEIGHT)) / 100;
     if (pointerRadiusTmp != 0) {
       pointerRadius = pointerRadiusTmp;
     }
@@ -224,7 +224,7 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
     if (borderStyleStroke != null) {
       pointerOutlineStroke = borderStyleStroke;
     }
-    
+
     pointer.setRadius(pointerRadius);
     pointer.setOutlineStroke(pointerOutlineStroke);
     pointer.setWidthRadius(pointerWidthRadius);
@@ -293,7 +293,7 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
       capFillPaint = capColor;
     }
 
-    capRadius = parsePercent(dialCapElement.getLayoutStyle().getValue(BoxStyleKeys.WIDTH));
+    capRadius = parseDouble(dialCapElement.getLayoutStyle().getValue(BoxStyleKeys.WIDTH)) / 100;
 
     DialCap dialCap = new DialCap();
     dialCap.setRadius(capRadius);
@@ -304,15 +304,19 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
   }
 
   /**
-   * Gets the numeric value inside the CSS value then treats it as a percentage.
+   * Gets the numeric value inside the CSS value; ignores units.
    */
-  protected double parsePercent(final CSSValue value) {
+  protected double parseDouble(final CSSValue value) {
     String trimmedString = value.getCSSText().trim();
     for (int i = 0; i < trimmedString.length(); i++) {
       char c = trimmedString.charAt(i);
       if (!Character.isDigit(c)) {
-        double d = Double.parseDouble(trimmedString.substring(0, i));
-        return d / 100;
+        try {
+          double d = Double.parseDouble(trimmedString.substring(0, i));
+          return d;
+        } catch (NumberFormatException e) {
+          return 0;
+        }
       }
     }
     return 0;
@@ -328,12 +332,12 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
     int scaleMinorTickCount = 4;
     final double scaleTickRadius = 0.88D;
     final double scaleTickLabelOffset = 0.14999999999999999D;
-    final double scaleMajorTickLength = 0.04;
+    double scaleMajorTickLength = 0.04;
     Color scaleMajorTickPaint = Color.black;
-    final Stroke scaleMajorTickStroke = new BasicStroke(3.0f);
-    final double scaleMinorTickLength = 0.02;
+    Stroke scaleMajorTickStroke = new BasicStroke(3.0f);
+    double scaleMinorTickLength = 0.02;
     Color scaleMinorTickPaint = Color.black;
-    final Stroke scaleMinorTickStroke = new BasicStroke(1.0f);
+    Stroke scaleMinorTickStroke = new BasicStroke(1.0f);
     Font scaleTickLabelFont = new Font("Dialog", 0, 14); //$NON-NLS-1$
     Color scaleTickLabelPaint = Color.blue;
     // ~ params end
@@ -359,8 +363,28 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
     ChartElement majorTickElement = getUniqueElement(chartDocument, "majortick");
     scaleMajorTickIncrement = Double.parseDouble((String) majorTickElement.getAttribute("increment"));
 
+    float majorTickWidthTmp = (float) parseDouble(majorTickElement.getLayoutStyle().getValue(BoxStyleKeys.WIDTH));
+    if (majorTickWidthTmp != 0) {
+      scaleMajorTickStroke = new BasicStroke(majorTickWidthTmp);
+    }
+
+    double majorTickLengthTmp = parseDouble(majorTickElement.getLayoutStyle().getValue(BoxStyleKeys.HEIGHT)) / 100;
+    if (majorTickLengthTmp != 0) {
+      scaleMajorTickLength = majorTickLengthTmp;
+    }
+
     ChartElement minorTickElement = getUniqueElement(chartDocument, "minortick");
     scaleMinorTickCount = Integer.parseInt((String) minorTickElement.getAttribute("count"));
+
+    float minorTickWidthTmp = (float) parseDouble(minorTickElement.getLayoutStyle().getValue(BoxStyleKeys.WIDTH));
+    if (minorTickWidthTmp != 0) {
+      scaleMinorTickStroke = new BasicStroke(minorTickWidthTmp);
+    }
+
+    double minorTickLengthTmp = parseDouble(minorTickElement.getLayoutStyle().getValue(BoxStyleKeys.HEIGHT)) / 100;
+    if (minorTickLengthTmp != 0) {
+      scaleMinorTickLength = minorTickLengthTmp;
+    }
 
     Color majorTickColorTmp = ColorFactory.getInstance().getColor(majorTickElement);
     if (majorTickColorTmp != null) {

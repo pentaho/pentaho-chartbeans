@@ -85,7 +85,14 @@ public class JFreeDialChartGeneratorTest extends TestCase {
     assertEquals(12, scale.getTickLabelFont().getSize());
     assertEquals(Font.ITALIC | Font.BOLD, scale.getTickLabelFont().getStyle());
     // had trouble getting a font comparison to work without breaking it down into size, style, and name
-    assertEquals("monospace", scale.getTickLabelFont().getName());
+    assertEquals("Monospaced", scale.getTickLabelFont().getName());
+    
+    assertEquals(5F, ((BasicStroke) scale.getMajorTickStroke()).getLineWidth());
+    assertEquals(3F, ((BasicStroke) scale.getMinorTickStroke()).getLineWidth());
+    
+    assertEquals(0.10D, scale.getMajorTickLength());
+    assertEquals(0.05D, scale.getMinorTickLength());
+    
   }
 
   public void testValueIndicator() throws Exception {
