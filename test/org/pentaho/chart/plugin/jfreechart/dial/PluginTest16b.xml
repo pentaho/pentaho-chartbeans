@@ -19,8 +19,8 @@
     <scale lowerbound="-20.0" upperbound="20.0" startangle="-135.0" extent="-180.0">
       <!-- need to implement tick widths and lengths -->
       <ticklabel style="font-family: monospace; color: hotpink; font-size: 12pt; font-style: italic; font-weight: bold;" />
-      <majortick increment="5.0" style="width: 2px; color: seagreen;" />
-      <minortick count="2" style="width: 1px; color: purple;" />
+      <majortick increment="5.0" style="width: 5px; height: 10%; color: seagreen;" />
+      <minortick count="2" style="width: 3px; height: 5%; color: purple;" />
     </scale>
     <annotation style="font-family: 'arial'; font-size: 20pt;">Temperature</annotation>
     <dialvalueindicator style="border-top-style: solid; border-top-width: 3px; border-top-color: sienna; color: tomato; background-color: snow; font-family: 'arial';" />
