@@ -3,6 +3,7 @@ package org.pentaho.chart.plugin.jfreechart.chart.dial;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -34,6 +35,8 @@ import org.jfree.chart.plot.dial.StandardDialScale;
 import org.jfree.data.general.ValueDataset;
 import org.jfree.text.TextUtilities;
 import org.jfree.ui.GradientPaintTransformType;
+import org.jfree.ui.RectangleAnchor;
+import org.jfree.ui.Size2D;
 import org.jfree.ui.StandardGradientPaintTransformer;
 import org.jfree.ui.TextAnchor;
 import org.jfree.util.PaintUtilities;
@@ -274,7 +277,7 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
     ChartElement annotationElement = getUniqueElement(chartDocument, ANNOTATION);
     if (annotationElement != null && annotationElement.getText() != null) {
       String annotation = annotationElement.getText();
-      
+
       Color annotationColorTmp = ColorFactory.getInstance().getColor(annotationElement);
       if (annotationColorTmp != null) {
         textAnnotationPaint = annotationColorTmp;
@@ -284,7 +287,7 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
       if (annotationFontTmp != null) {
         textAnnotationFont = annotationFontTmp;
       }
-      
+
       DialTextAnnotation dialtextannotation = new DialTextAnnotation(annotation);
       dialtextannotation.setFont(textAnnotationFont);
       dialtextannotation.setPaint(textAnnotationPaint);
@@ -504,6 +507,22 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
     }
 
     DialValueIndicator dialValueIndicator = new DialValueIndicator(0);
+    
+    // begin code to determine the size of the value indicator box 
+    ChartElement scaleElement = getUniqueElement(chartDocument, SCALE);
+    if (scaleElement != null) {
+      
+      double scaleUpperBound = Double.parseDouble(scaleElement.getAttribute(UPPERBOUND).toString());
+      double scaleLowerBound = Double.parseDouble(scaleElement.getAttribute(LOWERBOUND).toString());
+
+      if (Math.abs(scaleUpperBound) > Math.abs(scaleLowerBound)) {
+        dialValueIndicator.setTemplateValue(scaleUpperBound);
+      } else {
+        dialValueIndicator.setTemplateValue(scaleLowerBound);
+      }
+    }
+    // end code to determine the size of the value indicator box
+    
     dialValueIndicator.setFont(valueIndicatorFont);
     dialValueIndicator.setPaint(valueIndicatorPaint);
     dialValueIndicator.setBackgroundPaint(valueIndicatorBackgroundPaint);
@@ -566,8 +585,12 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
 
       Arc2D arcInner = new Arc2D.Double(arcRectInner, angleMin, angleMax - angleMin, Arc2D.OPEN);
 
+      // make the stroke a percentage of the width of the frame
+      double frameWidth = frame.getWidth();
+      float strokeWidth = (float) frameWidth * 0.125f;
+
       g2.setPaint(getPaint());
-      g2.setStroke(new BasicStroke(50.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
+      g2.setStroke(new BasicStroke(strokeWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
       g2.draw(arcInner);
     }
 
