@@ -3,7 +3,6 @@ package org.pentaho.chart.plugin.jfreechart.chart.dial;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -21,6 +20,8 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.ImageObserver;
 
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotRenderingInfo;
+import org.jfree.chart.plot.PlotState;
 import org.jfree.chart.plot.dial.DialBackground;
 import org.jfree.chart.plot.dial.DialCap;
 import org.jfree.chart.plot.dial.DialLayerChangeEvent;
@@ -35,8 +36,6 @@ import org.jfree.chart.plot.dial.StandardDialScale;
 import org.jfree.data.general.ValueDataset;
 import org.jfree.text.TextUtilities;
 import org.jfree.ui.GradientPaintTransformType;
-import org.jfree.ui.RectangleAnchor;
-import org.jfree.ui.Size2D;
 import org.jfree.ui.StandardGradientPaintTransformer;
 import org.jfree.ui.TextAnchor;
 import org.jfree.util.PaintUtilities;
@@ -93,7 +92,7 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
 
     // ~ plot ======================================================================================================== 
 
-    DialPlot dialPlot = new DialPlot();
+    DialPlot dialPlot = new SquareDialPlot();
 
     // ~ data ========================================================================================================
 
@@ -507,11 +506,11 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
     }
 
     DialValueIndicator dialValueIndicator = new DialValueIndicator(0);
-    
+
     // begin code to determine the size of the value indicator box 
     ChartElement scaleElement = getUniqueElement(chartDocument, SCALE);
     if (scaleElement != null) {
-      
+
       double scaleUpperBound = Double.parseDouble(scaleElement.getAttribute(UPPERBOUND).toString());
       double scaleLowerBound = Double.parseDouble(scaleElement.getAttribute(LOWERBOUND).toString());
 
@@ -522,7 +521,7 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
       }
     }
     // end code to determine the size of the value indicator box
-    
+
     dialValueIndicator.setFont(valueIndicatorFont);
     dialValueIndicator.setPaint(valueIndicatorPaint);
     dialValueIndicator.setBackgroundPaint(valueIndicatorBackgroundPaint);
@@ -537,6 +536,24 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
   protected ChartElement getUniqueElement(ChartDocument doc, String name) {
     ChartElement[] chartElements = getElements(doc, name);
     return chartElements.length > 0 ? chartElements[0] : null;
+  }
+
+  /**
+   * Resizes the dial plot so that the smallest side of the plot is the length of all sides--a square plot.
+   */
+  public static class SquareDialPlot extends DialPlot {
+
+    @Override
+    public void draw(Graphics2D g2, Rectangle2D area, Point2D anchor, PlotState parentState, PlotRenderingInfo info) {
+      Rectangle2D squareArea = new Rectangle2D.Double();
+      double sideLength = Math.min(area.getWidth(), area.getHeight());
+
+      double distToShiftToCenter = (area.getWidth() - sideLength) / 2;
+
+      squareArea.setRect(area.getX() + distToShiftToCenter, area.getY(), sideLength, sideLength);
+      super.draw(g2, squareArea, anchor, parentState, info);
+    }
+
   }
 
   /**
