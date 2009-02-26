@@ -89,12 +89,12 @@ public class DialPlot extends Plot implements Serializable {
   // Really need a sorted set. But gwt 1.5.2 can't serialize sorted sets.
   ArrayList<DialRange> divisions = new ArrayList<DialRange>();
 
-  public SortedSet<DialRange> getDivisions() {
+  public SortedSet<DialRange> getRanges() {
     return new TreeSet<DialRange>(divisions);
   }
   
   public void addRange(DialRange dialRange) {
-    SortedSet<DialRange> ranges = getDivisions();
+    SortedSet<DialRange> ranges = getRanges();
     if (!divisions.contains(dialRange)) {
       ranges.add(dialRange);
       divisions.clear();
