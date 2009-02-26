@@ -387,7 +387,7 @@ public class ChartFactory {
   
   private static DialRange getFullRangeOfDial(DialPlot dialPlot){
     DialRange fullRange = new DialRange();
-    List<DialRange> ranges = new ArrayList<DialRange>(dialPlot.getDivisions());
+    List<DialRange> ranges = new ArrayList<DialRange>(dialPlot.getRanges());
     if (ranges.size() > 0) {
       DialRange minRange = null;
       DialRange maxRange = null;
@@ -439,7 +439,7 @@ public class ChartFactory {
     plotElement.addChildElement(dialCapElement);
     
     
-    List<DialRange> dialRanges = new ArrayList<DialRange>(dialPlot.getDivisions());
+    List<DialRange> dialRanges = new ArrayList<DialRange>(dialPlot.getRanges());
 
     ChartElement scaleElement = new ChartElement();
     scaleElement.setTagName("scale");
@@ -494,7 +494,7 @@ public class ChartFactory {
     dialRangesElement.setTagName("dialranges");
     plotElement.addChildElement(dialRangesElement);
     
-    for (DialRange dialRange : dialPlot.getDivisions()) {
+    for (DialRange dialRange : dialPlot.getRanges()) {
       if (dialRange.getColor() != null) {
         ChartElement dialRangeElement = new ChartElement();
         dialRangeElement.setTagName("dialrange");
