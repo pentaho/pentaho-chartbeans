@@ -21,7 +21,6 @@
 		<dependency org="${library.group}" name="libcss"  rev="${libcss.revision}"  transitive="true" changing="true" />
 
 		<!--  external dependencies -->
-		<dependency org="rhino" name="js" rev="1.6R7" transitive="false" />
 		<dependency org="jfree" name="jfreechart" rev="1.0.9" transitive="false" />
 		<dependency org="opensymphony" name="oscache" rev="2.3-compat" transitive="false" />
 		<dependency org="jfree" name="jcommon" rev="1.0.14" transitive="false" />
