@@ -1,6 +1,8 @@
 package org.pentaho.chart.model.util;
 
 import org.pentaho.chart.model.ChartModel;
+import org.pentaho.chart.model.Graph;
+import org.pentaho.chart.model.ChartModel.ChartTheme;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
@@ -13,6 +15,7 @@ public class ChartSerializer {
     xstreamReader.alias("ChartModel", ChartModel.class);
     xstreamWriter.setMode(XStream.NO_REFERENCES);
     xstreamReader.setMode(XStream.NO_REFERENCES);
+    xstreamWriter.useAttributeFor(Graph.class, "categoryAxisLabel");
     
   }
   public static String serialize(ChartModel model){
