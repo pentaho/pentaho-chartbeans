@@ -177,7 +177,6 @@ public class ChartFactory {
       element = element.getNextDepthFirstItem();
     }
   }
-  private static final String ROW_NAME = "row-name"; //$NON-NLS-1$
   
   public static InputStream createChart(Object[][] queryResults, ChartModel chartModel, int width, int height, OutputTypes outputType) throws ChartProcessingException, SQLException, ResourceKeyCreationException, PersistenceException {
     int rangeColumnIndex = 0;
@@ -281,7 +280,6 @@ public class ChartFactory {
     }
 
     for (int i = 0; i < domainsList.size(); i++) {
-      chartTableModel.setRowMetadata(i, ROW_NAME, domainsList.get(i));
       chartTableModel.setRowName(i, domainsList.get(i));
     }
     return chartTableModel;

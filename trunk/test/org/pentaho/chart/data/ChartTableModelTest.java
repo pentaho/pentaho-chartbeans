@@ -257,8 +257,7 @@ public class ChartTableModelTest extends TestCase {
     ct.setColumnName(1, "Last Name"); //$NON-NLS-1$
     ct.setColumnName(2, "Favorite Sport"); //$NON-NLS-1$
     ct.setColumnName(3, "Number of Years"); //$NON-NLS-1$
-    final String NAME = "ChartTableModel.Name";//$NON-NLS-1$
-    ct.setColMetadata(4, NAME, "Professional"); //$NON-NLS-1$
+    ct.setColMetadata(4, ChartTableModel.COL_NAME, "Professional"); //$NON-NLS-1$
     ct.setColMetadata(5, "Width", null); //$NON-NLS-1$
     ct.setColMetadata(6, "Width", null); //$NON-NLS-1$
 
@@ -306,7 +305,7 @@ public class ChartTableModelTest extends TestCase {
     }
 
     try {
-      // Cell -> Incorrect Key1 -> Correct
+     //  Cell -> Incorrect Key1 -> Correct
       data = ct.getCellMetadata(0, -10, 0);
       fail("Shouldn't reach here"); //$NON-NLS-1$
     } catch (IllegalArgumentException iae) {
