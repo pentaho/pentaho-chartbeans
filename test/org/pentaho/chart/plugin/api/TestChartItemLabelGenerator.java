@@ -16,8 +16,6 @@ import org.pentaho.chart.plugin.jfreechart.dataset.DatasetGeneratorFactory;
 
 public class TestChartItemLabelGenerator extends TestCase {
 
-  private static final String ROW_NAME = "row-name"; //$NON-NLS-1$
-  
   @Before
   public void setUp() throws Exception {
   }
@@ -63,9 +61,9 @@ public class TestChartItemLabelGenerator extends TestCase {
     data.setColumnName(1, "sales"); //$NON-NLS-1$
     data.setColumnName(2, "forecast"); //$NON-NLS-1$
 
-    data.setRowMetadata(0, ROW_NAME, "Jan"); //$NON-NLS-1$
-    data.setRowMetadata(1, ROW_NAME, "Feb"); //$NON-NLS-1$
-    data.setRowMetadata(2, ROW_NAME, "Mar"); //$NON-NLS-1$
+    data.setRowName(0, "Jan"); //$NON-NLS-1$
+    data.setRowName(1, "Feb"); //$NON-NLS-1$
+    data.setRowName(2, "Mar"); //$NON-NLS-1$
 
     return data;
   }

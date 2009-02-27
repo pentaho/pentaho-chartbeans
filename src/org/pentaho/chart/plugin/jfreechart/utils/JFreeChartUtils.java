@@ -88,7 +88,7 @@ public class JFreeChartUtils {
         }
     }
 
-    return syntheticColumnName.append(data.getRowMetadata(row, "row-name")).toString(); //$NON-NLS-1$
+    return syntheticColumnName.append(data.getRowMetadata(row, ChartTableModel.ROW_NAME)).toString();
   }
   /**
    * @param data

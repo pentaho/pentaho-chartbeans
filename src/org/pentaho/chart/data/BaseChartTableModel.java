@@ -55,9 +55,13 @@ class BaseChartTableModel extends AbstractTableModel implements ChartData {
    */
   private static final String CELL = "cell"; //$NON-NLS-1$
   /**
-   * Holds the name of the attribute
+   * Row name.
    */
-  private static final String NAME = "ChartTableModel.Name"; //$NON-NLS-1$
+  public static final String ROW_NAME = "row-name"; //$NON-NLS-1$
+  /**
+   * Column name.
+   */
+  public static final String COL_NAME = "col-name"; //$NON-NLS-1$
   /**
    * Metadata multi key hash map
    */
@@ -99,7 +103,7 @@ class BaseChartTableModel extends AbstractTableModel implements ChartData {
     String colName = null;
 
     if (col >= 0) {
-      colName = (String) metadataMap.get(COL, col, NAME);
+      colName = (String) metadataMap.get(COL, col, COL_NAME);
     } else {
       logger.error(Messages.getErrorString("ChartTableModel.ERROR_0001_COLUMN_NUM_LOWER_THAN_ZERO")); //$NON-NLS-1$
     }
@@ -116,7 +120,7 @@ class BaseChartTableModel extends AbstractTableModel implements ChartData {
     String rowName = null;
 
     if (row >= 0) {
-      rowName = (String) metadataMap.get(ROW, row, NAME);
+      rowName = (String) metadataMap.get(ROW, row, ROW_NAME);
     } else {
       logger.error(Messages.getErrorString("ChartTableModel.ERROR_0009_INVALID_ROW_NUMBER", "" + row)); //$NON-NLS-2$
     }
@@ -134,7 +138,7 @@ class BaseChartTableModel extends AbstractTableModel implements ChartData {
     } else if (null == name || name.trim().length() == 0) {
       logger.warn(Messages.getErrorString("ChartTableModel.WARN_NAME_SHOULD_NOT_BE_NULL")); //$NON-NLS-1$
     } else {
-      metadataMap.put(COL, col, NAME, name);
+      metadataMap.put(COL, col, COL_NAME, name);
     }
   }
 
@@ -146,7 +150,7 @@ class BaseChartTableModel extends AbstractTableModel implements ChartData {
    */
   public void setRowName(final int row, final String name) {
     if (row >= 0) {
-      metadataMap.put(ROW, row, NAME, name);
+      metadataMap.put(ROW, row, ROW_NAME, name);
     } else {
       logger.warn(Messages.getErrorString("ChartTableModel.ERROR_0010_ROW_NAME_NOT_SET", "" + row));
     }
