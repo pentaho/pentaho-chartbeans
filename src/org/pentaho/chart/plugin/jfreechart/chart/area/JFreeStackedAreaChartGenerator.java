@@ -13,7 +13,7 @@ import org.pentaho.chart.data.ChartTableModel;
  */
 public class JFreeStackedAreaChartGenerator extends JFreeAreaChartGenerator {
   //TODO: Not working quite right. Has spaces in the final chart that look odd.
-  public JFreeChart createChart(ChartDocumentContext chartDocContext, ChartTableModel data) {
+  protected JFreeChart doCreateChart(ChartDocumentContext chartDocContext, ChartTableModel data) {
     final JFreeChart chart = createChart(chartDocContext, data, ChartAreaStyle.STACKED);
 
     /*

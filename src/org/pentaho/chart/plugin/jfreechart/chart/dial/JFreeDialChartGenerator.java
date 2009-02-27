@@ -87,7 +87,7 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
 
   private static final String DIALRANGE = "dialrange"; //$NON-NLS-1$
 
-  public JFreeChart createChart(final ChartDocumentContext chartDocContext, final ChartTableModel data) {
+  protected JFreeChart doCreateChart(final ChartDocumentContext chartDocContext, final ChartTableModel data) {
     final ChartDocument chartDocument = chartDocContext.getChartDocument();
 
     // ~ plot ======================================================================================================== 
@@ -135,7 +135,6 @@ public class JFreeDialChartGenerator extends JFreeChartGenerator {
     setDialPointer(chartDocument, dialPlot);
 
     JFreeChart chart = new JFreeChart(getTitle(chartDocument), dialPlot);
-    chart.setBackgroundPaint(Color.white);
     return chart;
 
   }

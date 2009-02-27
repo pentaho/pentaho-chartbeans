@@ -28,7 +28,7 @@ import org.pentaho.chart.data.ChartTableModel;
  *
  */
 public class JFreeDefaultMultiChartGenerator extends JFreeMultiChartGenerator {
-  public JFreeChart createChart(ChartDocumentContext chartDocContext, ChartTableModel data) {
+  protected JFreeChart doCreateChart(ChartDocumentContext chartDocContext, ChartTableModel data) {
     final JFreeChart chart = createChart(chartDocContext, data, ChartMultiStyle.MULTI);
     CategoryPlot plot = (CategoryPlot) chart.getPlot();
     plot.setForegroundAlpha(0.5f);

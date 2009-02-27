@@ -35,7 +35,7 @@ import org.pentaho.util.messages.Messages;
 public class JFreePieChartGenerator extends JFreeChartGenerator {
   private static final Log logger = LogFactory.getLog(JFreePieChartGenerator.class);
 
-  public JFreeChart createChart(final ChartDocumentContext chartDocContext, 
+  protected JFreeChart doCreateChart(final ChartDocumentContext chartDocContext, 
                                 final ChartTableModel data) {
     final ChartDocument chartDocument = chartDocContext.getChartDocument();
     final String title = getTitle(chartDocument);

@@ -18,7 +18,7 @@ public class JFreeCylinderBarChartGenerator extends JFreeBarChartGenerator
    * @param data            Current chart data
    * @return Returns JFreeChart object that is a layered bar chart.
    */
-  public JFreeChart createChart(final ChartDocumentContext chartDocContext,
+  protected JFreeChart doCreateChart(final ChartDocumentContext chartDocContext,
                                 final ChartTableModel data)
   {
     final JFreeChart chart = createChart(chartDocContext, data, JFreeBarChartTypes.DEFAULT);

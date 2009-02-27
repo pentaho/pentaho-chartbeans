@@ -33,10 +33,13 @@ import org.pentaho.chart.css.styles.ChartOrientationStyle;
 import org.pentaho.chart.data.ChartTableModel;
 import org.pentaho.chart.plugin.api.ChartItemLabelGenerator;
 import org.pentaho.chart.plugin.jfreechart.dataset.DatasetGeneratorFactory;
+import org.pentaho.chart.plugin.jfreechart.utils.ColorFactory;
 import org.pentaho.chart.plugin.jfreechart.utils.CylinderRenderer;
 import org.pentaho.chart.plugin.jfreechart.utils.JFreeChartUtils;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
 import org.pentaho.reporting.libraries.css.values.CSSValue;
+import org.pentaho.reporting.libraries.css.keys.border.BorderStyleKeys;
+import org.pentaho.reporting.libraries.css.keys.box.BoxStyleKeys;
 import org.pentaho.reporting.libraries.css.keys.color.ColorStyleKeys;
 
 /**
@@ -65,6 +68,8 @@ import org.pentaho.reporting.libraries.css.keys.color.ColorStyleKeys;
  */
 public abstract class JFreeChartGenerator implements IJFreeChartGenerator {
 
+  
+  
   protected final DatasetGeneratorFactory datasetGeneratorFactory = new DatasetGeneratorFactory();
 
   /**
@@ -448,4 +453,26 @@ public abstract class JFreeChartGenerator implements IJFreeChartGenerator {
     }
     return paint;
   }
+
+  public JFreeChart createChart(ChartDocumentContext chartDocContext, ChartTableModel data) {
+    JFreeChart chart = doCreateChart(chartDocContext, data);
+
+   chart.setBackgroundPaint(getChartBackgroundColor(chartDocContext.getChartDocument()));
+    
+    return chart;
+  }
+
+  protected Color getChartBackgroundColor(ChartDocument chartDoc) {
+    Color chartBackgroundPaint = Color.white;
+    
+    ChartElement rootElement = chartDoc.getRootElement();
+    Color chartBackgroundPaintTmp = ColorFactory.getInstance().getColor(rootElement, BorderStyleKeys.BACKGROUND_COLOR);
+    if (!Color.black.equals(chartBackgroundPaintTmp)) { // black is the default?
+      chartBackgroundPaint = chartBackgroundPaintTmp;
+    }
+    
+    return chartBackgroundPaint; 
+  }
+  
+  protected abstract JFreeChart doCreateChart(ChartDocumentContext chartDocContext, ChartTableModel data);
 }
