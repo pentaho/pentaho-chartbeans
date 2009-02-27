@@ -6,11 +6,7 @@ import java.util.HashMap;
 import org.pentaho.chart.model.ChartLegend;
 
 public class ChartModel implements Serializable {
-  public class ChartTheme{
-    public static final int THEME_NULL = -1;
-    public static final int THEME1 = 0;
-    public static final int THEME2 = 1;
-    };
+  public enum ChartTheme{THEME1, THEME2};
   HashMap<String, String> styles = new HashMap<String, String>();
   
   String title;
@@ -19,13 +15,13 @@ public class ChartModel implements Serializable {
   Integer backgroundColor;
   Plot plot;
   
-  int theme;
+  ChartTheme theme;
 
-  public int getTheme() {
+  public ChartTheme getTheme() {
     return theme;
   }
 
-  public void setTheme(int theme) {
+  public void setTheme(ChartTheme theme) {
     this.theme = theme;
   }
 
