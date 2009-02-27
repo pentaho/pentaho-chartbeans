@@ -47,7 +47,7 @@ public class JFreeLineChartGenerator extends JFreeChartGenerator {
   /* (non-Javadoc)
    * @see org.pentaho.chart.plugin.jfreechart.chart.IJFreeChartGenerator#createChart(org.pentaho.chart.ChartDocumentContext, org.pentaho.chart.data.ChartTableModel)
    */
-  public JFreeChart createChart(final ChartDocumentContext chartDocContext, final ChartTableModel data) {
+  protected JFreeChart doCreateChart(final ChartDocumentContext chartDocContext, final ChartTableModel data) {
     final ChartDocument chartDocument = chartDocContext.getChartDocument();
     final String title = getTitle(chartDocument);
     final String valueCategoryLabel = getValueCategoryLabel(chartDocument);

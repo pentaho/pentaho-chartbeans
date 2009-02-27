@@ -27,7 +27,7 @@ public class JFreeStackedBarChartGenerator extends JFreeBarChartGenerator {
    * @param data Current chart data
    * @return Returns JFree layered bar chart.
    */
-  public JFreeChart createChart(final ChartDocumentContext chartDocContext,
+  protected JFreeChart doCreateChart(final ChartDocumentContext chartDocContext,
                                 final ChartTableModel data) {
     final JFreeChart chart = createChart(chartDocContext, data, JFreeBarChartTypes.STACKED);
 

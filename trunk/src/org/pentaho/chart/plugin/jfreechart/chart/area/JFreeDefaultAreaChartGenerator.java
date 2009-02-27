@@ -14,7 +14,7 @@ import org.pentaho.chart.data.ChartTableModel;
  * Time: 12:45:07 PM
  */
 public class JFreeDefaultAreaChartGenerator extends JFreeAreaChartGenerator {
-  public JFreeChart createChart(ChartDocumentContext chartDocContext, ChartTableModel data) {
+  protected JFreeChart doCreateChart(ChartDocumentContext chartDocContext, ChartTableModel data) {
     final JFreeChart chart = createChart(chartDocContext, data, ChartAreaStyle.AREA);
     CategoryPlot plot = (CategoryPlot) chart.getPlot();
     plot.setForegroundAlpha(0.5f);
