@@ -197,7 +197,7 @@ public class ChartFactory {
     ChartTableModel chartTableModel = createChartTableModel(queryResults, categoryColumnIdx, domainColumnIdx, rangeColumnIndex);
     
     ChartDocument themeDocument = null;
-    if ((chartThemeFactory != null) && (chartModel.getTheme() != null)) {
+    if ((chartThemeFactory != null) && (chartModel.getTheme() != 0)) {
       themeDocument = chartThemeFactory.getThemeDocument(chartModel.getTheme());
     }
     ChartDocument chartDocument = createChartDocument(chartModel, themeDocument);
