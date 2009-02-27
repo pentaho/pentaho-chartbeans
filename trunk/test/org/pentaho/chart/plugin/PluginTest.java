@@ -62,7 +62,6 @@ public class PluginTest extends TestCase {
   private static final String PNG_SUFFIX = ".png"; //$NON-NLS-1$
   private static final String JPG_SUFFIX = ".jpeg"; //$NON-NLS-1$
   private static final String TEST_FILE_PATH = "test/test-output/TestChart"; //$NON-NLS-1$
-  private static final String ROW_NAME = "row-name"; //$NON-NLS-1$
   //private static int CHART_COUNT = 0;
 
   protected void setUp() throws Exception {
@@ -197,9 +196,9 @@ public class PluginTest extends TestCase {
 //    data.setColumnName(4, "country"); //$NON-NLS-1$
 //    data.setColumnName(5, "territory"); //$NON-NLS-1$
     
-    data.setRowMetadata(0, ROW_NAME, "Jan"); //$NON-NLS-1$
-    data.setRowMetadata(1, ROW_NAME, "Feb"); //$NON-NLS-1$
-    data.setRowMetadata(2, ROW_NAME, "Mar"); //$NON-NLS-1$
+    data.setRowName(0, "Jan"); //$NON-NLS-1$
+    data.setRowName(1, "Feb"); //$NON-NLS-1$
+    data.setRowName(2, "Mar"); //$NON-NLS-1$
 
 //    data.setRowMetadata(0, ROW_NAME, "Jan 05"); //$NON-NLS-1$
 //    data.setRowMetadata(1, ROW_NAME, "Feb 05"); //$NON-NLS-1$
