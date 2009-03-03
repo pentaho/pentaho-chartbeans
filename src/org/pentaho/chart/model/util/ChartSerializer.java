@@ -15,8 +15,9 @@ public class ChartSerializer {
     xstreamWriter.setMode(XStream.NO_REFERENCES);
     xstreamReader.setMode(XStream.NO_REFERENCES);
     xstreamWriter.useAttributeFor(ChartModel.class, "theme"); //$NON-NLS-1$
+    xstreamReader.useAttributeFor(ChartModel.class, "theme"); //$NON-NLS-1$
     xstreamWriter.useAttributeFor(Graph.class, "categoryAxisLabel"); //$NON-NLS-1$
-    
+    xstreamReader.useAttributeFor(Graph.class, "categoryAxisLabel"); //$NON-NLS-1$
   }
   public static String serialize(ChartModel model){
     return xstreamWriter.toXML(model);
