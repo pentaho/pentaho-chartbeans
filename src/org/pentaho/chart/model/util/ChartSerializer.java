@@ -5,26 +5,41 @@ import org.pentaho.chart.model.Graph;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
+import org.pentaho.platform.plugin.action.chartbeans.ChartDataDefinition;
 
 public class ChartSerializer {
-  private static XStream xstreamWriter = new XStream(new JettisonMappedXmlDriver());
-  private static XStream xstreamReader = new XStream(new JettisonMappedXmlDriver());
+  private static XStream chartWriter = new XStream(new JettisonMappedXmlDriver());
+  
+  private static XStream chartDefWriter = new XStream(new JettisonMappedXmlDriver());
+  
   static{
-    xstreamWriter.alias("ChartModel", ChartModel.class); //$NON-NLS-1$
-    xstreamReader.alias("ChartModel", ChartModel.class); //$NON-NLS-1$
-    xstreamWriter.setMode(XStream.NO_REFERENCES);
-    xstreamReader.setMode(XStream.NO_REFERENCES);
-    xstreamWriter.useAttributeFor(ChartModel.class, "theme"); //$NON-NLS-1$
-    xstreamReader.useAttributeFor(ChartModel.class, "theme"); //$NON-NLS-1$
-    xstreamWriter.useAttributeFor(Graph.class, "categoryAxisLabel"); //$NON-NLS-1$
-    xstreamReader.useAttributeFor(Graph.class, "categoryAxisLabel"); //$NON-NLS-1$
+    chartWriter.alias("ChartModel", ChartModel.class); //$NON-NLS-1$
+    chartWriter.alias("ChartDataModel", ChartDataDefinition.class); //$NON-NLS-1$
+    
+    chartWriter.setMode(XStream.NO_REFERENCES);
+    chartWriter.useAttributeFor(Graph.class, "categoryAxisLabel"); //$NON-NLS-1$
+    chartWriter.useAttributeFor(ChartModel.class, "theme"); //$NON-NLS-1$
+    
+
+    chartDefWriter.setMode(XStream.NO_REFERENCES);
+    
   }
   public static String serialize(ChartModel model){
-    return xstreamWriter.toXML(model);
+    return chartWriter.toXML(model);
   }
   
   public static ChartModel deSerialize(String input){
-    return (ChartModel) xstreamReader.fromXML(input);
+    return (ChartModel) chartWriter.fromXML(input);
   }
   
+  
+  public static String serializeDataDefinition(ChartDataDefinition def){
+    return chartDefWriter.toXML(def);
+    
+  }
+  
+  public static String deSerializeDataDefinition(ChartDataDefinition def){
+    return chartDefWriter.toXML(def);
+    
+  }
 }
