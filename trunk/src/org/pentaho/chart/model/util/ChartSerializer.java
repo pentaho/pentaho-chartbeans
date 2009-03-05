@@ -14,7 +14,6 @@ public class ChartSerializer {
   
   static{
     chartWriter.alias("ChartModel", ChartModel.class); //$NON-NLS-1$
-    chartWriter.alias("ChartDataModel", ChartDataDefinition.class); //$NON-NLS-1$
     
     chartWriter.setMode(XStream.NO_REFERENCES);
     chartWriter.useAttributeFor(Graph.class, "categoryAxisLabel"); //$NON-NLS-1$
@@ -22,6 +21,7 @@ public class ChartSerializer {
     
 
     chartDefWriter.setMode(XStream.NO_REFERENCES);
+    chartDefWriter.alias("ChartDataModel", ChartDataDefinition.class); //$NON-NLS-1$
     
   }
   public static String serialize(ChartModel model){
@@ -38,8 +38,8 @@ public class ChartSerializer {
     
   }
   
-  public static String deSerializeDataDefinition(ChartDataDefinition def){
-    return chartDefWriter.toXML(def);
+  public static ChartDataDefinition deSerializeDataDefinition(String input){
+    return (ChartDataDefinition) chartDefWriter.fromXML(input);
     
   }
 }
