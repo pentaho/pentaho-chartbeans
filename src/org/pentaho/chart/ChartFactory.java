@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.jfree.data.general.DefaultValueDataset;
 import org.pentaho.chart.core.ChartDocument;
 import org.pentaho.chart.core.ChartElement;
 import org.pentaho.chart.core.ChartSeriesDataLinkInfoFactory;
@@ -46,6 +45,7 @@ import org.pentaho.chart.model.Graph;
 import org.pentaho.chart.model.PiePlot;
 import org.pentaho.chart.model.Plot;
 import org.pentaho.chart.model.Series;
+import org.pentaho.chart.model.ChartModel.ChartEngine;
 import org.pentaho.chart.model.DialPlot.DialRange;
 import org.pentaho.chart.model.PiePlot.Wedge;
 import org.pentaho.chart.model.Plot.Orientation;
@@ -55,14 +55,12 @@ import org.pentaho.chart.plugin.IChartPlugin;
 import org.pentaho.chart.plugin.api.IOutput;
 import org.pentaho.chart.plugin.api.PersistenceException;
 import org.pentaho.chart.plugin.api.IOutput.OutputTypes;
-import org.pentaho.chart.plugin.jfreechart.chart.dial.JFreeDialChartGenerator;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
 import org.pentaho.reporting.libraries.css.keys.border.BorderStyle;
 import org.pentaho.reporting.libraries.css.keys.border.BorderStyleKeys;
 import org.pentaho.reporting.libraries.css.keys.box.BoxStyleKeys;
 import org.pentaho.reporting.libraries.css.keys.color.ColorStyleKeys;
 import org.pentaho.reporting.libraries.css.keys.font.FontFamilyValues;
-import org.pentaho.reporting.libraries.css.keys.font.FontStyle;
 import org.pentaho.reporting.libraries.css.keys.font.FontStyleKeys;
 import org.pentaho.reporting.libraries.css.resolver.StyleResolver;
 import org.pentaho.reporting.libraries.css.resolver.impl.DefaultStyleResolver;
@@ -72,7 +70,6 @@ import org.pentaho.reporting.libraries.css.values.CSSNumericType;
 import org.pentaho.reporting.libraries.css.values.CSSNumericValue;
 import org.pentaho.reporting.libraries.css.values.CSSStringType;
 import org.pentaho.reporting.libraries.css.values.CSSStringValue;
-import org.pentaho.reporting.libraries.css.values.CSSValue;
 import org.pentaho.reporting.libraries.css.values.CSSValuePair;
 import org.pentaho.reporting.libraries.resourceloader.ResourceException;
 import org.pentaho.reporting.libraries.resourceloader.ResourceKeyCreationException;
@@ -90,7 +87,7 @@ public class ChartFactory {
   }
 
   /**
-   * Creats a chart based on the chart definition
+   * Creates a chart based on the chart definition
    * TODO: document / complete
    *
    * @param chartURL the URL of the chart definition
@@ -190,20 +187,21 @@ public class ChartFactory {
     if ((queryResults.length > 0) && (queryResults[0].length > 2)) {
       categoryColumnIndex = 2;
     }
-    return createChart(queryResults, rangeColumnIndex, domainColumnIndex, categoryColumnIndex, chartModel, width, height, outputType, null);
+    return createChart(queryResults, rangeColumnIndex, domainColumnIndex, categoryColumnIndex, chartModel, width, height, outputType);
   }
   
-  public static InputStream createChart(Object[][] queryResults, int rangeColumnIndex, int domainColumnIdx, int categoryColumnIdx, ChartModel chartModel, int width, int height, OutputTypes outputType, ChartThemeFactory chartThemeFactory) throws ChartProcessingException, SQLException, ResourceKeyCreationException, PersistenceException {
+  public static InputStream createChart(Object[][] queryResults, int rangeColumnIndex, int domainColumnIdx, int categoryColumnIdx, ChartModel chartModel, int width, int height, OutputTypes outputType) throws ChartProcessingException, SQLException, ResourceKeyCreationException, PersistenceException {
     ChartTableModel chartTableModel = createChartTableModel(queryResults, categoryColumnIdx, domainColumnIdx, rangeColumnIndex);
     
-    ChartDocument themeDocument = null;
-    if ((chartThemeFactory != null) && (chartModel.getTheme() != null)) {
-      themeDocument = chartThemeFactory.getThemeDocument(chartModel.getTheme());
-    }
-    ChartDocument chartDocument = createChartDocument(chartModel, themeDocument);
+    ChartDocument chartDocument = createChartDocument(chartModel);
     ChartDocumentContext chartDocumentContext = new ChartDocumentContext(chartDocument);
 
-    IChartPlugin plugin = ChartPluginFactory.getInstance("org.pentaho.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
+    IChartPlugin plugin = null;
+    if (chartModel.getChartEngine() == ChartEngine.JFREE) {
+      plugin = ChartPluginFactory.getInstance("org.pentaho.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
+    } else {
+      plugin = ChartPluginFactory.getInstance("org.pentaho.chart.plugin.openflashchart.OpenFlashChartPlugin"); //$NON-NLS-1$
+    }
     IOutput output = plugin.renderChartDocument(chartDocumentContext, chartTableModel);
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -301,17 +299,10 @@ public class ChartFactory {
     return chartDocument;
   }
   
-  private static ChartDocument createGraphChartDocument(ChartModel chartModel, ChartDocument themeDocument) {
+  private static ChartDocument createGraphChartDocument(ChartModel chartModel) {
     ChartDocument chartDocument = createChartDocument(chartModel.getTitle());
     ChartElement rootElement = chartDocument.getRootElement();
 
-    ChartElement[] seriesThemes = null;
-    if (themeDocument != null) {
-      seriesThemes = themeDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_SERIES);
-    } else {
-      seriesThemes = new ChartElement[0];
-    }
-    
     Graph categoricalPlot = (Graph)chartModel.getPlot();
 
     ChartElement chartElement = new ChartElement();
@@ -326,13 +317,12 @@ public class ChartFactory {
     rootElement.addChildElement(chartElement);
 
     for (int i = 0; i < categoricalPlot.getSeries().size(); i++) {
-      LayoutStyle themeStyle = (i < seriesThemes.length ? seriesThemes[i].getLayoutStyle() : null);
       if (categoricalPlot instanceof CategoricalBarPlot) {
-        rootElement.addChildElement(createBarPlotSeriesElement(categoricalPlot.getSeries().get(i), i, themeStyle));
+        rootElement.addChildElement(createBarPlotSeriesElement(categoricalPlot.getSeries().get(i), i));
       } else if (categoricalPlot instanceof CategoricalLinePlot) {
-        rootElement.addChildElement(createLinePlotSeriesElement(categoricalPlot.getSeries().get(i), i, themeStyle));
+        rootElement.addChildElement(createLinePlotSeriesElement(categoricalPlot.getSeries().get(i), i));
       } else if (categoricalPlot instanceof CategoricalAreaPlot) {
-        rootElement.addChildElement(createAreaPlotSeriesElement(categoricalPlot.getSeries().get(i), i, themeStyle));
+        rootElement.addChildElement(createAreaPlotSeriesElement(categoricalPlot.getSeries().get(i), i));
       }
     }
 
@@ -350,20 +340,13 @@ public class ChartFactory {
     return chartDocument;
   }
   
-  private static ChartDocument createPieChartDocument(ChartModel chartModel, ChartDocument themeDocument) {
+  private static ChartDocument createPieChartDocument(ChartModel chartModel) {
     ChartDocument chartDocument = createChartDocument(chartModel.getTitle());
     ChartElement rootElement = chartDocument.getRootElement();
 
-    ChartElement[] seriesThemes = null;
-    if (themeDocument != null) {
-      seriesThemes = themeDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_SERIES);
-    } else {
-      seriesThemes = new ChartElement[0];
-    }
     PiePlot piePlot = (PiePlot)chartModel.getPlot();
     for (int i = 0; i < piePlot.getWedges().size(); i++) {
-      LayoutStyle themeStyle = (i < seriesThemes.length ? seriesThemes[i].getLayoutStyle() : null);
-      rootElement.addChildElement(createPieSeriesElement(piePlot.getWedges().get(i), i, themeStyle));
+      rootElement.addChildElement(createPieSeriesElement(piePlot.getWedges().get(i), i));
     }
 
     ChartElement chartElement = new ChartElement();
@@ -396,7 +379,7 @@ public class ChartFactory {
     return fullRange;
   }
   
-  private static ChartDocument createDialChartDocument(ChartModel chartModel, ChartDocument themeDocument) {
+  private static ChartDocument createDialChartDocument(ChartModel chartModel) {
     ChartDocument chartDocument = createChartDocument(chartModel.getTitle());
     ChartElement rootElement = chartDocument.getRootElement();
     
@@ -513,23 +496,23 @@ public class ChartFactory {
     return chartDocument;
   }
   
-  private static ChartDocument createChartDocument(ChartModel chartModel, ChartDocument themeDocument) {
+  private static ChartDocument createChartDocument(ChartModel chartModel) {
     ChartDocument chartDocument = null;
     Plot plot = chartModel.getPlot();
     if (plot instanceof Graph) {
-      chartDocument = createGraphChartDocument(chartModel, themeDocument);
+      chartDocument = createGraphChartDocument(chartModel);
     } else if (plot instanceof PiePlot) {
-      chartDocument = createPieChartDocument(chartModel, themeDocument);
+      chartDocument = createPieChartDocument(chartModel);
     } else if (plot instanceof DialPlot) {
-      chartDocument = createDialChartDocument(chartModel, themeDocument);
+      chartDocument = createDialChartDocument(chartModel);
     }
     return chartDocument;
   }
   
-  private static ChartElement createPieSeriesElement(Wedge wedge, int seriesIndex, LayoutStyle themeStyle) {
+  private static ChartElement createPieSeriesElement(Wedge wedge, int seriesIndex) {
     ChartElement chartElement = new ChartElement();
     chartElement.setTagName(ChartElement.TAG_NAME_SERIES);
-    Color color = themeStyle != null ? (Color) themeStyle.getValue(ColorStyleKeys.COLOR) : null;
+    Color color = wedge.getForegroundColor() != null ? new Color(wedge.getForegroundColor()) : null;
     if (color != null) {
       chartElement.getLayoutStyle().setValue(ColorStyleKeys.COLOR, new CSSColorValue(color));
     }
@@ -544,11 +527,11 @@ public class ChartFactory {
     return chartElement;
   }
   
-  private static ChartElement createBarPlotSeriesElement(Series series, int seriesIndex, LayoutStyle themeStyle) {
+  private static ChartElement createBarPlotSeriesElement(Series series, int seriesIndex) {
     ChartElement chartElement = new ChartElement();
     chartElement.setTagName(ChartElement.TAG_NAME_SERIES);
     chartElement.setAttribute(ChartElement.COLUMN_POSITION, seriesIndex);
-    Color color = themeStyle != null ? (Color) themeStyle.getValue(ColorStyleKeys.COLOR) : null;
+    Color color = series.getForegroundColor() != null ? new Color(series.getForegroundColor()) : null;
     if (color != null) {
       chartElement.getLayoutStyle().setValue(ColorStyleKeys.COLOR, new CSSColorValue(color));
     }
@@ -559,10 +542,10 @@ public class ChartFactory {
     return chartElement;
   }
 
-  private static ChartElement createLinePlotSeriesElement(Series series, int seriesIndex, LayoutStyle themeStyle) {
+  private static ChartElement createLinePlotSeriesElement(Series series, int seriesIndex) {
     ChartElement chartElement = new ChartElement();
     chartElement.setTagName(ChartElement.TAG_NAME_SERIES);
-    Color color = themeStyle != null ? (Color) themeStyle.getValue(ColorStyleKeys.COLOR) : null;
+    Color color = series.getForegroundColor() != null ? new Color(series.getForegroundColor()) : null;
     if (color != null) {
       chartElement.getLayoutStyle().setValue(ColorStyleKeys.COLOR, new CSSColorValue(color));
     }
@@ -572,10 +555,10 @@ public class ChartFactory {
     return chartElement;
   }
 
-  private static ChartElement createAreaPlotSeriesElement(Series series, int seriesIndex, LayoutStyle themeStyle) {
+  private static ChartElement createAreaPlotSeriesElement(Series series, int seriesIndex) {
     ChartElement chartElement = new ChartElement();
     chartElement.setTagName(ChartElement.TAG_NAME_SERIES);
-    Color color = themeStyle != null ? (Color) themeStyle.getValue(ColorStyleKeys.COLOR) : null;
+    Color color = series.getForegroundColor() != null ? new Color(series.getForegroundColor()) : null;
     if (color != null) {
       chartElement.getLayoutStyle().setValue(ColorStyleKeys.COLOR, new CSSColorValue(color));
     }
