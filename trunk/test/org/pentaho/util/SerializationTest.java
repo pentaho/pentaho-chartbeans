@@ -7,8 +7,8 @@ import org.junit.Test;
 import org.pentaho.chart.model.CategoricalBarPlot;
 import org.pentaho.chart.model.ChartModel;
 import org.pentaho.chart.model.Series;
-import org.pentaho.chart.model.ChartModel.ChartTheme;
 import org.pentaho.chart.model.Plot.Orientation;
+import org.pentaho.chart.model.Theme.ChartTheme;
 import org.pentaho.chart.model.util.ChartSerializer;
 
 public class SerializationTest {

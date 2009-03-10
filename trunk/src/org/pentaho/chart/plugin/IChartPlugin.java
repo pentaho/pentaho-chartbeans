@@ -55,10 +55,6 @@ public interface IChartPlugin {
    */
   public IOutput renderChartDocument(ChartDocumentContext chartDocumentContext, ChartTableModel data);
 
-  public void setChartCallback(IChartCallback callback);
-
-  public IChartCallback getChartCallback();
-  
   /**
    * Returns a set of OutputTypes that this plugin can return (via the IOutput returned from renderChartDocument).
    * @return

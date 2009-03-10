@@ -3,10 +3,11 @@ package org.pentaho.chart.model;
 import java.io.Serializable;
 import java.util.HashMap;
 
-import org.pentaho.chart.model.ChartLegend;
+import org.pentaho.chart.model.Theme.ChartTheme;
 
 public class ChartModel implements Serializable {
-  public enum ChartTheme{THEME1, THEME2};
+  public enum ChartEngine{JFREE, OPENFLASH};
+  
   HashMap<String, String> styles = new HashMap<String, String>();
   
   String title;
@@ -14,8 +15,16 @@ public class ChartModel implements Serializable {
   ChartLegend chartLegend;
   Integer backgroundColor;
   Plot plot;
-  
+  ChartEngine chartEngine = ChartEngine.OPENFLASH;
   ChartTheme theme;
+  
+  public ChartEngine getChartEngine() {
+    return chartEngine;
+  }
+
+  public void setChartEngine(ChartEngine chartEngine) {
+    this.chartEngine = chartEngine;
+  }
 
   public ChartTheme getTheme() {
     return theme;

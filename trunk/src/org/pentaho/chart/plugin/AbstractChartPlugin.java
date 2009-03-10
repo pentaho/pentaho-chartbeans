@@ -29,7 +29,6 @@ import org.pentaho.util.messages.Messages;
  * that should be common across all chart plugin implementations.
  */
 public abstract class AbstractChartPlugin implements IChartPlugin {
-  protected IChartCallback callback = null;
 
 
   /* (non-Javadoc)
@@ -46,17 +45,4 @@ public abstract class AbstractChartPlugin implements IChartPlugin {
     return new ChartResult();
   }
 
-  /* (non-Javadoc)
-   * @see org.pentaho.chart.plugin.IChartPlugin#setChartCallback(org.pentaho.chart.plugin.IChartCallback)
-   */
-  public void setChartCallback(final IChartCallback callback) {
-    this.callback = callback;
-  }
-
-  /* (non-Javadoc)
-   * @see org.pentaho.chart.plugin.IChartPlugin#getChartCallback()
-   */
-  public IChartCallback getChartCallback() {
-    return callback;
-  }
 }
