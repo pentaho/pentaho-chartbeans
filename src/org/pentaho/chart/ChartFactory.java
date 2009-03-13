@@ -45,7 +45,6 @@ import org.pentaho.chart.model.Graph;
 import org.pentaho.chart.model.PiePlot;
 import org.pentaho.chart.model.Plot;
 import org.pentaho.chart.model.Series;
-import org.pentaho.chart.model.ChartModel.ChartEngine;
 import org.pentaho.chart.model.DialPlot.DialRange;
 import org.pentaho.chart.model.PiePlot.Wedge;
 import org.pentaho.chart.model.Plot.Orientation;
@@ -197,7 +196,7 @@ public class ChartFactory {
     ChartDocumentContext chartDocumentContext = new ChartDocumentContext(chartDocument);
 
     IChartPlugin plugin = null;
-    if (chartModel.getChartEngine() == ChartEngine.JFREE) {
+    if (chartModel.getChartEngine() == ChartModel.CHART_ENGINE_JFREE) {
       plugin = ChartPluginFactory.getInstance("org.pentaho.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
     } else {
       plugin = ChartPluginFactory.getInstance("org.pentaho.chart.plugin.openflashchart.OpenFlashChartPlugin"); //$NON-NLS-1$
