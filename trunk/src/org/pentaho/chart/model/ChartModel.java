@@ -6,7 +6,9 @@ import java.util.HashMap;
 import org.pentaho.chart.model.Theme.ChartTheme;
 
 public class ChartModel implements Serializable {
-  public enum ChartEngine{JFREE, OPENFLASH};
+  
+  public static final int CHART_ENGINE_JFREE = 0;
+  public static final int CHART_ENGINE_OPENFLASH = 1;
   
   HashMap<String, String> styles = new HashMap<String, String>();
   
@@ -15,14 +17,14 @@ public class ChartModel implements Serializable {
   ChartLegend chartLegend;
   Integer backgroundColor;
   Plot plot;
-  ChartEngine chartEngine = ChartEngine.OPENFLASH;
+  int chartEngine = CHART_ENGINE_OPENFLASH;
   ChartTheme theme;
   
-  public ChartEngine getChartEngine() {
+  public int getChartEngine() {
     return chartEngine;
   }
 
-  public void setChartEngine(ChartEngine chartEngine) {
+  public void setChartEngine(int chartEngine) {
     this.chartEngine = chartEngine;
   }
 
