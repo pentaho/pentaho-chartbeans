@@ -1,5 +1,7 @@
 package org.pentaho.chart.plugin.openflashchart;
 
+import java.awt.Color;
+import java.awt.Paint;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,7 +13,6 @@ import ofc4j.model.axis.YAxis;
 import ofc4j.model.axis.Label.Rotation;
 import ofc4j.model.elements.AreaHollowChart;
 import ofc4j.model.elements.BarChart;
-import ofc4j.model.elements.Element;
 import ofc4j.model.elements.HorizontalBarChart;
 import ofc4j.model.elements.LineChart;
 import ofc4j.model.elements.PieChart;
@@ -30,6 +31,7 @@ import org.pentaho.chart.plugin.api.ChartResult;
 import org.pentaho.chart.plugin.api.IOutput;
 import org.pentaho.chart.plugin.openflashchart.outputs.OpenFlashChartOutput;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
+import org.pentaho.reporting.libraries.css.keys.color.ColorStyleKeys;
 import org.pentaho.reporting.libraries.css.values.CSSConstant;
 import org.pentaho.reporting.libraries.css.values.CSSValue;
 import org.pentaho.util.messages.Messages;
@@ -118,27 +120,89 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     return chartData;
   }
   
-  public Chart makeBarChart(final ChartTableModel data, final ChartDocumentContext chartDocumentContext) throws Exception {
+  public Chart makeBarChart(final ChartTableModel chartTableModel, final ChartDocumentContext chartDocumentContext) throws Exception {
     
-    Element barChart = null;
+    ChartDocument chartDocument = chartDocumentContext.getChartDocument();
+    
+    String chartTitle = getChartTitle(chartDocument);    
+    Chart chart = (chartTitle != null ? new Chart(chartTitle) : new Chart());
     
     CSSValue orientation = getPlotOrientation(chartDocumentContext.getChartDocument());
     if (ChartOrientationStyle.HORIZONTAL.equals(orientation)) {
       HorizontalBarChart horizontalBarChart = new HorizontalBarChart();
       horizontalBarChart.addValues(9, 8, 7, 6, 5, 4, 3, 2, 1);
-      barChart = horizontalBarChart;
+      chart.addElements(horizontalBarChart);
     } else {
-      BarChart verticalBarChart = new BarChart();
-      verticalBarChart.addValues(9, 8, 7, 6, 5, 4, 3, 2, 1);
-      barChart = verticalBarChart;
+     
+      ArrayList<String> categories = new ArrayList<String>();
+      for (int i = 0; i < chartTableModel.getColumnCount(); i++) {
+        categories.add(chartTableModel.getColumnName(i));
+      }
+      if (categories.size() > 0) {
+        XAxis xa = new XAxis();
+        xa.setLabels(categories);
+        xa.setMax(categories.size());
+        chart.setXAxis(xa);        
+      }
+      
+      final ChartElement[] seriesElements = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_SERIES);
+      
+      Number maxValue = null;
+      Number minValue = null;
+      for (int row = 0; row < chartTableModel.getRowCount(); row++) {
+        BarChart verticalBarChart = new BarChart();
+        verticalBarChart.setText(chartTableModel.getRowName(row));
+        verticalBarChart.setTooltip("$#val#");
+        if ((seriesElements != null) && (seriesElements.length > row)) {
+          LayoutStyle layoutStyle = seriesElements[row].getLayoutStyle();
+          Paint color = (layoutStyle != null ? (Paint)layoutStyle.getValue(ColorStyleKeys.COLOR) : null);
+          if (color instanceof Color) {
+            verticalBarChart.setColour("#" + Integer.toHexString(0x00FFFFFF & ((Color)color).getRGB()));
+          }
+        }
+        ArrayList<Number> values = new ArrayList<Number>();
+        for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
+          Number value = (Number)chartTableModel.getValueAt(row, column);
+          if (maxValue == null) {
+            maxValue = value;
+          } else if (value != null) {
+            maxValue = Math.max(maxValue.doubleValue(), value.doubleValue());
+          }
+          if (minValue == null) {
+            minValue = value;
+          } else if (value != null) {
+            minValue = Math.min(minValue.doubleValue(), value.doubleValue());
+          }
+          values.add(value);
+        }
+        
+        verticalBarChart.addValues(values);
+        chart.addElements(verticalBarChart);
+      }
+      
+      if ((maxValue != null) && (minValue != null)) {
+        int exponent = Integer.toString(Math.abs(maxValue.intValue())).length() - 1;
+        
+        YAxis ya = new YAxis();
+        int stepSize = (int)(((long)(maxValue.intValue() / Math.pow(10, exponent))) * Math.pow(10, exponent - 1));
+        ya.setSteps(stepSize);
+        
+        ya.setMax((int)(maxValue.doubleValue() - (maxValue.doubleValue() % stepSize)) + stepSize);
+        chart.setYAxis(ya);
+      }
     }
-    
-    Chart chart = new Chart("Simple Bar Chart");
-    chart.addElements(barChart);
     
     return chart;
   }
 
+  private String getChartTitle(ChartDocument chartDocument) {
+    final ChartElement[] children = chartDocument.getRootElement().findChildrenByName("title"); //$NON-NLS-1$
+    if (children != null && children.length > 0) {
+      return children[0].getText();
+    }
+    return null;
+  }
+  
   private CSSValue getPlotOrientation(final ChartDocument chartDocument) {
     CSSValue plotOrient = null;
     final ChartElement plotElement = chartDocument.getPlotElement();
