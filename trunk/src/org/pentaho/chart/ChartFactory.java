@@ -41,7 +41,7 @@ import org.pentaho.chart.model.CategoricalBarPlot;
 import org.pentaho.chart.model.CategoricalLinePlot;
 import org.pentaho.chart.model.ChartModel;
 import org.pentaho.chart.model.DialPlot;
-import org.pentaho.chart.model.Graph;
+import org.pentaho.chart.model.GraphPlot;
 import org.pentaho.chart.model.PiePlot;
 import org.pentaho.chart.model.Plot;
 import org.pentaho.chart.model.Series;
@@ -302,7 +302,7 @@ public class ChartFactory {
     ChartDocument chartDocument = createChartDocument(chartModel.getTitle());
     ChartElement rootElement = chartDocument.getRootElement();
 
-    Graph categoricalPlot = (Graph)chartModel.getPlot();
+    GraphPlot categoricalPlot = (GraphPlot)chartModel.getPlot();
 
     ChartElement chartElement = new ChartElement();
     chartElement.setTagName("rangeLabel");
@@ -498,7 +498,7 @@ public class ChartFactory {
   private static ChartDocument createChartDocument(ChartModel chartModel) {
     ChartDocument chartDocument = null;
     Plot plot = chartModel.getPlot();
-    if (plot instanceof Graph) {
+    if (plot instanceof GraphPlot) {
       chartDocument = createGraphChartDocument(chartModel);
     } else if (plot instanceof PiePlot) {
       chartDocument = createPieChartDocument(chartModel);
