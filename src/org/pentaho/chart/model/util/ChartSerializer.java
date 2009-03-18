@@ -1,7 +1,7 @@
 package org.pentaho.chart.model.util;
 
 import org.pentaho.chart.model.ChartModel;
-import org.pentaho.chart.model.Graph;
+import org.pentaho.chart.model.GraphPlot;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
@@ -16,7 +16,7 @@ public class ChartSerializer {
     chartWriter.alias("ChartModel", ChartModel.class); //$NON-NLS-1$
     
     chartWriter.setMode(XStream.NO_REFERENCES);
-    chartWriter.useAttributeFor(Graph.class, "categoryAxisLabel"); //$NON-NLS-1$
+    chartWriter.useAttributeFor(GraphPlot.class, "categoryAxisLabel"); //$NON-NLS-1$
     chartWriter.useAttributeFor(ChartModel.class, "theme"); //$NON-NLS-1$
     chartWriter.useAttributeFor(ChartModel.class, "chartEngine"); //$NON-NLS-1$
     

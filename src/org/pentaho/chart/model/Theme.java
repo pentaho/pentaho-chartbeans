@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.pentaho.chart.model.ChartModel;
-import org.pentaho.chart.model.Graph;
+import org.pentaho.chart.model.GraphPlot;
 import org.pentaho.chart.model.PiePlot;
 import org.pentaho.chart.model.Series;
 import org.pentaho.chart.model.PiePlot.Wedge;
@@ -17,14 +17,14 @@ public class Theme implements Serializable {
   List<Integer> colors = new ArrayList<Integer>();
   
   public void applyTo(ChartModel chartModel) {
-    if (chartModel.getPlot() instanceof Graph) {
-      applyTo((Graph) chartModel.getPlot());
+    if (chartModel.getPlot() instanceof GraphPlot) {
+      applyTo((GraphPlot) chartModel.getPlot());
     } else if (chartModel.getPlot() instanceof PiePlot) {
       applyTo((PiePlot) chartModel.getPlot());
     }
   }
 
-  private void applyTo(Graph graph) {
+  private void applyTo(GraphPlot graph) {
     int i = 0;
     for (Integer color : getColors()) {
         if (i < graph.getSeries().size()) {

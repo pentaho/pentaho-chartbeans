@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Graph extends Plot implements Serializable {
+public class GraphPlot extends Plot implements Serializable {
   
   String categoryAxisLabel;
   String valueAxisLabel;
