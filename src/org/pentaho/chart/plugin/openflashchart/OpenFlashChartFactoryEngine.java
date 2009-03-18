@@ -128,6 +128,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     
     String chartTitle = getChartTitle(chartDocument);    
     Chart chart = (chartTitle != null ? new Chart(chartTitle) : new Chart());
+    chart.setBackgroundColour("#FFFFFF");
     chart.addElements(pieChart);
     return chart;
   }
@@ -143,6 +144,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     
     String chartTitle = getChartTitle(chartDocument);    
     Chart chart = (chartTitle != null ? new Chart(chartTitle) : new Chart());
+    chart.setBackgroundColour("#FFFFFF");
     
     CSSValue orientation = getPlotOrientation(chartDocumentContext.getChartDocument());
     if (ChartOrientationStyle.HORIZONTAL.equals(orientation)) {
@@ -288,7 +290,9 @@ public class OpenFlashChartFactoryEngine implements Serializable {
   public Chart makeLineChart(final ChartTableModel data, final ChartDocumentContext chartDocumentContext) {
 
     LineChart lineChart = new LineChart(LineChart.Style.DOT);
-    lineChart.setHaloSize(0).setWidth(2).setDotSize(4);
+    lineChart.setHaloSize(0);
+    lineChart.setWidth(2);
+    lineChart.setDotSize(4);
 
     for (float i = 0; i < 6.2; i += 0.2) {
       lineChart.addValues(Math.sin(i) * 1.9 + 10);
@@ -298,6 +302,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     yAxis.setRange(0, 15, 5);
     
     Chart chart = new Chart(new Date().toString());
+    chart.setBackgroundColour("#FFFFFF");
     chart.setYAxis(yAxis);
     chart.addElements(lineChart);
     
