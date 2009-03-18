@@ -100,18 +100,34 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     return chart;
   }
 
-  public Chart makePieChart(final ChartTableModel data, final ChartDocumentContext chartDocumentContext) {
+  public Chart makePieChart(final ChartTableModel chartTableModel, final ChartDocumentContext chartDocumentContext) {
+    ChartDocument chartDocument = chartDocumentContext.getChartDocument();
+    
     PieChart pieChart = new PieChart();
-    pieChart.setAnimate(true);
+    pieChart.setAnimate(false);
     pieChart.setStartAngle(35);
     pieChart.setBorder(2);
-    pieChart.setAlpha(0.6f);
-    pieChart.addValues(2, 3);
-    pieChart.addSlice(6.5f, "hello (6.5)");
-    pieChart.setColours("#d01f3c", "#356aa0", "#C79810");
     pieChart.setTooltip("#val# of #total#<br>#percent# of 100%");
     
-    Chart chart = new Chart("Pie Chart");
+    ArrayList<Number> values = new ArrayList<Number>();
+    for (int row = 0; row < chartTableModel.getRowCount(); row++) {
+      Number value = (Number)chartTableModel.getValueAt(row, 0);
+      values.add(value == null ? 0 : value);
+    }
+    pieChart.addValues(values);
+    
+    ArrayList<String> colors = new ArrayList<String>();    
+    for (ChartElement seriesElement : chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_SERIES)) {
+      LayoutStyle layoutStyle = seriesElement.getLayoutStyle();
+      Paint color = (layoutStyle != null ? (Paint)layoutStyle.getValue(ColorStyleKeys.COLOR) : null);
+      if (color instanceof Color) {
+        colors.add("#" + Integer.toHexString(0x00FFFFFF & ((Color)color).getRGB()));
+      }
+    }
+    pieChart.setColours(colors);
+    
+    String chartTitle = getChartTitle(chartDocument);    
+    Chart chart = (chartTitle != null ? new Chart(chartTitle) : new Chart());
     chart.addElements(pieChart);
     return chart;
   }
