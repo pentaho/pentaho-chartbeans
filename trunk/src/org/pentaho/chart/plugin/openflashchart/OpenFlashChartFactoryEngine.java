@@ -16,6 +16,7 @@ import ofc4j.model.elements.BarChart;
 import ofc4j.model.elements.HorizontalBarChart;
 import ofc4j.model.elements.LineChart;
 import ofc4j.model.elements.PieChart;
+import ofc4j.model.elements.HorizontalBarChart.Bar;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -129,9 +130,62 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     
     CSSValue orientation = getPlotOrientation(chartDocumentContext.getChartDocument());
     if (ChartOrientationStyle.HORIZONTAL.equals(orientation)) {
-      HorizontalBarChart horizontalBarChart = new HorizontalBarChart();
-      horizontalBarChart.addValues(9, 8, 7, 6, 5, 4, 3, 2, 1);
-      chart.addElements(horizontalBarChart);
+      ArrayList<String> categories = new ArrayList<String>();
+      for (int i = 0; i < chartTableModel.getColumnCount(); i++) {
+        categories.add(chartTableModel.getColumnName(i));
+      }
+      if (categories.size() > 0) {
+        YAxis ya = new YAxis();
+        ya.setLabels(categories.toArray(new String[0]));
+        ya.setMax(categories.size());
+        chart.setYAxis(ya);        
+      }
+      
+      final ChartElement[] seriesElements = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_SERIES);
+      
+      Number maxValue = null;
+      Number minValue = null;
+      for (int row = 0; row < chartTableModel.getRowCount(); row++) {
+        HorizontalBarChart horizontalBarChart = new HorizontalBarChart();
+        horizontalBarChart.setText(chartTableModel.getRowName(row));
+        horizontalBarChart.setTooltip("$#val#");
+        if ((seriesElements != null) && (seriesElements.length > row)) {
+          LayoutStyle layoutStyle = seriesElements[row].getLayoutStyle();
+          Paint color = (layoutStyle != null ? (Paint)layoutStyle.getValue(ColorStyleKeys.COLOR) : null);
+          if (color instanceof Color) {
+            horizontalBarChart.setColour("#" + Integer.toHexString(0x00FFFFFF & ((Color)color).getRGB()));
+          }
+        }
+        ArrayList<Number> values = new ArrayList<Number>();
+        for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
+          Number value = (Number)chartTableModel.getValueAt(row, column);
+          if (maxValue == null) {
+            maxValue = value;
+          } else if (value != null) {
+            maxValue = Math.max(maxValue.doubleValue(), value.doubleValue());
+          }
+          if (minValue == null) {
+            minValue = value;
+          } else if (value != null) {
+            minValue = Math.min(minValue.doubleValue(), value.doubleValue());
+          }
+          values.add(value == null ? 0 : value);
+        }
+
+        horizontalBarChart.addValues(values.toArray(new Number[0]));
+        chart.addElements(horizontalBarChart);
+      }
+      
+      if ((maxValue != null) && (minValue != null)) {
+        int exponent = Integer.toString(Math.abs(maxValue.intValue())).length() - 1;
+        
+        XAxis xa = new XAxis();
+        int stepSize = (int)(((long)(maxValue.intValue() / Math.pow(10, exponent))) * Math.pow(10, exponent - 1)) * 2;
+        xa.setSteps(stepSize);
+        
+        xa.setMax((int)(maxValue.doubleValue() - (maxValue.doubleValue() % stepSize)) + stepSize);
+        chart.setXAxis(xa);
+      }
     } else {
      
       ArrayList<String> categories = new ArrayList<String>();
@@ -173,7 +227,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
           } else if (value != null) {
             minValue = Math.min(minValue.doubleValue(), value.doubleValue());
           }
-          values.add(value);
+          values.add(value == null ? 0 : value);
         }
         
         verticalBarChart.addValues(values);
