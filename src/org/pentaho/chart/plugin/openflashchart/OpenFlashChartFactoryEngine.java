@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import ofc4j.model.Chart;
+import ofc4j.model.Text;
 import ofc4j.model.axis.XAxis;
 import ofc4j.model.axis.YAxis;
 import ofc4j.model.elements.AreaHollowChart;
@@ -78,6 +79,14 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     String chartTitle = getChartTitle(chartDocument);
     Chart chart = (chartTitle != null ? new Chart(chartTitle) : new Chart());
     chart.setBackgroundColour("#FFFFFF");
+    String rangeLabel = getValueAxisLabel(chartDocument);
+    String domainLabel = getValueCategoryLabel(chartDocument);
+    if (domainLabel != null) {
+      chart.setXLegend(new Text(domainLabel));
+    }
+    if (rangeLabel != null) {
+      chart.setYLegend(new Text(rangeLabel));
+    }
 
     ArrayList<String> domainValues = new ArrayList<String>();
     for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
@@ -191,6 +200,15 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     String chartTitle = getChartTitle(chartDocument);    
     Chart chart = (chartTitle != null ? new Chart(chartTitle) : new Chart());
     chart.setBackgroundColour("#FFFFFF");
+    
+    String rangeLabel = getValueAxisLabel(chartDocument);
+    String domainLabel = getValueCategoryLabel(chartDocument);
+    if ((domainLabel != null) && (domainLabel.trim().length() > 0)){
+      chart.setXLegend(new Text(domainLabel, "font-size: 14pt"));
+    }
+    if ((rangeLabel != null) && (rangeLabel.trim().length() > 0)) {
+      chart.setYLegend(new Text(rangeLabel, "font-size: 14pt"));
+    }
     
     CSSValue orientation = getPlotOrientation(chartDocumentContext.getChartDocument());
     if (ChartOrientationStyle.HORIZONTAL.equals(orientation)) {
@@ -425,5 +443,27 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       }
     }
     return ChartSeriesType.UNDEFINED;
+  }
+  
+  public String getValueCategoryLabel(final ChartDocument chartDocument) {
+    ChartElement[] children = chartDocument.getRootElement().findChildrenByName("domainLabel"); //$NON-NLS-1$
+    if (children != null && children.length > 0) {
+      return children[0].getText();
+    }
+    return null;
+  }
+
+  /**
+   * Returns the ValueAxisLabel of the chart.
+   *
+   * @param chartDocument - ChartDocument that defines what the series should look like
+   * @return String - the value axis label
+   */
+  public String getValueAxisLabel(final ChartDocument chartDocument) {
+    ChartElement[] children = chartDocument.getRootElement().findChildrenByName("rangeLabel"); //$NON-NLS-1$
+    if (children != null && children.length > 0) {
+      return children[0].getText();
+    }
+    return null;
   }
 }
