@@ -74,29 +74,77 @@ public class OpenFlashChartFactoryEngine implements Serializable {
   }
 
   
-  public Chart makeAreaChart(final ChartTableModel data, final ChartDocumentContext chartDocumentContext) {
-    List<Number> list = new ArrayList<Number>(30);
-    for (float i = 0; i < 6.2; i += 0.2) {
-      list.add(new Float(Math.sin(i) * 1.9));
+  public Chart makeAreaChart(final ChartTableModel chartTableModel, final ChartDocumentContext chartDocumentContext) {
+    ChartDocument chartDocument = chartDocumentContext.getChartDocument();
+
+    String chartTitle = getChartTitle(chartDocument);
+    Chart chart = (chartTitle != null ? new Chart(chartTitle) : new Chart());
+    chart.setBackgroundColour("#FFFFFF");
+
+    ArrayList<String> domainValues = new ArrayList<String>();
+    for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
+      domainValues.add(chartTableModel.getColumnName(column));
+    }  
+    if (domainValues.size() > 0) {
+      XAxis xa = new XAxis();
+      xa.setLabels(domainValues);
+      xa.setMax(domainValues.size() - 1);
+      chart.setXAxis(xa);
     }
-    
-    AreaHollowChart areaChart = new AreaHollowChart();
-    areaChart.addValues(list);
-    areaChart.setWidth(1);
-        
-    XAxis xaxis = new XAxis();
-    xaxis.setSteps(2);
-    xaxis.getLabels().setSteps(4);
-    xaxis.getLabels().setRotation(Rotation.VERTICAL);
 
-    YAxis yaxis = new YAxis();
-    yaxis.setRange(-2, 2, 2);
-    yaxis.setOffset(false);
+    final ChartElement[] seriesElements = chartDocument.getRootElement().findChildrenByName(
+        ChartElement.TAG_NAME_SERIES);
 
-    Chart chart = new Chart("Area Chart");
-    chart.addElements(areaChart);
-    chart.setYAxis(yaxis);
-    chart.setXAxis(xaxis);
+    Number maxValue = null;
+    Number minValue = null;
+    for (int row = 0; row < chartTableModel.getRowCount(); row++) {
+      AreaHollowChart areaChart = new AreaHollowChart();
+      areaChart.setHaloSize(0);
+      areaChart.setWidth(2);
+      areaChart.setDotSize(4);
+      
+      areaChart.setText(chartTableModel.getRowName(row));
+      areaChart.setTooltip("$#val#");
+      if ((seriesElements != null) && (seriesElements.length > row)) {
+        LayoutStyle layoutStyle = seriesElements[row].getLayoutStyle();
+        Paint color = (layoutStyle != null ? (Paint) layoutStyle.getValue(ColorStyleKeys.COLOR) : null);
+        if (color instanceof Color) {
+          String colorString = "#" + Integer.toHexString(0x00FFFFFF & ((Color) color).getRGB());
+          areaChart.setFill(colorString);
+          areaChart.setColour(colorString);
+        }
+      }
+      ArrayList<Number> values = new ArrayList<Number>();
+      for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
+        Number value = (Number) chartTableModel.getValueAt(row, column);
+        if (maxValue == null) {
+          maxValue = value;
+        } else if (value != null) {
+          maxValue = Math.max(maxValue.doubleValue(), value.doubleValue());
+        }
+        if (minValue == null) {
+          minValue = value;
+        } else if (value != null) {
+          minValue = Math.min(minValue.doubleValue(), value.doubleValue());
+        }
+        values.add(value == null ? 0 : value);
+      }
+
+      areaChart.addValues(values);
+      chart.addElements(areaChart);
+    }
+
+    if ((maxValue != null) && (minValue != null)) {
+      int exponent = Integer.toString(Math.abs(maxValue.intValue())).length() - 1;
+
+      YAxis ya = new YAxis();
+      int stepSize = (int) (((long) (maxValue.intValue() / Math.pow(10, exponent))) * Math.pow(10, exponent - 1));
+      ya.setSteps(stepSize);
+
+      ya.setMax((int) (maxValue.doubleValue() - (maxValue.doubleValue() % stepSize)) + stepSize);
+      chart.setYAxis(ya);
+    }
+
     return chart;
   }
 
