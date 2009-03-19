@@ -4,19 +4,16 @@ import java.awt.Color;
 import java.awt.Paint;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 import ofc4j.model.Chart;
 import ofc4j.model.axis.XAxis;
 import ofc4j.model.axis.YAxis;
-import ofc4j.model.axis.Label.Rotation;
 import ofc4j.model.elements.AreaHollowChart;
 import ofc4j.model.elements.BarChart;
 import ofc4j.model.elements.HorizontalBarChart;
 import ofc4j.model.elements.LineChart;
 import ofc4j.model.elements.PieChart;
-import ofc4j.model.elements.HorizontalBarChart.Bar;
+import ofc4j.model.elements.PieChart.Slice;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,6 +33,7 @@ import org.pentaho.reporting.libraries.css.keys.color.ColorStyleKeys;
 import org.pentaho.reporting.libraries.css.values.CSSConstant;
 import org.pentaho.reporting.libraries.css.values.CSSValue;
 import org.pentaho.util.messages.Messages;
+
 
 
 
@@ -155,14 +153,14 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     pieChart.setAnimate(false);
     pieChart.setStartAngle(35);
     pieChart.setBorder(2);
-    pieChart.setTooltip("#val# of #total#<br>#percent# of 100%");
     
-    ArrayList<Number> values = new ArrayList<Number>();
+    ArrayList<Slice> slices = new ArrayList<Slice>();
     for (int row = 0; row < chartTableModel.getRowCount(); row++) {
       Number value = (Number)chartTableModel.getValueAt(row, 0);
-      values.add(value == null ? 0 : value);
+      Slice slice = new Slice(value, "#val#", chartTableModel.getRowName(row));
+      slices.add(slice);
     }
-    pieChart.addValues(values);
+    pieChart.addSlices(slices);
     
     ArrayList<String> colors = new ArrayList<String>();    
     for (ChartElement seriesElement : chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_SERIES)) {
