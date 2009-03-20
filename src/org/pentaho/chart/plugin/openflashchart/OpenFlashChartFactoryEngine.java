@@ -14,6 +14,7 @@ import ofc4j.model.elements.BarChart;
 import ofc4j.model.elements.HorizontalBarChart;
 import ofc4j.model.elements.LineChart;
 import ofc4j.model.elements.PieChart;
+import ofc4j.model.elements.BarChart.Bar;
 import ofc4j.model.elements.PieChart.Slice;
 
 import org.apache.commons.logging.Log;
@@ -41,6 +42,7 @@ import org.pentaho.util.messages.Messages;
 public class OpenFlashChartFactoryEngine implements Serializable {
 
   private static final Log logger = LogFactory.getLog(OpenFlashChartFactoryEngine.class);
+  private static final float DEFAULT_CHART_COLOR_ALPHA = 0.85f;
   
   private static final long serialVersionUID = -1079376910255750394L;
 
@@ -162,6 +164,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     pieChart.setAnimate(false);
     pieChart.setStartAngle(35);
     pieChart.setBorder(2);
+    pieChart.setAlpha(0.85f);
     
     ArrayList<Slice> slices = new ArrayList<Slice>();
     for (int row = 0; row < chartTableModel.getRowCount(); row++) {
@@ -231,6 +234,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
         HorizontalBarChart horizontalBarChart = new HorizontalBarChart();
         horizontalBarChart.setText(chartTableModel.getRowName(row));
         horizontalBarChart.setTooltip("$#val#");
+        horizontalBarChart.setAlpha(DEFAULT_CHART_COLOR_ALPHA);
         if ((seriesElements != null) && (seriesElements.length > row)) {
           LayoutStyle layoutStyle = seriesElements[row].getLayoutStyle();
           Paint color = (layoutStyle != null ? (Paint)layoutStyle.getValue(ColorStyleKeys.COLOR) : null);
@@ -289,6 +293,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
         BarChart verticalBarChart = new BarChart();
         verticalBarChart.setText(chartTableModel.getRowName(row));
         verticalBarChart.setTooltip("$#val#");
+        verticalBarChart.setAlpha(DEFAULT_CHART_COLOR_ALPHA);
         if ((seriesElements != null) && (seriesElements.length > row)) {
           LayoutStyle layoutStyle = seriesElements[row].getLayoutStyle();
           Paint color = (layoutStyle != null ? (Paint)layoutStyle.getValue(ColorStyleKeys.COLOR) : null);
@@ -296,7 +301,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
             verticalBarChart.setColour("#" + Integer.toHexString(0x00FFFFFF & ((Color)color).getRGB()));
           }
         }
-        ArrayList<Number> values = new ArrayList<Number>();
+        ArrayList<Bar> bars = new ArrayList<Bar>();
         for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
           Number value = (Number)chartTableModel.getValueAt(row, column);
           if (maxValue == null) {
@@ -309,10 +314,10 @@ public class OpenFlashChartFactoryEngine implements Serializable {
           } else if (value != null) {
             minValue = Math.min(minValue.doubleValue(), value.doubleValue());
           }
-          values.add(value == null ? 0 : value);
+          bars.add(new Bar(value == null ? 0 : value));
         }
         
-        verticalBarChart.addValues(values);
+        verticalBarChart.addBars(bars);
         chart.addElements(verticalBarChart);
       }
       
