@@ -15,6 +15,7 @@ import ofc4j.model.elements.HorizontalBarChart;
 import ofc4j.model.elements.LineChart;
 import ofc4j.model.elements.PieChart;
 import ofc4j.model.elements.BarChart.Bar;
+import ofc4j.model.elements.LineChart.Dot;
 import ofc4j.model.elements.PieChart.Slice;
 
 import org.apache.commons.logging.Log;
@@ -83,12 +84,15 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     chart.setBackgroundColour("#FFFFFF");
     String rangeLabel = getValueAxisLabel(chartDocument);
     String domainLabel = getValueCategoryLabel(chartDocument);
-    if (domainLabel != null) {
-      chart.setXLegend(new Text(domainLabel));
-    }
-    if (rangeLabel != null) {
-      chart.setYLegend(new Text(rangeLabel));
-    }
+
+    // TODO mlowery ofc does not like x_legend or y_legend properties in JSON; for now do not set them!
+    
+//    if ((domainLabel != null) && (domainLabel.trim().length() > 0)){
+//      chart.setXLegend(new Text(domainLabel, "font-size: 14pt"));
+//    }
+//    if ((rangeLabel != null) && (rangeLabel.trim().length() > 0)) {
+//      chart.setYLegend(new Text(rangeLabel, "font-size: 14pt"));
+//    }
 
     ArrayList<String> domainValues = new ArrayList<String>();
     for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
@@ -123,7 +127,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
           areaChart.setColour(colorString);
         }
       }
-      ArrayList<Number> values = new ArrayList<Number>();
+      ArrayList<Dot> dots = new ArrayList<Dot>();
       for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
         Number value = (Number) chartTableModel.getValueAt(row, column);
         if (maxValue == null) {
@@ -136,10 +140,10 @@ public class OpenFlashChartFactoryEngine implements Serializable {
         } else if (value != null) {
           minValue = Math.min(minValue.doubleValue(), value.doubleValue());
         }
-        values.add(value == null ? 0 : value);
+        dots.add(new Dot(value == null ? 0 : value));
       }
 
-      areaChart.addValues(values);
+      areaChart.addDots(dots);
       chart.addElements(areaChart);
     }
 
@@ -206,12 +210,15 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     
     String rangeLabel = getValueAxisLabel(chartDocument);
     String domainLabel = getValueCategoryLabel(chartDocument);
-    if ((domainLabel != null) && (domainLabel.trim().length() > 0)){
-      chart.setXLegend(new Text(domainLabel, "font-size: 14pt"));
-    }
-    if ((rangeLabel != null) && (rangeLabel.trim().length() > 0)) {
-      chart.setYLegend(new Text(rangeLabel, "font-size: 14pt"));
-    }
+
+    // TODO mlowery ofc does not like x_legend or y_legend properties in JSON; for now do not set them!
+    
+//  if ((domainLabel != null) && (domainLabel.trim().length() > 0)){
+//    chart.setXLegend(new Text(domainLabel, "font-size: 14pt"));
+//  }
+//  if ((rangeLabel != null) && (rangeLabel.trim().length() > 0)) {
+//    chart.setYLegend(new Text(rangeLabel, "font-size: 14pt"));
+//  }
     
     CSSValue orientation = getPlotOrientation(chartDocumentContext.getChartDocument());
     if (ChartOrientationStyle.HORIZONTAL.equals(orientation)) {
@@ -395,7 +402,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
           lineChart.setColour("#" + Integer.toHexString(0x00FFFFFF & ((Color) color).getRGB()));
         }
       }
-      ArrayList<Number> values = new ArrayList<Number>();
+      ArrayList<Dot> dots = new ArrayList<Dot>();
       for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
         Number value = (Number) chartTableModel.getValueAt(row, column);
         if (maxValue == null) {
@@ -408,10 +415,10 @@ public class OpenFlashChartFactoryEngine implements Serializable {
         } else if (value != null) {
           minValue = Math.min(minValue.doubleValue(), value.doubleValue());
         }
-        values.add(value == null ? 0 : value);
+        dots.add(new Dot(value == null ? 0 : value));
       }
 
-      lineChart.addValues(values);
+      lineChart.addDots(dots);
       chart.addElements(lineChart);
     }
 
