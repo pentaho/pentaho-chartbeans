@@ -11,7 +11,7 @@ import org.pentaho.chart.model.Series;
 import org.pentaho.chart.model.PiePlot.Wedge;
 
 public class Theme implements Serializable {
-  public enum ChartTheme{THEME1, THEME2};
+  public enum ChartTheme{THEME1, THEME2, THEME3, THEME4, THEME5, THEME6};
   
   String id;
   List<Integer> colors = new ArrayList<Integer>();
