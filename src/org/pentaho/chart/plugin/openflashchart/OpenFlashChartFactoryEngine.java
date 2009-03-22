@@ -84,15 +84,12 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     chart.setBackgroundColour("#FFFFFF");
     String rangeLabel = getValueAxisLabel(chartDocument);
     String domainLabel = getValueCategoryLabel(chartDocument);
-
-    // TODO mlowery ofc does not like x_legend or y_legend properties in JSON; for now do not set them!
-    
-//    if ((domainLabel != null) && (domainLabel.trim().length() > 0)){
-//      chart.setXLegend(new Text(domainLabel, "font-size: 14pt"));
-//    }
-//    if ((rangeLabel != null) && (rangeLabel.trim().length() > 0)) {
-//      chart.setYLegend(new Text(rangeLabel, "font-size: 14pt"));
-//    }
+    if ((domainLabel != null) && (domainLabel.trim().length() > 0)){
+      chart.setXLegend(new Text(domainLabel, "font-size: 14pt"));
+    }
+    if ((rangeLabel != null) && (rangeLabel.trim().length() > 0)) {
+      chart.setYLegend(new Text(rangeLabel, "font-size: 14pt"));
+    }
 
     ArrayList<String> domainValues = new ArrayList<String>();
     for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
@@ -165,7 +162,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     ChartDocument chartDocument = chartDocumentContext.getChartDocument();
     
     PieChart pieChart = new PieChart();
-    pieChart.setAnimate(false);
+    pieChart.setAnimate(getAnimate(chartDocument));
     pieChart.setStartAngle(35);
     pieChart.setBorder(2);
     pieChart.setAlpha(0.85f);
@@ -210,15 +207,12 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     
     String rangeLabel = getValueAxisLabel(chartDocument);
     String domainLabel = getValueCategoryLabel(chartDocument);
-
-    // TODO mlowery ofc does not like x_legend or y_legend properties in JSON; for now do not set them!
-    
-//  if ((domainLabel != null) && (domainLabel.trim().length() > 0)){
-//    chart.setXLegend(new Text(domainLabel, "font-size: 14pt"));
-//  }
-//  if ((rangeLabel != null) && (rangeLabel.trim().length() > 0)) {
-//    chart.setYLegend(new Text(rangeLabel, "font-size: 14pt"));
-//  }
+    if ((domainLabel != null) && (domainLabel.trim().length() > 0)){
+      chart.setXLegend(new Text(domainLabel, "font-size: 14pt"));
+    }
+    if ((rangeLabel != null) && (rangeLabel.trim().length() > 0)) {
+      chart.setYLegend(new Text(rangeLabel, "font-size: 14pt"));
+    }
     
     CSSValue orientation = getPlotOrientation(chartDocumentContext.getChartDocument());
     if (ChartOrientationStyle.HORIZONTAL.equals(orientation)) {
@@ -351,6 +345,11 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     return null;
   }
   
+  public boolean getAnimate(ChartDocument chartDocument) {
+    final ChartElement[] children = chartDocument.getRootElement().findChildrenByName("animate"); //$NON-NLS-1$
+    return children != null && (children.length > 0) && Boolean.valueOf(children[0].getText());
+  }
+  
   private CSSValue getPlotOrientation(final ChartDocument chartDocument) {
     CSSValue plotOrient = null;
     final ChartElement plotElement = chartDocument.getPlotElement();
@@ -370,6 +369,14 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     String chartTitle = getChartTitle(chartDocument);
     Chart chart = (chartTitle != null ? new Chart(chartTitle) : new Chart());
     chart.setBackgroundColour("#FFFFFF");
+    String rangeLabel = getValueAxisLabel(chartDocument);
+    String domainLabel = getValueCategoryLabel(chartDocument);
+    if ((domainLabel != null) && (domainLabel.trim().length() > 0)){
+      chart.setXLegend(new Text(domainLabel, "font-size: 14pt"));
+    }
+    if ((rangeLabel != null) && (rangeLabel.trim().length() > 0)) {
+      chart.setYLegend(new Text(rangeLabel, "font-size: 14pt"));
+    }
 
     ArrayList<String> domainValues = new ArrayList<String>();
     for (int column = 0; column < chartTableModel.getColumnCount(); column++) {

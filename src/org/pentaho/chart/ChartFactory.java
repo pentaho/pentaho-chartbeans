@@ -343,12 +343,17 @@ public class ChartFactory {
     ChartDocument chartDocument = createChartDocument(chartModel.getTitle());
     ChartElement rootElement = chartDocument.getRootElement();
 
+    ChartElement chartElement = new ChartElement();
+    chartElement.setTagName("animate");
+    chartElement.setText(Boolean.toString(chartModel.getAnimate()));
+    rootElement.addChildElement(chartElement);
+    
     PiePlot piePlot = (PiePlot)chartModel.getPlot();
     for (int i = 0; i < piePlot.getWedges().size(); i++) {
       rootElement.addChildElement(createPieSeriesElement(piePlot.getWedges().get(i), i));
     }
 
-    ChartElement chartElement = new ChartElement();
+    chartElement = new ChartElement();
     chartElement.setTagName(ChartElement.TAG_NAME_PLOT);
     chartElement.getLayoutStyle().setValue(ChartStyleKeys.DRILL_URL,
         new CSSStringValue(CSSStringType.URI, "http://localhost:8080/Pentaho/JPivot"));

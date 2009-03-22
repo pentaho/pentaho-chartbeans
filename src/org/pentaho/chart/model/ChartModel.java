@@ -18,6 +18,7 @@ public class ChartModel implements Serializable {
   Integer backgroundColor;
   Plot plot;
   int chartEngine = CHART_ENGINE_OPENFLASH;
+  boolean animate = false;
   ChartTheme theme;
   
   public int getChartEngine() {
@@ -78,5 +79,13 @@ public class ChartModel implements Serializable {
 
   public HashMap<String, String> getStyles() {
     return styles;
+  }
+
+  public boolean getAnimate() {
+    return animate;
+  }
+
+  public void setAnimate(boolean animate) {
+    this.animate = animate;
   }
 }
