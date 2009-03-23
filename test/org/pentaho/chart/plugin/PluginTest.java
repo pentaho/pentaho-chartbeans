@@ -440,6 +440,18 @@ public class PluginTest extends TestCase {
     try {
       inputStream = ChartFactory.createChart(chartData, 2, 0, 1, chartModel, 100, 100, null);
       String jsonString = convertStreamToString(inputStream);
+      for (int row = 0; row < chartData.length; row++) {
+        for (int column = 0; column < chartData[row].length; column++) {
+          if (column == 2) {
+            assertTrue(jsonString.indexOf("{\"top\":" + chartData[row][2].toString()) >= 0);
+          } else {
+            assertTrue(jsonString.indexOf(chartData[row][column].toString()) >= 0);
+          }
+        }
+      }
+      assertTrue(jsonString.indexOf(chartModel.getTitle()) >= 0);
+      assertTrue(jsonString.indexOf(barPlot.getCategoryAxisLabel()) >= 0);
+      assertTrue(jsonString.indexOf(barPlot.getValueAxisLabel()) >= 0);
     } catch (Exception e) {
       fail("Unexpected exception");
     }
@@ -459,6 +471,18 @@ public class PluginTest extends TestCase {
     try {
       inputStream = ChartFactory.createChart(chartData, 2, 0, 1, chartModel, 100, 100, null);
       String jsonString = convertStreamToString(inputStream);
+      for (int row = 0; row < chartData.length; row++) {
+        for (int column = 0; column < chartData[row].length; column++) {
+          if (column == 2) {
+            assertTrue(jsonString.indexOf("{\"right\":" + chartData[row][2].toString()) >= 0);
+          } else {
+            assertTrue(jsonString.indexOf(chartData[row][column].toString()) >= 0);
+          }
+        }
+      }
+      assertTrue(jsonString.indexOf(chartModel.getTitle()) >= 0);
+      assertTrue(jsonString.indexOf(barPlot.getCategoryAxisLabel()) >= 0);
+      assertTrue(jsonString.indexOf(barPlot.getValueAxisLabel()) >= 0);
     } catch (Exception e) {
       fail("Unexpected exception");
     }
@@ -499,6 +523,18 @@ public class PluginTest extends TestCase {
     try {
       InputStream inputStream = ChartFactory.createChart(chartData, 2, 0, 1, chartModel, 100, 100, null);
       String jsonString = convertStreamToString(inputStream);
+      for (int row = 0; row < chartData.length; row++) {
+        for (int column = 0; column < chartData[row].length; column++) {
+          if (column == 2) {
+            assertTrue(jsonString.indexOf("{\"value\":" + chartData[row][2].toString()) >= 0);
+          } else {
+            assertTrue(jsonString.indexOf(chartData[row][column].toString()) >= 0);
+          }
+        }
+      }
+      assertTrue(jsonString.indexOf(chartModel.getTitle()) >= 0);
+      assertTrue(jsonString.indexOf(linePlot.getCategoryAxisLabel()) >= 0);
+      assertTrue(jsonString.indexOf(linePlot.getValueAxisLabel()) >= 0);
     } catch (Exception e) {
       fail("Unexpected exception");
     }
@@ -539,6 +575,18 @@ public class PluginTest extends TestCase {
     try {
       InputStream inputStream = ChartFactory.createChart(chartData, 2, 0, 1, chartModel, 100, 100, null);
       String jsonString = convertStreamToString(inputStream);
+      for (int row = 0; row < chartData.length; row++) {
+        for (int column = 0; column < chartData[row].length; column++) {
+          if (column == 2) {
+            assertTrue(jsonString.indexOf("{\"value\":" + chartData[row][2].toString()) >= 0);
+          } else {
+            assertTrue(jsonString.indexOf(chartData[row][column].toString()) >= 0);
+          }
+        }
+      }
+      assertTrue(jsonString.indexOf(chartModel.getTitle()) >= 0);
+      assertTrue(jsonString.indexOf(areaPlot.getCategoryAxisLabel()) >= 0);
+      assertTrue(jsonString.indexOf(areaPlot.getValueAxisLabel()) >= 0);
     } catch (Exception e) {
       fail("Unexpected exception");
     }
@@ -572,6 +620,16 @@ public class PluginTest extends TestCase {
     try {
       InputStream inputStream = ChartFactory.createChart(chartData, 1, 0, -1, chartModel, 100, 100, null);
       String jsonString = convertStreamToString(inputStream);
+      for (int row = 0; row < chartData.length; row++) {
+        for (int column = 0; column < chartData[row].length; column++) {
+          if (column == 1) {
+            assertTrue(jsonString.indexOf("{\"value\":" + chartData[row][1].toString()) >= 0);
+          } else {
+            assertTrue(jsonString.indexOf(chartData[row][column].toString()) >= 0);
+          }
+        }
+      }
+      assertTrue(jsonString.indexOf(chartModel.getTitle()) >= 0);
     } catch (Exception e) {
       fail("Unexpected exception");
     }
