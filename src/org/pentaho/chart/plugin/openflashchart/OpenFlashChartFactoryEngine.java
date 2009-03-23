@@ -85,10 +85,10 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     String rangeLabel = getValueAxisLabel(chartDocument);
     String domainLabel = getValueCategoryLabel(chartDocument);
     if ((domainLabel != null) && (domainLabel.trim().length() > 0)){
-      chart.setXLegend(new Text(domainLabel, "font-size: 14pt"));
+      chart.setXLegend(new Text(domainLabel, "font-size: 14px"));
     }
     if ((rangeLabel != null) && (rangeLabel.trim().length() > 0)) {
-      chart.setYLegend(new Text(rangeLabel, "font-size: 14pt"));
+      chart.setYLegend(new Text(rangeLabel, "font-size: 14px"));
     }
 
     ArrayList<String> domainValues = new ArrayList<String>();
@@ -208,10 +208,10 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     String rangeLabel = getValueAxisLabel(chartDocument);
     String domainLabel = getValueCategoryLabel(chartDocument);
     if ((domainLabel != null) && (domainLabel.trim().length() > 0)){
-      chart.setXLegend(new Text(domainLabel, "font-size: 14pt"));
+      chart.setXLegend(new Text(domainLabel, "font-size: 14px"));
     }
     if ((rangeLabel != null) && (rangeLabel.trim().length() > 0)) {
-      chart.setYLegend(new Text(rangeLabel, "font-size: 14pt"));
+      chart.setYLegend(new Text(rangeLabel, "font-size: 14px"));
     }
     
     CSSValue orientation = getPlotOrientation(chartDocumentContext.getChartDocument());
@@ -372,10 +372,10 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     String rangeLabel = getValueAxisLabel(chartDocument);
     String domainLabel = getValueCategoryLabel(chartDocument);
     if ((domainLabel != null) && (domainLabel.trim().length() > 0)){
-      chart.setXLegend(new Text(domainLabel, "font-size: 14pt"));
+      chart.setXLegend(new Text(domainLabel, "font-size: 14px"));
     }
     if ((rangeLabel != null) && (rangeLabel.trim().length() > 0)) {
-      chart.setYLegend(new Text(rangeLabel, "font-size: 14pt"));
+      chart.setYLegend(new Text(rangeLabel, "font-size: 14px"));
     }
 
     ArrayList<String> domainValues = new ArrayList<String>();
