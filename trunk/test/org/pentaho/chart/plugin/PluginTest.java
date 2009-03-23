@@ -17,9 +17,14 @@
 
 package org.pentaho.chart.plugin;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
@@ -29,9 +34,15 @@ import org.pentaho.chart.ChartFactory;
 import org.pentaho.chart.core.ChartDocument;
 import org.pentaho.chart.core.parser.ChartXMLParser;
 import org.pentaho.chart.data.ChartTableModel;
-import org.pentaho.chart.plugin.ChartPluginFactory;
-import org.pentaho.chart.plugin.IChartPlugin;
-import org.pentaho.chart.plugin.OutputUtils;
+import org.pentaho.chart.model.CategoricalAreaPlot;
+import org.pentaho.chart.model.CategoricalBarPlot;
+import org.pentaho.chart.model.CategoricalLinePlot;
+import org.pentaho.chart.model.ChartModel;
+import org.pentaho.chart.model.PiePlot;
+import org.pentaho.chart.model.Series;
+import org.pentaho.chart.model.PiePlot.Wedge;
+import org.pentaho.chart.model.Plot.Orientation;
+import org.pentaho.chart.model.Theme.ChartTheme;
 import org.pentaho.chart.plugin.api.ChartResult;
 import org.pentaho.chart.plugin.api.IOutput;
 import org.pentaho.chart.plugin.jfreechart.utils.JFreeChartUtils;
@@ -221,7 +232,7 @@ public class PluginTest extends TestCase {
   }
 
 
-  public void testAreaChart() {
+  public void testJFreeAreaChart() {
     Object[][] dataArray = {{75.55, 85.11, 90.22, "East"}, //$NON-NLS-1$
                             {70.33, 80.44, 85.55, "West"}, //$NON-NLS-1$
                             {60.66, 70.77, 80.88, "Central"}};//$NON-NLS-1$
@@ -238,7 +249,7 @@ public class PluginTest extends TestCase {
     runTests(fileNames, data);
   }
 
-  public void testPieChart() {
+  public void testJFreePieChart() {
     Object[][] dataArray = {{15.55}, 
                             {30.33}, 
                             {60.66}};
@@ -260,7 +271,7 @@ public class PluginTest extends TestCase {
     runTests(fileNames, data);
   }
 
-  public void testBarAndLineChart() {
+  public void testJFreeBarAndLineChart() {
 
     final Object[][] dataArray = {{5.55, 10.11, 20.22, "East"}, //$NON-NLS-1$
                                    {30.33, 40.44, 50.55, "West"}, //$NON-NLS-1$
@@ -298,7 +309,7 @@ public class PluginTest extends TestCase {
     
     runTests(fileNames, data);
   }
-  public void testMultiChart() {
+  public void testJFreeMultiChart() {
     final Object[][] dataArray = { 
         { 5.55, 10.11, 20.22, "East" }, //$NON-NLS-1$
         { 30.33, 40.44, 50.55, "West" }, //$NON-NLS-1$
@@ -318,7 +329,7 @@ public class PluginTest extends TestCase {
     runTests(fileNames, data);
   }
   
-  public void testDialChart() {   
+  public void testJFreeDialChart() {   
     final Object[][] dataArray = { { 8D } };
     
     final ChartTableModel data = createChartTableModel(dataArray);
@@ -390,6 +401,199 @@ public class PluginTest extends TestCase {
     final File chartFile = new File(chartFileName);
     assertTrue(chartFile.exists());
     System.out.println(chartFile.getAbsolutePath());
+  }
+  
+  public void testOpenFlashBarChart() {
+    Object[][] chartData = new Object[][] {
+        {"North America", "2007", new Integer(140000)},  
+        {"South America", "2007", new Integer(80000)},  
+        {"Asia", "2007", new Integer(95100)},  
+        {"Europe", "2007", new Integer(121300)},  
+        {"North America", "2008", new Integer(14760)},  
+        {"South America", "2008", new Integer(88370)},  
+        {"Asia", "2008", new Integer(110450)},  
+        {"Europe", "2008", new Integer(127800)},  
+        {"North America", "2009", new Integer(137010)},  
+        {"South America", "2009", new Integer(78780)},  
+        {"Asia", "2009", new Integer(94560)},  
+        {"Europe", "2009", new Integer(101290)}  
+    };
+    ChartModel chartModel = new ChartModel();
+    chartModel.setAnimate(true);
+    chartModel.setChartEngine(ChartModel.CHART_ENGINE_OPENFLASH);
+    chartModel.setTitle("testOpenFlashChart");
+    
+    CategoricalBarPlot barPlot = new CategoricalBarPlot();
+    barPlot.setOrientation(Orientation.VERTICAL);
+    barPlot.setCategoryAxisLabel("categoryAxisLabel");
+    barPlot.setValueAxisLabel("valueAxisLabel");
+    ArrayList<Series> series = new ArrayList<Series>();
+    series.add(new Series());
+    series.add(new Series());
+    series.add(new Series());
+    series.add(new Series());
+    series.add(new Series());
+    barPlot.setSeries(series);
+    chartModel.setPlot(barPlot);
+    chartModel.setTheme(ChartTheme.THEME1);
+    InputStream inputStream = null;
+    try {
+      inputStream = ChartFactory.createChart(chartData, 2, 0, 1, chartModel, 100, 100, null);
+      String jsonString = convertStreamToString(inputStream);
+    } catch (Exception e) {
+      fail("Unexpected exception");
+    }
+    
+    barPlot = new CategoricalBarPlot();
+    barPlot.setOrientation(Orientation.HORIZONTAL);
+    barPlot.setCategoryAxisLabel("categoryAxisLabel");
+    barPlot.setValueAxisLabel("valueAxisLabel");
+    series = new ArrayList<Series>();
+    series.add(new Series());
+    series.add(new Series());
+    series.add(new Series());
+    series.add(new Series());
+    series.add(new Series());
+    barPlot.setSeries(series);
+    chartModel.setPlot(barPlot);
+    try {
+      inputStream = ChartFactory.createChart(chartData, 2, 0, 1, chartModel, 100, 100, null);
+      String jsonString = convertStreamToString(inputStream);
+    } catch (Exception e) {
+      fail("Unexpected exception");
+    }
+  }
+  
+  public void testOpenFlashLineChart() {
+    Object[][] chartData = new Object[][] {
+        {"North America", "2007", new Integer(140000)},  
+        {"South America", "2007", new Integer(80000)},  
+        {"Asia", "2007", new Integer(95100)},  
+        {"Europe", "2007", new Integer(121300)},  
+        {"North America", "2008", new Integer(14760)},  
+        {"South America", "2008", new Integer(88370)},  
+        {"Asia", "2008", new Integer(110450)},  
+        {"Europe", "2008", new Integer(127800)},  
+        {"North America", "2009", new Integer(137010)},  
+        {"South America", "2009", new Integer(78780)},  
+        {"Asia", "2009", new Integer(94560)},  
+        {"Europe", "2009", new Integer(101290)}  
+    };
+    ChartModel chartModel = new ChartModel();
+    chartModel.setAnimate(true);
+    chartModel.setChartEngine(ChartModel.CHART_ENGINE_OPENFLASH);
+    chartModel.setTitle("testOpenFlashChart");
+    
+    CategoricalLinePlot linePlot = new CategoricalLinePlot();
+    linePlot.setCategoryAxisLabel("categoryAxisLabel");
+    linePlot.setValueAxisLabel("valueAcisLabel");
+    ArrayList<Series> series = new ArrayList<Series>();
+    series.add(new Series());
+    series.add(new Series());
+    series.add(new Series());
+    series.add(new Series());
+    series.add(new Series());
+    linePlot.setSeries(series);
+    chartModel.setPlot(linePlot);
+    chartModel.setTheme(ChartTheme.THEME2);
+    try {
+      InputStream inputStream = ChartFactory.createChart(chartData, 2, 0, 1, chartModel, 100, 100, null);
+      String jsonString = convertStreamToString(inputStream);
+    } catch (Exception e) {
+      fail("Unexpected exception");
+    }
+  }
+  
+  public void testOpenFlashAreaChart() {
+    Object[][] chartData = new Object[][] {
+        {"North America", "2007", new Integer(140000)},  
+        {"South America", "2007", new Integer(80000)},  
+        {"Asia", "2007", new Integer(95100)},  
+        {"Europe", "2007", new Integer(121300)},  
+        {"North America", "2008", new Integer(14760)},  
+        {"South America", "2008", new Integer(88370)},  
+        {"Asia", "2008", new Integer(110450)},  
+        {"Europe", "2008", new Integer(127800)},  
+        {"North America", "2009", new Integer(137010)},  
+        {"South America", "2009", new Integer(78780)},  
+        {"Asia", "2009", new Integer(94560)},  
+        {"Europe", "2009", new Integer(101290)}  
+    };
+    ChartModel chartModel = new ChartModel();
+    chartModel.setAnimate(true);
+    chartModel.setChartEngine(ChartModel.CHART_ENGINE_OPENFLASH);
+    chartModel.setTitle("testOpenFlashChart");
+    
+    CategoricalAreaPlot areaPlot = new CategoricalAreaPlot();
+    areaPlot.setCategoryAxisLabel("categoryAxisLabel");
+    areaPlot.setValueAxisLabel("valueAcisLabel");
+    ArrayList<Series> series = new ArrayList<Series>();
+    series.add(new Series());
+    series.add(new Series());
+    series.add(new Series());
+    series.add(new Series());
+    series.add(new Series());
+    areaPlot.setSeries(series);
+    chartModel.setPlot(areaPlot);
+    chartModel.setTheme(ChartTheme.THEME2);
+    try {
+      InputStream inputStream = ChartFactory.createChart(chartData, 2, 0, 1, chartModel, 100, 100, null);
+      String jsonString = convertStreamToString(inputStream);
+    } catch (Exception e) {
+      fail("Unexpected exception");
+    }
+  }
+  
+  public void testOpenFlashPieChart() {
+    Object[][] chartData = new Object[][] {
+        {"North America", new Integer(140000)},  
+        {"South America", new Integer(80000)},  
+        {"Asia", new Integer(95100)},  
+        {"Europe", new Integer(121300)}  
+    };
+    ChartModel chartModel = new ChartModel();
+    chartModel.setAnimate(true);
+    chartModel.setChartEngine(ChartModel.CHART_ENGINE_OPENFLASH);
+    chartModel.setTitle("testOpenFlashChart");
+    
+    PiePlot piePlot = new PiePlot();
+    ArrayList<Wedge> wedges = new ArrayList<Wedge>();
+    wedges.add(new Wedge());
+    wedges.add(new Wedge());
+    wedges.add(new Wedge());
+    wedges.add(new Wedge());
+    wedges.add(new Wedge());
+    wedges.add(new Wedge());
+    wedges.add(new Wedge());
+    wedges.add(new Wedge());
+    piePlot.setWedges(wedges);
+    chartModel.setPlot(piePlot);
+    chartModel.setTheme(ChartTheme.THEME2);
+    try {
+      InputStream inputStream = ChartFactory.createChart(chartData, 1, 0, -1, chartModel, 100, 100, null);
+      String jsonString = convertStreamToString(inputStream);
+    } catch (Exception e) {
+      fail("Unexpected exception");
+    }
+  }
+  
+  private String convertStreamToString(InputStream is) throws IOException{
+    BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+    StringBuilder sb = new StringBuilder();
+    String line = null;
+    try {
+      while ((line = reader.readLine()) != null) {
+        sb.append(line + "\n"); //$NON-NLS-1$
+      }
+    } finally {
+      try {
+        is.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+    
+    return sb.toString();
   }
 } //Class ends
 
