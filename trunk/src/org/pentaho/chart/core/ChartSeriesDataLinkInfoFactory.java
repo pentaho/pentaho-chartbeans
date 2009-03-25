@@ -163,7 +163,15 @@ public class ChartSeriesDataLinkInfoFactory {
       throws NumberFormatException {
     boolean foundColumn = false;
 
-    final int columnNum = Integer.parseInt(((String) currentColumnNum).trim());
+    int columnNum = -1;
+    
+    if (currentColumnNum instanceof String) {
+      columnNum = Integer.parseInt(((String) currentColumnNum).trim());     
+    } else {
+      columnNum = ((Number) currentColumnNum).intValue();
+    }
+    
+    
 
     // Check if it is a valid column number. The column number(s) are zero based.   
     if (columnNum >= 0 && columnNum < chartTableModel.getColumnCount()) {
@@ -171,7 +179,7 @@ public class ChartSeriesDataLinkInfoFactory {
       seriesDataLinkInfo.setColumnNum(currentChartElement, columnNum);
       foundColumn = true;
     } else {
-      ChartSeriesDataLinkInfoFactory.logger.warn(Messages.getString("ChartSeriesDataLinkInfoFactory.WARN_INCORECT_COLUMN_NUM", (String) currentColumnNum, null)); //$NON-NLS-1$
+      ChartSeriesDataLinkInfoFactory.logger.warn(Messages.getString("ChartSeriesDataLinkInfoFactory.WARN_INCORECT_COLUMN_NUM", currentColumnNum.toString(), null)); //$NON-NLS-1$
     }
 
     return foundColumn;
