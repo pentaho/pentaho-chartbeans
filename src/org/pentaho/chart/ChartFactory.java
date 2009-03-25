@@ -282,6 +282,13 @@ public class ChartFactory {
     return chartTableModel;
   }
   
+  /**
+   * Convenience method that converts a ChartModel into a ChartDocument and then calls generateChart.
+   */
+  public static ChartDocumentContext generateChart(final ChartModel chartModel, final ChartTableModel tableModel) throws ResourceException {
+    return generateChart(createChartDocument(chartModel), tableModel);
+  }
+  
   private static ChartDocument createChartDocument(String chartTitle) {
     ChartElement rootElement = new ChartElement();
     rootElement.setTagName(ChartElement.TAG_NAME_CHART);
