@@ -238,4 +238,20 @@ public class CssStyle extends HashMap<String, String> implements Serializable {
     }
   }
   
+  public void setStyleString(String cssStyle) {
+    clear();
+    if (cssStyle != null) {
+      String[] styles = cssStyle.split(";");
+      for (String styleStr : styles) {
+        String[] styleNameValue = styleStr.split(":");
+        if (styleNameValue.length == 2) {
+          String styleName = styleNameValue[0].trim();
+          String styleValue = styleNameValue[1].trim();
+          if ((styleName.length() > 0) && (styleValue.length() > 0)) {
+            put(styleName, styleValue);
+          }
+        }
+      }
+    }
+  }
 }
