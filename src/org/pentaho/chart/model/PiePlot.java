@@ -5,18 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PiePlot extends Plot implements Serializable {
+  private static final float DEFAULT_OPACITY = 0.85f;
   
-  public static class Wedge implements Serializable {
-    Integer foregroundColor;
+  public static class Slice implements Serializable {
     boolean exploded;
-
-    public Integer getForegroundColor() {
-      return foregroundColor;
-    }
-
-    public void setForegroundColor(Integer foregroundColor) {
-      this.foregroundColor = foregroundColor;
-    }
 
     public boolean isExploded() {
       return exploded;
@@ -27,13 +19,27 @@ public class PiePlot extends Plot implements Serializable {
     }
   }
   
-  List<Wedge> wedges = new ArrayList<Wedge>();
+  List<Slice> slices = new ArrayList<Slice>();
+  boolean animate = false;
 
-  public List<Wedge> getWedges() {
-    return wedges;
+  public PiePlot() {
+    setOpacity(DEFAULT_OPACITY);
+  }
+  
+  public List<Slice> getSlices() {
+    return slices;
   }
 
-  public void setWedges(List<Wedge> wedges) {
-    this.wedges = wedges;
+  public void setSlices(List<Slice> slices) {
+    this.slices = slices;
   }
+  
+  public boolean getAnimate() {
+    return animate;
+  }
+
+  public void setAnimate(boolean animate) {
+    this.animate = animate;
+  }
+
 }

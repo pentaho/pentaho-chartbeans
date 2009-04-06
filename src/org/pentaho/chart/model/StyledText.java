@@ -5,44 +5,25 @@ import java.io.Serializable;
 import org.pentaho.chart.model.CssStyle.FontStyle;
 import org.pentaho.chart.model.CssStyle.FontWeight;
 
-public class ChartLegend implements Serializable {
-  boolean visible = false;
+public class StyledText implements Serializable{
+  String text;
   CssStyle style = new CssStyle();
-
-  public ChartLegend() {
+  
+  public StyledText(String text) {
+    this.text = text;
   }
   
-  public boolean getVisible() {
-    return visible;
+  public StyledText() {
   }
-
-  public void setVisible(boolean visible) {
-    this.visible = visible;
+  
+  public String getText() {
+    return text;
   }
-
-  public Integer getBorderColor() {
-    return style.getBorderColor();
+  
+  public void setText(String text) {
+    this.text = text;
   }
-
-  public boolean getBorderVisible() {
-    return style.getBorderVisible();
-  }
-
-  public Integer getBorderWidth() {
-    return style.getBorderWidth();
-  }
-
-  public void setBorderColor(Integer color) {
-    style.setBorderColor(color);
-  }
-
-  public void setBorderVisible(boolean visible) {
-    style.setBorderVisible(visible);
-  }
-
-  public void setBorderWidth(Integer width) {
-    style.setBorderWidth(width);
-  }
+  
 
   public String getFontFamily() {
     return style.getFontFamily();
@@ -84,12 +65,24 @@ public class ChartLegend implements Serializable {
     style.setFontWeight(weight);
   }
 
-  public CssStyle getStyle() {
-    return style;
+  public Integer getBackgroundColor() {
+    return style.getBackgroundColor();
   }
 
-  public String toString() {
-    return style.toString();
+  public void setBackgroundColor(Integer color) {
+    style.setBackgroundColor(color);
+  }
+
+  public Integer getColor() {
+    return style.getColor();
+  }
+
+  public void setColor(Integer color) {
+    style.setColor(color);
+  }
+  
+  public CssStyle getStyle() {
+    return style;
   }
 
 }

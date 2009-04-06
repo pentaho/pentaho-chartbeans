@@ -25,6 +25,7 @@ public class JFreeBarChartGeneratorFactory {
     boolean interval = false;
     boolean layered = false;
     boolean waterfall = false;
+    boolean threeD = false;
     boolean stacked100Pct = false;
 
     final ChartDocument chartDocument = chartDocContext.getChartDocument();
@@ -38,9 +39,10 @@ public class JFreeBarChartGeneratorFactory {
       layered |= ChartBarStyle.LAYERED.equals(value);
       waterfall |= ChartBarStyle.WATERFALL.equals(value);
       stacked100Pct |= ChartBarStyle.STACK_100_PERCENT.equals(value);
+      threeD |= ChartBarStyle.THREED.equals(value);
 
       // Pick the first one that is set.
-      if (stacked || stackedPct || stacked100Pct || cylinder || interval || layered || waterfall) {
+      if (stacked || stackedPct || stacked100Pct || cylinder || interval || layered || waterfall || threeD) {
         break;
       }
     }
@@ -59,6 +61,8 @@ public class JFreeBarChartGeneratorFactory {
       barChartGenerator = new JFreeStacked100PercentBarChartGenerator();
     } else if (waterfall) {
       barChartGenerator = new JFreeWaterfallBarChartGenerator();
+    } else if (threeD) {
+      barChartGenerator = new JFree3DBarChartGenerator();
     } else {
       barChartGenerator = new JFreeDefaultBarChartGenerator();
     }

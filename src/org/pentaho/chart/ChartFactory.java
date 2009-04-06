@@ -36,17 +36,21 @@ import org.pentaho.chart.css.styles.ChartBarStyle;
 import org.pentaho.chart.css.styles.ChartOrientationStyle;
 import org.pentaho.chart.css.styles.ChartSeriesType;
 import org.pentaho.chart.data.ChartTableModel;
-import org.pentaho.chart.model.CategoricalAreaPlot;
-import org.pentaho.chart.model.CategoricalBarPlot;
-import org.pentaho.chart.model.CategoricalLinePlot;
+import org.pentaho.chart.model.AreaPlot;
+import org.pentaho.chart.model.BarPlot;
+import org.pentaho.chart.model.ChartLegend;
 import org.pentaho.chart.model.ChartModel;
 import org.pentaho.chart.model.DialPlot;
 import org.pentaho.chart.model.GraphPlot;
+import org.pentaho.chart.model.LinePlot;
 import org.pentaho.chart.model.PiePlot;
 import org.pentaho.chart.model.Plot;
-import org.pentaho.chart.model.Series;
+import org.pentaho.chart.model.StyledText;
+import org.pentaho.chart.model.BarPlot.BarPlotFlavor;
+import org.pentaho.chart.model.CssStyle.FontStyle;
+import org.pentaho.chart.model.CssStyle.FontWeight;
 import org.pentaho.chart.model.DialPlot.DialRange;
-import org.pentaho.chart.model.PiePlot.Wedge;
+import org.pentaho.chart.model.LinePlot.LinePlotFlavor;
 import org.pentaho.chart.model.Plot.Orientation;
 import org.pentaho.chart.plugin.ChartPluginFactory;
 import org.pentaho.chart.plugin.ChartProcessingException;
@@ -55,7 +59,6 @@ import org.pentaho.chart.plugin.api.IOutput;
 import org.pentaho.chart.plugin.api.PersistenceException;
 import org.pentaho.chart.plugin.api.IOutput.OutputTypes;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
-import org.pentaho.reporting.libraries.css.keys.border.BorderStyle;
 import org.pentaho.reporting.libraries.css.keys.border.BorderStyleKeys;
 import org.pentaho.reporting.libraries.css.keys.box.BoxStyleKeys;
 import org.pentaho.reporting.libraries.css.keys.color.ColorStyleKeys;
@@ -289,90 +292,223 @@ public class ChartFactory {
     return generateChart(createChartDocument(chartModel), tableModel);
   }
   
-  private static ChartDocument createChartDocument(String chartTitle) {
+  private static void setElementFont(ChartElement chartElement, String fontFamily, Integer fontSize, FontStyle fontStyle, FontWeight fontWeight) {
+    LayoutStyle style = chartElement.getLayoutStyle();
+    if (fontFamily != null) {
+      style.setValue(FontStyleKeys.FONT_FAMILY, new CSSConstant(fontFamily));
+    }
+    if (fontSize != null) {
+      style.setValue(FontStyleKeys.FONT_SIZE, CSSNumericValue.createValue(CSSNumericType.PX, fontSize));
+    }
+    if (fontStyle != null) {
+      style.setValue(FontStyleKeys.FONT_STYLE, new CSSConstant(fontStyle.toString().toLowerCase()));
+    }
+    if (fontWeight != null) {
+      style.setValue(FontStyleKeys.FONT_WEIGHT, new CSSConstant(fontWeight.toString().toLowerCase()));
+    }
+  }
+  private static ChartElement createTextElement(String elementName, StyledText styledText) {
+    ChartElement chartElement = null;
+    if ((styledText != null) && (styledText.getText() != null)) {
+      chartElement = new ChartElement();
+      chartElement.setTagName(elementName);
+      chartElement.setText(styledText.getText());
+      LayoutStyle style = chartElement.getLayoutStyle();
+      setElementFont(chartElement, styledText.getFontFamily(), styledText.getFontSize(), styledText.getFontStyle(), styledText.getFontWeight());
+      if (styledText.getColor() != null) {
+        style.setValue(ColorStyleKeys.COLOR, new CSSColorValue(new Color(styledText.getColor() & 0x00FFFFFF)));
+      }
+    }
+    return chartElement;
+  }
+  
+  private static ChartDocument createBasicGraphChartDocument(ChartModel chartModel) {
+    ChartDocument chartDocument = createBasicChartDocument(chartModel);
+    ChartElement rootElement = chartDocument.getRootElement();
+    
+    GraphPlot graphPlot = (GraphPlot)chartModel.getPlot();
+
+    ChartElement chartElement = null;
+    if ((graphPlot.getOrientation() == Orientation.HORIZONTAL) && (chartModel.getChartEngine() == ChartModel.CHART_ENGINE_JFREE)) {
+      chartElement = createTextElement("rangeLabel", graphPlot.getXAxisLabel());
+    } else {
+      chartElement = createTextElement("rangeLabel", graphPlot.getYAxisLabel());
+    }
+    if (chartElement != null) {
+      rootElement.addChildElement(chartElement);
+    }
+    
+    if ((graphPlot.getOrientation() == Orientation.HORIZONTAL)  && (chartModel.getChartEngine() == ChartModel.CHART_ENGINE_JFREE)) {
+      chartElement = createTextElement("domainLabel", graphPlot.getYAxisLabel());
+    } else {
+      chartElement = createTextElement("domainLabel", graphPlot.getXAxisLabel());
+    }
+    if (chartElement != null) {
+      rootElement.addChildElement(chartElement);
+    }
+    
+    ChartElement plotElement = chartDocument.getPlotElement();
+    CSSConstant chartOrientationStyle = chartModel.getPlot().getOrientation() == Orientation.HORIZONTAL ? ChartOrientationStyle.HORIZONTAL
+        : ChartOrientationStyle.VERTICAL;
+    plotElement.getLayoutStyle().setValue(ChartStyleKeys.ORIENTATION, chartOrientationStyle);
+    return chartDocument;
+  }
+  
+  private static ChartDocument createBasicChartDocument(ChartModel chartModel) {
+    StyledText title = chartModel.getTitle();
     ChartElement rootElement = new ChartElement();
     rootElement.setTagName(ChartElement.TAG_NAME_CHART);
+    if (chartModel.getBackground() instanceof Integer) {
+      rootElement.getLayoutStyle().setValue(BorderStyleKeys.BACKGROUND_COLOR, new CSSColorValue(new Color((Integer)chartModel.getBackground())));
+    }
+    
+    if (chartModel.getBorderVisible()) {
+      rootElement.getLayoutStyle().setValue(BorderStyleKeys.BORDER_TOP_WIDTH, CSSNumericValue.createValue(CSSNumericType.PX, 1));
+      if (chartModel.getBorderColor() != null) {
+        rootElement.getLayoutStyle().setValue(BorderStyleKeys.BORDER_TOP_COLOR, new CSSColorValue(new Color(chartModel.getBorderColor())));
+      }
+    }
 
-    ChartElement chartElement = new ChartElement();
-    chartElement.setTagName(ChartElement.TAG_NAME_TITLE);
-    chartElement.setText(chartTitle != null ? chartTitle : "");
+    ChartElement chartElement = createTextElement(ChartElement.TAG_NAME_TITLE, title);
+    if (chartElement != null) {
+      rootElement.addChildElement(chartElement);
+    }
+        
+    chartElement = new ChartElement();
+    chartElement.setTagName(ChartElement.TAG_NAME_PLOT);
+    chartElement.getLayoutStyle().setValue(ChartStyleKeys.DRILL_URL, new CSSStringValue(CSSStringType.URI, "http://localhost:8080/Pentaho/JPivot"));
+    chartElement.getLayoutStyle().setValue(ChartStyleKeys.SCALE_NUM, CSSNumericValue.createValue(CSSNumericType.NUMBER, 1));   
+    Plot plot = chartModel.getPlot();
+    if (plot != null) {
+      if (plot.getBackground() instanceof Integer) {
+        chartElement.getLayoutStyle().setValue(BorderStyleKeys.BACKGROUND_COLOR, new CSSColorValue(new Color((Integer)plot.getBackground())));
+      }
+      if (plot.getOpacity() != null) {
+        chartElement.getLayoutStyle().setValue(ColorStyleKeys.OPACITY, CSSNumericValue.createValue(CSSNumericType.NUMBER, plot.getOpacity()));
+      }
+    }
     rootElement.addChildElement(chartElement);
+    
+    ChartLegend legend = chartModel.getLegend();
+    if ((legend != null) && legend.getVisible()) {
+      chartElement = new ChartElement();
+      chartElement.setTagName(ChartElement.TAG_NAME_LEGEND);
+      setElementFont(chartElement, legend.getFontFamily(), legend.getFontSize(), legend.getFontStyle(), legend.getFontWeight());
+      
+      if (chartModel.getBorderVisible()) {
+        chartElement.getLayoutStyle().setValue(BorderStyleKeys.BORDER_TOP_WIDTH, CSSNumericValue.createValue(CSSNumericType.PX, chartModel.getBorderWidth()));
+      }
+      rootElement.addChildElement(chartElement);
+    }
     
     ChartDocument chartDocument = new ChartDocument(rootElement);
     ResourceManager resourceManager = new ResourceManager();
     resourceManager.registerDefaults();
     chartDocument.setResourceManager(resourceManager);
+
     return chartDocument;
   }
   
-  private static ChartDocument createGraphChartDocument(ChartModel chartModel) {
-    ChartDocument chartDocument = createChartDocument(chartModel.getTitle());
-    ChartElement rootElement = chartDocument.getRootElement();
-
-    GraphPlot categoricalPlot = (GraphPlot)chartModel.getPlot();
-
-    ChartElement chartElement = new ChartElement();
-    chartElement.setTagName("rangeLabel");
-    chartElement.setText(categoricalPlot.getValueAxisLabel() != null ? categoricalPlot.getValueAxisLabel() : "");
-    rootElement.addChildElement(chartElement);
-
-    chartElement = new ChartElement();
-    chartElement.setTagName("domainLabel");
-    chartElement
-        .setText(categoricalPlot.getCategoryAxisLabel() != null ? categoricalPlot.getCategoryAxisLabel() : "");
-    rootElement.addChildElement(chartElement);
-
-    for (int i = 0; i < categoricalPlot.getSeries().size(); i++) {
-      if (categoricalPlot instanceof CategoricalBarPlot) {
-        rootElement.addChildElement(createBarPlotSeriesElement(categoricalPlot.getSeries().get(i), i));
-      } else if (categoricalPlot instanceof CategoricalLinePlot) {
-        rootElement.addChildElement(createLinePlotSeriesElement(categoricalPlot.getSeries().get(i), i));
-      } else if (categoricalPlot instanceof CategoricalAreaPlot) {
-        rootElement.addChildElement(createAreaPlotSeriesElement(categoricalPlot.getSeries().get(i), i));
+  private static ChartDocument createBarChartDocument(ChartModel chartModel) {
+    ChartDocument chartDocument = createBasicGraphChartDocument(chartModel);
+    ChartElement rootElement = chartDocument.getRootElement();    
+    BarPlot barPlot = (BarPlot)chartModel.getPlot();    
+    for (int i = 0; i < barPlot.getPalette().size(); i++) {
+      ChartElement chartElement = new ChartElement();
+      chartElement.setTagName(ChartElement.TAG_NAME_SERIES);
+      chartElement.setAttribute(ChartElement.COLUMN_POSITION, i);
+      Color color = new Color(barPlot.getPalette().get(i));
+      if (color != null) {
+        chartElement.getLayoutStyle().setValue(ColorStyleKeys.COLOR, new CSSColorValue(color));
       }
-    }
+      chartElement.getLayoutStyle().setValue(ChartStyleKeys.CHART_TYPE, ChartSeriesType.BAR);
+      chartElement.getLayoutStyle().setValue(ChartStyleKeys.BAR_STYLE, ChartBarStyle.BAR);
+      chartElement.getLayoutStyle().setValue(ChartStyleKeys.BAR_MAX_WIDTH,
+          CSSNumericValue.createValue(CSSNumericType.PERCENTAGE, 10));
+      
+      if (i == 0) {
+        BarPlotFlavor flavor = barPlot.getFlavor();
+        if ((flavor != null) && (flavor != BarPlotFlavor.PLAIN)) {
+          chartElement.getLayoutStyle().setValue(ChartStyleKeys.BAR_STYLE, new CSSConstant(flavor.toString().toLowerCase()));
+        }
 
-    chartElement = new ChartElement();
-    chartElement.setTagName(ChartElement.TAG_NAME_PLOT);
-    CSSConstant chartOrientationStyle = categoricalPlot.getOrientation() == Orientation.HORIZONTAL ? ChartOrientationStyle.HORIZONTAL
-        : ChartOrientationStyle.VERTICAL;
-    chartElement.getLayoutStyle().setValue(ChartStyleKeys.ORIENTATION, chartOrientationStyle);
-    chartElement.getLayoutStyle().setValue(ChartStyleKeys.DRILL_URL,
-        new CSSStringValue(CSSStringType.URI, "http://localhost:8080/Pentaho/JPivot"));
-    chartElement.getLayoutStyle().setValue(ChartStyleKeys.SCALE_NUM,
-        CSSNumericValue.createValue(CSSNumericType.NUMBER, 1));
-    rootElement.addChildElement(chartElement);
-    
+      }
+      rootElement.addChildElement(chartElement);
+    }
+    return chartDocument;
+  }
+  
+  private static ChartDocument createAreaChartDocument(ChartModel chartModel) {
+    ChartDocument chartDocument = createBasicGraphChartDocument(chartModel);
+    ChartElement rootElement = chartDocument.getRootElement();    
+    AreaPlot areaPlot = (AreaPlot)chartModel.getPlot();    
+    for (int i = 0; i < areaPlot.getPalette().size(); i++) {
+      ChartElement chartElement = new ChartElement();
+      chartElement.setTagName(ChartElement.TAG_NAME_SERIES);
+      Color color = new Color(areaPlot.getPalette().get(i));
+      if (color != null) {
+        chartElement.getLayoutStyle().setValue(ColorStyleKeys.COLOR, new CSSColorValue(color));
+      }
+      chartElement.getLayoutStyle().setValue(ChartStyleKeys.CHART_TYPE, ChartSeriesType.AREA);
+      chartElement.getLayoutStyle().setValue(ChartStyleKeys.AREA_STYLE, ChartAreaStyle.AREA);
+      rootElement.addChildElement(chartElement);
+    }
+    return chartDocument;
+  }
+  
+  private static ChartDocument createLineChartDocument(ChartModel chartModel) {
+    ChartDocument chartDocument = createBasicGraphChartDocument(chartModel);
+    ChartElement rootElement = chartDocument.getRootElement();    
+    LinePlot linePlot = (LinePlot)chartModel.getPlot();    
+    for (int i = 0; i < linePlot.getPalette().size(); i++) {
+      ChartElement chartElement = new ChartElement();
+      chartElement.setTagName(ChartElement.TAG_NAME_SERIES);
+      Color color = new Color(linePlot.getPalette().get(i));
+      if (color != null) {
+        chartElement.getLayoutStyle().setValue(ColorStyleKeys.COLOR, new CSSColorValue(color));
+      }
+      chartElement.getLayoutStyle().setValue(ChartStyleKeys.CHART_TYPE, ChartSeriesType.LINE);
+      chartElement.getLayoutStyle().setValue(ChartStyleKeys.LINE_WIDTH, CSSNumericValue.createValue(CSSNumericType.PX, 1));
+      
+      if (i == 0) {
+        LinePlotFlavor flavor = linePlot.getFlavor();
+        if ((flavor != null) && (flavor != LinePlotFlavor.PLAIN)) {
+          chartElement.getLayoutStyle().setValue(ChartStyleKeys.LINE_STYLE, new CSSConstant(flavor.toString().toLowerCase()));
+        }
+
+      }
+      rootElement.addChildElement(chartElement);
+    }
     return chartDocument;
   }
   
   private static ChartDocument createPieChartDocument(ChartModel chartModel) {
-    ChartDocument chartDocument = createChartDocument(chartModel.getTitle());
+    ChartDocument chartDocument = createBasicChartDocument(chartModel);
     ChartElement rootElement = chartDocument.getRootElement();
 
+    PiePlot piePlot = (PiePlot)chartModel.getPlot();
+    
     ChartElement chartElement = new ChartElement();
     chartElement.setTagName("animate");
-    chartElement.setText(Boolean.toString(chartModel.getAnimate()));
+    chartElement.setText(Boolean.toString(piePlot.getAnimate()));
     rootElement.addChildElement(chartElement);
     
-    PiePlot piePlot = (PiePlot)chartModel.getPlot();
-    for (int i = 0; i < piePlot.getWedges().size(); i++) {
-      rootElement.addChildElement(createPieSeriesElement(piePlot.getWedges().get(i), i));
+    for (int i = 0; i < piePlot.getPalette().size(); i++) {
+      ChartElement sliceElement = new ChartElement();
+      sliceElement.setTagName(ChartElement.TAG_NAME_SERIES);
+      Color color = new Color(piePlot.getPalette().get(i));
+      if (color != null) {
+        sliceElement.getLayoutStyle().setValue(ColorStyleKeys.COLOR, new CSSColorValue(color));
+      }
+      sliceElement.getLayoutStyle().setValue(ChartStyleKeys.CHART_TYPE, ChartSeriesType.PIE);
+      rootElement.addChildElement(sliceElement);
     }
-
-    chartElement = new ChartElement();
-    chartElement.setTagName(ChartElement.TAG_NAME_PLOT);
-    chartElement.getLayoutStyle().setValue(ChartStyleKeys.DRILL_URL,
-        new CSSStringValue(CSSStringType.URI, "http://localhost:8080/Pentaho/JPivot"));
-    chartElement.getLayoutStyle().setValue(ChartStyleKeys.SCALE_NUM,
-        CSSNumericValue.createValue(CSSNumericType.NUMBER, 1));
 
     ChartElement datasetElement = new ChartElement();
     datasetElement.setTagName("dataset");
     datasetElement.setAttribute("type", "pie");
 
-    chartElement.addChildElement(datasetElement);
-    rootElement.addChildElement(chartElement);
+    chartDocument.getPlotElement().addChildElement(datasetElement);
     
     return chartDocument;
   }
@@ -391,21 +527,23 @@ public class ChartFactory {
   }
   
   private static ChartDocument createDialChartDocument(ChartModel chartModel) {
-    ChartDocument chartDocument = createChartDocument(chartModel.getTitle());
+    ChartDocument chartDocument = createBasicChartDocument(chartModel);
     ChartElement rootElement = chartDocument.getRootElement();
     
     DialPlot dialPlot = (DialPlot)chartModel.getPlot();
-    rootElement.addChildElement(createDialSeriesElement());
+    ChartElement chartElement = new ChartElement();
+    chartElement.setTagName(ChartElement.TAG_NAME_SERIES);
+    chartElement.getLayoutStyle().setValue(ChartStyleKeys.CHART_TYPE, ChartSeriesType.DIAL);
+    rootElement.addChildElement(chartElement);
 
-    ChartElement plotElement = new ChartElement();
-    plotElement.setTagName(ChartElement.TAG_NAME_PLOT);
+    ChartElement plotElement = chartDocument.getPlotElement();
     
     LayoutStyle plotStyle = plotElement.getLayoutStyle();
     CSSValuePair cssValuePair = new CSSValuePair(new CSSColorValue(new Color(0xfcfcfc)), new CSSColorValue(new Color(0xd7d8da)));
     plotStyle.setValue(ChartStyleKeys.GRADIENT_COLOR, cssValuePair);
     plotStyle.setValue(BorderStyleKeys.BORDER_TOP_WIDTH, CSSNumericValue.createValue(CSSNumericType.PX, 2));
     plotStyle.setValue(BorderStyleKeys.BORDER_TOP_COLOR, new CSSColorValue(new Color(0x8d8d8d)));
-    plotStyle.setValue(BorderStyleKeys.BORDER_TOP_STYLE, BorderStyle.SOLID);
+    plotStyle.setValue(BorderStyleKeys.BORDER_TOP_STYLE, org.pentaho.reporting.libraries.css.keys.border.BorderStyle.SOLID);
     plotStyle.setValue(BorderStyleKeys.BORDER_BOTTOM_COLOR, new CSSColorValue(new Color(0x5d5d5d)));
     plotStyle.setValue(ColorStyleKeys.COLOR, new CSSColorValue(Color.WHITE));
 
@@ -415,7 +553,7 @@ public class ChartFactory {
     dialPointerStyle.setValue(ColorStyleKeys.COLOR, new CSSColorValue(new Color(0x636363)));
     dialPointerStyle.setValue(BorderStyleKeys.BORDER_TOP_COLOR, new CSSColorValue(new Color(0x5d5d5d)));
     dialPointerStyle.setValue(BorderStyleKeys.BORDER_TOP_WIDTH, CSSNumericValue.createValue(CSSNumericType.PX, 2));
-    dialPointerStyle.setValue(BorderStyleKeys.BORDER_TOP_STYLE, BorderStyle.SOLID);
+    dialPointerStyle.setValue(BorderStyleKeys.BORDER_TOP_STYLE, org.pentaho.reporting.libraries.css.keys.border.BorderStyle.SOLID);
     dialPointerStyle.setValue(BoxStyleKeys.HEIGHT, CSSNumericValue.createValue(CSSNumericType.PERCENTAGE, 90));
     dialPointerStyle.setValue(BoxStyleKeys.WIDTH, CSSNumericValue.createValue(CSSNumericType.PERCENTAGE, 5));
     plotElement.addChildElement(dialPointerElement);
@@ -426,7 +564,7 @@ public class ChartFactory {
     dialCapStyle.setValue(ColorStyleKeys.COLOR, new CSSColorValue(new Color(0x636363)));
     dialCapStyle.setValue(BorderStyleKeys.BORDER_TOP_COLOR, new CSSColorValue(new Color(0x5d5d5d)));
     dialCapStyle.setValue(BorderStyleKeys.BORDER_TOP_WIDTH, CSSNumericValue.createValue(CSSNumericType.PX, 2));
-    dialCapStyle.setValue(BorderStyleKeys.BORDER_TOP_STYLE, BorderStyle.SOLID);
+    dialCapStyle.setValue(BorderStyleKeys.BORDER_TOP_STYLE, org.pentaho.reporting.libraries.css.keys.border.BorderStyle.SOLID);
     dialCapStyle.setValue(BoxStyleKeys.WIDTH, CSSNumericValue.createValue(CSSNumericType.PERCENTAGE, 6));
     plotElement.addChildElement(dialCapElement);
     
@@ -473,7 +611,7 @@ public class ChartFactory {
     ChartElement dialValueIndicatorElement = new ChartElement();
     dialValueIndicatorElement.setTagName("dialvalueindicator");
     LayoutStyle dialValueIndicatorStyle = dialValueIndicatorElement.getLayoutStyle();
-    dialValueIndicatorStyle.setValue(BorderStyleKeys.BORDER_TOP_STYLE, BorderStyle.SOLID);
+    dialValueIndicatorStyle.setValue(BorderStyleKeys.BORDER_TOP_STYLE, org.pentaho.reporting.libraries.css.keys.border.BorderStyle.SOLID);
     dialValueIndicatorStyle.setValue(BorderStyleKeys.BORDER_TOP_COLOR, new CSSColorValue(new Color(0x8b8b8b)));
     dialValueIndicatorStyle.setValue(BorderStyleKeys.BORDER_TOP_WIDTH, CSSNumericValue.createValue(CSSNumericType.PX, 1));
     dialValueIndicatorStyle.setValue(ColorStyleKeys.COLOR, new CSSColorValue(Color.BLACK));
@@ -502,16 +640,18 @@ public class ChartFactory {
     datasetElement.setAttribute("type", "value");
     plotElement.addChildElement(datasetElement);
     
-    rootElement.addChildElement(plotElement);
-    
     return chartDocument;
   }
   
   private static ChartDocument createChartDocument(ChartModel chartModel) {
     ChartDocument chartDocument = null;
     Plot plot = chartModel.getPlot();
-    if (plot instanceof GraphPlot) {
-      chartDocument = createGraphChartDocument(chartModel);
+    if (plot instanceof BarPlot) {
+      chartDocument = createBarChartDocument(chartModel);
+    } else if (plot instanceof LinePlot) {
+      chartDocument = createLineChartDocument(chartModel);
+    } else if (plot instanceof AreaPlot) {
+      chartDocument = createAreaChartDocument(chartModel);
     } else if (plot instanceof PiePlot) {
       chartDocument = createPieChartDocument(chartModel);
     } else if (plot instanceof DialPlot) {
@@ -519,62 +659,5 @@ public class ChartFactory {
     }
     return chartDocument;
   }
-  
-  private static ChartElement createPieSeriesElement(Wedge wedge, int seriesIndex) {
-    ChartElement chartElement = new ChartElement();
-    chartElement.setTagName(ChartElement.TAG_NAME_SERIES);
-    Color color = wedge.getForegroundColor() != null ? new Color(wedge.getForegroundColor()) : null;
-    if (color != null) {
-      chartElement.getLayoutStyle().setValue(ColorStyleKeys.COLOR, new CSSColorValue(color));
-    }
-    chartElement.getLayoutStyle().setValue(ChartStyleKeys.CHART_TYPE, ChartSeriesType.PIE);
-    return chartElement;
-  }
 
-  private static ChartElement createDialSeriesElement() {
-    ChartElement chartElement = new ChartElement();
-    chartElement.setTagName(ChartElement.TAG_NAME_SERIES);
-    chartElement.getLayoutStyle().setValue(ChartStyleKeys.CHART_TYPE, ChartSeriesType.DIAL);
-    return chartElement;
-  }
-  
-  private static ChartElement createBarPlotSeriesElement(Series series, int seriesIndex) {
-    ChartElement chartElement = new ChartElement();
-    chartElement.setTagName(ChartElement.TAG_NAME_SERIES);
-    chartElement.setAttribute(ChartElement.COLUMN_POSITION, seriesIndex);
-    Color color = series.getForegroundColor() != null ? new Color(series.getForegroundColor()) : null;
-    if (color != null) {
-      chartElement.getLayoutStyle().setValue(ColorStyleKeys.COLOR, new CSSColorValue(color));
-    }
-    chartElement.getLayoutStyle().setValue(ChartStyleKeys.CHART_TYPE, ChartSeriesType.BAR);
-    chartElement.getLayoutStyle().setValue(ChartStyleKeys.BAR_STYLE, ChartBarStyle.BAR);
-    chartElement.getLayoutStyle().setValue(ChartStyleKeys.BAR_MAX_WIDTH,
-        CSSNumericValue.createValue(CSSNumericType.PERCENTAGE, 10));
-    return chartElement;
-  }
-
-  private static ChartElement createLinePlotSeriesElement(Series series, int seriesIndex) {
-    ChartElement chartElement = new ChartElement();
-    chartElement.setTagName(ChartElement.TAG_NAME_SERIES);
-    Color color = series.getForegroundColor() != null ? new Color(series.getForegroundColor()) : null;
-    if (color != null) {
-      chartElement.getLayoutStyle().setValue(ColorStyleKeys.COLOR, new CSSColorValue(color));
-    }
-    chartElement.getLayoutStyle().setValue(ChartStyleKeys.CHART_TYPE, ChartSeriesType.LINE);
-    chartElement.getLayoutStyle()
-        .setValue(ChartStyleKeys.LINE_WIDTH, CSSNumericValue.createValue(CSSNumericType.PX, 1));
-    return chartElement;
-  }
-
-  private static ChartElement createAreaPlotSeriesElement(Series series, int seriesIndex) {
-    ChartElement chartElement = new ChartElement();
-    chartElement.setTagName(ChartElement.TAG_NAME_SERIES);
-    Color color = series.getForegroundColor() != null ? new Color(series.getForegroundColor()) : null;
-    if (color != null) {
-      chartElement.getLayoutStyle().setValue(ColorStyleKeys.COLOR, new CSSColorValue(color));
-    }
-    chartElement.getLayoutStyle().setValue(ChartStyleKeys.CHART_TYPE, ChartSeriesType.AREA);
-    chartElement.getLayoutStyle().setValue(ChartStyleKeys.AREA_STYLE, ChartAreaStyle.AREA);
-    return chartElement;
-  }
 }
