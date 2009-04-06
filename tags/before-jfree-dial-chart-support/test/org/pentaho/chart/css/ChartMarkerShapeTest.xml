@@ -1,6 +1,0 @@
-<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
-	<series/>
-	<series style="-x-pentaho-chart-marker-shape: rectangle"/>
-	<series style="-x-pentaho-chart-marker-shape: ellipse"/>
-	<series style="-x-pentaho-chart-marker-shape: notashape"/>
-</chart>
