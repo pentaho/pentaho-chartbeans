@@ -78,6 +78,11 @@ public class ChartModelConverter implements Converter {
       }
     }
     
+    String cssStyle = reader.getAttribute("style");
+    if (cssStyle != null) {
+      chartModel.getStyle().setStyleString(cssStyle);
+    }
+    
     while (reader.hasMoreChildren()) {
       reader.moveDown();
       if (reader.getNodeName().equals("title")) {
@@ -85,13 +90,13 @@ public class ChartModelConverter implements Converter {
         if (title != null) {
           chartModel.getTitle().setText(title);
         } 
-        String cssStyle = reader.getAttribute("style");
+        cssStyle = reader.getAttribute("style");
         if (cssStyle != null) {
           chartModel.getTitle().getStyle().setStyleString(cssStyle);
         }
       } else if (reader.getNodeName().equals("legend")) {
         chartModel.getLegend().setVisible(true);
-        String cssStyle = reader.getAttribute("style");
+        cssStyle = reader.getAttribute("style");
         if (cssStyle != null) {
           chartModel.getLegend().getStyle().setStyleString(cssStyle);
         }
