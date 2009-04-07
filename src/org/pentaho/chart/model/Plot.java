@@ -25,8 +25,8 @@ public abstract class Plot implements Serializable {
   
   public Object getBackground() {
     Object background = null;
-    if (getBackground() != null) {
-      background = getBackground();
+    if (style.getBackgroundColor() != null) {
+      background = style.getBackgroundColor();
     } else if (backgroundGradient != null) {
       background = backgroundGradient;
     } else if (backgroundImageLocation != null) {

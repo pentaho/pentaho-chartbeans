@@ -46,7 +46,7 @@ public class CssStyle extends HashMap<String, String> implements Serializable {
     if (str != null) {
       int index = str.indexOf("#");
       try {
-        color = Integer.parseInt(str.substring(index + 1));
+        color = Integer.parseInt(str.substring(index + 1), 16);
       } catch (Exception ex) {
         // Do nothing we'll return null.
       }
@@ -68,7 +68,7 @@ public class CssStyle extends HashMap<String, String> implements Serializable {
     if (str != null) {
       int index = str.indexOf("#");
       try {
-        color = Integer.parseInt(str.substring(index + 1));
+        color = Integer.parseInt(str.substring(index + 1), 16);
       } catch (Exception ex) {
         // Do nothing we'll return null.
       }
@@ -94,14 +94,14 @@ public class CssStyle extends HashMap<String, String> implements Serializable {
         // Do nothing we'll return null
       }
     }
-    return fontStyle;
+    return fontStyle == null ? FontStyle.NORMAL : fontStyle;
   }
   
   public void setFontStyle(FontStyle style) {
-    if (style == null) {
+    if ((style == null) || (style == FontStyle.NORMAL)) {
       remove(FONT_STYLE);
     } else {
-      put(FONT_STYLE, "#" + style.toString().toLowerCase());
+      put(FONT_STYLE, style.toString().toLowerCase());
     }
   }
   
@@ -115,14 +115,14 @@ public class CssStyle extends HashMap<String, String> implements Serializable {
         // Do nothing we'll return null
       }
     }
-    return fontWeight;
+    return fontWeight == null ? FontWeight.NORMAL : fontWeight;
   }
   
   public void setFontWeight(FontWeight weight) {
-    if (weight == null) {
+    if ((weight == null) || (weight == FontWeight.NORMAL)) {
       remove(FONT_WEIGHT_STYLE);
     } else {
-      put(FONT_WEIGHT_STYLE, "#" + weight.toString().toLowerCase());
+      put(FONT_WEIGHT_STYLE, weight.toString().toLowerCase());
     }
   }
   
@@ -180,7 +180,7 @@ public class CssStyle extends HashMap<String, String> implements Serializable {
     if (str != null) {
       int index = str.indexOf("#");
       try {
-        color = Integer.parseInt(str.substring(index + 1));
+        color = Integer.parseInt(str.substring(index + 1), 16);
       } catch (Exception ex) {
         // Do nothing we'll return null.
       }
@@ -220,6 +220,9 @@ public class CssStyle extends HashMap<String, String> implements Serializable {
   public String toString() {
     StringBuffer cssStyleString = new StringBuffer();
     for (Map.Entry<String, String> entry : entrySet()) {
+      if (cssStyleString.length() > 0) {
+        cssStyleString.append(" ");
+      }
       cssStyleString.append(entry.getKey() + ": " + entry.getValue() + ";");
     }
     return cssStyleString.toString();
