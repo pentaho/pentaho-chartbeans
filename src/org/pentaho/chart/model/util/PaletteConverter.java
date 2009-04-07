@@ -1,4 +1,4 @@
-package org.pentaho.util;
+package org.pentaho.chart.model.util;
 
 import org.pentaho.chart.model.ChartLegend;
 import org.pentaho.chart.model.CssStyle;

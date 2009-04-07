@@ -13,10 +13,6 @@ import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
 import org.pentaho.platform.plugin.action.chartbeans.ChartDataDefinition;
-import org.pentaho.util.ChartModelConverter;
-import org.pentaho.util.CssStylesConverter;
-import org.pentaho.util.PaletteConverter;
-import org.pentaho.util.StyledTextConverter;
 
 public class ChartSerializer2 {
   private static XStream chartWriter = new XStream(new DomDriver());
