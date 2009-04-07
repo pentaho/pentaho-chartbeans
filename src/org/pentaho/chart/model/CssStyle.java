@@ -58,7 +58,11 @@ public class CssStyle extends HashMap<String, String> implements Serializable {
     if (color == null) {
       remove(BORDER_COLOR_STYLE);
     } else {
-      put(BORDER_COLOR_STYLE, "#" + Integer.toString(color & 0xFFFFFF, 16));
+      StringBuffer colorStr = new StringBuffer("#" + Integer.toString(color & 0xFFFFFF, 16));
+      while (colorStr.length() < 7) {
+        colorStr.insert(1, 0);
+      }
+      put(BORDER_COLOR_STYLE, colorStr.toString());
     }
   }
   
@@ -80,7 +84,11 @@ public class CssStyle extends HashMap<String, String> implements Serializable {
     if (color == null) {
       remove(BACKGROUND_COLOR_STYLE);
     } else {
-      put(BACKGROUND_COLOR_STYLE, "#" + Integer.toString(color & 0xFFFFFF, 16));
+      StringBuffer colorStr = new StringBuffer("#" + Integer.toString(color & 0xFFFFFF, 16));
+      while (colorStr.length() < 7) {
+        colorStr.insert(1, 0);
+      }
+      put(BACKGROUND_COLOR_STYLE, colorStr.toString());
     }
   }
   
@@ -192,7 +200,11 @@ public class CssStyle extends HashMap<String, String> implements Serializable {
     if (color == null) {
       remove(COLOR_STYLE);
     } else {
-      put(COLOR_STYLE, "#" + Integer.toString(color & 0xFFFFFF, 16));
+      StringBuffer colorStr = new StringBuffer("#" + Integer.toString(color & 0xFFFFFF, 16));
+      while (colorStr.length() < 7) {
+        colorStr.insert(1, 0);
+      }
+      put(COLOR_STYLE, colorStr.toString());
     }
   }
   

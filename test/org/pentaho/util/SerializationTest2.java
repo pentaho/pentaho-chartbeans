@@ -42,7 +42,7 @@ public class SerializationTest2 {
     barPlot.setFlavor(BarPlotFlavor.THREED);
     barPlot.setOpacity(0.75f);
     barPlot.setOrientation(Orientation.HORIZONTAL);
-    barPlot.setPalette(new Palette(0x111111, 0x222222, 0x333333));
+    barPlot.setPalette(new Palette(0x001111, 0x222222, 0x333333));
     barPlot.getXAxisLabel().setText("xAxis");
     barPlot.getXAxisLabel().setColor(0x192837);
     barPlot.getXAxisLabel().setFont("san-serif", 10, FontStyle.NORMAL, FontWeight.NORMAL);
@@ -86,7 +86,7 @@ public class SerializationTest2 {
     assertEquals(barPlot.getOrientation(), Orientation.HORIZONTAL);
     Palette palette = chartModel2.getPlot().getPalette();
     assertEquals(palette.size(), 3);
-    assertEquals(palette.get(0), 0x111111);
+    assertEquals(palette.get(0), 0x001111);
     assertEquals(palette.get(1), 0x222222);
     assertEquals(palette.get(2), 0x333333);
     assertEquals(barPlot.getXAxisLabel().getText(), "xAxis");
