@@ -4,12 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.pentaho.chart.model.ChartModel;
-import org.pentaho.chart.model.GraphPlot;
-import org.pentaho.chart.model.PiePlot;
-import org.pentaho.chart.model.Series;
-import org.pentaho.chart.model.PiePlot.Wedge;
-
 public class Theme implements Serializable {
   public enum ChartTheme{THEME1, THEME2, THEME3, THEME4, THEME5, THEME6};
   
@@ -17,38 +11,13 @@ public class Theme implements Serializable {
   List<Integer> colors = new ArrayList<Integer>();
   
   public void applyTo(ChartModel chartModel) {
-    if (chartModel.getPlot() instanceof GraphPlot) {
-      applyTo((GraphPlot) chartModel.getPlot());
-    } else if (chartModel.getPlot() instanceof PiePlot) {
-      applyTo((PiePlot) chartModel.getPlot());
-    }
+    applyTo(chartModel.getPlot());
   }
 
-  private void applyTo(GraphPlot graph) {
-    int i = 0;
-    for (Integer color : getColors()) {
-        if (i < graph.getSeries().size()) {
-          graph.getSeries().get(i).setForegroundColor(color);
-        } else {
-          Series series = new Series();
-          series.setForegroundColor(color);
-          graph.getSeries().add(series);
-        }
-      i++;
-    }
-  }
-
-  private void applyTo(PiePlot piePlot) {
-    int i = 0;
-    for (Integer color : getColors()) {
-        if (i < piePlot.getWedges().size()) {
-          piePlot.getWedges().get(i).setForegroundColor(color);
-        } else {
-          Wedge wedge = new Wedge();
-          wedge.setForegroundColor(color);
-          piePlot.getWedges().add(wedge);
-        }
-      i++;
+  private void applyTo(Plot graph) {
+    if (getColors().size() > 0) {
+      graph.getPalette().clear();
+      graph.getPalette().addAll(getColors());
     }
   }
 

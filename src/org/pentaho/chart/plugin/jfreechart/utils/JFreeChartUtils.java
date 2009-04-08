@@ -35,6 +35,7 @@ import org.jfree.data.KeyToGroupMap;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.ui.GradientPaintTransformType;
 import org.jfree.ui.StandardGradientPaintTransformer;
+import org.pentaho.chart.ChartUtils;
 import org.pentaho.chart.core.ChartDocument;
 import org.pentaho.chart.core.ChartElement;
 import org.pentaho.chart.css.keys.ChartStyleKeys;
@@ -43,6 +44,7 @@ import org.pentaho.chart.css.styles.ChartGradientType;
 import org.pentaho.chart.css.styles.ChartItemLabelVisibleType;
 import org.pentaho.chart.data.ChartTableModel;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
+import org.pentaho.reporting.libraries.css.keys.border.BorderStyleKeys;
 import org.pentaho.reporting.libraries.css.keys.font.FontSizeConstant;
 import org.pentaho.reporting.libraries.css.keys.font.FontStyle;
 import org.pentaho.reporting.libraries.css.keys.font.FontStyleKeys;
@@ -58,20 +60,13 @@ import org.pentaho.reporting.libraries.css.values.CSSValuePair;
 /**
  * @author wseyler
  */
-public class JFreeChartUtils {
+public class JFreeChartUtils extends ChartUtils {
 
   private static final Log logger = LogFactory.getLog(JFreeChartUtils.class);
   
-  private static Map<String, String> cssFamilyToAwtFamilyMap;
 
   private static final char SEPERATOR = '/';
 
-  static {
-    cssFamilyToAwtFamilyMap = new HashMap<String, String>();
-    cssFamilyToAwtFamilyMap.put("monospace", "Monospaced");
-    cssFamilyToAwtFamilyMap.put("serif", "Serif");
-    cssFamilyToAwtFamilyMap.put("sans-serif", "SansSerif");
-  }
   
   private JFreeChartUtils() {
   }
@@ -349,149 +344,6 @@ public class JFreeChartUtils {
       }
     }
     return trans;
-  }
-
-  /**
-   * This method creates a Font object based on the font-family, font-size, and
-   * font-style defined in the chart xml doc for the current series
-   *
-   * @param currentSeries Current series element
-   * @return Font  The font object created based on the current series font css style
-   */
-  public static Font getFont(final ChartElement currentSeries) {
-    Font font = null;
-    if (currentSeries != null) {
-      final LayoutStyle layoutStyle = currentSeries.getLayoutStyle();
-      CSSValue cssValue = layoutStyle.getValue(FontStyleKeys.FONT_FAMILY);
-      String fontFamily = cssValue != null ? cssValue.getCSSText() : null;
-      
-      if (cssFamilyToAwtFamilyMap.get(fontFamily) != null) {
-        fontFamily = cssFamilyToAwtFamilyMap.get(fontFamily);
-      }
-      
-      if (fontFamily != null) {
-        int fontStyle = JFreeChartUtils.getFontStyle(layoutStyle);
-        // Creating the requisite font and setting the default size of 10. This will be overwritten below.
-        font = new Font(fontFamily, fontStyle, 10);
-
-        // Modifying the size of the font since we cannot create a Font with size of type float.
-        // We can only modify it's size to float value and not create it with float value.
-        font = font.deriveFont(JFreeChartUtils.getFontSize(currentSeries));
-      }
-    }
-    return font;
-  }
-
-  /**
-   * This method maps the CSS font-style to Font styles allowed by Java Font Style.
-   * We default to css font style value "oblique".
-   *
-   * @param layoutStyle The layout style for the current series element.
-   * @return int  Represents Java based font style.
-   */
-  public static int getFontStyle(final LayoutStyle layoutStyle) {
-    final CSSValue fontStyle = layoutStyle.getValue(FontStyleKeys.FONT_STYLE);
-    final CSSValue fontWeight = layoutStyle.getValue(FontStyleKeys.FONT_WEIGHT);
-
-    // Font Style default
-    int styleFlag = Font.PLAIN;
-
-    if (FontStyle.ITALIC.equals(fontStyle))
-    {
-      styleFlag |= Font.ITALIC;
-    }
-
-    if (FontWeight.BOLD.equals(fontWeight))
-    {
-      // todo: Font weight can also be a numeric value.
-      styleFlag |= Font.BOLD;
-    }
-    return styleFlag;
-  }
-
-  /**
-   * CSSFontSize values: xx-small, x-small, small, medium, large, x-large, xx-large
-   * are mapped to certain integer values based on ChartCSSFontSizeMappingConstants file.
-   * CSSFontSize values: smaller, larger, and % are based on parent values. Hence for that
-   * we establish the current series font size based on the parent font size value.
-   *
-   * @param element The current series element that would be looked for the font style
-   * @return float   The font size for the current series element.
-   */
-  public static float getFontSize(final ChartElement element) {
-    final LayoutStyle layoutStyle = element.getLayoutStyle();
-    final CSSValue fontSizeValue = layoutStyle.getValue(FontStyleKeys.FONT_SIZE);
-
-    if (FontSizeConstant.XX_SMALL.equals(fontSizeValue)) {
-      return ChartCSSFontSizeMappingConstants.XX_SMALL;
-    }
-    if (FontSizeConstant.X_SMALL.equals(fontSizeValue)) {
-      return ChartCSSFontSizeMappingConstants.X_SMALL;
-    }
-    if (FontSizeConstant.SMALL.equals(fontSizeValue)) {
-      return ChartCSSFontSizeMappingConstants.SMALL;
-    }
-    if (FontSizeConstant.MEDIUM.equals(fontSizeValue)) {
-      return ChartCSSFontSizeMappingConstants.MEDIUM;
-    }
-    if (FontSizeConstant.LARGE.equals(fontSizeValue)) {
-      return ChartCSSFontSizeMappingConstants.LARGE;
-    }
-    if (FontSizeConstant.X_LARGE.equals(fontSizeValue)) {
-      return ChartCSSFontSizeMappingConstants.X_LARGE;
-    }
-    if (FontSizeConstant.XX_LARGE.equals(fontSizeValue)) {
-      return ChartCSSFontSizeMappingConstants.XX_LARGE;
-    }
-
-    /*
-    * If you encounter SMALLER/LARGER/PERCENT value for the parent
-    * then that is an error because at this point the parent defined
-    * in the layout style should have absolute values. To overcome that
-    * we are returning static value here
-    */
-    if (fontSizeValue.equals(RelativeFontSize.SMALLER)) {
-      final ChartElement parentElement = element.getParentItem();
-      final float parentSize = JFreeChartUtils.getFontSize(parentElement);
-      if (parentSize >= ChartCSSFontSizeMappingConstants.XX_SMALL &&
-              parentSize <= ChartCSSFontSizeMappingConstants.XX_LARGE) {
-        return (parentSize - 2);
-      } else {
-        return ChartCSSFontSizeMappingConstants.SMALLER;
-      }
-    }
-
-    if (fontSizeValue.equals(RelativeFontSize.LARGER)) {
-      final ChartElement parentElement = element.getParentItem();
-      final float parentSize = JFreeChartUtils.getFontSize(parentElement);
-      if (parentSize >= ChartCSSFontSizeMappingConstants.XX_SMALL &&
-              parentSize <= ChartCSSFontSizeMappingConstants.XX_LARGE) {
-        return (parentSize + 2);
-      } else {
-        return ChartCSSFontSizeMappingConstants.LARGER;
-      }
-    }
-    // We will hit the code below only in case of percent or pt
-    if (fontSizeValue instanceof CSSNumericValue) {
-      final CSSNumericValue fontSize = (CSSNumericValue) fontSizeValue;
-      final CSSNumericType fontSizeType = fontSize.getNumericType();
-      if (CSSNumericType.PERCENTAGE.equals(fontSizeType)) {
-        final ChartElement parentElement = element.getParentItem();
-        final float parentSize = JFreeChartUtils.getFontSize(parentElement);
-        if (parentSize >= ChartCSSFontSizeMappingConstants.XX_SMALL &&
-                parentSize <= ChartCSSFontSizeMappingConstants.XX_LARGE) {
-          return (parentSize * ((float) fontSize.getValue()) / 100);
-        }
-      }
-      if (CSSNumericType.PT.equals(fontSizeType)) {
-        return (float) fontSize.getValue();
-      }
-    }
-
-    //If we do not have a font defined at current level 
-    // then we return the parent font size
-    final ChartElement parentElement = element.getParentItem();
-    return JFreeChartUtils.getFontSize(parentElement);
   }
 
   /**

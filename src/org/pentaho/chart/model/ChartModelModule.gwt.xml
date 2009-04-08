@@ -1,5 +1,5 @@
 <module>
     <source path="">
-    <exclude name="**/ChartSerializer*" />
+    <exclude name="**/util/*" />
     </source>
 </module>

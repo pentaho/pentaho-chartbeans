@@ -31,6 +31,7 @@ public class ChartBarStyle {
   public static final CSSConstant STACK_PERCENT = new CSSConstant("stack-percent"); //$NON-NLS-1$
   public static final CSSConstant STACK_100_PERCENT = new CSSConstant("stack-100percent"); //$NON-NLS-1$
   public static final CSSConstant WATERFALL = new CSSConstant("waterfall"); //$NON-NLS-1$
+  public static final CSSConstant THREED = new CSSConstant("threed"); //$NON-NLS-1$
   
   private ChartBarStyle() {
   }

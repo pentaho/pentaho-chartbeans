@@ -10,19 +10,23 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.block.BlockBorder;
 import org.jfree.chart.labels.ItemLabelAnchor;
 import org.jfree.chart.labels.ItemLabelPosition;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.AreaRenderer;
 import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.chart.renderer.category.BarRenderer3D;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.renderer.category.GroupedStackedBarRenderer;
 import org.jfree.chart.renderer.category.LayeredBarRenderer;
+import org.jfree.chart.renderer.category.LineRenderer3D;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.ui.StandardGradientPaintTransformer;
 import org.jfree.ui.TextAnchor;
 import org.pentaho.chart.ChartDocumentContext;
+import org.pentaho.chart.ChartUtils;
 import org.pentaho.chart.core.AxisSeriesLinkInfo;
 import org.pentaho.chart.core.ChartDocument;
 import org.pentaho.chart.core.ChartElement;
@@ -37,10 +41,10 @@ import org.pentaho.chart.plugin.jfreechart.utils.ColorFactory;
 import org.pentaho.chart.plugin.jfreechart.utils.CylinderRenderer;
 import org.pentaho.chart.plugin.jfreechart.utils.JFreeChartUtils;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
-import org.pentaho.reporting.libraries.css.values.CSSValue;
 import org.pentaho.reporting.libraries.css.keys.border.BorderStyleKeys;
-import org.pentaho.reporting.libraries.css.keys.box.BoxStyleKeys;
 import org.pentaho.reporting.libraries.css.keys.color.ColorStyleKeys;
+import org.pentaho.reporting.libraries.css.values.CSSNumericValue;
+import org.pentaho.reporting.libraries.css.values.CSSValue;
 
 /**
  * Top Level class that is extended by different chart type creators.
@@ -68,8 +72,6 @@ import org.pentaho.reporting.libraries.css.keys.color.ColorStyleKeys;
  */
 public abstract class JFreeChartGenerator implements IJFreeChartGenerator {
 
-  
-  
   protected final DatasetGeneratorFactory datasetGeneratorFactory = new DatasetGeneratorFactory();
 
   /**
@@ -79,7 +81,7 @@ public abstract class JFreeChartGenerator implements IJFreeChartGenerator {
    * @return String - the title
    */
   public static String getTitle(final ChartDocument chartDocument) {
-    final ChartElement[] children = chartDocument.getRootElement().findChildrenByName("title"); //$NON-NLS-1$
+    final ChartElement[] children = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_TITLE); //$NON-NLS-1$
     if (children != null && children.length > 0) {
       return children[0].getText();
     }
@@ -130,8 +132,8 @@ public abstract class JFreeChartGenerator implements IJFreeChartGenerator {
    * @return a boolean that indicates of if a legend should be included in the chart
    */
   public static boolean getShowLegend(final ChartDocument chartDocument) {
-    // TODO determine this from the chartDocument
-    return true;
+    final ChartElement[] children = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_LEGEND); //$NON-NLS-1$
+    return (children != null) && (children.length > 0);
   }
 
   /**
@@ -166,39 +168,38 @@ public abstract class JFreeChartGenerator implements IJFreeChartGenerator {
    * @param axisSeriesLinkInfo Holds information that links the axis id to series element(s).
    * @return DefaultCategoryDataset that has information from specific column positions.
   */
- public Integer[] getColumPositions(final ChartDocumentContext chartDocContext,
-                                    final ChartElement axisElement,
-                                    final AxisSeriesLinkInfo axisSeriesLinkInfo) {
-   /*
-    * First we get the column pos information for each range axis from the columns array list.
-    * And then we create the default category dataset based on the columns positions retrieved above.
-    */
-   // Get current axis element's axis id.
-   final Object axisID = axisElement.getAttribute("id");//$NON-NLS-1$
-   // Get the column positions for current axis element by looking into each series for given axis id.
-   Integer[] columnPosArr = null;
+  public Integer[] getColumPositions(final ChartDocumentContext chartDocContext, final ChartElement axisElement,
+      final AxisSeriesLinkInfo axisSeriesLinkInfo) {
+    /*
+     * First we get the column pos information for each range axis from the columns array list.
+     * And then we create the default category dataset based on the columns positions retrieved above.
+     */
+    // Get current axis element's axis id.
+    final Object axisID = axisElement.getAttribute("id");//$NON-NLS-1$
+    // Get the column positions for current axis element by looking into each series for given axis id.
+    Integer[] columnPosArr = null;
 
-   if (axisSeriesLinkInfo != null && axisID != null) {
-     final ChartSeriesDataLinkInfo seriesDataLinkInfo = chartDocContext.getDataLinkInfo();
+    if (axisSeriesLinkInfo != null && axisID != null) {
+      final ChartSeriesDataLinkInfo seriesDataLinkInfo = chartDocContext.getDataLinkInfo();
 
-     if (seriesDataLinkInfo != null) {
-       final ArrayList<ChartElement> seriesElementsList = axisSeriesLinkInfo.getSeriesElements(axisID);
+      if (seriesDataLinkInfo != null) {
+        final ArrayList<ChartElement> seriesElementsList = axisSeriesLinkInfo.getSeriesElements(axisID);
 
-         if (seriesElementsList != null) {
-           final int size = seriesElementsList.size();
-           final ArrayList<Integer> columnPosList = new ArrayList<Integer>();
-           for (int i=0; i<size; i++) {
-             final ChartElement seriesElement = seriesElementsList.get(i);
-             final Integer columnPos = seriesDataLinkInfo.getColumnNum(seriesElement);
-             columnPosList.add(columnPos);
-           }
-           final int listLength = columnPosList.size();
-           columnPosArr = new Integer[listLength];
-           System.arraycopy(columnPosList.toArray(),0, columnPosArr, 0, listLength);
-           Arrays.sort(columnPosArr);
-         }
-       }
-     }
+        if (seriesElementsList != null) {
+          final int size = seriesElementsList.size();
+          final ArrayList<Integer> columnPosList = new ArrayList<Integer>();
+          for (int i = 0; i < size; i++) {
+            final ChartElement seriesElement = seriesElementsList.get(i);
+            final Integer columnPos = seriesDataLinkInfo.getColumnNum(seriesElement);
+            columnPosList.add(columnPos);
+          }
+          final int listLength = columnPosList.size();
+          columnPosArr = new Integer[listLength];
+          System.arraycopy(columnPosList.toArray(), 0, columnPosArr, 0, listLength);
+          Arrays.sort(columnPosArr);
+        }
+      }
+    }
     return columnPosArr;
   }
 
@@ -211,12 +212,10 @@ public abstract class JFreeChartGenerator implements IJFreeChartGenerator {
    * @param axisElement Current axis element being proccessed
    * @param axisCounter Set the location and tie it to a index.
    */
-  private void setRangeAxisLocation (final CategoryPlot plot,
-                                     final ChartElement axisElement,
-                                     final int axisCounter) {
+  private void setRangeAxisLocation(final CategoryPlot plot, final ChartElement axisElement, final int axisCounter) {
     final CSSValue cssValue = axisElement.getLayoutStyle().getValue(ChartStyleKeys.AXIS_LOCATION);
     final String side = cssValue.getCSSText();
-    if (side != null && (cssValue.equals(ChartAxisLocationType.PRIMARY))){
+    if (side != null && (cssValue.equals(ChartAxisLocationType.PRIMARY))) {
       plot.setRangeAxisLocation(axisCounter, AxisLocation.BOTTOM_OR_LEFT);
     } else {
       plot.setRangeAxisLocation(axisCounter, AxisLocation.TOP_OR_RIGHT);
@@ -230,10 +229,8 @@ public abstract class JFreeChartGenerator implements IJFreeChartGenerator {
    * @param valueAxis   Current value axis. NOTE: This object will be updated in this method.
    * @param labelType   Tag name label or tag name tick label.
    */
-  private void setAxisColor(final ChartElement axisElement,
-                            final ValueAxis valueAxis,
-                            final String labelType) {
-    final ChartElement [] labelElements = axisElement.findChildrenByName(labelType);
+  private void setAxisColor(final ChartElement axisElement, final ValueAxis valueAxis, final String labelType) {
+    final ChartElement[] labelElements = axisElement.findChildrenByName(labelType);
     if (labelElements != null && labelElements.length > 0) {
       final CSSValue colorCSSValue = labelElements[0].getLayoutStyle().getValue(ColorStyleKeys.COLOR);
       final Color axisLabelColor = JFreeChartUtils.getColorFromCSSValue(colorCSSValue);
@@ -254,9 +251,8 @@ public abstract class JFreeChartGenerator implements IJFreeChartGenerator {
    * @param data             Data for the current chart.
    * @param chart            The chart object to be updated with range axis info.
    */
-  public void createRangeAxis(final ChartDocumentContext chartDocContext,
-                              final ChartTableModel data,
-                              final JFreeChart chart) {
+  public void createRangeAxis(final ChartDocumentContext chartDocContext, final ChartTableModel data,
+      final JFreeChart chart) {
     /*
      * Assumption:
      * #1. User has to provide axis type for each axis (range/domain)
@@ -271,23 +267,24 @@ public abstract class JFreeChartGenerator implements IJFreeChartGenerator {
     final int rangeAxisCount = rangeAxisArrayList.size();
 
     if (chart != null && rangeAxisCount > 0) {
-      final CategoryPlot plot = (CategoryPlot)chart.getPlot();
+      final CategoryPlot plot = (CategoryPlot) chart.getPlot();
 
-      for (int i=0; i<rangeAxisCount; i++) {
+      for (int i = 0; i < rangeAxisCount; i++) {
         final ChartElement axisElement = rangeAxisArrayList.get(i);
         // If there is only one range axis then we do not need to create a new jfreeDataset (that uses certain column data)
         // Instead we just need to update certain attributes like label text, tick label color etc.
         if (rangeAxisCount > 1) {
           // Create new jfreeDataset since there are more than one range axis and get the data corresponding to
           // certain columns
-          final Integer[] columnPosArr = getColumPositions(chartDocContext,axisElement, axisSeriesLinkInfo);
-          final DefaultCategoryDataset currDataset = datasetGeneratorFactory.createDefaultCategoryDataset(chartDocContext, data, columnPosArr);
+          final Integer[] columnPosArr = getColumPositions(chartDocContext, axisElement, axisSeriesLinkInfo);
+          final DefaultCategoryDataset currDataset = datasetGeneratorFactory.createDefaultCategoryDataset(
+              chartDocContext, data, columnPosArr);
           plot.setDataset(i, currDataset);
           plot.mapDatasetToRangeAxis(i, i);
         }
 
         final ValueAxis valueAxis = createRangeAxis(axisElement);
-        if(valueAxis != null) {
+        if (valueAxis != null) {
           plot.setRangeAxis(i, valueAxis);
           setAxisColor(axisElement, valueAxis, ChartElement.TAG_NAME_LABEL);
           setAxisColor(axisElement, valueAxis, ChartElement.TAG_NAME_TICK_LABEL);
@@ -304,7 +301,7 @@ public abstract class JFreeChartGenerator implements IJFreeChartGenerator {
    * @return Returns the new range axis.
    */
   private ValueAxis createRangeAxis(final ChartElement axisElement) {
-    final String axisLabel = (String)axisElement.getAttribute("label");//$NON-NLS-1$
+    final String axisLabel = (String) axisElement.getAttribute("label");//$NON-NLS-1$
     final ValueAxis valueAxis;
     if (axisLabel != null) {
       valueAxis = new NumberAxis(axisLabel);
@@ -321,10 +318,10 @@ public abstract class JFreeChartGenerator implements IJFreeChartGenerator {
    * @param index  Set the renderer for the index.
    */
   //TODO: Look into this method for remaining implementations.
-  private void setRenderer(final CategoryPlot plot,
-                           final int index ) {
+  private void setRenderer(final CategoryPlot plot, final int index) {
     if (plot.getRenderer() instanceof GroupedStackedBarRenderer) {
     } else if (plot.getRenderer() instanceof CylinderRenderer) {
+    } else if (plot.getRenderer() instanceof BarRenderer3D) {
     } else if (plot.getRenderer() instanceof LayeredBarRenderer) {
     } else if (plot.getRenderer() instanceof BarRenderer) {
       final BarRenderer barRenderer = new BarRenderer();
@@ -343,9 +340,8 @@ public abstract class JFreeChartGenerator implements IJFreeChartGenerator {
    * @param seriesElements - Array of series elements that contains series tags
    * @param data           - The actual chart data
    */
-  protected void setSeriesPaint(final CategoryPlot categoryPlot,
-                                final ChartElement[] seriesElements,
-                                final ChartTableModel data) {
+  protected void setSeriesPaint(final CategoryPlot categoryPlot, final ChartElement[] seriesElements,
+      final ChartTableModel data) {
     StandardGradientPaintTransformer st = null;
 
     final int length = seriesElements.length;
@@ -355,7 +351,7 @@ public abstract class JFreeChartGenerator implements IJFreeChartGenerator {
       if (paint != null) {
         final int column = JFreeChartUtils.getSeriesColumn(seriesElement, data, i);
         final int datasetCount = categoryPlot.getDatasetCount();
-        for (int datasetCounter=0; datasetCounter<datasetCount; datasetCounter++) {
+        for (int datasetCounter = 0; datasetCounter < datasetCount; datasetCounter++) {
           categoryPlot.getRenderer(datasetCounter).setSeriesPaint(column, paint);
         }
         /*
@@ -404,16 +400,16 @@ public abstract class JFreeChartGenerator implements IJFreeChartGenerator {
    * @param seriesElements - Array of Series elements
    * @param data           - the data
    */
-  protected void setSeriesItemLabel(final CategoryPlot categoryPlot,
-                                    final ChartElement[] seriesElements,
-                                    final ChartTableModel data) {
+  protected void setSeriesItemLabel(final CategoryPlot categoryPlot, final ChartElement[] seriesElements,
+      final ChartTableModel data) {
     final int numOfDatasets = categoryPlot.getDatasetCount();
-    for (int datasetCounter =0 ; datasetCounter < numOfDatasets; datasetCounter++) {
-      categoryPlot.getRenderer(datasetCounter).setBaseItemLabelGenerator(new ChartItemLabelGenerator(seriesElements, data));
+    for (int datasetCounter = 0; datasetCounter < numOfDatasets; datasetCounter++) {
+      categoryPlot.getRenderer(datasetCounter).setBaseItemLabelGenerator(
+          new ChartItemLabelGenerator(seriesElements, data));
 
       final int numOfSeriesElements = seriesElements.length;
       for (int seriesCounter = 0; seriesCounter < numOfSeriesElements; seriesCounter++) {
-      // Get and set font information only if the item label's visibility is set to true
+        // Get and set font information only if the item label's visibility is set to true
         if (JFreeChartUtils.showItemLabel(seriesElements[seriesCounter])) {
           final Font font = JFreeChartUtils.getFont(seriesElements[seriesCounter]);
           final CategoryItemRenderer categoryItemRenderer = categoryPlot.getRenderer(datasetCounter);
@@ -424,8 +420,10 @@ public abstract class JFreeChartGenerator implements IJFreeChartGenerator {
           } else if (categoryItemRenderer instanceof AreaRenderer) {
             final AreaRenderer areaRender = (AreaRenderer) categoryItemRenderer;
             areaRender.setSeriesItemLabelFont(seriesCounter, font, true);
-            areaRender.setSeriesPositiveItemLabelPosition(seriesCounter, new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12, TextAnchor.TOP_CENTER));
-            areaRender.setSeriesNegativeItemLabelPosition(seriesCounter, new ItemLabelPosition(ItemLabelAnchor.OUTSIDE6, TextAnchor.BOTTOM_CENTER));
+            areaRender.setSeriesPositiveItemLabelPosition(seriesCounter, new ItemLabelPosition(
+                ItemLabelAnchor.OUTSIDE12, TextAnchor.TOP_CENTER));
+            areaRender.setSeriesNegativeItemLabelPosition(seriesCounter, new ItemLabelPosition(
+                ItemLabelAnchor.OUTSIDE6, TextAnchor.BOTTOM_CENTER));
             areaRender.setSeriesItemLabelsVisible(seriesCounter, Boolean.TRUE, true);
           }
         }
@@ -457,22 +455,66 @@ public abstract class JFreeChartGenerator implements IJFreeChartGenerator {
   public JFreeChart createChart(ChartDocumentContext chartDocContext, ChartTableModel data) {
     JFreeChart chart = doCreateChart(chartDocContext, data);
 
-   chart.setBackgroundPaint(getChartBackgroundColor(chartDocContext.getChartDocument()));
+    chart.setBackgroundPaint(getChartBackgroundColor(chartDocContext.getChartDocument()));
+
+    Color chartBackgroundPaint = ColorFactory.getInstance().getColor(
+        chartDocContext.getChartDocument().getPlotElement(), BorderStyleKeys.BACKGROUND_COLOR);
+    if (chartBackgroundPaint != null) {
+      chart.getPlot().setBackgroundPaint(chartBackgroundPaint);
+    }
+
+    CSSNumericValue opacity = (CSSNumericValue) chartDocContext.getChartDocument().getPlotElement().getLayoutStyle()
+        .getValue(ColorStyleKeys.OPACITY);
+    if (opacity != null) {
+      chart.getPlot().setForegroundAlpha((float) opacity.getValue());
+    }
+    
+    ChartElement rootElement = chartDocContext.getChartDocument().getRootElement();    
+    ChartElement[] children = rootElement.findChildrenByName(ChartElement.TAG_NAME_TITLE); //$NON-NLS-1$
+    if (children != null && children.length > 0) {
+      chart.getTitle().setFont(ChartUtils.getFont(children[0]));
+    }
+    
+    if (getShowLegend(chartDocContext.getChartDocument())) {
+      children = chartDocContext.getChartDocument().getRootElement().findChildrenByName(ChartElement.TAG_NAME_LEGEND); //$NON-NLS-1$
+      if ((children != null) && (children.length > 0)) {
+        ChartElement legendElement = children[0];
+        Font font = JFreeChartUtils.getFont(legendElement);
+        if (font != null) {
+          chart.getLegend().setItemFont(font);
+        }
+        
+        CSSNumericValue value = (CSSNumericValue)legendElement.getLayoutStyle().getValue(BorderStyleKeys.BORDER_TOP_WIDTH);
+        if ((value == null) || (value.getValue() <= 0)) {
+          chart.getLegend().setBorder(BlockBorder.NONE);
+        }
+      }
+    }
+    
+    CSSNumericValue borderWidth = (CSSNumericValue)rootElement.getLayoutStyle().getValue(BorderStyleKeys.BORDER_TOP_WIDTH);
+    if ((borderWidth != null) && (borderWidth.getValue() > 0)) {
+      chart.setBorderVisible(true);
+    }
+    
+    Color borderColor = ColorFactory.getInstance().getColor(rootElement, BorderStyleKeys.BORDER_TOP_COLOR);
+    if (borderColor != null) {
+      chart.setBorderPaint(borderColor);
+    }
     
     return chart;
   }
 
   protected Color getChartBackgroundColor(ChartDocument chartDoc) {
     Color chartBackgroundPaint = Color.white;
-    
+
     ChartElement rootElement = chartDoc.getRootElement();
     Color chartBackgroundPaintTmp = ColorFactory.getInstance().getColor(rootElement, BorderStyleKeys.BACKGROUND_COLOR);
     if (!Color.black.equals(chartBackgroundPaintTmp)) { // black is the default?
       chartBackgroundPaint = chartBackgroundPaintTmp;
     }
-    
-    return chartBackgroundPaint; 
+
+    return chartBackgroundPaint;
   }
-  
+
   protected abstract JFreeChart doCreateChart(ChartDocumentContext chartDocContext, ChartTableModel data);
 }

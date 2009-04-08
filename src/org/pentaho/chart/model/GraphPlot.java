@@ -6,31 +6,24 @@ import java.util.List;
 
 public class GraphPlot extends Plot implements Serializable {
   
-  String categoryAxisLabel;
-  String valueAxisLabel;
-  List<Series> series = new ArrayList<Series>();
+  StyledText xAxisLabel = new StyledText();
+  StyledText yAxisLabel = new StyledText();
   
-  public String getCategoryAxisLabel() {
-    return categoryAxisLabel;
+  
+  public StyledText getXAxisLabel() {
+    return xAxisLabel;
   }
   
-  public void setCategoryAxisLabel(String categoryAxisLabel) {
-    this.categoryAxisLabel = categoryAxisLabel;
+  public void setXAxisLabel(StyledText xAxisLabel) {
+    this.xAxisLabel = xAxisLabel;
   }
   
-  public String getValueAxisLabel() {
-    return valueAxisLabel;
+  public StyledText getYAxisLabel() {
+    return yAxisLabel;
   }
   
-  public void setValueAxisLabel(String valueAxisLabel) {
-    this.valueAxisLabel = valueAxisLabel;
+  public void setYAxisLabel(StyledText yAxisLabel) {
+    this.yAxisLabel = yAxisLabel;
   }
 
-  public List<Series> getSeries() {
-    return series;
-  }
-
-  public void setSeries(List<Series> series) {
-    this.series = series;
-  }
 }

@@ -72,7 +72,7 @@ public class JFreeLineChartGenerator extends JFreeChartGenerator {
     return chart;
   }
 
-  private void setSeriesAttributes(final ChartElement[] seriesElements,
+  protected void setSeriesAttributes(final ChartElement[] seriesElements,
                                    final ChartTableModel data,
                                    final CategoryPlot categoryPlot) {
     setSeriesItemLabel(categoryPlot, seriesElements, data);

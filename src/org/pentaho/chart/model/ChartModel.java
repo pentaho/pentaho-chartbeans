@@ -1,25 +1,28 @@
 package org.pentaho.chart.model;
 
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.pentaho.chart.model.Theme.ChartTheme;
 
 public class ChartModel implements Serializable {
-  
   public static final int CHART_ENGINE_JFREE = 0;
   public static final int CHART_ENGINE_OPENFLASH = 1;
   
-  HashMap<String, String> styles = new HashMap<String, String>();
+  public static final String DEFAULT_FAMILY = "serif";
+  public static final int DEFAULT_SIZE = 14;
   
-  String title;
-  String subtitle;
-  ChartLegend chartLegend;
-  Integer backgroundColor;
+  StyledText title = new StyledText();
+  ArrayList<String> subtitles = new ArrayList<String>();
+  ChartLegend legend = new ChartLegend();
+  String backgroundImageLocation;
+  Texture backgroundTexture;
+  Gradient backgroundGradient;
   Plot plot;
   int chartEngine = CHART_ENGINE_OPENFLASH;
-  boolean animate = false;
   ChartTheme theme;
+  CssStyle style = new CssStyle();
   
   public int getChartEngine() {
     return chartEngine;
@@ -37,30 +40,86 @@ public class ChartModel implements Serializable {
     this.theme = theme;
   }
 
-  public String getTitle() {
-    return title;
+  public List<String> getSubtitles() {
+    return subtitles;
+  }
+  
+  public void setSubtitles(List<String> subtitles) {
+    subtitles.clear();
+    if (subtitles != null) {
+      subtitles.addAll(subtitles);
+    }
+  }
+  
+  public String getSubtitle() {
+    return subtitles.size() > 0 ? subtitles.get(0) : null;
   }
 
-  public void setTitle(String title) {
-    this.title = title;
+  public void setSubtitle(String title) {
+    subtitles.clear();
+    if (title != null) {
+      subtitles.add(title);
+    }
   }
 
-  public ChartLegend getChartLegend() {
-    return chartLegend;
+  public ChartLegend getLegend() {
+    return legend;
   }
 
-  public void setChartLegend(ChartLegend chartLegend) {
-    this.chartLegend = chartLegend;
+  public void setLegend(ChartLegend chartLegend) {
+    this.legend = chartLegend;
   }
 
-  public Integer getBackgroundColor() {
-    return backgroundColor;
+  public Object getBackground() {
+    Object background = null;
+    if (style.getBackgroundColor() != null) {
+      background = style.getBackgroundColor();
+    } else if (backgroundGradient != null) {
+      background = backgroundGradient;
+    } else if (backgroundImageLocation != null) {
+      background = backgroundImageLocation;
+    } else if (backgroundTexture != null) {
+      background = backgroundTexture;
+    }
+    return background;
   }
 
-  public void setBackgroundColor(Integer backgroundColor) {
-    this.backgroundColor = backgroundColor;
+  public void setBackground(Integer backgroundColor) {
+    style.setBackgroundColor(backgroundColor);
+    if (backgroundColor != null) {
+      backgroundGradient = null;
+      backgroundImageLocation = null;
+      backgroundTexture = null;
+    }
   }
 
+  public void setBackground(String backgroundImageLocation) {
+    this.backgroundImageLocation = backgroundImageLocation;
+    if (backgroundImageLocation != null) {
+      backgroundGradient = null;
+      setBackground((Integer)null);
+      backgroundTexture = null;
+    }
+  }
+  
+  public void setBackground(Gradient backgroundGradient) {
+    this.backgroundGradient = backgroundGradient;
+    if (backgroundGradient != null) {
+      setBackground((Integer)null);
+      backgroundImageLocation = null;
+      backgroundTexture = null;
+    }
+  }
+  
+  public void setBackground(Texture backgroundTexture) {
+    this.backgroundTexture = backgroundTexture;
+    if (backgroundTexture != null) {
+      backgroundGradient = null;
+      setBackground((Integer)null);
+      backgroundImageLocation = null;
+    }
+  }
+  
   public Plot getPlot() {
     return plot;
   }
@@ -69,23 +128,40 @@ public class ChartModel implements Serializable {
     this.plot = plot;
   }
 
-  public String getSubtitle() {
-    return subtitle;
+  public StyledText getTitle() {
+    return title;
   }
 
-  public void setSubtitle(String subtitle) {
-    this.subtitle = subtitle;
+  public void setTitle(StyledText title) {
+    this.title = title;
   }
 
-  public HashMap<String, String> getStyles() {
-    return styles;
+  public Integer getBorderColor() {
+    return style.getBorderColor();
   }
 
-  public boolean getAnimate() {
-    return animate;
+  public boolean getBorderVisible() {
+    return style.getBorderVisible();
   }
 
-  public void setAnimate(boolean animate) {
-    this.animate = animate;
+  public Integer getBorderWidth() {
+    return style.getBorderWidth();
   }
+
+  public void setBorderColor(Integer color) {
+    style.setBorderColor(color);
+  }
+
+  public void setBorderVisible(boolean visible) {
+    style.setBorderVisible(visible);
+  }
+
+  public void setBorderWidth(Integer width) {
+    style.setBorderWidth(width);
+  }
+
+  public CssStyle getStyle() {
+    return style;
+  }
+
 }

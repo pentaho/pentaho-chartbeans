@@ -34,13 +34,13 @@ import org.pentaho.chart.ChartFactory;
 import org.pentaho.chart.core.ChartDocument;
 import org.pentaho.chart.core.parser.ChartXMLParser;
 import org.pentaho.chart.data.ChartTableModel;
-import org.pentaho.chart.model.CategoricalAreaPlot;
-import org.pentaho.chart.model.CategoricalBarPlot;
-import org.pentaho.chart.model.CategoricalLinePlot;
+import org.pentaho.chart.model.AreaPlot;
+import org.pentaho.chart.model.BarPlot;
 import org.pentaho.chart.model.ChartModel;
+import org.pentaho.chart.model.LinePlot;
 import org.pentaho.chart.model.PiePlot;
-import org.pentaho.chart.model.Series;
-import org.pentaho.chart.model.PiePlot.Wedge;
+import org.pentaho.chart.model.StyledText;
+import org.pentaho.chart.model.PiePlot.Slice;
 import org.pentaho.chart.model.Plot.Orientation;
 import org.pentaho.chart.model.Theme.ChartTheme;
 import org.pentaho.chart.plugin.api.ChartResult;
@@ -419,21 +419,13 @@ public class PluginTest extends TestCase {
         {"Europe", "2009", new Integer(101290)}  
     };
     ChartModel chartModel = new ChartModel();
-    chartModel.setAnimate(true);
     chartModel.setChartEngine(ChartModel.CHART_ENGINE_OPENFLASH);
-    chartModel.setTitle("testOpenFlashChart");
+    chartModel.setTitle(new StyledText("testOpenFlashChart"));
     
-    CategoricalBarPlot barPlot = new CategoricalBarPlot();
+    BarPlot barPlot = new BarPlot();
     barPlot.setOrientation(Orientation.VERTICAL);
-    barPlot.setCategoryAxisLabel("categoryAxisLabel");
-    barPlot.setValueAxisLabel("valueAxisLabel");
-    ArrayList<Series> series = new ArrayList<Series>();
-    series.add(new Series());
-    series.add(new Series());
-    series.add(new Series());
-    series.add(new Series());
-    series.add(new Series());
-    barPlot.setSeries(series);
+    barPlot.getXAxisLabel().setText("categoryAxisLabel");
+    barPlot.getYAxisLabel().setText("valueAxisLabel");
     chartModel.setPlot(barPlot);
     chartModel.setTheme(ChartTheme.THEME1);
     InputStream inputStream = null;
@@ -449,24 +441,17 @@ public class PluginTest extends TestCase {
           }
         }
       }
-      assertTrue(jsonString.indexOf(chartModel.getTitle()) >= 0);
-      assertTrue(jsonString.indexOf(barPlot.getCategoryAxisLabel()) >= 0);
-      assertTrue(jsonString.indexOf(barPlot.getValueAxisLabel()) >= 0);
+      assertTrue(jsonString.indexOf(chartModel.getTitle().getText()) >= 0);
+      assertTrue(jsonString.indexOf(barPlot.getXAxisLabel().getText()) >= 0);
+      assertTrue(jsonString.indexOf(barPlot.getYAxisLabel().getText()) >= 0);
     } catch (Exception e) {
       fail("Unexpected exception");
     }
     
-    barPlot = new CategoricalBarPlot();
+    barPlot = new BarPlot();
     barPlot.setOrientation(Orientation.HORIZONTAL);
-    barPlot.setCategoryAxisLabel("categoryAxisLabel");
-    barPlot.setValueAxisLabel("valueAxisLabel");
-    series = new ArrayList<Series>();
-    series.add(new Series());
-    series.add(new Series());
-    series.add(new Series());
-    series.add(new Series());
-    series.add(new Series());
-    barPlot.setSeries(series);
+    barPlot.getXAxisLabel().setText("categoryAxisLabel");
+    barPlot.getYAxisLabel().setText("valueAxisLabel");
     chartModel.setPlot(barPlot);
     try {
       inputStream = ChartFactory.createChart(chartData, 2, 0, 1, chartModel, 100, 100, null);
@@ -480,9 +465,9 @@ public class PluginTest extends TestCase {
           }
         }
       }
-      assertTrue(jsonString.indexOf(chartModel.getTitle()) >= 0);
-      assertTrue(jsonString.indexOf(barPlot.getCategoryAxisLabel()) >= 0);
-      assertTrue(jsonString.indexOf(barPlot.getValueAxisLabel()) >= 0);
+      assertTrue(jsonString.indexOf(chartModel.getTitle().getText()) >= 0);
+      assertTrue(jsonString.indexOf(barPlot.getXAxisLabel().getText()) >= 0);
+      assertTrue(jsonString.indexOf(barPlot.getYAxisLabel().getText()) >= 0);
     } catch (Exception e) {
       fail("Unexpected exception");
     }
@@ -504,20 +489,12 @@ public class PluginTest extends TestCase {
         {"Europe", "2009", new Integer(101290)}  
     };
     ChartModel chartModel = new ChartModel();
-    chartModel.setAnimate(true);
     chartModel.setChartEngine(ChartModel.CHART_ENGINE_OPENFLASH);
-    chartModel.setTitle("testOpenFlashChart");
+    chartModel.setTitle(new StyledText("testOpenFlashChart"));
     
-    CategoricalLinePlot linePlot = new CategoricalLinePlot();
-    linePlot.setCategoryAxisLabel("categoryAxisLabel");
-    linePlot.setValueAxisLabel("valueAcisLabel");
-    ArrayList<Series> series = new ArrayList<Series>();
-    series.add(new Series());
-    series.add(new Series());
-    series.add(new Series());
-    series.add(new Series());
-    series.add(new Series());
-    linePlot.setSeries(series);
+    LinePlot linePlot = new LinePlot();
+    linePlot.getXAxisLabel().setText("categoryAxisLabel");
+    linePlot.getYAxisLabel().setText("valueAcisLabel");
     chartModel.setPlot(linePlot);
     chartModel.setTheme(ChartTheme.THEME2);
     try {
@@ -532,9 +509,9 @@ public class PluginTest extends TestCase {
           }
         }
       }
-      assertTrue(jsonString.indexOf(chartModel.getTitle()) >= 0);
-      assertTrue(jsonString.indexOf(linePlot.getCategoryAxisLabel()) >= 0);
-      assertTrue(jsonString.indexOf(linePlot.getValueAxisLabel()) >= 0);
+      assertTrue(jsonString.indexOf(chartModel.getTitle().getText()) >= 0);
+      assertTrue(jsonString.indexOf(linePlot.getXAxisLabel().getText()) >= 0);
+      assertTrue(jsonString.indexOf(linePlot.getYAxisLabel().getText()) >= 0);
     } catch (Exception e) {
       fail("Unexpected exception");
     }
@@ -556,20 +533,12 @@ public class PluginTest extends TestCase {
         {"Europe", "2009", new Integer(101290)}  
     };
     ChartModel chartModel = new ChartModel();
-    chartModel.setAnimate(true);
     chartModel.setChartEngine(ChartModel.CHART_ENGINE_OPENFLASH);
-    chartModel.setTitle("testOpenFlashChart");
+    chartModel.setTitle(new StyledText("testOpenFlashChart"));
     
-    CategoricalAreaPlot areaPlot = new CategoricalAreaPlot();
-    areaPlot.setCategoryAxisLabel("categoryAxisLabel");
-    areaPlot.setValueAxisLabel("valueAcisLabel");
-    ArrayList<Series> series = new ArrayList<Series>();
-    series.add(new Series());
-    series.add(new Series());
-    series.add(new Series());
-    series.add(new Series());
-    series.add(new Series());
-    areaPlot.setSeries(series);
+    AreaPlot areaPlot = new AreaPlot();
+    areaPlot.getXAxisLabel().setText("categoryAxisLabel");
+    areaPlot.getYAxisLabel().setText("valueAcisLabel");
     chartModel.setPlot(areaPlot);
     chartModel.setTheme(ChartTheme.THEME2);
     try {
@@ -584,9 +553,9 @@ public class PluginTest extends TestCase {
           }
         }
       }
-      assertTrue(jsonString.indexOf(chartModel.getTitle()) >= 0);
-      assertTrue(jsonString.indexOf(areaPlot.getCategoryAxisLabel()) >= 0);
-      assertTrue(jsonString.indexOf(areaPlot.getValueAxisLabel()) >= 0);
+      assertTrue(jsonString.indexOf(chartModel.getTitle().getText()) >= 0);
+      assertTrue(jsonString.indexOf(areaPlot.getXAxisLabel().getText()) >= 0);
+      assertTrue(jsonString.indexOf(areaPlot.getYAxisLabel().getText()) >= 0);
     } catch (Exception e) {
       fail("Unexpected exception");
     }
@@ -600,21 +569,20 @@ public class PluginTest extends TestCase {
         {"Europe", new Integer(121300)}  
     };
     ChartModel chartModel = new ChartModel();
-    chartModel.setAnimate(true);
     chartModel.setChartEngine(ChartModel.CHART_ENGINE_OPENFLASH);
-    chartModel.setTitle("testOpenFlashChart");
+    chartModel.setTitle(new StyledText("testOpenFlashChart"));
     
     PiePlot piePlot = new PiePlot();
-    ArrayList<Wedge> wedges = new ArrayList<Wedge>();
-    wedges.add(new Wedge());
-    wedges.add(new Wedge());
-    wedges.add(new Wedge());
-    wedges.add(new Wedge());
-    wedges.add(new Wedge());
-    wedges.add(new Wedge());
-    wedges.add(new Wedge());
-    wedges.add(new Wedge());
-    piePlot.setWedges(wedges);
+    ArrayList<Slice> wedges = new ArrayList<Slice>();
+    wedges.add(new Slice());
+    wedges.add(new Slice());
+    wedges.add(new Slice());
+    wedges.add(new Slice());
+    wedges.add(new Slice());
+    wedges.add(new Slice());
+    wedges.add(new Slice());
+    wedges.add(new Slice());
+    piePlot.setSlices(wedges);
     chartModel.setPlot(piePlot);
     chartModel.setTheme(ChartTheme.THEME2);
     try {
@@ -629,7 +597,7 @@ public class PluginTest extends TestCase {
           }
         }
       }
-      assertTrue(jsonString.indexOf(chartModel.getTitle()) >= 0);
+      assertTrue(jsonString.indexOf(chartModel.getTitle().getText()) >= 0);
     } catch (Exception e) {
       fail("Unexpected exception");
     }
