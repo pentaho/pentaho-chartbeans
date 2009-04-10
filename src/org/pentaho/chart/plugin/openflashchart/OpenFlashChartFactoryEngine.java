@@ -114,7 +114,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       if (showLegend) {
         areaChart.setText(chartTableModel.getRowName(row));
       }
-      areaChart.setTooltip("$#val#");
+      areaChart.setTooltip("#val#");
       if ((seriesElements != null) && (seriesElements.length > row)) {
         LayoutStyle layoutStyle = seriesElements[row].getLayoutStyle();
         Paint color = (layoutStyle != null ? (Paint) layoutStyle.getValue(ColorStyleKeys.COLOR) : null);
@@ -229,8 +229,8 @@ public class OpenFlashChartFactoryEngine implements Serializable {
   private Chart createBasicGraphChart(ChartDocument chartDocument) {
     Chart chart = createBasicChart(chartDocument);
 
-    Text rangeLabel = getText(chartDocument, "rangeLabel");
-    Text domainLabel = getText(chartDocument, "domainLabel");
+    Text rangeLabel = getText(chartDocument, ChartElement.TAG_NAME_RANGE_LABEL);
+    Text domainLabel = getText(chartDocument, ChartElement.TAG_NAME_DOMAIN_LABEL);
 
     if (domainLabel != null) {
       chart.setXLegend(domainLabel);
@@ -328,7 +328,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
         if (showLegend) {
           horizontalBarChart.setText(chartTableModel.getRowName(row));
         }
-        horizontalBarChart.setTooltip("$#val#");
+        horizontalBarChart.setTooltip("#val#");
         if (opacity != null) {
           horizontalBarChart.setAlpha((float) opacity.getValue());
         }
@@ -404,7 +404,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
         if (showLegend) {
           verticalBarChart.setText(chartTableModel.getRowName(row));
         }
-        verticalBarChart.setTooltip("$#val#");
+        verticalBarChart.setTooltip("#val#");
         if (opacity != null) {
           verticalBarChart.setAlpha((float) opacity.getValue());
         }
@@ -505,7 +505,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       if (showLegend) {
         lineChart.setText(chartTableModel.getRowName(row));
       }
-      lineChart.setTooltip("$#val#");
+      lineChart.setTooltip("#val#");
       if ((seriesElements != null) && (seriesElements.length > row)) {
         LayoutStyle layoutStyle = seriesElements[row].getLayoutStyle();
         Paint color = (layoutStyle != null ? (Paint) layoutStyle.getValue(ColorStyleKeys.COLOR) : null);

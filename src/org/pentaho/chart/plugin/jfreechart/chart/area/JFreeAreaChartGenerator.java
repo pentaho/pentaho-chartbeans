@@ -1,13 +1,17 @@
 package org.pentaho.chart.plugin.jfreechart.chart.area;
 
+import java.awt.Font;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.pentaho.chart.ChartDocumentContext;
+import org.pentaho.chart.ChartUtils;
 import org.pentaho.chart.core.ChartDocument;
 import org.pentaho.chart.core.ChartElement;
 import org.pentaho.chart.css.styles.ChartAreaStyle;
@@ -66,7 +70,7 @@ public abstract class JFreeAreaChartGenerator extends JFreeChartGenerator {
         setSeriesAttributes(seriesElements, data, categoryPlot);
       }
     }
-
+    
     return chart;
   }
 

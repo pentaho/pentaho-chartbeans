@@ -330,18 +330,18 @@ public class ChartFactory {
 
     ChartElement chartElement = null;
     if ((graphPlot.getOrientation() == Orientation.HORIZONTAL) && (chartModel.getChartEngine() == ChartModel.CHART_ENGINE_JFREE)) {
-      chartElement = createTextElement("rangeLabel", graphPlot.getXAxisLabel());
+      chartElement = createTextElement(ChartElement.TAG_NAME_RANGE_LABEL, graphPlot.getXAxisLabel());
     } else {
-      chartElement = createTextElement("rangeLabel", graphPlot.getYAxisLabel());
+      chartElement = createTextElement(ChartElement.TAG_NAME_RANGE_LABEL, graphPlot.getYAxisLabel());
     }
     if (chartElement != null) {
       rootElement.addChildElement(chartElement);
     }
     
     if ((graphPlot.getOrientation() == Orientation.HORIZONTAL)  && (chartModel.getChartEngine() == ChartModel.CHART_ENGINE_JFREE)) {
-      chartElement = createTextElement("domainLabel", graphPlot.getYAxisLabel());
+      chartElement = createTextElement(ChartElement.TAG_NAME_DOMAIN_LABEL, graphPlot.getYAxisLabel());
     } else {
-      chartElement = createTextElement("domainLabel", graphPlot.getXAxisLabel());
+      chartElement = createTextElement(ChartElement.TAG_NAME_DOMAIN_LABEL, graphPlot.getXAxisLabel());
     }
     if (chartElement != null) {
       rootElement.addChildElement(chartElement);

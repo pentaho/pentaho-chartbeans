@@ -60,6 +60,16 @@ public class ChartElement extends HeirarchicalLinkedListItem implements Cloneabl
   public static final String TAG_NAME_CHART = "chart"; //$NON-NLS-1$
 
   /**
+   * Chart Definition tag for the range label
+   */
+  public static final String TAG_NAME_RANGE_LABEL = "rangeLabel"; //$NON-NLS-1$
+  
+  /**
+   * Chart Definition tag for the range label
+   */
+  public static final String TAG_NAME_DOMAIN_LABEL = "domainLabel"; //$NON-NLS-1$
+  
+  /**
    * The name of the XML tag which represents the CSS information
    */
   public static final String TAG_NAME_STYLESHEET = "stylesheet"; //$NON-NLS-1$

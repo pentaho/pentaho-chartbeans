@@ -14,6 +14,7 @@ import org.jfree.chart.block.BlockBorder;
 import org.jfree.chart.labels.ItemLabelAnchor;
 import org.jfree.chart.labels.ItemLabelPosition;
 import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.AreaRenderer;
 import org.jfree.chart.renderer.category.BarRenderer;
@@ -21,7 +22,6 @@ import org.jfree.chart.renderer.category.BarRenderer3D;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.renderer.category.GroupedStackedBarRenderer;
 import org.jfree.chart.renderer.category.LayeredBarRenderer;
-import org.jfree.chart.renderer.category.LineRenderer3D;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.ui.StandardGradientPaintTransformer;
 import org.jfree.ui.TextAnchor;
@@ -106,7 +106,7 @@ public abstract class JFreeChartGenerator implements IJFreeChartGenerator {
    * @return String - the value category label
    */
   public static String getValueCategoryLabel(final ChartDocument chartDocument) {
-    final ChartElement[] children = chartDocument.getRootElement().findChildrenByName("domainLabel"); //$NON-NLS-1$
+    final ChartElement[] children = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_DOMAIN_LABEL); //$NON-NLS-1$
     if (children != null && children.length > 0) {
       return children[0].getText();
     }
@@ -120,7 +120,7 @@ public abstract class JFreeChartGenerator implements IJFreeChartGenerator {
    * @return String - the value axis label
    */
   public static String getValueAxisLabel(final ChartDocument chartDocument) {
-    final ChartElement[] children = chartDocument.getRootElement().findChildrenByName("rangeLabel"); //$NON-NLS-1$
+    final ChartElement[] children = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_RANGE_LABEL); //$NON-NLS-1$
     if (children != null && children.length > 0) {
       return children[0].getText();
     }
@@ -472,7 +472,10 @@ public abstract class JFreeChartGenerator implements IJFreeChartGenerator {
     ChartElement rootElement = chartDocContext.getChartDocument().getRootElement();    
     ChartElement[] children = rootElement.findChildrenByName(ChartElement.TAG_NAME_TITLE); //$NON-NLS-1$
     if (children != null && children.length > 0) {
-      chart.getTitle().setFont(ChartUtils.getFont(children[0]));
+      Font font = ChartUtils.getFont(children[0]);
+      if (font != null) {
+        chart.getTitle().setFont(font);
+      }
     }
     
     if (getShowLegend(chartDocContext.getChartDocument())) {
@@ -500,7 +503,27 @@ public abstract class JFreeChartGenerator implements IJFreeChartGenerator {
     if (borderColor != null) {
       chart.setBorderPaint(borderColor);
     }
-    
+        
+    Plot plot = chart.getPlot();
+    if (plot instanceof CategoryPlot) {
+      CategoryPlot categoryPlot = (CategoryPlot)plot;
+      
+      children = chartDocContext.getChartDocument().getRootElement().findChildrenByName(ChartElement.TAG_NAME_RANGE_LABEL); //$NON-NLS-1$
+      if (children != null && children.length > 0) {
+        Font font = ChartUtils.getFont(children[0]);
+        if (font != null) {
+          categoryPlot.getRangeAxis().setLabelFont(font);
+        }
+      }
+      
+      children = chartDocContext.getChartDocument().getRootElement().findChildrenByName(ChartElement.TAG_NAME_DOMAIN_LABEL); //$NON-NLS-1$
+      if (children != null && children.length > 0) {
+        Font font = ChartUtils.getFont(children[0]);
+        if (font != null) {
+          categoryPlot.getDomainAxis().setLabelFont(font);
+        }
+      }
+    }
     return chart;
   }
 
