@@ -10,10 +10,13 @@ public class StyledText implements Serializable{
   CssStyle style = new CssStyle();
   
   public StyledText(String text) {
-    this.text = text;
+    this();
+    setText(text);
+    
   }
   
   public StyledText() {
+    setFont("serif", 14);
   }
   
   public String getText() {

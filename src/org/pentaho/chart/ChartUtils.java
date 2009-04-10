@@ -150,7 +150,7 @@ public class ChartUtils {
                 parentSize <= ChartCSSFontSizeMappingConstants.XX_LARGE) {
           size = (parentSize * ((float) fontSize.getValue()) / 100);
         }
-      } else if (CSSNumericType.PT.equals(fontSizeType)) {
+      } else {
         size = (float) fontSize.getValue();
       }
     }
