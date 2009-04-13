@@ -29,7 +29,7 @@ public class ChartModel implements Serializable {
    * @param chartEngine value of ChartModel.CHART_ENGINE_JFREE or ChartModel.CHART_ENGINE_OPENFLASH
    * @return The friendly name of the implemented engine
    */
-  public static String getChartEngineFriendlyNameById(int chartEngine){
+  public static String getChartEngineFriendlyNameFromId(int chartEngine){
     String chartEngineFriendlyName = null;
     
     switch(chartEngine){
@@ -50,7 +50,7 @@ public class ChartModel implements Serializable {
    * @param chartEngineFriendlyName
    * @return -1 if chartEngineFriendlyName ws invalid
    */
-  public static int ChartEngineIdByFriendlyName(String chartEngineFriendlyName){
+  public static int getChartEngineIdFromFriendlyName(String chartEngineFriendlyName){
     int chartEngine = -1;
     
     if(chartEngineFriendlyName != null){
