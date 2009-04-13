@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PiePlot extends Plot implements Serializable {
+  private static final int DEFAULT_START_ANGLE = 25;  
   private static final float DEFAULT_OPACITY = 0.85f;
   
   public static class Slice implements Serializable {
@@ -21,11 +22,8 @@ public class PiePlot extends Plot implements Serializable {
   
   List<Slice> slices = new ArrayList<Slice>();
   boolean animate = false;
+  Integer startAngle;
 
-  public PiePlot() {
-    setOpacity(DEFAULT_OPACITY);
-  }
-  
   public List<Slice> getSlices() {
     return slices;
   }
@@ -40,6 +38,19 @@ public class PiePlot extends Plot implements Serializable {
 
   public void setAnimate(boolean animate) {
     this.animate = animate;
+  }
+
+  public Integer getStartAngle() {
+    return startAngle == null ? DEFAULT_START_ANGLE : startAngle;
+  }
+
+  public void setStartAngle(Integer startAngle) {
+    this.startAngle = startAngle;
+  }
+
+  public Float getOpacity() {
+    Float opacity = super.getOpacity();
+    return opacity == null ? DEFAULT_OPACITY : opacity;
   }
 
 }

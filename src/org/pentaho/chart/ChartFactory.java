@@ -508,7 +508,13 @@ public class ChartFactory {
     datasetElement.setTagName("dataset");
     datasetElement.setAttribute("type", "pie");
 
-    chartDocument.getPlotElement().addChildElement(datasetElement);
+    ChartElement plotElement = chartDocument.getPlotElement();
+    plotElement.addChildElement(datasetElement);
+    
+    if (piePlot.getStartAngle() != null) {
+      LayoutStyle layoutStyle = plotElement.getLayoutStyle();
+      layoutStyle.setValue(ChartStyleKeys.PIE_START_ANGLE, CSSNumericValue.createValue(CSSNumericType.PERCENTAGE, piePlot.getStartAngle()));
+    }
     
     return chartDocument;
   }

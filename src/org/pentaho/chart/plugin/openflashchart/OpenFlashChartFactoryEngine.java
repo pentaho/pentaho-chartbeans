@@ -163,8 +163,12 @@ public class OpenFlashChartFactoryEngine implements Serializable {
 
     PieChart pieChart = new PieChart();
     pieChart.setAnimate(getAnimate(chartDocument));
-    pieChart.setStartAngle(35);
     pieChart.setBorder(2);
+    
+    CSSNumericValue startAngle = (CSSNumericValue) chartDocument.getPlotElement().getLayoutStyle().getValue(ChartStyleKeys.PIE_START_ANGLE);
+    if (startAngle != null) {
+      pieChart.setStartAngle((int)startAngle.getValue());
+    }
 
     CSSNumericValue opacity = (CSSNumericValue) chartDocument.getPlotElement().getLayoutStyle().getValue(
         ColorStyleKeys.OPACITY);

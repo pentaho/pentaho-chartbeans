@@ -212,6 +212,12 @@ public class ChartStyleKeys {
         createKey("-x-pentaho-chart-pie-explode-percent", false, false, StyleKey.All_ELEMENTS); //$NON-NLS-1$
 
   /**
+   * Set the pie explode percent. It defaults to zero.
+   */
+  public static final StyleKey PIE_START_ANGLE = StyleKeyRegistry.getRegistry().
+        createKey("-x-pentaho-chart-pie-start-angle", false, false, StyleKey.All_ELEMENTS); //$NON-NLS-1$
+  
+  /**
    * Set the pie chart label location to be inside the chart. It defaults to no.
    */
   public static final StyleKey PIE_LABELS_INSIDE_CHART = StyleKeyRegistry.getRegistry().

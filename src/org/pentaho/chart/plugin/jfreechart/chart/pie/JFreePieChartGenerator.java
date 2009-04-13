@@ -21,6 +21,7 @@ import org.pentaho.chart.data.ChartTableModel;
 import org.pentaho.chart.plugin.jfreechart.chart.JFreeChartGenerator;
 import org.pentaho.chart.plugin.jfreechart.utils.JFreeChartUtils;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
+import org.pentaho.reporting.libraries.css.values.CSSNumericValue;
 import org.pentaho.reporting.libraries.css.values.CSSValue;
 import org.pentaho.reporting.libraries.css.values.CSSStringValue;
 import org.pentaho.util.messages.Messages;
@@ -70,6 +71,7 @@ public class JFreePieChartGenerator extends JFreeChartGenerator {
     final ChartElement plotElement =  chartDocument.getPlotElement();
     setLabelPlacingInsideChart(piePlot, plotElement);
     setSeriesAttributes(piePlot, chartDocument, data);    
+    setStartAngle(piePlot, chartDocument.getPlotElement());
   }
 
   /**
@@ -173,6 +175,14 @@ public class JFreePieChartGenerator extends JFreeChartGenerator {
     }
   }
 
+  private void setStartAngle(final PiePlot piePlot, ChartElement plotElement) {
+    final LayoutStyle layoutStyle = plotElement.getLayoutStyle();
+    final CSSValue startAngle = layoutStyle.getValue(ChartStyleKeys.PIE_START_ANGLE);
+    if (startAngle instanceof CSSNumericValue) {
+      piePlot.setStartAngle(((CSSNumericValue)startAngle).getValue());
+    }
+  }
+  
   /**
    * Sets the explode percent for each key/section in the plot.
    * </p>
