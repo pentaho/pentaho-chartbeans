@@ -141,6 +141,11 @@ public class ChartModelConverter implements Converter {
     } else if (reader.getNodeName().equals("piePlot")) {
       PiePlot piePlot = new PiePlot();
       piePlot.setAnimate(Boolean.parseBoolean(reader.getAttribute("animate")));
+      try {
+        piePlot.setStartAngle(Integer.parseInt(reader.getAttribute("startAngle")));
+      } catch (Exception ex) {
+        // Do nothing.We won't set the start angle
+      }
       plot = piePlot;
     }    
     

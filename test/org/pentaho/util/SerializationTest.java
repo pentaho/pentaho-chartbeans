@@ -284,6 +284,7 @@ public class SerializationTest {
     
     PiePlot piePlot = new PiePlot();
     piePlot.setBackground(0x765890);
+    piePlot.setStartAngle(65);
     piePlot.setOpacity(0.75f);
     piePlot.setPalette(new Palette(0x001111, 0x222222, 0x333333));
     piePlot.setAnimate(true);
@@ -323,6 +324,7 @@ public class SerializationTest {
     assertEquals(palette.get(0), 0x001111);
     assertEquals(palette.get(1), 0x222222);
     assertEquals(palette.get(2), 0x333333);
+    assertEquals(piePlot.getStartAngle(), 65);
     assertTrue(piePlot.getAnimate());
   }
 }
