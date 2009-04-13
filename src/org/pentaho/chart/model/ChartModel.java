@@ -24,6 +24,40 @@ public class ChartModel implements Serializable {
   ChartTheme theme;
   CssStyle style = new CssStyle();
   
+  /**
+   * Get the user friendly name of the currently implemented engine
+   * @return The friendly name of the implemented engine
+   */
+  public String getChartEngineByFriendlyName(){
+    String chartEngineFriendlyName = null;
+    
+    switch(chartEngine){
+      case CHART_ENGINE_JFREE:{
+        chartEngineFriendlyName = "JFreeChart";  //$NON-NLS-1$
+      }break;
+      case CHART_ENGINE_OPENFLASH:{
+        chartEngineFriendlyName = "OpenFlashChart";  //$NON-NLS-1$
+      }break;
+    }
+    
+    return chartEngineFriendlyName;
+  }
+
+  /**
+   * If the friendly name is one of "JFreeChart" or "OpenFlashChart" then the engine
+   * is set accordingly
+   * @param chartEngineFriendlyName
+   */
+  public void setChartEngineByFriendlyName(String chartEngineFriendlyName){
+    if(chartEngineFriendlyName != null){
+      if(chartEngineFriendlyName.equalsIgnoreCase("JFreeChart")){  //$NON-NLS-1$
+        chartEngine = CHART_ENGINE_JFREE;
+      } else if (chartEngineFriendlyName.equalsIgnoreCase("OpenFlashChart")){  //$NON-NLS-1$
+        chartEngine = CHART_ENGINE_OPENFLASH;
+      }
+    }
+  }
+  
   public int getChartEngine() {
     return chartEngine;
   }
