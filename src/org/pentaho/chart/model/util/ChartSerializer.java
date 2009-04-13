@@ -35,6 +35,7 @@ public class ChartSerializer {
     jsonChartWriter.registerConverter(new PaletteConverter());
     jsonChartWriter.registerConverter(new ChartModelConverter());
     jsonChartWriter.useAttributeFor(PiePlot.class, "animate"); //$NON-NLS-1$
+    jsonChartWriter.useAttributeFor(PiePlot.class, "startAngle"); //$NON-NLS-1$
     
     xmlChartWriter.setMode(XStream.NO_REFERENCES);
     xmlChartWriter.alias("chartModel", ChartModel.class);
