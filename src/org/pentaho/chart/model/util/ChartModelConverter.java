@@ -4,12 +4,14 @@ import org.pentaho.chart.model.AreaPlot;
 import org.pentaho.chart.model.BarPlot;
 import org.pentaho.chart.model.ChartModel;
 import org.pentaho.chart.model.CssStyle;
+import org.pentaho.chart.model.DialPlot;
 import org.pentaho.chart.model.GraphPlot;
 import org.pentaho.chart.model.LinePlot;
 import org.pentaho.chart.model.Palette;
 import org.pentaho.chart.model.PiePlot;
 import org.pentaho.chart.model.Plot;
 import org.pentaho.chart.model.BarPlot.BarPlotFlavor;
+import org.pentaho.chart.model.DialPlot.DialRange;
 import org.pentaho.chart.model.LinePlot.LinePlotFlavor;
 import org.pentaho.chart.model.Plot.Orientation;
 import org.pentaho.chart.model.Theme.ChartTheme;
@@ -103,7 +105,8 @@ public class ChartModelConverter implements Converter {
       } else if (reader.getNodeName().equals("barPlot")
           || reader.getNodeName().equals("linePlot") 
           || reader.getNodeName().equals("areaPlot")
-          || reader.getNodeName().equals("piePlot")) {        
+          || reader.getNodeName().equals("piePlot")
+          || reader.getNodeName().equals("dialPlot")) {        
         chartModel.setPlot(createPlot(reader));
       }
       reader.moveUp();
@@ -147,7 +150,10 @@ public class ChartModelConverter implements Converter {
         // Do nothing.We won't set the start angle
       }
       plot = piePlot;
-    }    
+    } else if (reader.getNodeName().equals("dialPlot")) {
+      DialPlot dialPlot = new DialPlot();
+      plot = dialPlot;
+    }
     
     String orientation = reader.getAttribute("orientation");
     if (orientation != null) {
@@ -184,6 +190,32 @@ public class ChartModelConverter implements Converter {
         }
         if (palette.size() > 0) {
           plot.setPalette(palette);
+        }
+      }
+      if (reader.getNodeName().equals("scale") && (plot instanceof DialPlot)) {
+        while (reader.hasMoreChildren()) {
+          CssStyle rangeStyle = new CssStyle();
+          Integer color = null;
+          Integer rangeMin = null;
+          Integer rangeMax = null;
+          reader.moveDown();
+          if (reader.getNodeName().equals("range")) {
+            cssStyle = reader.getAttribute("style");
+            if (cssStyle != null) {
+              rangeStyle.setStyleString(cssStyle);
+              color = rangeStyle.getColor();
+            }
+            String str = reader.getAttribute("min");
+            if (str != null) {
+              rangeMin = new Integer(str);
+            }
+            str = reader.getAttribute("max");
+            if (str != null) {
+              rangeMax = new Integer(str);
+            }
+            ((DialPlot)plot).addRange(new DialRange(rangeMin, rangeMax, color));
+          }
+          reader.moveUp();
         }
       }
       if (reader.getNodeName().equals("xAxisLabel") && (plot instanceof GraphPlot)) {
