@@ -2,13 +2,15 @@ package org.pentaho.chart.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 public class DialPlot extends Plot implements Serializable {
+  public static class Scale extends ArrayList<DialRange> {
+  }
+  
   public static class DialRange implements Serializable, Comparable<DialRange> {
-    Integer color;
+    CssStyle style = new CssStyle();
     Number minValue = 0;
     Number maxValue = 0;
 
@@ -16,15 +18,26 @@ public class DialPlot extends Plot implements Serializable {
     }
     
     public DialRange(Number minValue, Number maxValue) {
+      this(minValue, maxValue, null);
+    }
+    public DialRange(Number minValue, Number maxValue, Integer color) {
       setRange(minValue, maxValue);
+      if (color != null) {
+        setColor(color);
+      }
     }
     
-    public Integer getColor() {
-      return color;
+
+    public CssStyle getStyle() {
+      return style;
     }
 
-    public void setColor(Integer foregroundColor) {
-      this.color = foregroundColor;
+    public Integer getColor() {
+      return style.getColor();
+    }
+
+    public void setColor(Integer color) {
+      style.setColor(color);
     }
 
     public void setRange(Number minValue, Number maxValue) {
@@ -87,34 +100,38 @@ public class DialPlot extends Plot implements Serializable {
   }
   
   // Really need a sorted set. But gwt 1.5.2 can't serialize sorted sets.
-  ArrayList<DialRange> divisions = new ArrayList<DialRange>();
+  Scale scale = new Scale();
 
+  public DialPlot() {
+    setPalette(null);
+  }
+  
   public SortedSet<DialRange> getRanges() {
-    return new TreeSet<DialRange>(divisions);
+    return new TreeSet<DialRange>(scale);
   }
   
   public void addRange(DialRange dialRange) {
     SortedSet<DialRange> ranges = getRanges();
-    if (!divisions.contains(dialRange)) {
+    if (!scale.contains(dialRange)) {
       ranges.add(dialRange);
-      divisions.clear();
-      divisions.addAll(ranges);
-      int index = divisions.indexOf(dialRange);
+      scale.clear();
+      scale.addAll(ranges);
+      int index = scale.indexOf(dialRange);
       if (index > 0) {
-        if (divisions.get(index - 1).getMaxValue().doubleValue() > dialRange.getMinValue().doubleValue()) {
-          divisions.get(index - 1).setMaxValue(dialRange.getMinValue());
+        if (scale.get(index - 1).getMaxValue().doubleValue() > dialRange.getMinValue().doubleValue()) {
+          scale.get(index - 1).setMaxValue(dialRange.getMinValue());
         }
       }
-      if (index < divisions.size() - 1) {
-        if (divisions.get(index + 1).getMinValue().doubleValue() < dialRange.getMaxValue().doubleValue()) {
-          divisions.get(index + 1).setMinValue(dialRange.getMaxValue());
+      if (index < scale.size() - 1) {
+        if (scale.get(index + 1).getMinValue().doubleValue() < dialRange.getMaxValue().doubleValue()) {
+          scale.get(index + 1).setMinValue(dialRange.getMaxValue());
         }
       }
     }    
   }
   
   public void removeRange(DialRange dialRange) {
-    divisions.remove(dialRange);
+    scale.remove(dialRange);
   }
   
 }
