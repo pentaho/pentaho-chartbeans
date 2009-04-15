@@ -3,17 +3,22 @@ package org.pentaho.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.awt.Color;
+import java.util.SortedSet;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.pentaho.chart.model.AreaPlot;
 import org.pentaho.chart.model.BarPlot;
 import org.pentaho.chart.model.ChartModel;
+import org.pentaho.chart.model.DialPlot;
 import org.pentaho.chart.model.LinePlot;
 import org.pentaho.chart.model.Palette;
 import org.pentaho.chart.model.PiePlot;
 import org.pentaho.chart.model.BarPlot.BarPlotFlavor;
 import org.pentaho.chart.model.CssStyle.FontStyle;
 import org.pentaho.chart.model.CssStyle.FontWeight;
+import org.pentaho.chart.model.DialPlot.DialRange;
 import org.pentaho.chart.model.LinePlot.LinePlotFlavor;
 import org.pentaho.chart.model.Plot.Orientation;
 import org.pentaho.chart.model.Theme.ChartTheme;
@@ -24,6 +29,73 @@ public class SerializationTest {
 
   @Before
   public void init(){}
+  
+  @Test
+  public void testDialPlot() {
+    ChartModel chartModel = new ChartModel();
+    chartModel.setTheme(ChartTheme.THEME4);
+    chartModel.setChartEngine(ChartModel.CHART_ENGINE_JFREE);
+    chartModel.setBackground(0x343434);
+    chartModel.setBorderColor(0x987654);
+    chartModel.setBorderVisible(true);
+    chartModel.getTitle().setText("Chart Title");
+    chartModel.getTitle().setColor(0x123456);
+    chartModel.getTitle().setFont("monospace", 20, FontStyle.OBLIQUE, FontWeight.BOLD);
+    chartModel.getLegend().setVisible(true);
+    chartModel.getLegend().setBorderColor(0x654321);
+    chartModel.getLegend().setBorderVisible(true);
+    chartModel.getLegend().setBorderWidth(2);
+    chartModel.getLegend().setFont("verdana", 18, FontStyle.ITALIC, FontWeight.BOLD);
+    
+    DialPlot dialPlot = new DialPlot();
+    dialPlot.setBackground(0x765890);
+    dialPlot.setOpacity(0.75f);
+    dialPlot.addRange(new DialRange(0, 100, Color.RED.getRGB()));
+    dialPlot.addRange(new DialRange(100, 200, Color.GREEN.getRGB()));
+    
+    chartModel.setPlot(dialPlot);
+    
+    
+    String result = ChartSerializer.serialize(chartModel, ChartSerializationFormat.XML);
+    
+    System.out.println(result);
+    
+    ChartModel chartModel2 = ChartSerializer.deSerialize(result, ChartSerializationFormat.XML);
+    assertEquals(chartModel2.getTheme(), ChartTheme.THEME4);
+    assertEquals(chartModel2.getBackground(), new Integer(0x343434));
+    assertTrue(chartModel2.getBorderVisible());
+    assertEquals(chartModel2.getBorderColor(), new Integer(0x987654));
+    assertEquals(chartModel2.getBorderWidth(), new Integer(1));
+    assertEquals(chartModel2.getTitle().getText(), "Chart Title");
+    assertEquals(chartModel2.getTitle().getColor(), 0x123456);
+    assertEquals(chartModel2.getTitle().getFontFamily(), "monospace");
+    assertEquals(chartModel2.getTitle().getFontSize(), new Integer(20));
+    assertEquals(chartModel2.getTitle().getFontStyle(), FontStyle.OBLIQUE);
+    assertEquals(chartModel2.getTitle().getFontWeight(), FontWeight.BOLD);
+    assertTrue(chartModel2.getLegend().getVisible());
+    assertTrue(chartModel2.getLegend().getBorderVisible());
+    assertEquals(chartModel2.getLegend().getBorderWidth(), 2);
+    assertEquals(chartModel2.getLegend().getFontFamily(), "verdana");
+    assertEquals(chartModel2.getLegend().getFontSize(), new Integer(18));
+    assertEquals(chartModel2.getLegend().getFontStyle(), FontStyle.ITALIC);
+    assertEquals(chartModel2.getLegend().getFontWeight(), FontWeight.BOLD);
+    
+    assertTrue(chartModel2.getPlot() instanceof DialPlot);    
+    dialPlot = (DialPlot)chartModel2.getPlot();
+    assertEquals(dialPlot.getBackground(), new Integer(0x765890));
+    assertEquals(dialPlot.getOpacity(), new Float(0.75));
+    SortedSet<DialRange> ranges = dialPlot.getRanges();
+    assertEquals(ranges.size(), 2);
+    for (DialRange dialRange : ranges) {
+      if (dialRange.getMinValue().equals(new Integer(0))) {
+        assertEquals(dialRange.getMaxValue(), 100);
+        assertEquals(dialRange.getColor(), (0xFFFFFF & Color.RED.getRGB()));
+      } else if (dialRange.getMinValue().equals(new Integer(100))) {
+        assertEquals(dialRange.getMaxValue(), 200);
+        assertEquals(dialRange.getColor(), (0xFFFFFF & Color.GREEN.getRGB()));
+      }
+    }
+  }
   
   @Test
   public void testBarPlot(){
@@ -137,7 +209,6 @@ public class SerializationTest {
     linePlot.getYAxisLabel().setFont("san-serif", 12, FontStyle.OBLIQUE, FontWeight.BOLD);
     
     chartModel.setPlot(linePlot);
-    
     
     String result = ChartSerializer.serialize(chartModel, ChartSerializationFormat.XML);
     
