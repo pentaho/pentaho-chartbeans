@@ -6,7 +6,7 @@ import java.util.List;
 
 public abstract class Plot implements Serializable {
   
-  static final Palette DEFAULT_PALETTE = new Palette(
+  public static final Palette DEFAULT_PALETTE = new Palette(
     0x006666, 0x0066CC, 0x009999, 0x336699, 0x339966, 0x3399FF,
     0x663366, 0x666666, 0x666699, 0x669999, 0x6699CC, 0x66CCCC,
     0x993300, 0x990033, 0x999966, 0x999999, 0x9999CC, 0x9999FF,

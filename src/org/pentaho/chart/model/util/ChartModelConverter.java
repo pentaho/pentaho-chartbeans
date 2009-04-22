@@ -213,7 +213,7 @@ public class ChartModelConverter implements Converter {
             if (str != null) {
               rangeMax = new Integer(str);
             }
-            ((DialPlot)plot).addRange(new DialRange(rangeMin, rangeMax, color));
+            ((DialPlot)plot).getScale().addRange(new DialRange(rangeMin, rangeMax, color));
           }
           reader.moveUp();
         }

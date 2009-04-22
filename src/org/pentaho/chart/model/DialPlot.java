@@ -2,11 +2,53 @@ package org.pentaho.chart.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 public class DialPlot extends Plot implements Serializable {
+  
+  // Really need a sorted set. But gwt 1.5.2 can't serialize sorted sets.
   public static class Scale extends ArrayList<DialRange> {
+    public Number getMinValue() {
+      Number minValue = new Integer(0);
+      if (size() > 0) {
+        minValue = get(0).minValue;
+      }
+      return minValue;
+    }
+    
+    public Number getMaxValue() {
+      Number maxValue = new Integer(0);
+      if (size() > 0) {
+        maxValue = get(size() - 1).maxValue;
+      }
+      return maxValue;
+    }
+    
+    public void addRange(DialRange dialRange) {
+      if (!contains(dialRange)) {
+        TreeSet<DialRange> ranges = new TreeSet<DialRange>(this);
+        ranges.add(dialRange);
+        clear();
+        addAll(ranges);
+        int index = indexOf(dialRange);
+        if (index > 0) {
+          if (get(index - 1).getMaxValue().doubleValue() > dialRange.getMinValue().doubleValue()) {
+            get(index - 1).setMaxValue(dialRange.getMinValue());
+          }
+        }
+        if (index < size() - 1) {
+          if (get(index + 1).getMinValue().doubleValue() < dialRange.getMaxValue().doubleValue()) {
+            get(index + 1).setMinValue(dialRange.getMaxValue());
+          }
+        }
+      }    
+    }
+    
+    public void removeRange(DialRange dialRange) {
+      remove(dialRange);
+    }
   }
   
   public static class DialRange implements Serializable, Comparable<DialRange> {
@@ -54,7 +96,7 @@ public class DialPlot extends Plot implements Serializable {
       return minValue;
     }
 
-    protected void setMinValue(Number minValue) {
+    public void setMinValue(Number minValue) {
       this.minValue = minValue;
     }
 
@@ -62,7 +104,7 @@ public class DialPlot extends Plot implements Serializable {
       return maxValue;
     }
 
-    protected void setMaxValue(Number maxValue) {
+    public void setMaxValue(Number maxValue) {
       this.maxValue = maxValue;
     }
 
@@ -99,39 +141,14 @@ public class DialPlot extends Plot implements Serializable {
 
   }
   
-  // Really need a sorted set. But gwt 1.5.2 can't serialize sorted sets.
   Scale scale = new Scale();
 
   public DialPlot() {
     setPalette(null);
   }
   
-  public SortedSet<DialRange> getRanges() {
-    return new TreeSet<DialRange>(scale);
+  public Scale getScale() {
+    return scale;
   }
-  
-  public void addRange(DialRange dialRange) {
-    SortedSet<DialRange> ranges = getRanges();
-    if (!scale.contains(dialRange)) {
-      ranges.add(dialRange);
-      scale.clear();
-      scale.addAll(ranges);
-      int index = scale.indexOf(dialRange);
-      if (index > 0) {
-        if (scale.get(index - 1).getMaxValue().doubleValue() > dialRange.getMinValue().doubleValue()) {
-          scale.get(index - 1).setMaxValue(dialRange.getMinValue());
-        }
-      }
-      if (index < scale.size() - 1) {
-        if (scale.get(index + 1).getMinValue().doubleValue() < dialRange.getMaxValue().doubleValue()) {
-          scale.get(index + 1).setMinValue(dialRange.getMaxValue());
-        }
-      }
-    }    
-  }
-  
-  public void removeRange(DialRange dialRange) {
-    scale.remove(dialRange);
-  }
-  
+    
 }

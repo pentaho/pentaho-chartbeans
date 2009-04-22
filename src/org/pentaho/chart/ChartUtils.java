@@ -27,6 +27,30 @@ public class ChartUtils {
     cssFamilyToAwtFamilyMap.put("sans-serif", "SansSerif");
   }
   
+  public static Font getFont(String fontFamily, org.pentaho.chart.model.CssStyle.FontStyle fontStyle, org.pentaho.chart.model.CssStyle.FontWeight fontWeight, Integer fontSize) {
+    Font font = null;
+    if (fontFamily != null) {
+      if (cssFamilyToAwtFamilyMap.get(fontFamily) != null) {
+        fontFamily = cssFamilyToAwtFamilyMap.get(fontFamily);
+      }
+      int styleFlag = Font.PLAIN;
+
+      if (org.pentaho.chart.model.CssStyle.FontStyle.ITALIC.equals(fontStyle))
+      {
+        styleFlag |= Font.ITALIC;
+      }
+
+      if (org.pentaho.chart.model.CssStyle.FontWeight.BOLD.equals(fontWeight))
+      {
+        styleFlag |= Font.BOLD;
+      }
+      
+      // Creating the requisite font and setting the default size of 10. This will be overwritten below.
+      font = new Font(fontFamily, styleFlag, fontSize == null ? 10 : fontSize);
+    }
+    return font;
+  }
+  
   /**
    * This method creates a Font object based on the font-family, font-size, and
    * font-style defined in the chart xml doc for the current series

@@ -23,11 +23,11 @@ import java.util.Set;
 import org.pentaho.chart.ChartDocumentContext;
 import org.pentaho.chart.core.ChartDocument;
 import org.pentaho.chart.data.ChartTableModel;
+import org.pentaho.chart.model.ChartModel;
 import org.pentaho.chart.plugin.AbstractChartPlugin;
 import org.pentaho.chart.plugin.IChartPlugin;
 import org.pentaho.chart.plugin.api.ChartResult;
 import org.pentaho.chart.plugin.api.IOutput;
-import org.pentaho.chart.plugin.jfreechart.JFreeChartFactoryEngine;
 
 /**
  * @author arodriguez
@@ -43,6 +43,10 @@ public class OpenFlashChartPlugin extends AbstractChartPlugin
     chartFactory = new OpenFlashChartFactoryEngine();
   }
 
+  public IOutput renderChartDocument(ChartModel chartModel, ChartTableModel chartTableModel) {
+    return chartFactory.makeChart(chartModel, chartTableModel);
+  }
+  
   /* (non-Javadoc)
   * @see org.pentaho.chart.plugin.AbstractChartPlugin#renderChartDocument(org.pentaho.chart.core.ChartDocument, org.pentaho.chart.data.ChartTableModel, org.pentaho.chart.plugin.api.IOutput)
   *

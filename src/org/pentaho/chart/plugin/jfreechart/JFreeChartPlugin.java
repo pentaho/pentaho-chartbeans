@@ -23,6 +23,7 @@ import java.util.Set;
 import org.pentaho.chart.ChartDocumentContext;
 import org.pentaho.chart.core.ChartDocument;
 import org.pentaho.chart.data.ChartTableModel;
+import org.pentaho.chart.model.ChartModel;
 import org.pentaho.chart.plugin.AbstractChartPlugin;
 import org.pentaho.chart.plugin.IChartPlugin;
 import org.pentaho.chart.plugin.api.ChartResult;
@@ -60,6 +61,11 @@ public class JFreeChartPlugin extends AbstractChartPlugin
     return null;
   }
 
+  public IOutput renderChartDocument(ChartModel chartModel, final ChartTableModel data)
+  {
+    return chartFactory.makeChart(chartModel, data);
+  }
+  
   /* (non-Javadoc)
    * @see org.pentaho.chart.plugin.AbstractChartPlugin#validateChartDocument(org.pentaho.chart.core.ChartDocument)
    */

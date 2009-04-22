@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.awt.Color;
-import java.util.SortedSet;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -19,16 +18,37 @@ import org.pentaho.chart.model.BarPlot.BarPlotFlavor;
 import org.pentaho.chart.model.CssStyle.FontStyle;
 import org.pentaho.chart.model.CssStyle.FontWeight;
 import org.pentaho.chart.model.DialPlot.DialRange;
+import org.pentaho.chart.model.DialPlot.Scale;
 import org.pentaho.chart.model.LinePlot.LinePlotFlavor;
 import org.pentaho.chart.model.Plot.Orientation;
 import org.pentaho.chart.model.Theme.ChartTheme;
 import org.pentaho.chart.model.util.ChartSerializer;
 import org.pentaho.chart.model.util.ChartSerializer.ChartSerializationFormat;
+import org.pentaho.platform.plugin.action.chartbeans.ChartDataDefinition;
 
 public class SerializationTest {
 
   @Before
   public void init(){}
+  
+  @Test
+  public void testDataDefinition() {
+    ChartDataDefinition chartDataDefinition = new ChartDataDefinition();
+    chartDataDefinition.setCategoryColumn("category");
+    chartDataDefinition.setDomainColumn("domain");
+    chartDataDefinition.setQuery("query");
+    chartDataDefinition.setRangeColumn("range");
+    chartDataDefinition.setScalingFactor(2);
+    
+    String result = ChartSerializer.serializeDataDefinition(chartDataDefinition, ChartSerializationFormat.XML);    
+    System.out.println(result);
+    ChartDataDefinition chartDataDefinition2 = ChartSerializer.deSerializeDataDefinition(result, ChartSerializationFormat.XML);   
+    assertEquals(chartDataDefinition, chartDataDefinition2);
+    
+    result = ChartSerializer.serializeDataDefinition(chartDataDefinition, ChartSerializationFormat.JSON);    
+    chartDataDefinition2 = ChartSerializer.deSerializeDataDefinition(result, ChartSerializationFormat.JSON);   
+    assertEquals(chartDataDefinition, chartDataDefinition2);
+  }
   
   @Test
   public void testDialPlot() {
@@ -50,8 +70,8 @@ public class SerializationTest {
     DialPlot dialPlot = new DialPlot();
     dialPlot.setBackground(0x765890);
     dialPlot.setOpacity(0.75f);
-    dialPlot.addRange(new DialRange(0, 100, Color.RED.getRGB()));
-    dialPlot.addRange(new DialRange(100, 200, Color.GREEN.getRGB()));
+    dialPlot.getScale().addRange(new DialRange(0, 100, Color.RED.getRGB()));
+    dialPlot.getScale().addRange(new DialRange(100, 200, Color.GREEN.getRGB()));
     
     chartModel.setPlot(dialPlot);
     
@@ -84,9 +104,9 @@ public class SerializationTest {
     dialPlot = (DialPlot)chartModel2.getPlot();
     assertEquals(dialPlot.getBackground(), new Integer(0x765890));
     assertEquals(dialPlot.getOpacity(), new Float(0.75));
-    SortedSet<DialRange> ranges = dialPlot.getRanges();
-    assertEquals(ranges.size(), 2);
-    for (DialRange dialRange : ranges) {
+    Scale scale = dialPlot.getScale();
+    assertEquals(scale.size(), 2);
+    for (DialRange dialRange : scale) {
       if (dialRange.getMinValue().equals(new Integer(0))) {
         assertEquals(dialRange.getMaxValue(), 100);
         assertEquals(dialRange.getColor(), (0xFFFFFF & Color.RED.getRGB()));

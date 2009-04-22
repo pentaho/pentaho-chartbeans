@@ -26,11 +26,19 @@ import org.pentaho.chart.ChartUtils;
 import org.pentaho.chart.core.ChartDocument;
 import org.pentaho.chart.core.ChartElement;
 import org.pentaho.chart.css.keys.ChartStyleKeys;
-import org.pentaho.chart.css.styles.ChartBarStyle;
 import org.pentaho.chart.css.styles.ChartOrientationStyle;
 import org.pentaho.chart.css.styles.ChartSeriesType;
 import org.pentaho.chart.data.ChartTableModel;
+import org.pentaho.chart.model.AreaPlot;
+import org.pentaho.chart.model.BarPlot;
+import org.pentaho.chart.model.ChartModel;
+import org.pentaho.chart.model.GraphPlot;
+import org.pentaho.chart.model.LinePlot;
+import org.pentaho.chart.model.PiePlot;
+import org.pentaho.chart.model.Plot;
+import org.pentaho.chart.model.StyledText;
 import org.pentaho.chart.model.BarPlot.BarPlotFlavor;
+import org.pentaho.chart.model.Plot.Orientation;
 import org.pentaho.chart.plugin.IChartPlugin;
 import org.pentaho.chart.plugin.api.ChartResult;
 import org.pentaho.chart.plugin.api.IOutput;
@@ -53,6 +61,443 @@ public class OpenFlashChartFactoryEngine implements Serializable {
   public OpenFlashChartFactoryEngine() {
   }
 
+  public IOutput makeChart(ChartModel chartModel, ChartTableModel chartTableModel) {
+    IOutput chartOutput = null;
+    if (chartModel.getPlot() instanceof BarPlot) {
+      chartOutput = new OpenFlashChartOutput(makeBarChart(chartModel, chartTableModel));
+    } else if (chartModel.getPlot() instanceof LinePlot) {
+      chartOutput = new OpenFlashChartOutput(makeLineChart(chartModel, chartTableModel));
+    } else if (chartModel.getPlot() instanceof AreaPlot) {
+      chartOutput = new OpenFlashChartOutput(makeAreaChart(chartModel, chartTableModel));
+    } else if (chartModel.getPlot() instanceof PiePlot) {
+      chartOutput = new OpenFlashChartOutput(makePieChart(chartModel, chartTableModel));
+    }
+    return chartOutput;
+  }
+  
+  public Text getText(StyledText styledText) {
+    Text text = null;
+    if ((styledText != null) && (styledText.getText() != null) && (styledText.getText().trim().length() > 0)) {
+      if (styledText.getStyle().toString().length() > 0) {
+        text = new Text(styledText.getText(), styledText.getStyle().toString());
+      } else {
+        text = new Text(styledText.getText());
+      }
+    }
+    return text;
+  }
+
+  private Chart createBasicGraphChart(ChartModel chartModel) {
+    Chart chart = createBasicChart(chartModel);
+
+    Text xAxisLabel = getText(((GraphPlot)chartModel.getPlot()).getXAxisLabel());
+    Text yAxisLabel = getText(((GraphPlot)chartModel.getPlot()).getYAxisLabel());
+
+    if (xAxisLabel != null) {
+      chart.setXLegend(xAxisLabel);
+    }
+    if (yAxisLabel != null) {
+      chart.setYLegend(yAxisLabel);
+    }
+    return chart;
+  }
+
+  private Chart createBasicChart(ChartModel chartModel) {
+    Chart chart = null;
+    if ((chartModel.getTitle() != null) && (chartModel.getTitle().getText() != null) && chartModel.getTitle().getText().trim().length() > 0) {
+      String cssFontStyleString = chartModel.getTitle().getStyle().toString();
+      if (cssFontStyleString.trim().length() > 0) {
+        chart = new Chart(chartModel.getTitle().getText(), cssFontStyleString);
+      } else {
+        chart = new Chart(chartModel.getTitle().getText());
+      }
+    } else {
+      chart = new Chart();
+    }
+
+    if (chartModel.getBackground() instanceof Integer) {
+      chart.setBackgroundColour("#" + Integer.toHexString(0x00FFFFFF & (Integer)chartModel.getBackground()));
+    } else {
+      chart.setBackgroundColour("#" + Integer.toHexString(0x00FFFFFF & Color.WHITE.getRGB()));
+    }
+
+    if (chartModel.getPlot().getBackground() instanceof Integer) {
+      chart.setInnerBackgroundColour("#" + Integer.toHexString(0x00FFFFFF & (Integer)chartModel.getPlot().getBackground()));
+    }    
+    return chart;
+  }
+  
+  public Chart makeAreaChart(ChartModel chartModel, ChartTableModel chartTableModel) {
+    Chart chart = createBasicGraphChart(chartModel);
+    AreaPlot areaPlot = (AreaPlot)chartModel.getPlot();
+
+    ArrayList<String> domainValues = new ArrayList<String>();
+    for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
+      domainValues.add(chartTableModel.getColumnName(column));
+    }
+    if (domainValues.size() > 0) {
+      XAxis xa = new XAxis();
+      xa.setLabels(domainValues);
+      xa.setMax(domainValues.size() - 1);
+      chart.setXAxis(xa);
+    }
+
+    ArrayList<Integer> colors = new ArrayList<Integer>();
+    if (areaPlot.getPalette() != null) {
+      colors.addAll(areaPlot.getPalette());
+    }
+    ArrayList<Integer> defaultColors = new ArrayList<Integer>(Plot.DEFAULT_PALETTE);
+    defaultColors.removeAll(colors);
+    colors.addAll(defaultColors);
+    
+    Number maxValue = null;
+    Number minValue = null;
+    for (int row = 0; row < chartTableModel.getRowCount(); row++) {
+      AreaHollowChart areaChart = new AreaHollowChart();
+      areaChart.setHaloSize(0);
+      areaChart.setWidth(2);
+      areaChart.setDotSize(4);
+
+      if (areaPlot.getOpacity() != null) {
+        areaChart.setAlpha(areaPlot.getOpacity());
+      }
+      if ((chartModel.getLegend() != null) && chartModel.getLegend().getVisible()) {
+        areaChart.setText(chartTableModel.getRowName(row));
+      }
+      areaChart.setTooltip("#val#");
+      if (colors.size() > row) {
+        String colorString = "#" + Integer.toHexString(0x00FFFFFF & colors.get(row));
+        areaChart.setFill(colorString);
+        areaChart.setColour(colorString);
+      }
+      ArrayList<Dot> dots = new ArrayList<Dot>();
+      for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
+        Number value = (Number) chartTableModel.getValueAt(row, column);
+        if (maxValue == null) {
+          maxValue = value;
+        } else if (value != null) {
+          maxValue = Math.max(maxValue.doubleValue(), value.doubleValue());
+        }
+        if (minValue == null) {
+          minValue = value;
+        } else if (value != null) {
+          minValue = Math.min(minValue.doubleValue(), value.doubleValue());
+        }
+        dots.add(new Dot(value == null ? 0 : value));
+      }
+
+      areaChart.addDots(dots);
+      chart.addElements(areaChart);
+    }
+
+    if ((maxValue != null) && (minValue != null)) {
+      int exponent = Integer.toString(Math.abs(maxValue.intValue())).length() - 1;
+
+      YAxis ya = new YAxis();
+      int stepSize = (int) (((long) (maxValue.intValue() / Math.pow(10, exponent))) * Math.pow(10, exponent - 1));
+      ya.setSteps(stepSize);
+
+      ya.setMax((int) (maxValue.doubleValue() - (maxValue.doubleValue() % stepSize)) + stepSize);
+      chart.setYAxis(ya);
+    }
+
+    return chart;
+  }
+  
+  public Chart makePieChart(ChartModel chartModel, ChartTableModel chartTableModel) {
+    PieChart pieChart = new PieChart();
+    PiePlot piePlot = (PiePlot)chartModel.getPlot();
+    pieChart.setAnimate(piePlot.getAnimate());
+    pieChart.setBorder(2);
+    
+    if (piePlot.getStartAngle() != null) {
+      pieChart.setStartAngle(piePlot.getStartAngle());
+    }
+
+    if (piePlot.getOpacity() != null) {
+      pieChart.setAlpha(piePlot.getOpacity());
+    }
+
+    ArrayList<Slice> slices = new ArrayList<Slice>();
+    for (int row = 0; row < chartTableModel.getRowCount(); row++) {
+      Number value = (Number) chartTableModel.getValueAt(row, 0);
+      Slice slice = new Slice(value, "#val#", chartTableModel.getRowName(row));
+      slices.add(slice);
+    }
+    pieChart.addSlices(slices);
+
+    ArrayList<Integer> colors = new ArrayList<Integer>();
+    if (piePlot.getPalette() != null) {
+      colors.addAll(piePlot.getPalette());
+    }
+    ArrayList<Integer> defaultColors = new ArrayList<Integer>(Plot.DEFAULT_PALETTE);
+    defaultColors.removeAll(colors);
+    colors.addAll(defaultColors);
+    
+    ArrayList<String> strColors = new ArrayList<String>();
+    for (Integer color : colors) {
+      strColors.add("#" + Integer.toHexString(0x00FFFFFF & color));
+    }
+    pieChart.setColours(strColors);
+
+    Chart chart = createBasicChart(chartModel);
+    chart.addElements(pieChart);
+    return chart;
+  }
+  
+  public Chart makeBarChart(ChartModel chartModel, ChartTableModel chartTableModel) {
+
+    Chart chart = createBasicGraphChart(chartModel);
+    BarPlot barPlot = (BarPlot) chartModel.getPlot();
+
+    ArrayList<Integer> colors = new ArrayList<Integer>();
+    if (barPlot.getPalette() != null) {
+      colors.addAll(barPlot.getPalette());
+    }
+    ArrayList<Integer> defaultColors = new ArrayList<Integer>(Plot.DEFAULT_PALETTE);
+    defaultColors.removeAll(colors);
+    colors.addAll(defaultColors);
+    
+    if (Orientation.HORIZONTAL.equals(barPlot.getOrientation())) {
+      ArrayList<String> categories = new ArrayList<String>();
+      for (int i = 0; i < chartTableModel.getColumnCount(); i++) {
+        categories.add(chartTableModel.getColumnName(i));
+      }
+      if (categories.size() > 0) {
+        YAxis ya = new YAxis();
+        ya.setLabels(categories.toArray(new String[0]));
+        ya.setMax(categories.size());
+        chart.setYAxis(ya);
+      }
+
+      Number maxValue = null;
+      Number minValue = null;
+
+        
+      for (int row = 0; row < chartTableModel.getRowCount(); row++) {
+        HorizontalBarChart horizontalBarChart = new HorizontalBarChart();
+        if ((chartModel.getLegend() != null) && chartModel.getLegend().getVisible()) {
+          horizontalBarChart.setText(chartTableModel.getRowName(row));
+        }
+        horizontalBarChart.setTooltip("#val#");
+        if (barPlot.getOpacity() != null) {
+          horizontalBarChart.setAlpha(barPlot.getOpacity());
+        }
+        if (colors.size() > row) {
+          horizontalBarChart.setColour("#" + Integer.toHexString(0x00FFFFFF & colors.get(row)));
+        }
+        
+        ArrayList<Number> values = new ArrayList<Number>();
+        for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
+          Number value = (Number) chartTableModel.getValueAt(row, column);
+          if (maxValue == null) {
+            maxValue = value;
+          } else if (value != null) {
+            maxValue = Math.max(maxValue.doubleValue(), value.doubleValue());
+          }
+          if (minValue == null) {
+            minValue = value;
+          } else if (value != null) {
+            minValue = Math.min(minValue.doubleValue(), value.doubleValue());
+          }
+          values.add(value == null ? 0 : value);
+        }
+
+        horizontalBarChart.addValues(values.toArray(new Number[0]));
+        chart.addElements(horizontalBarChart);
+      }
+
+      if ((maxValue != null) && (minValue != null)) {
+        if (barPlot.getMinValue() != null) {
+          minValue = Math.min(barPlot.getMinValue().doubleValue(), minValue.doubleValue());
+        } else {
+          minValue = Math.min(0, minValue.doubleValue());
+        }
+        
+        if (barPlot.getMaxValue() != null) {
+          maxValue = Math.max(barPlot.getMaxValue().doubleValue(), maxValue.doubleValue());
+        }
+        
+        Number spread = maxValue.doubleValue() - minValue.doubleValue();
+        
+        int exponent = Integer.toString(Math.abs(spread.intValue())).length() - 1;
+
+        XAxis xAxis = new XAxis();
+        int stepSize = (int) (((long) (spread.intValue() / Math.pow(10, exponent))) * Math.pow(10, exponent - 1)) * 2;
+        xAxis.setRange(minValue.intValue(), (int) (maxValue.doubleValue() - (maxValue.doubleValue() % stepSize)) + stepSize, stepSize);
+        chart.setXAxis(xAxis);
+      }
+    } else {
+
+      ArrayList<String> categories = new ArrayList<String>();
+      for (int i = 0; i < chartTableModel.getColumnCount(); i++) {
+        categories.add(chartTableModel.getColumnName(i));
+      }
+      if (categories.size() > 0) {
+        XAxis xa = new XAxis();
+        xa.setLabels(categories);
+        xa.setMax(categories.size());
+        chart.setXAxis(xa);
+      }
+
+      Number maxValue = null;
+      Number minValue = null;
+      for (int row = 0; row < chartTableModel.getRowCount(); row++) {
+        BarChart verticalBarChart = null;
+        if (barPlot.getFlavor() != null) {
+          switch (barPlot.getFlavor()) {
+            case THREED:
+              verticalBarChart = new BarChart(Style.THREED);
+              break;
+            case GLASS:
+              verticalBarChart = new BarChart(Style.GLASS);
+              break;
+            default:
+              verticalBarChart = new BarChart();
+              break;
+          }
+        } else {
+          verticalBarChart = new BarChart();
+        }
+        
+        if ((chartModel.getLegend() != null) && chartModel.getLegend().getVisible()) {
+          verticalBarChart.setText(chartTableModel.getRowName(row));
+        }
+        verticalBarChart.setTooltip("#val#");
+        if (barPlot.getOpacity() != null) {
+          verticalBarChart.setAlpha(barPlot.getOpacity());
+        }
+        if (colors.size() > row) {
+          verticalBarChart.setColour("#" + Integer.toHexString(0x00FFFFFF & colors.get(row)));
+        }
+        ArrayList<Bar> bars = new ArrayList<Bar>();
+        for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
+          Number value = (Number) chartTableModel.getValueAt(row, column);
+          if (maxValue == null) {
+            maxValue = value;
+          } else if (value != null) {
+            maxValue = Math.max(maxValue.doubleValue(), value.doubleValue());
+          }
+          if (minValue == null) {
+            minValue = value;
+          } else if (value != null) {
+            minValue = Math.min(minValue.doubleValue(), value.doubleValue());
+          }
+          bars.add(new Bar(value == null ? 0 : value));
+        }
+
+        verticalBarChart.addBars(bars);
+        chart.addElements(verticalBarChart);
+      }
+
+      if ((maxValue != null) && (minValue != null)) {
+        if (barPlot.getMinValue() != null) {
+          minValue = Math.min(barPlot.getMinValue().doubleValue(), minValue.doubleValue());
+        } else {
+          minValue = Math.min(0, minValue.doubleValue());
+        }
+        
+        if (barPlot.getMaxValue() != null) {
+          maxValue = Math.max(barPlot.getMaxValue().doubleValue(), maxValue.doubleValue());
+        }
+        
+        Number spread = maxValue.doubleValue() - minValue.doubleValue();
+        
+        int exponent = Integer.toString(Math.abs(spread.intValue())).length() - 1;
+
+        YAxis yAxis = new YAxis();
+        int stepSize = (int) (((long) (spread.intValue() / Math.pow(10, exponent))) * Math.pow(10, exponent - 1)) * 2;
+        yAxis.setRange(minValue.intValue(), (int) (maxValue.doubleValue() - (maxValue.doubleValue() % stepSize)) + stepSize, stepSize);
+        chart.setYAxis(yAxis);
+      }
+    }
+
+    return chart;
+  }
+  
+  public Chart makeLineChart(ChartModel chartModel, ChartTableModel chartTableModel) {
+
+    Chart chart = createBasicGraphChart(chartModel);
+    LinePlot linePlot = (LinePlot)chartModel.getPlot();
+
+    ArrayList<String> domainValues = new ArrayList<String>();
+    for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
+      domainValues.add(chartTableModel.getColumnName(column));
+    }
+    if (domainValues.size() > 0) {
+      XAxis xa = new XAxis();
+      xa.setLabels(domainValues);
+      xa.setMax(domainValues.size());
+      chart.setXAxis(xa);
+    }
+
+    Number maxValue = null;
+    Number minValue = null;
+    
+    ArrayList<Integer> colors = new ArrayList<Integer>();
+    if (linePlot.getPalette() != null) {
+      colors.addAll(linePlot.getPalette());
+    }
+    ArrayList<Integer> defaultColors = new ArrayList<Integer>(Plot.DEFAULT_PALETTE);
+    defaultColors.removeAll(colors);
+    colors.addAll(defaultColors);
+
+    for (int row = 0; row < chartTableModel.getRowCount(); row++) {
+      LineChart lineChart = new LineChart(LineChart.Style.DOT);
+      lineChart.setHaloSize(0);
+      lineChart.setWidth(2);
+      lineChart.setDotSize(4);
+      if (linePlot.getOpacity() != null) {
+        lineChart.setAlpha(linePlot.getOpacity());
+      }
+
+      if ((chartModel.getLegend() != null) && chartModel.getLegend().getVisible()) {
+        lineChart.setText(chartTableModel.getRowName(row));
+      }
+      
+      lineChart.setTooltip("#val#");
+      
+      if (colors.size() > row) {
+        lineChart.setColour("#" + Integer.toHexString(0x00FFFFFF & colors.get(row)));
+      }
+      
+      ArrayList<Dot> dots = new ArrayList<Dot>();
+      for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
+        Number value = (Number) chartTableModel.getValueAt(row, column);
+        if (maxValue == null) {
+          maxValue = value;
+        } else if (value != null) {
+          maxValue = Math.max(maxValue.doubleValue(), value.doubleValue());
+        }
+        if (minValue == null) {
+          minValue = value;
+        } else if (value != null) {
+          minValue = Math.min(minValue.doubleValue(), value.doubleValue());
+        }
+        dots.add(new Dot(value == null ? 0 : value));
+      }
+
+      lineChart.addDots(dots);
+      chart.addElements(lineChart);
+    }
+
+    if ((maxValue != null) && (minValue != null)) {
+      int exponent = Integer.toString(Math.abs(maxValue.intValue())).length() - 1;
+
+      YAxis ya = new YAxis();
+      int stepSize = (int) (((long) (maxValue.intValue() / Math.pow(10, exponent))) * Math.pow(10, exponent - 1));
+      ya.setSteps(stepSize);
+
+      ya.setMax((int) (maxValue.doubleValue() - (maxValue.doubleValue() % stepSize)) + stepSize);
+      chart.setYAxis(ya);
+    }
+
+    return chart;
+  }
+  
+  /**
+   * @deprecated
+   */
   public IOutput makeChart(ChartTableModel data, ChartDocumentContext chartDocumentContext, ChartResult chartResult) {
     final CSSConstant currentChartType = determineChartType(chartDocumentContext.getChartDocument());
     IOutput chartOutput = null;
@@ -78,6 +523,9 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     return chartOutput;
   }
 
+  /**
+   * @deprecated
+   */
   public Chart makeAreaChart(final ChartTableModel chartTableModel, final ChartDocumentContext chartDocumentContext) {
     ChartDocument chartDocument = chartDocumentContext.getChartDocument();
     Chart chart = createBasicGraphChart(chartDocument);
@@ -158,6 +606,9 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     return chart;
   }
 
+  /**
+   * @deprecated
+   */
   public Chart makePieChart(final ChartTableModel chartTableModel, final ChartDocumentContext chartDocumentContext) {
     ChartDocument chartDocument = chartDocumentContext.getChartDocument();
 
@@ -199,11 +650,17 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     return chart;
   }
 
+  /**
+   * @deprecated
+   */
   public Chart makeDialChart(final ChartTableModel data, final ChartDocumentContext chartDocumentContext) {
     Chart chartData = new Chart("The Title", "font-size: 14px; font-family: Verdana; text-align: center;");
     return chartData;
   }
 
+  /**
+   * @deprecated
+   */
   private String createCssFontStyleString(ChartElement element) {
     StringBuffer cssStyleString = new StringBuffer();
     String fontFamily = ChartUtils.getFontFamily(element);
@@ -230,6 +687,9 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     return cssStyleString.length() > 0 ? cssStyleString.toString() : null;
   }
 
+  /**
+   * @deprecated
+   */
   private Chart createBasicGraphChart(ChartDocument chartDocument) {
     Chart chart = createBasicChart(chartDocument);
 
@@ -244,7 +704,11 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     }
     return chart;
   }
-
+  
+  
+  /**
+  * @deprecated
+  */
   private Chart createBasicChart(ChartDocument chartDocument) {
     String chartTitle = null;
     String cssFontStyleString = null;
@@ -281,11 +745,17 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     return chart;
   }
 
+  /**
+   * @deprecated
+   */
   private boolean showLegend(ChartDocument chartDocument) {
     ChartElement[] children = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_LEGEND); //$NON-NLS-1$
     return (children != null) && (children.length > 0);
   }
 
+  /**
+   * @deprecated
+   */
   public Chart makeBarChart(final ChartTableModel chartTableModel, final ChartDocumentContext chartDocumentContext)
       throws Exception {
 
@@ -454,11 +924,17 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     return chart;
   }
 
+  /**
+   * @deprecated
+   */
   public boolean getAnimate(ChartDocument chartDocument) {
     final ChartElement[] children = chartDocument.getRootElement().findChildrenByName("animate"); //$NON-NLS-1$
     return children != null && (children.length > 0) && Boolean.valueOf(children[0].getText());
   }
 
+  /**
+   * @deprecated
+   */
   private CSSValue getPlotOrientation(final ChartDocument chartDocument) {
     CSSValue plotOrient = null;
     final ChartElement plotElement = chartDocument.getPlotElement();
@@ -471,6 +947,9 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     return plotOrient;
   }
 
+  /**
+   * @deprecated
+   */
   public Chart makeLineChart(final ChartTableModel chartTableModel, final ChartDocumentContext chartDocumentContext) {
 
     ChartDocument chartDocument = chartDocumentContext.getChartDocument();
@@ -551,6 +1030,9 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     return chart;
   }
 
+  /**
+   * @deprecated
+   */
   public CSSConstant determineChartType(final ChartDocument chartDocument) {
     final ChartElement[] elements = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_SERIES);
     for (final ChartElement element : elements) {
@@ -572,6 +1054,9 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     return ChartSeriesType.UNDEFINED;
   }
 
+  /**
+   * @deprecated
+   */
   public Text getText(final ChartDocument chartDocument, String elementName) {
     Text text = null;
     ChartElement[] children = chartDocument.getRootElement().findChildrenByName(elementName); //$NON-NLS-1$
@@ -588,5 +1073,5 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     }
     return text;
   }
-
+  
 }

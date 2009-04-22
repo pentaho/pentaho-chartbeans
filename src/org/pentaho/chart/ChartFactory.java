@@ -54,10 +54,11 @@ import org.pentaho.chart.model.LinePlot.LinePlotFlavor;
 import org.pentaho.chart.model.Plot.Orientation;
 import org.pentaho.chart.plugin.ChartPluginFactory;
 import org.pentaho.chart.plugin.ChartProcessingException;
-import org.pentaho.chart.plugin.IChartPlugin;
 import org.pentaho.chart.plugin.api.IOutput;
 import org.pentaho.chart.plugin.api.PersistenceException;
 import org.pentaho.chart.plugin.api.IOutput.OutputTypes;
+import org.pentaho.chart.plugin.jfreechart.JFreeChartPlugin;
+import org.pentaho.chart.plugin.openflashchart.OpenFlashChartPlugin;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
 import org.pentaho.reporting.libraries.css.keys.border.BorderStyleKeys;
 import org.pentaho.reporting.libraries.css.keys.box.BoxStyleKeys;
@@ -195,16 +196,23 @@ public class ChartFactory {
   public static InputStream createChart(Object[][] queryResults, int rangeColumnIndex, int domainColumnIdx, int categoryColumnIdx, ChartModel chartModel, int width, int height, OutputTypes outputType) throws ChartProcessingException, SQLException, ResourceKeyCreationException, PersistenceException {
     ChartTableModel chartTableModel = createChartTableModel(queryResults, categoryColumnIdx, domainColumnIdx, rangeColumnIndex);
     
-    ChartDocument chartDocument = createChartDocument(chartModel);
-    ChartDocumentContext chartDocumentContext = new ChartDocumentContext(chartDocument);
-
-    IChartPlugin plugin = null;
+    IOutput output = null;
     if (chartModel.getChartEngine() == ChartModel.CHART_ENGINE_JFREE) {
-      plugin = ChartPluginFactory.getInstance("org.pentaho.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
+      JFreeChartPlugin plugin = (JFreeChartPlugin)ChartPluginFactory.getInstance("org.pentaho.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
+      if ((chartModel.getPlot() instanceof BarPlot)
+          || (chartModel.getPlot() instanceof LinePlot)
+          || (chartModel.getPlot() instanceof AreaPlot)
+          || (chartModel.getPlot() instanceof DialPlot)) {
+        output = plugin.renderChartDocument(chartModel, chartTableModel);
+      } else {
+        ChartDocument chartDocument = createChartDocument(chartModel);
+        ChartDocumentContext chartDocumentContext = new ChartDocumentContext(chartDocument);
+        output = plugin.renderChartDocument(chartDocumentContext, chartTableModel);
+      }
     } else {
-      plugin = ChartPluginFactory.getInstance("org.pentaho.chart.plugin.openflashchart.OpenFlashChartPlugin"); //$NON-NLS-1$
+      OpenFlashChartPlugin plugin = (OpenFlashChartPlugin)ChartPluginFactory.getInstance("org.pentaho.chart.plugin.openflashchart.OpenFlashChartPlugin"); //$NON-NLS-1$
+      output = plugin.renderChartDocument(chartModel, chartTableModel);
     }
-    IOutput output = plugin.renderChartDocument(chartDocumentContext, chartTableModel);
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     ByteArrayInputStream inputStream = null;
@@ -521,7 +529,7 @@ public class ChartFactory {
   
   private static DialRange getFullRangeOfDial(DialPlot dialPlot){
     DialRange fullRange = new DialRange();
-    List<DialRange> ranges = new ArrayList<DialRange>(dialPlot.getRanges());
+    List<DialRange> ranges = new ArrayList<DialRange>(dialPlot.getScale());
     if (ranges.size() > 0) {
       DialRange minRange = null;
       DialRange maxRange = null;
@@ -575,7 +583,7 @@ public class ChartFactory {
     plotElement.addChildElement(dialCapElement);
     
     
-    List<DialRange> dialRanges = new ArrayList<DialRange>(dialPlot.getRanges());
+    List<DialRange> dialRanges = new ArrayList<DialRange>(dialPlot.getScale());
 
     ChartElement scaleElement = new ChartElement();
     scaleElement.setTagName("scale");
@@ -630,7 +638,7 @@ public class ChartFactory {
     dialRangesElement.setTagName("dialranges");
     plotElement.addChildElement(dialRangesElement);
     
-    for (DialRange dialRange : dialPlot.getRanges()) {
+    for (DialRange dialRange : dialPlot.getScale()) {
       if (dialRange.getColor() != null) {
         ChartElement dialRangeElement = new ChartElement();
         dialRangeElement.setTagName("dialrange");
