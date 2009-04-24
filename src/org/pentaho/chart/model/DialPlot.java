@@ -2,8 +2,6 @@ package org.pentaho.chart.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedSet;
 import java.util.TreeSet;
 
 public class DialPlot extends Plot implements Serializable {
@@ -142,6 +140,7 @@ public class DialPlot extends Plot implements Serializable {
   }
   
   Scale scale = new Scale();
+  StyledText annotation = new StyledText();
 
   public DialPlot() {
     setPalette(null);
@@ -149,6 +148,14 @@ public class DialPlot extends Plot implements Serializable {
   
   public Scale getScale() {
     return scale;
+  }
+
+  public StyledText getAnnotation() {
+    return annotation;
+  }
+
+  public void setAnnotation(StyledText annotation) {
+    this.annotation = annotation;
   }
     
 }

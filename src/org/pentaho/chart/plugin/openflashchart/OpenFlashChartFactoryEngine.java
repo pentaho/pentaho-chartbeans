@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import ofc4j.model.Chart;
 import ofc4j.model.Text;
+import ofc4j.model.axis.Axis;
 import ofc4j.model.axis.XAxis;
 import ofc4j.model.axis.YAxis;
 import ofc4j.model.elements.AreaHollowChart;
@@ -34,6 +35,7 @@ import org.pentaho.chart.model.BarPlot;
 import org.pentaho.chart.model.ChartModel;
 import org.pentaho.chart.model.GraphPlot;
 import org.pentaho.chart.model.LinePlot;
+import org.pentaho.chart.model.Palette;
 import org.pentaho.chart.model.PiePlot;
 import org.pentaho.chart.model.Plot;
 import org.pentaho.chart.model.StyledText;
@@ -142,13 +144,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       chart.setXAxis(xa);
     }
 
-    ArrayList<Integer> colors = new ArrayList<Integer>();
-    if (areaPlot.getPalette() != null) {
-      colors.addAll(areaPlot.getPalette());
-    }
-    ArrayList<Integer> defaultColors = new ArrayList<Integer>(Plot.DEFAULT_PALETTE);
-    defaultColors.removeAll(colors);
-    colors.addAll(defaultColors);
+    Palette palette = getPalette(areaPlot);
     
     Number maxValue = null;
     Number minValue = null;
@@ -165,8 +161,8 @@ public class OpenFlashChartFactoryEngine implements Serializable {
         areaChart.setText(chartTableModel.getRowName(row));
       }
       areaChart.setTooltip("#val#");
-      if (colors.size() > row) {
-        String colorString = "#" + Integer.toHexString(0x00FFFFFF & colors.get(row));
+      if (palette.size() > row) {
+        String colorString = "#" + Integer.toHexString(0x00FFFFFF & palette.get(row));
         areaChart.setFill(colorString);
         areaChart.setColour(colorString);
       }
@@ -183,7 +179,11 @@ public class OpenFlashChartFactoryEngine implements Serializable {
         } else if (value != null) {
           minValue = Math.min(minValue.doubleValue(), value.doubleValue());
         }
-        dots.add(new Dot(value == null ? 0 : value));
+        if (value == null) {
+          dots.add(null);
+        } else {
+          dots.add(new Dot(value));
+        }
       }
 
       areaChart.addDots(dots);
@@ -191,14 +191,9 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     }
 
     if ((maxValue != null) && (minValue != null)) {
-      int exponent = Integer.toString(Math.abs(maxValue.intValue())).length() - 1;
-
-      YAxis ya = new YAxis();
-      int stepSize = (int) (((long) (maxValue.intValue() / Math.pow(10, exponent))) * Math.pow(10, exponent - 1));
-      ya.setSteps(stepSize);
-
-      ya.setMax((int) (maxValue.doubleValue() - (maxValue.doubleValue() % stepSize)) + stepSize);
-      chart.setYAxis(ya);
+      YAxis yAxis = new YAxis();
+      setAxisRange(yAxis, areaPlot, minValue, maxValue);
+      chart.setYAxis(yAxis);
     }
 
     return chart;
@@ -221,21 +216,17 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     ArrayList<Slice> slices = new ArrayList<Slice>();
     for (int row = 0; row < chartTableModel.getRowCount(); row++) {
       Number value = (Number) chartTableModel.getValueAt(row, 0);
-      Slice slice = new Slice(value, "#val#", chartTableModel.getRowName(row));
-      slices.add(slice);
+      if (value instanceof Number) {
+        Slice slice = new Slice(value, "#val#", chartTableModel.getRowName(row));
+        slices.add(slice);
+      }
     }
     pieChart.addSlices(slices);
 
-    ArrayList<Integer> colors = new ArrayList<Integer>();
-    if (piePlot.getPalette() != null) {
-      colors.addAll(piePlot.getPalette());
-    }
-    ArrayList<Integer> defaultColors = new ArrayList<Integer>(Plot.DEFAULT_PALETTE);
-    defaultColors.removeAll(colors);
-    colors.addAll(defaultColors);
+    Palette palette = getPalette(piePlot);
     
     ArrayList<String> strColors = new ArrayList<String>();
-    for (Integer color : colors) {
+    for (Integer color : palette) {
       strColors.add("#" + Integer.toHexString(0x00FFFFFF & color));
     }
     pieChart.setColours(strColors);
@@ -245,18 +236,54 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     return chart;
   }
   
+  private Palette getPalette(Plot plot) {
+    Palette palette = new Palette();
+    if (plot.getPalette() != null) {
+      palette.addAll(plot.getPalette());
+    }
+    
+    ArrayList<Integer> defaultColors = new ArrayList<Integer>(Plot.DEFAULT_PALETTE);
+    defaultColors.removeAll(palette);
+    palette.addAll(defaultColors);
+    
+    return palette;
+  }
+  
+  private void setAxisRange(Axis axis, GraphPlot graphPlot, Number minValue, Number maxValue) {
+    if (graphPlot.getMinValue() != null) {
+      minValue = Math.min(graphPlot.getMinValue().doubleValue(), minValue.doubleValue());
+    } else {
+      minValue = Math.min(0, minValue.doubleValue());
+    }
+    
+    if (graphPlot.getMaxValue() != null) {
+      maxValue = Math.max(graphPlot.getMaxValue().doubleValue(), maxValue.doubleValue());
+    }
+    
+    minValue = Math.floor(minValue.doubleValue());
+    maxValue = Math.ceil(maxValue.doubleValue());
+    
+    if (maxValue.equals(minValue)) {
+      maxValue = maxValue.intValue() + 1;
+    }
+    
+    Number spread = maxValue.doubleValue() - minValue.doubleValue();
+    
+    int exponent = Integer.toString(Math.abs(spread.intValue())).length() - 1;
+
+    int stepSize = (int) (((long) (spread.intValue() / Math.pow(10, exponent))) * Math.pow(10, exponent - 1)) * 2;
+    if (stepSize < 1) {
+      stepSize = 1;
+    }
+    axis.setRange(minValue.intValue(), (int) (maxValue.doubleValue() - (maxValue.doubleValue() % stepSize)) + stepSize, stepSize);
+  }
+  
   public Chart makeBarChart(ChartModel chartModel, ChartTableModel chartTableModel) {
 
     Chart chart = createBasicGraphChart(chartModel);
     BarPlot barPlot = (BarPlot) chartModel.getPlot();
 
-    ArrayList<Integer> colors = new ArrayList<Integer>();
-    if (barPlot.getPalette() != null) {
-      colors.addAll(barPlot.getPalette());
-    }
-    ArrayList<Integer> defaultColors = new ArrayList<Integer>(Plot.DEFAULT_PALETTE);
-    defaultColors.removeAll(colors);
-    colors.addAll(defaultColors);
+    Palette palette = getPalette(barPlot);
     
     if (Orientation.HORIZONTAL.equals(barPlot.getOrientation())) {
       ArrayList<String> categories = new ArrayList<String>();
@@ -283,11 +310,11 @@ public class OpenFlashChartFactoryEngine implements Serializable {
         if (barPlot.getOpacity() != null) {
           horizontalBarChart.setAlpha(barPlot.getOpacity());
         }
-        if (colors.size() > row) {
-          horizontalBarChart.setColour("#" + Integer.toHexString(0x00FFFFFF & colors.get(row)));
+        if (palette.size() > row) {
+          horizontalBarChart.setColour("#" + Integer.toHexString(0x00FFFFFF & palette.get(row)));
         }
         
-        ArrayList<Number> values = new ArrayList<Number>();
+        ArrayList<ofc4j.model.elements.HorizontalBarChart.Bar> bars = new ArrayList<ofc4j.model.elements.HorizontalBarChart.Bar>();
         for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
           Number value = (Number) chartTableModel.getValueAt(row, column);
           if (maxValue == null) {
@@ -300,31 +327,20 @@ public class OpenFlashChartFactoryEngine implements Serializable {
           } else if (value != null) {
             minValue = Math.min(minValue.doubleValue(), value.doubleValue());
           }
-          values.add(value == null ? 0 : value);
+          if (value == null) {
+            bars.add(null);
+          } else {
+            bars.add(new ofc4j.model.elements.HorizontalBarChart.Bar(value));
+          }
         }
 
-        horizontalBarChart.addValues(values.toArray(new Number[0]));
+        horizontalBarChart.addBars(bars);
         chart.addElements(horizontalBarChart);
       }
 
       if ((maxValue != null) && (minValue != null)) {
-        if (barPlot.getMinValue() != null) {
-          minValue = Math.min(barPlot.getMinValue().doubleValue(), minValue.doubleValue());
-        } else {
-          minValue = Math.min(0, minValue.doubleValue());
-        }
-        
-        if (barPlot.getMaxValue() != null) {
-          maxValue = Math.max(barPlot.getMaxValue().doubleValue(), maxValue.doubleValue());
-        }
-        
-        Number spread = maxValue.doubleValue() - minValue.doubleValue();
-        
-        int exponent = Integer.toString(Math.abs(spread.intValue())).length() - 1;
-
         XAxis xAxis = new XAxis();
-        int stepSize = (int) (((long) (spread.intValue() / Math.pow(10, exponent))) * Math.pow(10, exponent - 1)) * 2;
-        xAxis.setRange(minValue.intValue(), (int) (maxValue.doubleValue() - (maxValue.doubleValue() % stepSize)) + stepSize, stepSize);
+        setAxisRange(xAxis, barPlot, minValue, maxValue);
         chart.setXAxis(xAxis);
       }
     } else {
@@ -367,8 +383,8 @@ public class OpenFlashChartFactoryEngine implements Serializable {
         if (barPlot.getOpacity() != null) {
           verticalBarChart.setAlpha(barPlot.getOpacity());
         }
-        if (colors.size() > row) {
-          verticalBarChart.setColour("#" + Integer.toHexString(0x00FFFFFF & colors.get(row)));
+        if (palette.size() > row) {
+          verticalBarChart.setColour("#" + Integer.toHexString(0x00FFFFFF & palette.get(row)));
         }
         ArrayList<Bar> bars = new ArrayList<Bar>();
         for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
@@ -383,7 +399,11 @@ public class OpenFlashChartFactoryEngine implements Serializable {
           } else if (value != null) {
             minValue = Math.min(minValue.doubleValue(), value.doubleValue());
           }
-          bars.add(new Bar(value == null ? 0 : value));
+          if (value == null) {
+            bars.add(null);
+          } else {
+            bars.add(new Bar(value));
+          }
         }
 
         verticalBarChart.addBars(bars);
@@ -391,23 +411,8 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       }
 
       if ((maxValue != null) && (minValue != null)) {
-        if (barPlot.getMinValue() != null) {
-          minValue = Math.min(barPlot.getMinValue().doubleValue(), minValue.doubleValue());
-        } else {
-          minValue = Math.min(0, minValue.doubleValue());
-        }
-        
-        if (barPlot.getMaxValue() != null) {
-          maxValue = Math.max(barPlot.getMaxValue().doubleValue(), maxValue.doubleValue());
-        }
-        
-        Number spread = maxValue.doubleValue() - minValue.doubleValue();
-        
-        int exponent = Integer.toString(Math.abs(spread.intValue())).length() - 1;
-
         YAxis yAxis = new YAxis();
-        int stepSize = (int) (((long) (spread.intValue() / Math.pow(10, exponent))) * Math.pow(10, exponent - 1)) * 2;
-        yAxis.setRange(minValue.intValue(), (int) (maxValue.doubleValue() - (maxValue.doubleValue() % stepSize)) + stepSize, stepSize);
+        setAxisRange(yAxis, barPlot, minValue, maxValue);
         chart.setYAxis(yAxis);
       }
     }
@@ -434,13 +439,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     Number maxValue = null;
     Number minValue = null;
     
-    ArrayList<Integer> colors = new ArrayList<Integer>();
-    if (linePlot.getPalette() != null) {
-      colors.addAll(linePlot.getPalette());
-    }
-    ArrayList<Integer> defaultColors = new ArrayList<Integer>(Plot.DEFAULT_PALETTE);
-    defaultColors.removeAll(colors);
-    colors.addAll(defaultColors);
+    Palette palette = getPalette(linePlot);
 
     for (int row = 0; row < chartTableModel.getRowCount(); row++) {
       LineChart lineChart = new LineChart(LineChart.Style.DOT);
@@ -457,8 +456,8 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       
       lineChart.setTooltip("#val#");
       
-      if (colors.size() > row) {
-        lineChart.setColour("#" + Integer.toHexString(0x00FFFFFF & colors.get(row)));
+      if (palette.size() > row) {
+        lineChart.setColour("#" + Integer.toHexString(0x00FFFFFF & palette.get(row)));
       }
       
       ArrayList<Dot> dots = new ArrayList<Dot>();
@@ -474,7 +473,11 @@ public class OpenFlashChartFactoryEngine implements Serializable {
         } else if (value != null) {
           minValue = Math.min(minValue.doubleValue(), value.doubleValue());
         }
-        dots.add(new Dot(value == null ? 0 : value));
+        if (value == null) {
+          dots.add(null);
+        } else {
+          dots.add(new Dot(value));
+        }
       }
 
       lineChart.addDots(dots);
@@ -482,14 +485,9 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     }
 
     if ((maxValue != null) && (minValue != null)) {
-      int exponent = Integer.toString(Math.abs(maxValue.intValue())).length() - 1;
-
-      YAxis ya = new YAxis();
-      int stepSize = (int) (((long) (maxValue.intValue() / Math.pow(10, exponent))) * Math.pow(10, exponent - 1));
-      ya.setSteps(stepSize);
-
-      ya.setMax((int) (maxValue.doubleValue() - (maxValue.doubleValue() % stepSize)) + stepSize);
-      chart.setYAxis(ya);
+      YAxis yAxis = new YAxis();
+      setAxisRange(yAxis, linePlot, minValue, maxValue);
+      chart.setYAxis(yAxis);
     }
 
     return chart;

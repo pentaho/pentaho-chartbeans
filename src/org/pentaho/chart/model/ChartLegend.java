@@ -6,7 +6,7 @@ import org.pentaho.chart.model.CssStyle.FontStyle;
 import org.pentaho.chart.model.CssStyle.FontWeight;
 
 public class ChartLegend implements Serializable {
-  boolean visible = false;
+  boolean visible = true;
   CssStyle style = new CssStyle();
 
   public ChartLegend() {
