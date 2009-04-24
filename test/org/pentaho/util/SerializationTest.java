@@ -72,6 +72,8 @@ public class SerializationTest {
     dialPlot.setOpacity(0.75f);
     dialPlot.getScale().addRange(new DialRange(0, 100, Color.RED.getRGB()));
     dialPlot.getScale().addRange(new DialRange(100, 200, Color.GREEN.getRGB()));
+    dialPlot.getAnnotation().setText("annotation");
+    dialPlot.getAnnotation().setFont("verdana", 10, FontStyle.ITALIC, FontWeight.BOLD);
     
     chartModel.setPlot(dialPlot);
     
@@ -104,6 +106,11 @@ public class SerializationTest {
     dialPlot = (DialPlot)chartModel2.getPlot();
     assertEquals(dialPlot.getBackground(), new Integer(0x765890));
     assertEquals(dialPlot.getOpacity(), new Float(0.75));
+    assertEquals(dialPlot.getAnnotation().getText(), "annotation");
+    assertEquals(dialPlot.getAnnotation().getFontFamily(), "verdana");
+    assertEquals(dialPlot.getAnnotation().getFontSize(), new Integer(10));
+    assertEquals(dialPlot.getAnnotation().getFontStyle(), FontStyle.ITALIC);
+    assertEquals(dialPlot.getAnnotation().getFontWeight(), FontWeight.BOLD);
     Scale scale = dialPlot.getScale();
     assertEquals(scale.size(), 2);
     for (DialRange dialRange : scale) {
