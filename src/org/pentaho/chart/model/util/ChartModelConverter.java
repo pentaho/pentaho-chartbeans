@@ -218,6 +218,17 @@ public class ChartModelConverter implements Converter {
           reader.moveUp();
         }
       }
+      if (reader.getNodeName().equals("annotation") && (plot instanceof DialPlot)) {
+        DialPlot dialPlot = (DialPlot)plot;
+        String annotation = reader.getValue();
+        if (annotation != null) {
+          dialPlot.getAnnotation().setText(annotation);
+        } 
+        cssStyle = reader.getAttribute("style");
+        if (cssStyle != null) {
+          dialPlot.getAnnotation().getStyle().setStyleString(cssStyle);
+        }
+      }
       if (reader.getNodeName().equals("xAxisLabel") && (plot instanceof GraphPlot)) {
         String title = reader.getValue();
         if (title != null) {
