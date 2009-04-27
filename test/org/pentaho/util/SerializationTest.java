@@ -14,6 +14,7 @@ import org.pentaho.chart.model.DialPlot;
 import org.pentaho.chart.model.LinePlot;
 import org.pentaho.chart.model.Palette;
 import org.pentaho.chart.model.PiePlot;
+import org.pentaho.chart.model.StyledText;
 import org.pentaho.chart.model.BarPlot.BarPlotFlavor;
 import org.pentaho.chart.model.CssStyle.FontStyle;
 import org.pentaho.chart.model.CssStyle.FontWeight;
@@ -66,6 +67,12 @@ public class SerializationTest {
     chartModel.getLegend().setBorderVisible(true);
     chartModel.getLegend().setBorderWidth(2);
     chartModel.getLegend().setFont("verdana", 18, FontStyle.ITALIC, FontWeight.BOLD);
+    StyledText subtitle = new StyledText("subtitle", "monospace", FontStyle.ITALIC, FontWeight.BOLD, 12);
+    subtitle.setColor(0x00FF00);
+    subtitle.setBackgroundColor(0x0000FF);
+    chartModel.getSubtitles().add(subtitle);;
+    chartModel.getSubtitles().add(new StyledText("subtitle 2"));;
+    
     
     DialPlot dialPlot = new DialPlot();
     dialPlot.setBackground(0x765890);
@@ -101,6 +108,17 @@ public class SerializationTest {
     assertEquals(chartModel2.getLegend().getFontSize(), new Integer(18));
     assertEquals(chartModel2.getLegend().getFontStyle(), FontStyle.ITALIC);
     assertEquals(chartModel2.getLegend().getFontWeight(), FontWeight.BOLD);
+    assertEquals(chartModel2.getSubtitles().size(), 2);
+    subtitle = chartModel2.getSubtitles().get(0);
+    assertEquals(subtitle.getText(), "subtitle");
+    assertEquals(subtitle.getFontFamily(), "monospace");
+    assertEquals(subtitle.getFontSize(), new Integer(12));
+    assertEquals(subtitle.getFontStyle(), FontStyle.ITALIC);
+    assertEquals(subtitle.getFontWeight(), FontWeight.BOLD);
+    assertEquals(subtitle.getColor(), 0x00FF00);
+    assertEquals(subtitle.getBackgroundColor(), 0x0000FF);
+    
+    assertEquals(chartModel2.getSubtitles().get(1).getText(), "subtitle 2");
     
     assertTrue(chartModel2.getPlot() instanceof DialPlot);    
     dialPlot = (DialPlot)chartModel2.getPlot();
