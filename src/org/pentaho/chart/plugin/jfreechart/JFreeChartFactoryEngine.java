@@ -420,6 +420,7 @@ public class JFreeChartFactoryEngine implements Serializable {
         final JFreeChart chart = makeBarChart(data, chartDocumentContext);
         return new JFreeChartOutput(chart);
       } catch (Exception e) {
+        logger.error("", e); //$NON-NLS-1$
         chartResult.setErrorCode(IChartPlugin.RESULT_ERROR);
         chartResult.setDescription(e.getLocalizedMessage());
       }
@@ -427,6 +428,7 @@ public class JFreeChartFactoryEngine implements Serializable {
       try {
         return new JFreeChartOutput(makeLineChart(data, chartDocumentContext));
       } catch (Exception e) {
+        logger.error("", e); //$NON-NLS-1$
         chartResult.setErrorCode(IChartPlugin.RESULT_ERROR);
         chartResult.setDescription(e.getLocalizedMessage());
       }
@@ -434,6 +436,7 @@ public class JFreeChartFactoryEngine implements Serializable {
       try {
         return new JFreeChartOutput((makeAreaChart(data, chartDocumentContext)));
       } catch (Exception e) {
+        logger.error("", e); //$NON-NLS-1$
         chartResult.setErrorCode(IChartPlugin.RESULT_ERROR);
         chartResult.setDescription(e.getLocalizedMessage());
       }
@@ -441,6 +444,7 @@ public class JFreeChartFactoryEngine implements Serializable {
       try {
         return new JFreeChartOutput((makePieChart(data, chartDocumentContext)));
       } catch (Exception e) {
+        logger.error("", e); //$NON-NLS-1$
         chartResult.setErrorCode(IChartPlugin.RESULT_ERROR);
         chartResult.setDescription(e.getLocalizedMessage());
       }
@@ -448,6 +452,7 @@ public class JFreeChartFactoryEngine implements Serializable {
       try {
         return new JFreeChartOutput((makeMultiChart(data, chartDocumentContext)));
       } catch (Exception e) {
+        logger.error("", e); //$NON-NLS-1$
         chartResult.setErrorCode(IChartPlugin.RESULT_ERROR);
         chartResult.setDescription(e.getLocalizedMessage());
       }

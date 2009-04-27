@@ -44,6 +44,7 @@ import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
 import org.pentaho.reporting.libraries.css.keys.border.BorderStyleKeys;
 import org.pentaho.reporting.libraries.css.keys.color.ColorStyleKeys;
 import org.pentaho.reporting.libraries.css.values.CSSNumericValue;
+import org.pentaho.reporting.libraries.css.values.CSSStringValue;
 import org.pentaho.reporting.libraries.css.values.CSSValue;
 
 /**
@@ -494,8 +495,11 @@ public abstract class JFreeChartGenerator implements IJFreeChartGenerator {
       }
     }
     
-    CSSNumericValue borderWidth = (CSSNumericValue)rootElement.getLayoutStyle().getValue(BorderStyleKeys.BORDER_TOP_WIDTH);
-    if ((borderWidth != null) && (borderWidth.getValue() > 0)) {
+    CSSValue borderWidth = rootElement.getLayoutStyle().getValue(BorderStyleKeys.BORDER_TOP_WIDTH);
+    if ((borderWidth != null) && (borderWidth instanceof CSSNumericValue) 
+        && (((CSSNumericValue) borderWidth).getValue() > 0)) {
+      chart.setBorderVisible(true);
+    } else if ((borderWidth != null) && (borderWidth instanceof CSSStringValue)) {
       chart.setBorderVisible(true);
     }
     
