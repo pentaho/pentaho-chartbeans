@@ -15,6 +15,15 @@ public class StyledText implements Serializable{
     
   }
   
+  public StyledText(String text, String fontFamily, FontStyle fontStyle, FontWeight fontWeight, int fontSize) {
+    this();
+    setText(text);
+    setFontFamily(fontFamily);
+    setFontStyle(fontStyle);
+    setFontWeight(fontWeight);
+    setFontSize(fontSize);
+  }
+  
   public StyledText() {
     setFont("serif", 14);
   }

@@ -7,7 +7,6 @@ import java.awt.GradientPaint;
 import java.awt.Point;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,6 +21,7 @@ import org.jfree.chart.plot.dial.DialBackground;
 import org.jfree.chart.plot.dial.DialCap;
 import org.jfree.chart.plot.dial.DialTextAnnotation;
 import org.jfree.chart.plot.dial.DialValueIndicator;
+import org.jfree.chart.title.TextTitle;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.DefaultValueDataset;
@@ -40,6 +40,7 @@ import org.pentaho.chart.model.ChartModel;
 import org.pentaho.chart.model.DialPlot;
 import org.pentaho.chart.model.GraphPlot;
 import org.pentaho.chart.model.LinePlot;
+import org.pentaho.chart.model.StyledText;
 import org.pentaho.chart.model.BarPlot.BarPlotFlavor;
 import org.pentaho.chart.model.CssStyle.FontStyle;
 import org.pentaho.chart.model.CssStyle.FontWeight;
@@ -275,6 +276,24 @@ public class JFreeChartFactoryEngine implements Serializable {
     if (chartModel.getBorderColor() instanceof Integer) {
       chart.setBorderPaint(new Color(0x00FFFFFF & (Integer)chartModel.getBorderColor()));
     }
+    
+    for (StyledText subtitle : chartModel.getSubtitles()) {
+      if ((subtitle.getText()) != null && (subtitle.getText().trim().length() > 0)) {
+        TextTitle textTitle = new TextTitle(subtitle.getText());
+        Font font = ChartUtils.getFont(subtitle.getFontFamily(), subtitle.getFontStyle(), subtitle.getFontWeight(), subtitle.getFontSize());
+        if (font != null) {
+          textTitle.setFont(font);
+          if (subtitle.getColor() != null) {
+            textTitle.setPaint(new Color(0x00FFFFFF & subtitle.getColor()));
+          }
+          if (subtitle.getBackgroundColor() != null) {
+            textTitle.setBackgroundPaint(new Color(0x00FFFFFF & subtitle.getBackgroundColor()));
+          }
+        }
+        chart.addSubtitle(textTitle);
+      }
+    }
+    
   }
   
   /* (non-Javadoc)

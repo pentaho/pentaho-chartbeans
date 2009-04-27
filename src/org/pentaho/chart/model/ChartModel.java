@@ -14,7 +14,7 @@ public class ChartModel implements Serializable {
   public static final int DEFAULT_SIZE = 14;
   
   StyledText title = new StyledText();
-  ArrayList<String> subtitles = new ArrayList<String>();
+  ArrayList<StyledText> subtitles = new ArrayList<StyledText>();
   ChartLegend legend = new ChartLegend();
   String backgroundImageLocation;
   Texture backgroundTexture;
@@ -79,22 +79,22 @@ public class ChartModel implements Serializable {
     this.theme = theme;
   }
 
-  public List<String> getSubtitles() {
+  public List<StyledText> getSubtitles() {
     return subtitles;
   }
   
-  public void setSubtitles(List<String> subtitles) {
+  public void setSubtitles(List<StyledText> subtitles) {
     subtitles.clear();
     if (subtitles != null) {
       subtitles.addAll(subtitles);
     }
   }
   
-  public String getSubtitle() {
+  public StyledText getSubtitle() {
     return subtitles.size() > 0 ? subtitles.get(0) : null;
   }
 
-  public void setSubtitle(String title) {
+  public void setSubtitle(StyledText title) {
     subtitles.clear();
     if (title != null) {
       subtitles.add(title);

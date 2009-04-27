@@ -10,6 +10,7 @@ import org.pentaho.chart.model.LinePlot;
 import org.pentaho.chart.model.Palette;
 import org.pentaho.chart.model.PiePlot;
 import org.pentaho.chart.model.Plot;
+import org.pentaho.chart.model.StyledText;
 import org.pentaho.chart.model.BarPlot.BarPlotFlavor;
 import org.pentaho.chart.model.DialPlot.DialRange;
 import org.pentaho.chart.model.LinePlot.LinePlotFlavor;
@@ -41,6 +42,14 @@ public class ChartModelConverter implements Converter {
       ExtendedHierarchicalStreamWriterHelper.startNode(writer, "title", chartModel.getTitle().getClass());
       context.convertAnother(chartModel.getTitle());
       writer.endNode();
+    }
+    
+    for (StyledText subtitle : chartModel.getSubtitles()) {
+      if ((subtitle.getText() != null) && (subtitle.getText().trim().length() > 0)) {
+        ExtendedHierarchicalStreamWriterHelper.startNode(writer, "subtitle", subtitle.getClass());
+        context.convertAnother(subtitle);
+        writer.endNode();
+      }
     }
     
     if ((chartModel.getLegend() != null) && chartModel.getLegend().getVisible()) {
@@ -96,13 +105,23 @@ public class ChartModelConverter implements Converter {
         if (cssStyle != null) {
           chartModel.getTitle().getStyle().setStyleString(cssStyle);
         }
+      } else if (reader.getNodeName().equals("subtitle")) {
+        String subtitle = reader.getValue();
+        if ((subtitle != null) && (subtitle.trim().length() > 0)) {
+          StyledText styledText = new StyledText(subtitle);
+          cssStyle = reader.getAttribute("style");
+          if (cssStyle != null) {
+            styledText.getStyle().setStyleString(cssStyle);
+          }
+          chartModel.getSubtitles().add(styledText);
+        } 
       } else if (reader.getNodeName().equals("legend")) {
         chartModel.getLegend().setVisible(true);
         cssStyle = reader.getAttribute("style");
         if (cssStyle != null) {
           chartModel.getLegend().getStyle().setStyleString(cssStyle);
         }
-      } else if (reader.getNodeName().equals("barPlot")
+      }  else if (reader.getNodeName().equals("barPlot")
           || reader.getNodeName().equals("linePlot") 
           || reader.getNodeName().equals("areaPlot")
           || reader.getNodeName().equals("piePlot")
