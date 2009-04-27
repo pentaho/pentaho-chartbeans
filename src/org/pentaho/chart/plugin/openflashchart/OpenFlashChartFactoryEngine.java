@@ -249,9 +249,11 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     return palette;
   }
   
-  private void setAxisRange(Axis axis, GraphPlot graphPlot, Number minValue, Number maxValue) {
-    if (graphPlot.getMinValue() != null) {
-      minValue = Math.min(graphPlot.getMinValue().doubleValue(), minValue.doubleValue());
+  private void setAxisRange(Axis axis, GraphPlot graphPlot, Number minDataValue, Number maxDataValue) {
+    Number minValue = minDataValue.doubleValue();
+    Number maxValue = maxDataValue.doubleValue();
+    if ((graphPlot.getMinValue() != null) && (graphPlot.getMinValue().doubleValue() <= minDataValue.doubleValue())) {
+      minValue = graphPlot.getMinValue();
     } else {
       minValue = Math.min(0, minValue.doubleValue());
     }
@@ -275,7 +277,11 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     if (stepSize < 1) {
       stepSize = 1;
     }
-    axis.setRange(minValue.intValue(), (int) (maxValue.doubleValue() - (maxValue.doubleValue() % stepSize)) + stepSize, stepSize);
+    
+    if ((maxValue.doubleValue() % stepSize) != 0) {
+      maxValue = (maxValue.doubleValue() - (maxValue.doubleValue() % stepSize)) + stepSize;
+    }
+    axis.setRange(minValue.intValue(), maxValue.intValue(), stepSize);
   }
   
   public Chart makeBarChart(ChartModel chartModel, ChartTableModel chartTableModel) {
