@@ -9,23 +9,15 @@ public class GraphPlot extends Plot implements Serializable {
   Number minValue = null;
   Number maxValue = null;
   
-  StyledText xAxisLabel = new StyledText();
-  StyledText yAxisLabel = new StyledText();
+  Axis xAxis = new Axis();
+  Axis yAxis = new Axis();
   
-  public StyledText getXAxisLabel() {
-    return xAxisLabel;
+  public Axis getXAxis() {
+    return xAxis;
   }
   
-  public void setXAxisLabel(StyledText xAxisLabel) {
-    this.xAxisLabel = xAxisLabel;
-  }
-  
-  public StyledText getYAxisLabel() {
-    return yAxisLabel;
-  }
-  
-  public void setYAxisLabel(StyledText yAxisLabel) {
-    this.yAxisLabel = yAxisLabel;
+  public Axis getYAxis() {
+    return yAxis;
   }
 
   public Number getMinValue() {

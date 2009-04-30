@@ -1,6 +1,7 @@
 package org.pentaho.chart.model.util;
 
 import org.pentaho.chart.model.AreaPlot;
+import org.pentaho.chart.model.Axis;
 import org.pentaho.chart.model.BarPlot;
 import org.pentaho.chart.model.ChartModel;
 import org.pentaho.chart.model.CssStyle;
@@ -11,6 +12,7 @@ import org.pentaho.chart.model.Palette;
 import org.pentaho.chart.model.PiePlot;
 import org.pentaho.chart.model.Plot;
 import org.pentaho.chart.model.StyledText;
+import org.pentaho.chart.model.Axis.LabelOrientation;
 import org.pentaho.chart.model.BarPlot.BarPlotFlavor;
 import org.pentaho.chart.model.DialPlot.DialRange;
 import org.pentaho.chart.model.LinePlot.LinePlotFlavor;
@@ -63,6 +65,31 @@ public class ChartModelConverter implements Converter {
       plotType = plotType.substring(0, 1).toLowerCase() + plotType.substring(1);
       ExtendedHierarchicalStreamWriterHelper.startNode(writer, plotType, chartModel.getPlot().getClass());
       context.convertAnother(chartModel.getPlot());
+      if (chartModel.getPlot() instanceof PiePlot) {
+        PiePlot piePlot = (PiePlot)chartModel.getPlot();
+        if (piePlot.getLabels().getVisible()) {
+          ExtendedHierarchicalStreamWriterHelper.startNode(writer, "labels", piePlot.getLabels().getClass());
+          context.convertAnother(piePlot.getLabels());
+          writer.endNode();
+        }
+      }
+      if (chartModel.getPlot() instanceof GraphPlot) {
+        GraphPlot graphPlot = (GraphPlot)chartModel.getPlot();
+        Axis xAxis = graphPlot.getXAxis();
+        if ((xAxis.getLabelOrientation() != LabelOrientation.HORIZONTAL)
+            || ((xAxis.getLegend().getText() != null) && (xAxis.getLegend().getText().trim().length() > 0))) {
+          ExtendedHierarchicalStreamWriterHelper.startNode(writer, "xAxis", xAxis.getClass());
+          context.convertAnother(xAxis);
+          writer.endNode();
+        }
+        Axis yAxis = graphPlot.getYAxis();
+        if ((yAxis.getLabelOrientation() != LabelOrientation.HORIZONTAL)
+            || ((yAxis.getLegend().getText() != null) && (yAxis.getLegend().getText().trim().length() > 0))) {
+          ExtendedHierarchicalStreamWriterHelper.startNode(writer, "yAxis", yAxis.getClass());
+          context.convertAnother(yAxis);
+          writer.endNode();
+        }
+      }
       writer.endNode();
     }
   }
@@ -162,6 +189,7 @@ public class ChartModelConverter implements Converter {
       plot = new AreaPlot();
     } else if (reader.getNodeName().equals("piePlot")) {
       PiePlot piePlot = new PiePlot();
+      piePlot.getLabels().setVisible(false);
       piePlot.setAnimate(Boolean.parseBoolean(reader.getAttribute("animate")));
       try {
         piePlot.setStartAngle(Integer.parseInt(reader.getAttribute("startAngle")));
@@ -211,6 +239,28 @@ public class ChartModelConverter implements Converter {
           plot.setPalette(palette);
         }
       }
+      if ((reader.getNodeName().equals("yAxis") || reader.getNodeName().equals("xAxis")) && (plot instanceof GraphPlot)) {
+        GraphPlot graphPlot = (GraphPlot)plot;
+        Axis axis = (reader.getNodeName().equals("yAxis") ? graphPlot.getYAxis() : graphPlot.getXAxis());
+        try {
+          axis.setLabelOrientation(Enum.valueOf(LabelOrientation.class, orientation.toUpperCase()));
+        } catch (Exception ex) {
+          // Do nothing, we'll stay with the default.
+        }
+        while (reader.hasMoreChildren()) {
+          reader.moveDown();
+          String legend = reader.getValue();
+          if (legend != null) {
+            axis.getLegend().setText(legend);
+          } 
+          cssStyle = reader.getAttribute("style");
+          if (cssStyle != null) {
+            axis.getLegend().getStyle().setStyleString(cssStyle);
+          }
+          reader.moveUp();
+        }
+      }
+      
       if (reader.getNodeName().equals("scale") && (plot instanceof DialPlot)) {
         while (reader.hasMoreChildren()) {
           CssStyle rangeStyle = new CssStyle();
@@ -237,6 +287,14 @@ public class ChartModelConverter implements Converter {
           reader.moveUp();
         }
       }
+      if (reader.getNodeName().equals("labels") && (plot instanceof PiePlot)) {
+        PiePlot piePlot = (PiePlot)plot;
+        piePlot.getLabels().setVisible(true);
+        cssStyle = reader.getAttribute("style");
+        if (cssStyle != null) {
+          piePlot.getLabels().getStyle().setStyleString(cssStyle);
+        }
+      }
       if (reader.getNodeName().equals("annotation") && (plot instanceof DialPlot)) {
         DialPlot dialPlot = (DialPlot)plot;
         String annotation = reader.getValue();
@@ -251,20 +309,20 @@ public class ChartModelConverter implements Converter {
       if (reader.getNodeName().equals("xAxisLabel") && (plot instanceof GraphPlot)) {
         String title = reader.getValue();
         if (title != null) {
-          ((GraphPlot)plot).getXAxisLabel().setText(title);
+          ((GraphPlot)plot).getXAxis().getLegend().setText(title);
         } 
         cssStyle = reader.getAttribute("style");
         if (cssStyle != null) {
-          ((GraphPlot)plot).getXAxisLabel().getStyle().setStyleString(cssStyle);
+          ((GraphPlot)plot).getXAxis().getLegend().getStyle().setStyleString(cssStyle);
         }
       } else if (reader.getNodeName().equals("yAxisLabel") && (plot instanceof GraphPlot)) {
         String title = reader.getValue();
         if (title != null) {
-          ((GraphPlot)plot).getYAxisLabel().setText(title);
+          ((GraphPlot)plot).getYAxis().getLegend().setText(title);
         } 
         cssStyle = reader.getAttribute("style");
         if (cssStyle != null) {
-          ((GraphPlot)plot).getYAxisLabel().getStyle().setStyleString(cssStyle);
+          ((GraphPlot)plot).getYAxis().getLegend().getStyle().setStyleString(cssStyle);
         }
       }  
       reader.moveUp();

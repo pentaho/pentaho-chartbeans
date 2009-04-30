@@ -3,10 +3,11 @@ package org.pentaho.chart.model.util;
 import org.pentaho.chart.model.ChartLegend;
 import org.pentaho.chart.model.ChartModel;
 import org.pentaho.chart.model.CssStyle;
-import org.pentaho.chart.model.DialPlot;
+import org.pentaho.chart.model.GraphPlot;
 import org.pentaho.chart.model.PiePlot;
 import org.pentaho.chart.model.BarPlot.BarPlotFlavor;
 import org.pentaho.chart.model.LinePlot.LinePlotFlavor;
+import org.pentaho.chart.model.PiePlot.PieLabels;
 import org.pentaho.chart.model.Plot.Orientation;
 import org.pentaho.platform.plugin.action.chartbeans.ChartDataDefinition;
 
@@ -24,36 +25,46 @@ public class ChartSerializer {
   
   static{
     jsonChartWriter.setMode(XStream.NO_REFERENCES);
-    jsonChartWriter.alias("chartModel", ChartModel.class);
-    jsonChartWriter.useAttributeFor(CssStyle.class); //$NON-NLS-1$
-    jsonChartWriter.useAttributeFor(Orientation.class); //$NON-NLS-1$
-    jsonChartWriter.useAttributeFor(LinePlotFlavor.class); //$NON-NLS-1$
-    jsonChartWriter.useAttributeFor(BarPlotFlavor.class); //$NON-NLS-1$
+    jsonChartWriter.alias("chartModel", ChartModel.class); //$NON-NLS-1$
+    jsonChartWriter.useAttributeFor(CssStyle.class);
+    jsonChartWriter.useAttributeFor(Orientation.class);
+    jsonChartWriter.useAttributeFor(LinePlotFlavor.class);
+    jsonChartWriter.useAttributeFor(BarPlotFlavor.class);
     jsonChartWriter.registerConverter(new CssStylesConverter());
-    jsonChartWriter.omitField(ChartLegend.class, "visible");
+    jsonChartWriter.omitField(ChartLegend.class, "visible"); //$NON-NLS-1$
     jsonChartWriter.registerConverter(new StyledTextConverter());
     jsonChartWriter.registerConverter(new PaletteConverter());
     jsonChartWriter.registerConverter(new ScaleConverter());
     jsonChartWriter.registerConverter(new ChartModelConverter());
+    jsonChartWriter.registerConverter(new AxisConverter());
     jsonChartWriter.useAttributeFor(PiePlot.class, "animate"); //$NON-NLS-1$
     jsonChartWriter.useAttributeFor(PiePlot.class, "startAngle"); //$NON-NLS-1$
-    jsonChartWriter.omitField(PiePlot.class, "slices");
+    jsonChartWriter.omitField(PiePlot.class, "slices"); //$NON-NLS-1$
+    jsonChartWriter.omitField(PiePlot.class, "labels"); //$NON-NLS-1$
+    jsonChartWriter.omitField(PieLabels.class, "visible"); //$NON-NLS-1$
+    jsonChartWriter.omitField(GraphPlot.class, "xAxis"); //$NON-NLS-1$  
+    jsonChartWriter.omitField(GraphPlot.class, "yAxis"); //$NON-NLS-1$
     
     xmlChartWriter.setMode(XStream.NO_REFERENCES);
-    xmlChartWriter.alias("chartModel", ChartModel.class);
-    xmlChartWriter.useAttributeFor(CssStyle.class); //$NON-NLS-1$
-    xmlChartWriter.useAttributeFor(Orientation.class); //$NON-NLS-1$
-    xmlChartWriter.useAttributeFor(LinePlotFlavor.class); //$NON-NLS-1$
-    xmlChartWriter.useAttributeFor(BarPlotFlavor.class); //$NON-NLS-1$
+    xmlChartWriter.alias("chartModel", ChartModel.class); //$NON-NLS-1$
+    xmlChartWriter.useAttributeFor(CssStyle.class);
+    xmlChartWriter.useAttributeFor(Orientation.class);
+    xmlChartWriter.useAttributeFor(LinePlotFlavor.class);
+    xmlChartWriter.useAttributeFor(BarPlotFlavor.class);
     xmlChartWriter.registerConverter(new CssStylesConverter());
-    xmlChartWriter.omitField(ChartLegend.class, "visible");
+    xmlChartWriter.omitField(ChartLegend.class, "visible"); //$NON-NLS-1$
     xmlChartWriter.registerConverter(new StyledTextConverter());
     xmlChartWriter.registerConverter(new PaletteConverter());
     xmlChartWriter.registerConverter(new ScaleConverter());
     xmlChartWriter.registerConverter(new ChartModelConverter());
+    xmlChartWriter.registerConverter(new AxisConverter());
     xmlChartWriter.useAttributeFor(PiePlot.class, "animate"); //$NON-NLS-1$
     xmlChartWriter.useAttributeFor(PiePlot.class, "startAngle"); //$NON-NLS-1$
-    xmlChartWriter.omitField(PiePlot.class, "slices");
+    xmlChartWriter.omitField(PiePlot.class, "slices"); //$NON-NLS-1$
+    xmlChartWriter.omitField(PiePlot.class, "labels"); //$NON-NLS-1$
+    xmlChartWriter.omitField(PieLabels.class, "visible"); //$NON-NLS-1$
+    xmlChartWriter.omitField(GraphPlot.class, "xAxis"); //$NON-NLS-1$
+    xmlChartWriter.omitField(GraphPlot.class, "yAxis"); //$NON-NLS-1$
     
     jsonChartDefWriter.setMode(XStream.NO_REFERENCES);
     jsonChartDefWriter.alias("chartDataModel", ChartDataDefinition.class); //$NON-NLS-1$

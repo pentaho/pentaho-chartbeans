@@ -425,8 +425,8 @@ public class PluginTest extends TestCase {
     
     BarPlot barPlot = new BarPlot();
     barPlot.setOrientation(Orientation.VERTICAL);
-    barPlot.getXAxisLabel().setText("categoryAxisLabel");
-    barPlot.getYAxisLabel().setText("valueAxisLabel");
+    barPlot.getXAxis().getLegend().setText("categoryAxisLabel");
+    barPlot.getYAxis().getLegend().setText("valueAxisLabel");
     chartModel.setPlot(barPlot);
     chartModel.setTheme(ChartTheme.THEME1);
     InputStream inputStream = null;
@@ -443,16 +443,16 @@ public class PluginTest extends TestCase {
         }
       }
       assertTrue(jsonString.indexOf(chartModel.getTitle().getText()) >= 0);
-      assertTrue(jsonString.indexOf(barPlot.getXAxisLabel().getText()) >= 0);
-      assertTrue(jsonString.indexOf(barPlot.getYAxisLabel().getText()) >= 0);
+      assertTrue(jsonString.indexOf(barPlot.getXAxis().getLegend().getText()) >= 0);
+      assertTrue(jsonString.indexOf(barPlot.getYAxis().getLegend().getText()) >= 0);
     } catch (Exception e) {
       fail("Unexpected exception");
     }
     
     barPlot = new BarPlot();
     barPlot.setOrientation(Orientation.HORIZONTAL);
-    barPlot.getXAxisLabel().setText("categoryAxisLabel");
-    barPlot.getYAxisLabel().setText("valueAxisLabel");
+    barPlot.getXAxis().getLegend().setText("categoryAxisLabel");
+    barPlot.getYAxis().getLegend().setText("valueAxisLabel");
     chartModel.setPlot(barPlot);
     try {
       inputStream = ChartFactory.createChart(chartData, 2, 0, 1, chartModel, 100, 100, null);
@@ -467,8 +467,8 @@ public class PluginTest extends TestCase {
         }
       }
       assertTrue(jsonString.indexOf(chartModel.getTitle().getText()) >= 0);
-      assertTrue(jsonString.indexOf(barPlot.getXAxisLabel().getText()) >= 0);
-      assertTrue(jsonString.indexOf(barPlot.getYAxisLabel().getText()) >= 0);
+      assertTrue(jsonString.indexOf(barPlot.getXAxis().getLegend().getText()) >= 0);
+      assertTrue(jsonString.indexOf(barPlot.getYAxis().getLegend().getText()) >= 0);
     } catch (Exception e) {
       fail("Unexpected exception");
     }
@@ -494,8 +494,8 @@ public class PluginTest extends TestCase {
     chartModel.setTitle(new StyledText("testOpenFlashChart"));
     
     LinePlot linePlot = new LinePlot();
-    linePlot.getXAxisLabel().setText("categoryAxisLabel");
-    linePlot.getYAxisLabel().setText("valueAcisLabel");
+    linePlot.getXAxis().getLegend().setText("categoryAxisLabel");
+    linePlot.getYAxis().getLegend().setText("valueAcisLabel");
     chartModel.setPlot(linePlot);
     chartModel.setTheme(ChartTheme.THEME2);
     try {
@@ -511,8 +511,8 @@ public class PluginTest extends TestCase {
         }
       }
       assertTrue(jsonString.indexOf(chartModel.getTitle().getText()) >= 0);
-      assertTrue(jsonString.indexOf(linePlot.getXAxisLabel().getText()) >= 0);
-      assertTrue(jsonString.indexOf(linePlot.getYAxisLabel().getText()) >= 0);
+      assertTrue(jsonString.indexOf(linePlot.getXAxis().getLegend().getText()) >= 0);
+      assertTrue(jsonString.indexOf(linePlot.getYAxis().getLegend().getText()) >= 0);
     } catch (Exception e) {
       fail("Unexpected exception");
     }
@@ -538,8 +538,8 @@ public class PluginTest extends TestCase {
     chartModel.setTitle(new StyledText("testOpenFlashChart"));
     
     AreaPlot areaPlot = new AreaPlot();
-    areaPlot.getXAxisLabel().setText("categoryAxisLabel");
-    areaPlot.getYAxisLabel().setText("valueAcisLabel");
+    areaPlot.getXAxis().getLegend().setText("categoryAxisLabel");
+    areaPlot.getYAxis().getLegend().setText("valueAcisLabel");
     chartModel.setPlot(areaPlot);
     chartModel.setTheme(ChartTheme.THEME2);
     try {
@@ -555,8 +555,8 @@ public class PluginTest extends TestCase {
         }
       }
       assertTrue(jsonString.indexOf(chartModel.getTitle().getText()) >= 0);
-      assertTrue(jsonString.indexOf(areaPlot.getXAxisLabel().getText()) >= 0);
-      assertTrue(jsonString.indexOf(areaPlot.getYAxisLabel().getText()) >= 0);
+      assertTrue(jsonString.indexOf(areaPlot.getXAxis().getLegend().getText()) >= 0);
+      assertTrue(jsonString.indexOf(areaPlot.getYAxis().getLegend().getText()) >= 0);
     } catch (Exception e) {
       fail("Unexpected exception");
     }

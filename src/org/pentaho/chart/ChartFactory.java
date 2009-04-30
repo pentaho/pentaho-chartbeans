@@ -202,7 +202,8 @@ public class ChartFactory {
       if ((chartModel.getPlot() instanceof BarPlot)
           || (chartModel.getPlot() instanceof LinePlot)
           || (chartModel.getPlot() instanceof AreaPlot)
-          || (chartModel.getPlot() instanceof DialPlot)) {
+          || (chartModel.getPlot() instanceof DialPlot)
+          || (chartModel.getPlot() instanceof PiePlot)) {
         output = plugin.renderChartDocument(chartModel, chartTableModel);
       } else {
         ChartDocument chartDocument = createChartDocument(chartModel);
@@ -338,18 +339,18 @@ public class ChartFactory {
 
     ChartElement chartElement = null;
     if ((graphPlot.getOrientation() == Orientation.HORIZONTAL) && (chartModel.getChartEngine() == ChartModel.CHART_ENGINE_JFREE)) {
-      chartElement = createTextElement(ChartElement.TAG_NAME_RANGE_LABEL, graphPlot.getXAxisLabel());
+      chartElement = createTextElement(ChartElement.TAG_NAME_RANGE_LABEL, graphPlot.getXAxis().getLegend());
     } else {
-      chartElement = createTextElement(ChartElement.TAG_NAME_RANGE_LABEL, graphPlot.getYAxisLabel());
+      chartElement = createTextElement(ChartElement.TAG_NAME_RANGE_LABEL, graphPlot.getYAxis().getLegend());
     }
     if (chartElement != null) {
       rootElement.addChildElement(chartElement);
     }
     
     if ((graphPlot.getOrientation() == Orientation.HORIZONTAL)  && (chartModel.getChartEngine() == ChartModel.CHART_ENGINE_JFREE)) {
-      chartElement = createTextElement(ChartElement.TAG_NAME_DOMAIN_LABEL, graphPlot.getYAxisLabel());
+      chartElement = createTextElement(ChartElement.TAG_NAME_DOMAIN_LABEL, graphPlot.getYAxis().getLegend());
     } else {
-      chartElement = createTextElement(ChartElement.TAG_NAME_DOMAIN_LABEL, graphPlot.getXAxisLabel());
+      chartElement = createTextElement(ChartElement.TAG_NAME_DOMAIN_LABEL, graphPlot.getXAxis().getLegend());
     }
     if (chartElement != null) {
       rootElement.addChildElement(chartElement);
