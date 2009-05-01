@@ -314,7 +314,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     }
     axis.setRange(minValue.intValue(), maxValue.intValue(), stepSize);
   }
-  
+    
   public Chart makeBarChart(ChartModel chartModel, ChartTableModel chartTableModel) {
 
     Chart chart = createBasicGraphChart(chartModel);
@@ -378,6 +378,19 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       if ((maxValue != null) && (minValue != null)) {
         XAxis xAxis = new XAxis();
         setAxisRange(xAxis, barPlot, minValue, maxValue);
+        Rotation rotation = Rotation.HORIZONTAL;
+        LabelOrientation labelOrientation = barPlot.getXAxis().getLabelOrientation();
+        if ((labelOrientation != null) && (labelOrientation != LabelOrientation.HORIZONTAL)) {
+          switch (labelOrientation) {
+            case DIAGONAL:
+              rotation = Rotation.DIAGONAL;
+              break;
+            case VERTICAL:
+              rotation = Rotation.VERTICAL;
+              break;
+          }
+          xAxis.getLabels().setRotation(rotation);
+        }
         chart.setXAxis(xAxis);
       }
     } else {

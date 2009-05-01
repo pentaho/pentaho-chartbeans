@@ -12,6 +12,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.CategoryLabelPositions;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.block.BlockBorder;
 import org.jfree.chart.labels.StandardPieSectionLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
@@ -41,6 +44,7 @@ import org.pentaho.chart.model.DialPlot;
 import org.pentaho.chart.model.GraphPlot;
 import org.pentaho.chart.model.LinePlot;
 import org.pentaho.chart.model.StyledText;
+import org.pentaho.chart.model.Axis.LabelOrientation;
 import org.pentaho.chart.model.BarPlot.BarPlotFlavor;
 import org.pentaho.chart.model.CssStyle.FontStyle;
 import org.pentaho.chart.model.CssStyle.FontWeight;
@@ -409,6 +413,9 @@ public class JFreeChartFactoryEngine implements Serializable {
     
     initChart(chart, chartModel);
     
+    CategoryAxis domainAxis = categoryPlot.getDomainAxis();
+    ValueAxis valueAxis = categoryPlot.getRangeAxis();
+    
     if (rangeAxisLabel.length() > 0) {
       Font font = null;
       if (graphPlot.getOrientation() == Orientation.HORIZONTAL) {
@@ -428,8 +435,27 @@ public class JFreeChartFactoryEngine implements Serializable {
       } else {
         font = ChartUtils.getFont(graphPlot.getXAxis().getLegend().getFontFamily(), graphPlot.getXAxis().getLegend().getFontStyle(), graphPlot.getXAxis().getLegend().getFontWeight(), graphPlot.getXAxis().getLegend().getFontSize());
       }
+      
       if (font != null) {
-        categoryPlot.getDomainAxis().setLabelFont(font);
+        domainAxis.setLabelFont(font);
+      }      
+    }
+    
+    LabelOrientation labelOrientation = graphPlot.getXAxis().getLabelOrientation();
+    if ((labelOrientation != null) && (labelOrientation != LabelOrientation.HORIZONTAL)) {
+      if (graphPlot.getOrientation() == Orientation.HORIZONTAL) {
+        if (labelOrientation == LabelOrientation.VERTICAL) {
+          valueAxis.setVerticalTickLabels(true);
+        }
+      } else {
+        switch (labelOrientation) {
+          case VERTICAL:
+            domainAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_90);
+            break;
+          case DIAGONAL:
+            domainAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
+            break;
+        }
       }
     }
 
