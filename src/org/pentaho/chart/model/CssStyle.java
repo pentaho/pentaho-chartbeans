@@ -6,6 +6,7 @@ import java.util.Map;
 
 public class CssStyle extends HashMap<String, String> implements Serializable {
 
+  
   public static final String BACKGROUND_COLOR_STYLE = "background-color";
   public static final String BORDER_WIDTH_STYLE = "border-top-width";
   public static final String BORDER_COLOR_STYLE = "border-top-color";
@@ -14,10 +15,12 @@ public class CssStyle extends HashMap<String, String> implements Serializable {
   public static final String FONT_STYLE = "font-style";
   public static final String FONT_FAMILY_STYLE = "font-family";
   public static final String COLOR_STYLE = "color";
+  public static final String TEXT_ALIGNMENT_STYLE = "text-align";
   public static final String OPACITY_STYLE = "opacity";
   
   public enum FontWeight {NORMAL, BOLD};
   public enum FontStyle {NORMAL,ITALIC,OBLIQUE};
+  public enum TextAlignment {LEFT, CENTER, RIGHT};
   
   public Integer getBorderWidth() {
     Integer width = null;
@@ -268,5 +271,26 @@ public class CssStyle extends HashMap<String, String> implements Serializable {
         }
       }
     }
+  }
+  
+  public void setTextAlignment(TextAlignment textAlignment) {
+    if (textAlignment == null) {
+      remove(TEXT_ALIGNMENT_STYLE);
+    } else {
+      put(TEXT_ALIGNMENT_STYLE, textAlignment.toString().toLowerCase());
+    }
+  }
+  
+  public TextAlignment getTextAlignment() {
+    TextAlignment textAlignment = null;
+    String str = get(TEXT_ALIGNMENT_STYLE);
+    if (str != null) {
+      try {
+        textAlignment = Enum.valueOf(TextAlignment.class, str.toUpperCase());
+      } catch (Exception ex) {
+        // Do nothing we'll return null
+      }
+    }
+    return textAlignment;
   }
 }

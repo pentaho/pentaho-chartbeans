@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import org.pentaho.chart.model.CssStyle.FontStyle;
 import org.pentaho.chart.model.CssStyle.FontWeight;
+import org.pentaho.chart.model.CssStyle.TextAlignment;
 
 public class StyledText implements Serializable{
   String text;
@@ -95,6 +96,14 @@ public class StyledText implements Serializable{
   
   public CssStyle getStyle() {
     return style;
+  }
+
+  public TextAlignment getAlignment() {
+    return style.getTextAlignment();
+  }
+
+  public void setAlignment(TextAlignment textAlignment) {
+    style.setTextAlignment(textAlignment);
   }
 
 }
