@@ -275,11 +275,15 @@ public class ChartFactory {
       }
       int chartDataColumn = categoriesList.indexOf(categoryName.toString());
 
+      Number value = (Number) queryResults[i][rangeColumn];
+      if (convertNullsToZero && (value == null)) {
+        value = 0;
+      }
       if (chartData[chartDataRow][chartDataColumn] == null) {
-        chartData[chartDataRow][chartDataColumn] = (Number) queryResults[i][rangeColumn];
-      } else {
+        chartData[chartDataRow][chartDataColumn] = value;
+      } else if (value != null) {
         chartData[chartDataRow][chartDataColumn] = chartData[chartDataRow][chartDataColumn].doubleValue()
-            + ((Number) queryResults[i][rangeColumn]).doubleValue();
+            + value.doubleValue();
       }
     }
 
