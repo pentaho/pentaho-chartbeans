@@ -41,7 +41,7 @@ public class SerializationTest {
     chartDataDefinition.setDomainColumn("domain");
     chartDataDefinition.setQuery("query");
     chartDataDefinition.setRangeColumn("range");
-    chartDataDefinition.setTreatNullsAsZero(true);
+    chartDataDefinition.setConvertNullsToZero(true);
     chartDataDefinition.setScalingFactor(2);
     
     String result = ChartSerializer.serializeDataDefinition(chartDataDefinition, ChartSerializationFormat.XML);    
