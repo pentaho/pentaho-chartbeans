@@ -14,6 +14,7 @@ import org.pentaho.chart.model.Plot;
 import org.pentaho.chart.model.StyledText;
 import org.pentaho.chart.model.Axis.LabelOrientation;
 import org.pentaho.chart.model.BarPlot.BarPlotFlavor;
+import org.pentaho.chart.model.ChartTitle.TitleLocation;
 import org.pentaho.chart.model.DialPlot.DialRange;
 import org.pentaho.chart.model.LinePlot.LinePlotFlavor;
 import org.pentaho.chart.model.Plot.Orientation;
@@ -131,6 +132,14 @@ public class ChartModelConverter implements Converter {
         cssStyle = reader.getAttribute("style");
         if (cssStyle != null) {
           chartModel.getTitle().getStyle().setStyleString(cssStyle);
+        }
+        attribute = reader.getAttribute("location");
+        if (attribute != null) {
+          try {
+            chartModel.getTitle().setLocation(Enum.valueOf(TitleLocation.class, attribute.toUpperCase()));
+          } catch (Exception e) {
+            // Do nothing
+          }
         }
       } else if (reader.getNodeName().equals("subtitle")) {
         String subtitle = reader.getValue();

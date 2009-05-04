@@ -37,6 +37,7 @@ public class ChartSerializer {
     jsonChartWriter.registerConverter(new ScaleConverter());
     jsonChartWriter.registerConverter(new ChartModelConverter());
     jsonChartWriter.registerConverter(new AxisConverter());
+    jsonChartWriter.registerConverter(new ChartTitleConverter());
     jsonChartWriter.useAttributeFor(PiePlot.class, "animate"); //$NON-NLS-1$
     jsonChartWriter.useAttributeFor(PiePlot.class, "startAngle"); //$NON-NLS-1$
     jsonChartWriter.omitField(PiePlot.class, "slices"); //$NON-NLS-1$
@@ -58,6 +59,7 @@ public class ChartSerializer {
     xmlChartWriter.registerConverter(new ScaleConverter());
     xmlChartWriter.registerConverter(new ChartModelConverter());
     xmlChartWriter.registerConverter(new AxisConverter());
+    xmlChartWriter.registerConverter(new ChartTitleConverter());
     xmlChartWriter.useAttributeFor(PiePlot.class, "animate"); //$NON-NLS-1$
     xmlChartWriter.useAttributeFor(PiePlot.class, "startAngle"); //$NON-NLS-1$
     xmlChartWriter.omitField(PiePlot.class, "slices"); //$NON-NLS-1$

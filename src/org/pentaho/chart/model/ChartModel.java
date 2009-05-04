@@ -13,7 +13,7 @@ public class ChartModel implements Serializable {
   public static final String DEFAULT_FAMILY = "serif";
   public static final int DEFAULT_SIZE = 14;
   
-  StyledText title = new StyledText();
+  ChartTitle title = new ChartTitle();
   ArrayList<StyledText> subtitles = new ArrayList<StyledText>();
   ChartLegend legend = new ChartLegend();
   String backgroundImageLocation;
@@ -167,11 +167,11 @@ public class ChartModel implements Serializable {
     this.plot = plot;
   }
 
-  public StyledText getTitle() {
+  public ChartTitle getTitle() {
     return title;
   }
 
-  public void setTitle(StyledText title) {
+  public void setTitle(ChartTitle title) {
     this.title = title;
   }
 

@@ -29,6 +29,8 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.DefaultValueDataset;
 import org.jfree.ui.GradientPaintTransformType;
+import org.jfree.ui.HorizontalAlignment;
+import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.StandardGradientPaintTransformer;
 import org.pentaho.chart.ChartDocumentContext;
 import org.pentaho.chart.ChartUtils;
@@ -40,12 +42,14 @@ import org.pentaho.chart.data.ChartTableModel;
 import org.pentaho.chart.model.AreaPlot;
 import org.pentaho.chart.model.BarPlot;
 import org.pentaho.chart.model.ChartModel;
+import org.pentaho.chart.model.ChartTitle;
 import org.pentaho.chart.model.DialPlot;
 import org.pentaho.chart.model.GraphPlot;
 import org.pentaho.chart.model.LinePlot;
 import org.pentaho.chart.model.StyledText;
 import org.pentaho.chart.model.Axis.LabelOrientation;
 import org.pentaho.chart.model.BarPlot.BarPlotFlavor;
+import org.pentaho.chart.model.ChartTitle.TitleLocation;
 import org.pentaho.chart.model.CssStyle.FontStyle;
 import org.pentaho.chart.model.CssStyle.FontWeight;
 import org.pentaho.chart.model.DialPlot.DialRange;
@@ -279,6 +283,37 @@ public class JFreeChartFactoryEngine implements Serializable {
       if (font != null) {
         chart.getTitle().setFont(font);
       }
+      
+      RectangleEdge rectangleEdge = RectangleEdge.TOP;
+      if (chartModel.getTitle().getLocation() != null) {
+        switch (chartModel.getTitle().getLocation()) {
+          case RIGHT:
+            rectangleEdge = RectangleEdge.BOTTOM;
+            break;
+          case LEFT:
+            rectangleEdge = RectangleEdge.LEFT;
+            break;
+          case BOTTOM:
+            rectangleEdge = RectangleEdge.BOTTOM;
+            break;
+        }
+      }
+      
+      chart.getTitle().setPosition(rectangleEdge);
+      if (RectangleEdge.isTopOrBottom(rectangleEdge)) {
+        HorizontalAlignment horizontalAlignment = HorizontalAlignment.CENTER;
+        if (chartModel.getTitle().getAlignment() != null) {
+          switch (chartModel.getTitle().getAlignment()) {
+            case LEFT:
+              horizontalAlignment = horizontalAlignment.LEFT;
+              break;
+            case RIGHT:
+              horizontalAlignment = horizontalAlignment.RIGHT;
+              break;
+          }
+        }
+        chart.getTitle().setHorizontalAlignment(horizontalAlignment);
+      }
     }
     
     if ((chartModel.getLegend() != null) && chartModel.getLegend().getVisible()) {
@@ -358,7 +393,10 @@ public class JFreeChartFactoryEngine implements Serializable {
     String domainAxisLabel = "";
     String rangeAxisLabel = "";
     
-    if ((graphPlot.getXAxis() != null) && (graphPlot.getXAxis() != null) && (graphPlot.getXAxis().getLegend().getText().length() > 0)) {
+    if ((graphPlot.getXAxis() != null) 
+        && (graphPlot.getXAxis().getLegend() != null) 
+        && (graphPlot.getXAxis().getLegend().getText() != null)
+        && (graphPlot.getXAxis().getLegend().getText().trim().length() > 0)) {
       if (graphPlot.getOrientation() == Orientation.HORIZONTAL) {
         rangeAxisLabel = graphPlot.getXAxis().getLegend().getText();
       } else {
@@ -366,7 +404,10 @@ public class JFreeChartFactoryEngine implements Serializable {
       }
     }
     
-    if ((graphPlot.getYAxis() != null) && (graphPlot.getYAxis() != null) && (graphPlot.getYAxis().getLegend().getText().length() > 0)) {
+    if ((graphPlot.getYAxis() != null) 
+        && (graphPlot.getYAxis().getLegend() != null) 
+        && (graphPlot.getYAxis().getLegend().getText() != null)
+        && (graphPlot.getYAxis().getLegend().getText().trim().length() > 0)) {
       if (graphPlot.getOrientation() == Orientation.HORIZONTAL) {
         domainAxisLabel = graphPlot.getYAxis().getLegend().getText();
       } else {
