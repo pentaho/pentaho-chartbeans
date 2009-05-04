@@ -1,5 +1,6 @@
 package org.pentaho.chart.model.util;
 
+import org.pentaho.chart.model.ChartDataDefinition;
 import org.pentaho.chart.model.ChartLegend;
 import org.pentaho.chart.model.ChartModel;
 import org.pentaho.chart.model.CssStyle;
@@ -9,7 +10,6 @@ import org.pentaho.chart.model.BarPlot.BarPlotFlavor;
 import org.pentaho.chart.model.LinePlot.LinePlotFlavor;
 import org.pentaho.chart.model.PiePlot.PieLabels;
 import org.pentaho.chart.model.Plot.Orientation;
-import org.pentaho.platform.plugin.action.chartbeans.ChartDataDefinition;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;

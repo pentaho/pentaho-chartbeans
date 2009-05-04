@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.pentaho.chart.model.AreaPlot;
 import org.pentaho.chart.model.BarPlot;
+import org.pentaho.chart.model.ChartDataDefinition;
 import org.pentaho.chart.model.ChartModel;
 import org.pentaho.chart.model.DialPlot;
 import org.pentaho.chart.model.LinePlot;
@@ -27,7 +28,6 @@ import org.pentaho.chart.model.Plot.Orientation;
 import org.pentaho.chart.model.Theme.ChartTheme;
 import org.pentaho.chart.model.util.ChartSerializer;
 import org.pentaho.chart.model.util.ChartSerializer.ChartSerializationFormat;
-import org.pentaho.platform.plugin.action.chartbeans.ChartDataDefinition;
 
 public class SerializationTest {
 

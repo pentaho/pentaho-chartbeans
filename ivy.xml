@@ -31,9 +31,6 @@
     <dependency org="org.codehaus.jettison" name="jettison" rev="1.0.1" />
     <dependency org="org.codehaus.jettison" name="jettison" rev="1.0.1" />
 
-    <dependency org="pentaho" name="pentaho-bi-platform-plugin-actions" rev="${dependency.bi-platform.revision}"
-      changing="true" />
-
 
     <!--  Testing dependencies -->
     <dependency org="junit" name="junit" rev="4.3.1" transitive="false" conf="test->default" />
