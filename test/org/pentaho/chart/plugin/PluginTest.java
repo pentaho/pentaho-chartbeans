@@ -37,6 +37,7 @@ import org.pentaho.chart.data.ChartTableModel;
 import org.pentaho.chart.model.AreaPlot;
 import org.pentaho.chart.model.BarPlot;
 import org.pentaho.chart.model.ChartModel;
+import org.pentaho.chart.model.ChartTitle;
 import org.pentaho.chart.model.LinePlot;
 import org.pentaho.chart.model.PiePlot;
 import org.pentaho.chart.model.StyledText;
@@ -421,7 +422,7 @@ public class PluginTest extends TestCase {
     };
     ChartModel chartModel = new ChartModel();
     chartModel.setChartEngine(ChartModel.CHART_ENGINE_OPENFLASH);
-    chartModel.setTitle(new StyledText("testOpenFlashChart"));
+    chartModel.setTitle(new ChartTitle("testOpenFlashChart"));
     
     BarPlot barPlot = new BarPlot();
     barPlot.setOrientation(Orientation.VERTICAL);
@@ -491,7 +492,7 @@ public class PluginTest extends TestCase {
     };
     ChartModel chartModel = new ChartModel();
     chartModel.setChartEngine(ChartModel.CHART_ENGINE_OPENFLASH);
-    chartModel.setTitle(new StyledText("testOpenFlashChart"));
+    chartModel.setTitle(new ChartTitle("testOpenFlashChart"));
     
     LinePlot linePlot = new LinePlot();
     linePlot.getXAxis().getLegend().setText("categoryAxisLabel");
@@ -535,7 +536,7 @@ public class PluginTest extends TestCase {
     };
     ChartModel chartModel = new ChartModel();
     chartModel.setChartEngine(ChartModel.CHART_ENGINE_OPENFLASH);
-    chartModel.setTitle(new StyledText("testOpenFlashChart"));
+    chartModel.setTitle(new ChartTitle("testOpenFlashChart"));
     
     AreaPlot areaPlot = new AreaPlot();
     areaPlot.getXAxis().getLegend().setText("categoryAxisLabel");
@@ -571,7 +572,7 @@ public class PluginTest extends TestCase {
     };
     ChartModel chartModel = new ChartModel();
     chartModel.setChartEngine(ChartModel.CHART_ENGINE_OPENFLASH);
-    chartModel.setTitle(new StyledText("testOpenFlashChart"));
+    chartModel.setTitle(new ChartTitle("testOpenFlashChart"));
     
     PiePlot piePlot = new PiePlot();
     ArrayList<Slice> wedges = new ArrayList<Slice>();

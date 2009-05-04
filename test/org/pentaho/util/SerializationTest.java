@@ -17,6 +17,7 @@ import org.pentaho.chart.model.PiePlot;
 import org.pentaho.chart.model.StyledText;
 import org.pentaho.chart.model.Axis.LabelOrientation;
 import org.pentaho.chart.model.BarPlot.BarPlotFlavor;
+import org.pentaho.chart.model.ChartTitle.TitleLocation;
 import org.pentaho.chart.model.CssStyle.FontStyle;
 import org.pentaho.chart.model.CssStyle.FontWeight;
 import org.pentaho.chart.model.DialPlot.DialRange;
@@ -40,6 +41,7 @@ public class SerializationTest {
     chartDataDefinition.setDomainColumn("domain");
     chartDataDefinition.setQuery("query");
     chartDataDefinition.setRangeColumn("range");
+    chartDataDefinition.setTreatNullsAsZero(true);
     chartDataDefinition.setScalingFactor(2);
     
     String result = ChartSerializer.serializeDataDefinition(chartDataDefinition, ChartSerializationFormat.XML);    
@@ -235,6 +237,7 @@ public class SerializationTest {
     chartModel.setBorderColor(0x987654);
     chartModel.setBorderVisible(true);
     chartModel.getTitle().setText("Chart Title");
+    chartModel.getTitle().setLocation(TitleLocation.BOTTOM);
     chartModel.getTitle().setColor(0x123456);
     chartModel.getTitle().setFont("monospace", 20, FontStyle.OBLIQUE, FontWeight.BOLD);
     chartModel.getLegend().setVisible(true);
@@ -264,6 +267,7 @@ public class SerializationTest {
     assertEquals(chartModel2.getBorderColor(), new Integer(0x987654));
     assertEquals(chartModel2.getBorderWidth(), new Integer(1));
     assertEquals(chartModel2.getTitle().getText(), "Chart Title");
+    assertEquals(chartModel2.getTitle().getLocation(), TitleLocation.BOTTOM);
     assertEquals(chartModel2.getTitle().getColor(), 0x123456);
     assertEquals(chartModel2.getTitle().getFontFamily(), "monospace");
     assertEquals(chartModel2.getTitle().getFontSize(), new Integer(20));
