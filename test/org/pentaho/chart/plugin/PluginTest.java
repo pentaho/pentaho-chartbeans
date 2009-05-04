@@ -432,7 +432,7 @@ public class PluginTest extends TestCase {
     chartModel.setTheme(ChartTheme.THEME1);
     InputStream inputStream = null;
     try {
-      inputStream = ChartFactory.createChart(chartData, 2, 0, 1, chartModel, 100, 100, null);
+      inputStream = ChartFactory.createChart(chartData, false, 2, 0, 1, chartModel, 100, 100, null);
       String jsonString = convertStreamToString(inputStream);
       for (int row = 0; row < chartData.length; row++) {
         for (int column = 0; column < chartData[row].length; column++) {
@@ -456,7 +456,7 @@ public class PluginTest extends TestCase {
     barPlot.getYAxis().getLegend().setText("valueAxisLabel");
     chartModel.setPlot(barPlot);
     try {
-      inputStream = ChartFactory.createChart(chartData, 2, 0, 1, chartModel, 100, 100, null);
+      inputStream = ChartFactory.createChart(chartData, false, 2, 0, 1, chartModel, 100, 100, null);
       String jsonString = convertStreamToString(inputStream);
       for (int row = 0; row < chartData.length; row++) {
         for (int column = 0; column < chartData[row].length; column++) {
@@ -500,7 +500,7 @@ public class PluginTest extends TestCase {
     chartModel.setPlot(linePlot);
     chartModel.setTheme(ChartTheme.THEME2);
     try {
-      InputStream inputStream = ChartFactory.createChart(chartData, 2, 0, 1, chartModel, 100, 100, null);
+      InputStream inputStream = ChartFactory.createChart(chartData, false, 2, 0, 1, chartModel, 100, 100, null);
       String jsonString = convertStreamToString(inputStream);
       for (int row = 0; row < chartData.length; row++) {
         for (int column = 0; column < chartData[row].length; column++) {
@@ -544,7 +544,7 @@ public class PluginTest extends TestCase {
     chartModel.setPlot(areaPlot);
     chartModel.setTheme(ChartTheme.THEME2);
     try {
-      InputStream inputStream = ChartFactory.createChart(chartData, 2, 0, 1, chartModel, 100, 100, null);
+      InputStream inputStream = ChartFactory.createChart(chartData, false, 2, 0, 1, chartModel, 100, 100, null);
       String jsonString = convertStreamToString(inputStream);
       for (int row = 0; row < chartData.length; row++) {
         for (int column = 0; column < chartData[row].length; column++) {
@@ -588,7 +588,7 @@ public class PluginTest extends TestCase {
     chartModel.setPlot(piePlot);
     chartModel.setTheme(ChartTheme.THEME2);
     try {
-      InputStream inputStream = ChartFactory.createChart(chartData, 1, 0, -1, chartModel, 100, 100, null);
+      InputStream inputStream = ChartFactory.createChart(chartData, false, 1, 0, -1, chartModel, 100, 100, null);
       String jsonString = convertStreamToString(inputStream);
       for (int row = 0; row < chartData.length; row++) {
         for (int column = 0; column < chartData[row].length; column++) {

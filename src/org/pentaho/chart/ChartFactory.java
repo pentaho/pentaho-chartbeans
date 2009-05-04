@@ -190,11 +190,11 @@ public class ChartFactory {
     if ((queryResults.length > 0) && (queryResults[0].length > 2)) {
       categoryColumnIndex = 2;
     }
-    return createChart(queryResults, rangeColumnIndex, domainColumnIndex, categoryColumnIndex, chartModel, width, height, outputType);
+    return createChart(queryResults, false, rangeColumnIndex, domainColumnIndex, categoryColumnIndex, chartModel, width, height, outputType);
   }
   
-  public static InputStream createChart(Object[][] queryResults, int rangeColumnIndex, int domainColumnIdx, int categoryColumnIdx, ChartModel chartModel, int width, int height, OutputTypes outputType) throws ChartProcessingException, SQLException, ResourceKeyCreationException, PersistenceException {
-    ChartTableModel chartTableModel = createChartTableModel(queryResults, categoryColumnIdx, domainColumnIdx, rangeColumnIndex);
+  public static InputStream createChart(Object[][] queryResults, boolean convertNullsToZero, int rangeColumnIndex, int domainColumnIdx, int categoryColumnIdx, ChartModel chartModel, int width, int height, OutputTypes outputType) throws ChartProcessingException, SQLException, ResourceKeyCreationException, PersistenceException {
+    ChartTableModel chartTableModel = createChartTableModel(queryResults, convertNullsToZero, categoryColumnIdx, domainColumnIdx, rangeColumnIndex);
     
     IOutput output = null;
     if (chartModel.getChartEngine() == ChartModel.CHART_ENGINE_JFREE) {
@@ -225,7 +225,7 @@ public class ChartFactory {
     return inputStream;
   }
   
-  public static ChartTableModel createChartTableModel(Object[][] queryResults, int categoryColumn, int domainColumn, int rangeColumn) {
+  public static ChartTableModel createChartTableModel(Object[][] queryResults, boolean convertNullsToZero, int categoryColumn, int domainColumn, int rangeColumn) {
     ChartTableModel chartTableModel = new ChartTableModel();
     
     SortedSet<String> categories = new TreeSet<String>();
