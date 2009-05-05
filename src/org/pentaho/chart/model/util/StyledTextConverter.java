@@ -14,7 +14,7 @@ public class StyledTextConverter implements Converter {
     StyledText text = (StyledText)value;
     if ((text.getText() != null) && (text.getText().length() > 0)) {
       if (text.getStyle().size() > 0) {
-        writer.addAttribute("style", text.getStyle().toString());
+        writer.addAttribute("style", text.getStyle().getStyleString());
       }
       writer.setValue(text.getText());
     }

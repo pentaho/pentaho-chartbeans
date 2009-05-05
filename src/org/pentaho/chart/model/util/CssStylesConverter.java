@@ -11,7 +11,8 @@ public class CssStylesConverter implements SingleValueConverter {
   }
 
   public String toString(Object arg0) {
-    String str = arg0.toString();
+    CssStyle cssStyle = (CssStyle) arg0;
+    String str = cssStyle.getStyleString();
     return str.length() > 0 ? str : null;
   }
 

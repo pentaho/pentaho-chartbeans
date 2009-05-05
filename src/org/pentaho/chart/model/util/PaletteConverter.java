@@ -18,7 +18,7 @@ public class PaletteConverter implements Converter {
         CssStyle style = new CssStyle();
         style.setColor(rgb);
         writer.startNode("paint");
-        writer.addAttribute("style", style.toString());
+        writer.addAttribute("style", style.getStyleString());
         writer.endNode();
       }
     }

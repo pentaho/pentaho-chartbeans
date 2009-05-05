@@ -89,7 +89,7 @@ public class ChartLegend implements Serializable {
   }
 
   public String toString() {
-    return style.toString();
+    return style.getStyleString();
   }
 
 }

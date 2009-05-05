@@ -22,7 +22,7 @@ public class ScaleConverter implements Converter {
         writer.addAttribute("max", dialRange.getMaxValue().toString());
       }
       if (dialRange.getStyle().size() > 0) {
-        writer.addAttribute("style", dialRange.getStyle().toString());
+        writer.addAttribute("style", dialRange.getStyle().getStyleString());
       }
       writer.endNode();
     }

@@ -231,8 +231,13 @@ public class CssStyle extends HashMap<String, String> implements Serializable {
     }
     return opacity;
   }
-  
+
+  @Override
   public String toString() {
+    return "CssStyle[" + getStyleString() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+  }
+  
+  public String getStyleString() {
     StringBuffer cssStyleString = new StringBuffer();
     for (Map.Entry<String, String> entry : entrySet()) {
       if (cssStyleString.length() > 0) {

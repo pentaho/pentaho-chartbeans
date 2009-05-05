@@ -83,8 +83,8 @@ public class OpenFlashChartFactoryEngine implements Serializable {
   public Text getText(StyledText styledText) {
     Text text = null;
     if ((styledText != null) && (styledText.getText() != null) && (styledText.getText().trim().length() > 0)) {
-      if (styledText.getStyle().toString().length() > 0) {
-        text = new Text(styledText.getText(), styledText.getStyle().toString());
+      if (styledText.getStyle().getStyleString().length() > 0) {
+        text = new Text(styledText.getText(), styledText.getStyle().getStyleString());
       } else {
         text = new Text(styledText.getText());
       }
@@ -110,7 +110,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
   private Chart createBasicChart(ChartModel chartModel) {
     Chart chart = null;
     if ((chartModel.getTitle() != null) && (chartModel.getTitle().getText() != null) && chartModel.getTitle().getText().trim().length() > 0) {
-      String cssFontStyleString = chartModel.getTitle().getStyle().toString();
+      String cssFontStyleString = chartModel.getTitle().getStyle().getStyleString();
       if (cssFontStyleString.trim().length() > 0) {
         chart = new Chart(chartModel.getTitle().getText(), cssFontStyleString);
       } else {
