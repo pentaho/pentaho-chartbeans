@@ -38,7 +38,7 @@ public class ChartModelConverter implements Converter {
     }
     
     if (chartModel.getStyle().size() > 0) {
-      writer.addAttribute("style", chartModel.getStyle().toString());
+      writer.addAttribute("style", chartModel.getStyle().getStyleString());
     }
     
     if ((chartModel.getTitle() != null) && (chartModel.getTitle().getText() != null) && (chartModel.getTitle().getText().length() > 0)) {
