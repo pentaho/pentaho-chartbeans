@@ -101,6 +101,26 @@ public class ChartDataDefinition implements Serializable {
       return false;
     }
     
+    if (defaultParameterMap.size() != chartDataQuery.defaultParameterMap.size()) {
+      return false;
+    }
+    
+    for (Map.Entry<String, String> mapEntry : defaultParameterMap.entrySet()) {
+      if (!defaultParameterMap.containsKey(mapEntry.getKey())) {
+        return false;
+      }
+      String thisValue = mapEntry.getValue();
+      String thatValue = defaultParameterMap.get(mapEntry.getKey());
+      if(thisValue == null){
+        if(thatValue != null){
+          return false;
+        }
+      } else {
+        if(!thisValue.equals(thatValue)){
+          return false;
+        }
+      }
+    }
     return true;
   }
 
