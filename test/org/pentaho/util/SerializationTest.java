@@ -43,6 +43,7 @@ public class SerializationTest {
     chartDataDefinition.setRangeColumn("range");
     chartDataDefinition.setConvertNullsToZero(true);
     chartDataDefinition.setScalingFactor(2);
+    chartDataDefinition.getDefaultParameterMap().put("hello", "world");
     
     String result = ChartSerializer.serializeDataDefinition(chartDataDefinition, ChartSerializationFormat.XML);    
     System.out.println(result);
