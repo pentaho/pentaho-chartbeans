@@ -93,7 +93,7 @@ public class JFreeChartOutput implements IOutput {
       } catch (IOException e) {
         throw new PersistenceException(e);
       }
-    } else if (fileType == IOutput.OutputTypes.FILE_TYPE_PNG) {
+    } else if ((fileType == IOutput.OutputTypes.FILE_TYPE_PNG) || (fileType == null)) {
       try {
         ChartUtilities.writeChartAsPNG(outputStream, chart, width, height, info);
       } catch (IOException e) {
