@@ -22,7 +22,6 @@
 
     <!--  external dependencies -->
     <dependency org="jfree" name="jfreechart" rev="1.0.9" transitive="false" />
-    <dependency org="opensymphony" name="oscache" rev="2.3-compat" transitive="false" />
     <dependency org="jfree" name="jcommon" rev="1.0.14" transitive="false" />
     <dependency org="commons-collections" name="commons-collections" rev="3.1" />
     <dependency org="backport-util-concurrent" name="backport-util-concurrent" rev="3.0" transitive="false" />
