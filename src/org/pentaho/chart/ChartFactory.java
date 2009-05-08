@@ -85,6 +85,7 @@ import org.pentaho.reporting.libraries.resourceloader.ResourceManager;
  */
 public class ChartFactory {
   private static ResourceManager resourceManager = null;
+  private static final String UNIDENTIFIED = "Unable To Identify";
 
   private ChartFactory() {
   }
@@ -194,34 +195,36 @@ public class ChartFactory {
   }
   
   public static InputStream createChart(Object[][] queryResults, boolean convertNullsToZero, int rangeColumnIndex, int domainColumnIdx, int categoryColumnIdx, ChartModel chartModel, int width, int height, OutputTypes outputType) throws ChartProcessingException, SQLException, ResourceKeyCreationException, PersistenceException {
+    ByteArrayInputStream inputStream = null;
+    
     ChartTableModel chartTableModel = createChartTableModel(queryResults, convertNullsToZero, categoryColumnIdx, domainColumnIdx, rangeColumnIndex);
     
-    IOutput output = null;
-    if (chartModel.getChartEngine() == ChartModel.CHART_ENGINE_JFREE) {
-      JFreeChartPlugin plugin = (JFreeChartPlugin)ChartPluginFactory.getInstance("org.pentaho.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
-      if ((chartModel.getPlot() instanceof BarPlot)
-          || (chartModel.getPlot() instanceof LinePlot)
-          || (chartModel.getPlot() instanceof AreaPlot)
-          || (chartModel.getPlot() instanceof DialPlot)
-          || (chartModel.getPlot() instanceof PiePlot)) {
+    boolean noChartData = true;
+    boolean isPieChart = chartModel.getPlot() instanceof PiePlot;
+    if ((chartTableModel.getRowCount() > 0) && (chartTableModel.getColumnCount() > 0)) {
+      for (int row = 0; (row < chartTableModel.getRowCount()) && noChartData; row++) {
+        for (int column = 0; (column < chartTableModel.getColumnCount()) && noChartData; column++) {
+          Number value = ((Number)chartTableModel.getValueAt(row, column));
+          noChartData = (value == null) || ((value.doubleValue() == 0) && isPieChart);
+        }
+      }
+    }
+    
+    if (!noChartData) {
+      IOutput output = null;
+      if (chartModel.getChartEngine() == ChartModel.CHART_ENGINE_JFREE) {
+        JFreeChartPlugin plugin = (JFreeChartPlugin)ChartPluginFactory.getInstance("org.pentaho.chart.plugin.jfreechart.JFreeChartPlugin"); //$NON-NLS-1$
         output = plugin.renderChartDocument(chartModel, chartTableModel);
       } else {
-        ChartDocument chartDocument = createChartDocument(chartModel);
-        ChartDocumentContext chartDocumentContext = new ChartDocumentContext(chartDocument);
-        output = plugin.renderChartDocument(chartDocumentContext, chartTableModel);
+        OpenFlashChartPlugin plugin = (OpenFlashChartPlugin)ChartPluginFactory.getInstance("org.pentaho.chart.plugin.openflashchart.OpenFlashChartPlugin"); //$NON-NLS-1$
+        output = plugin.renderChartDocument(chartModel, chartTableModel);
       }
-    } else {
-      OpenFlashChartPlugin plugin = (OpenFlashChartPlugin)ChartPluginFactory.getInstance("org.pentaho.chart.plugin.openflashchart.OpenFlashChartPlugin"); //$NON-NLS-1$
-      output = plugin.renderChartDocument(chartModel, chartTableModel);
-    }
 
-    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    ByteArrayInputStream inputStream = null;
-    try {
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       output.persistChart(outputStream, outputType, width, height);
       inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-    } finally {
     }
+    
     return inputStream;
   }
   
@@ -234,51 +237,42 @@ public class ChartFactory {
     for (int i = 0; i < queryResults.length; i++) {
       if (categoryColumn >= 0) {
         categories.add(queryResults[i][categoryColumn] != null ? queryResults[i][categoryColumn]
-            .toString() : "null");
+            .toString() : UNIDENTIFIED);
       }
 
       if (domainColumn >= 0) {
         domains.add(queryResults[i][domainColumn] != null ? queryResults[i][domainColumn]
-            .toString() : "null");
+            .toString() : UNIDENTIFIED);
       }
     }
 
     List<String> categoriesList = new ArrayList<String>(categories);
     List<String> domainsList = new ArrayList<String>(domains);
 
-    if (categoriesList.size() == 0) {
-      categoriesList.add("dummyCategory");
-    }
-
-    if (domainsList.size() == 0) {
-      domainsList.add("dummyDomain");
-    }
-
-    Number[][] chartData = new Number[domainsList.size()][categoriesList.size()];
+    Number[][] chartData = new Number[Math.max(domainsList.size(), 1)][Math.max(categories.size(), 1)];
 
     for (int i = 0; i < queryResults.length; i++) {
-      String domainName = null;
+      int chartDataRow = 0;
       if (domainColumn != -1) {
-        domainName = (queryResults[i][domainColumn] != null ? queryResults[i][domainColumn]
-            .toString() : "null");
-      } else {
-        domainName = "dummyDomain";
+        String domainName = (queryResults[i][domainColumn] != null ? queryResults[i][domainColumn]
+            .toString() : UNIDENTIFIED);
+        chartDataRow = domainsList.indexOf(domainName.toString());
       }
-      int chartDataRow = domainsList.indexOf(domainName.toString());
-
-      String categoryName = null;
+      
+      int chartDataColumn = 0;
       if (categoryColumn != -1) {
-        categoryName = (queryResults[i][categoryColumn] != null ? queryResults[i][categoryColumn]
-            .toString() : "null");
-      } else {
-        categoryName = "dummyCategory";
+        String categoryName = (queryResults[i][categoryColumn] != null ? queryResults[i][categoryColumn]
+            .toString() : UNIDENTIFIED);
+        chartDataColumn = categoriesList.indexOf(categoryName.toString());
       }
-      int chartDataColumn = categoriesList.indexOf(categoryName.toString());
 
-      Number value = (Number) queryResults[i][rangeColumn];
-      if (convertNullsToZero && (value == null)) {
+      Number value = null;
+      if (queryResults[i][rangeColumn] instanceof Number) {
+        value = (Number)queryResults[i][rangeColumn];
+      } else if (convertNullsToZero && (queryResults[i][rangeColumn] == null)) {
         value = 0;
       }
+      
       if (chartData[chartDataRow][chartDataColumn] == null) {
         chartData[chartDataRow][chartDataColumn] = value;
       } else if (value != null) {
@@ -288,12 +282,20 @@ public class ChartFactory {
     }
 
     chartTableModel.setData(chartData);
-    for (int i = 0; i < categoriesList.size(); i++) {
-      chartTableModel.setColumnName(i, categoriesList.get(i));
+    if (categoriesList.size() > 0) {
+      for (int i = 0; i < categoriesList.size(); i++) {
+        chartTableModel.setColumnName(i, categoriesList.get(i));
+      }
+    } else {
+      chartTableModel.setColumnName(0, "");
     }
 
-    for (int i = 0; i < domainsList.size(); i++) {
-      chartTableModel.setRowName(i, domainsList.get(i));
+    if (domainsList.size() > 0) {
+      for (int i = 0; i < domainsList.size(); i++) {
+        chartTableModel.setRowName(i, domainsList.get(i));
+      }
+    } else {
+      chartTableModel.setRowName(0, "");
     }
     return chartTableModel;
   }
