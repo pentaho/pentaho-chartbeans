@@ -24,8 +24,11 @@ import ofc4j.model.elements.PieChart.Slice;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jfree.chart.JFreeChart;
 import org.pentaho.chart.ChartDocumentContext;
 import org.pentaho.chart.ChartUtils;
+import org.pentaho.chart.annotations.StyleProcessor;
+import org.pentaho.chart.annotations.SupportedStyle;
 import org.pentaho.chart.core.ChartDocument;
 import org.pentaho.chart.core.ChartElement;
 import org.pentaho.chart.css.keys.ChartStyleKeys;
@@ -468,74 +471,88 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     return chart;
   }
   
-  public Chart makeLineChart(ChartModel chartModel, ChartTableModel chartTableModel) {
-
-    Chart chart = createBasicGraphChart(chartModel);
-    LinePlot linePlot = (LinePlot)chartModel.getPlot();
-
-    ArrayList<String> domainValues = new ArrayList<String>();
-    for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
-      domainValues.add(chartTableModel.getColumnName(column));
-    }
-    if (domainValues.size() > 0) {
-      chart.setXAxis(createXAxis(linePlot, domainValues));
-    }
-
-    Number maxValue = null;
-    Number minValue = null;
+  @StyleProcessor("Open Flash Chart")
+  private class OpenFlashChartLineChartCreator {
     
-    Palette palette = getPalette(linePlot);
+    @SupportedStyle(defaultValue="0", section="Line")
+    private Float chartPlot_opacity;
+    
+    public Chart createChart(ChartModel chartModel, ChartTableModel chartTableModel) {
+      Chart chart = createBasicGraphChart(chartModel);
+      LinePlot linePlot = (LinePlot)chartModel.getPlot();
 
-    for (int row = 0; row < chartTableModel.getRowCount(); row++) {
-      LineChart lineChart = new LineChart(LineChart.Style.DOT);
-      lineChart.setHaloSize(0);
-      lineChart.setWidth(2);
-      lineChart.setDotSize(4);
-      if (linePlot.getOpacity() != null) {
-        lineChart.setAlpha(linePlot.getOpacity());
-      }
-
-      if ((chartModel.getLegend() != null) && chartModel.getLegend().getVisible()) {
-        lineChart.setText(chartTableModel.getRowName(row));
-      }
-      
-      lineChart.setTooltip("#val#");
-      
-      if (palette.size() > row) {
-        lineChart.setColour("#" + Integer.toHexString(0x00FFFFFF & palette.get(row)));
-      }
-      
-      ArrayList<Dot> dots = new ArrayList<Dot>();
+      ArrayList<String> domainValues = new ArrayList<String>();
       for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
-        Number value = (Number) chartTableModel.getValueAt(row, column);
-        if (maxValue == null) {
-          maxValue = value;
-        } else if (value != null) {
-          maxValue = Math.max(maxValue.doubleValue(), value.doubleValue());
-        }
-        if (minValue == null) {
-          minValue = value;
-        } else if (value != null) {
-          minValue = Math.min(minValue.doubleValue(), value.doubleValue());
-        }
-        if (value == null) {
-          dots.add(null);
-        } else {
-          dots.add(new Dot(value));
-        }
+        domainValues.add(chartTableModel.getColumnName(column));
+      }
+      if (domainValues.size() > 0) {
+        chart.setXAxis(createXAxis(linePlot, domainValues));
       }
 
-      lineChart.addDots(dots);
-      chart.addElements(lineChart);
-    }
+      Number maxValue = null;
+      Number minValue = null;
+      
+      Palette palette = getPalette(linePlot);
 
-    if ((maxValue != null) && (minValue != null)) {
-      YAxis yAxis = new YAxis();
-      setAxisRange(yAxis, linePlot, minValue, maxValue);
-      chart.setYAxis(yAxis);
-    }
+      for (int row = 0; row < chartTableModel.getRowCount(); row++) {
+        LineChart lineChart = new LineChart(LineChart.Style.DOT);
+        lineChart.setHaloSize(0);
+        lineChart.setWidth(2);
+        lineChart.setDotSize(4);
+        if (chartPlot_opacity != null) {
+          lineChart.setAlpha(linePlot.getOpacity());
+        }
 
-    return chart;
+        if ((chartModel.getLegend() != null) && chartModel.getLegend().getVisible()) {
+          lineChart.setText(chartTableModel.getRowName(row));
+        }
+        
+        lineChart.setTooltip("#val#");
+        
+        if (palette.size() > row) {
+          lineChart.setColour("#" + Integer.toHexString(0x00FFFFFF & palette.get(row)));
+        }
+        
+        ArrayList<Dot> dots = new ArrayList<Dot>();
+        for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
+          Number value = (Number) chartTableModel.getValueAt(row, column);
+          if (maxValue == null) {
+            maxValue = value;
+          } else if (value != null) {
+            maxValue = Math.max(maxValue.doubleValue(), value.doubleValue());
+          }
+          if (minValue == null) {
+            minValue = value;
+          } else if (value != null) {
+            minValue = Math.min(minValue.doubleValue(), value.doubleValue());
+          }
+          if (value == null) {
+            dots.add(null);
+          } else {
+            dots.add(new Dot(value));
+          }
+        }
+
+        lineChart.addDots(dots);
+        chart.addElements(lineChart);
+      }
+
+      if ((maxValue != null) && (minValue != null)) {
+        YAxis yAxis = new YAxis();
+        setAxisRange(yAxis, linePlot, minValue, maxValue);
+        chart.setYAxis(yAxis);
+      }
+
+      return chart;
+
+    }
+  }
+  
+  public Chart makeLineChart(ChartModel chartModel, ChartTableModel chartTableModel) {
+    LinePlot linePlot = (LinePlot)chartModel.getPlot();
+    OpenFlashChartLineChartCreator creator = new OpenFlashChartLineChartCreator();
+    creator.chartPlot_opacity = linePlot.getOpacity();
+    return creator.createChart(chartModel, chartTableModel);
   }
   
   /**

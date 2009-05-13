@@ -179,13 +179,13 @@ public class JFreeChartFactoryEngine implements Serializable {
     
     private final String DEFAULT_FONT_WEIGHT = "NORMAL"; //$NON-NLS-1$
     
-    @SupportedStyle(defaultValue=DEFAULT_FONT_FAMILY)
+    @SupportedStyle(defaultValue=DEFAULT_FONT_FAMILY, section="Dial")
     private String chartPlotAnnotation_fontFamily;
     
-    @SupportedStyle(defaultValue=DEFAULT_FONT_STYLE)
+    @SupportedStyle(defaultValue=DEFAULT_FONT_STYLE, section="Dial")
     private FontStyle chartPlotAnnotation_fontStyle;
     
-    @SupportedStyle(defaultValue=DEFAULT_FONT_WEIGHT)
+    @SupportedStyle(defaultValue=DEFAULT_FONT_WEIGHT, section="Dial")
     private FontWeight chartPlotAnnotation_fontWeight;
     
     
