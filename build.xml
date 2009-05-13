@@ -27,4 +27,36 @@
       FOUND IN common_build.xml.
     --> 
 
+  <fail message="You must specify javac.executable (version 1.6 or higher) in your override.properties!">
+    <condition>
+      <not>
+        <isset property="javac.executable" />
+      </not>
+    </condition>
+  </fail>
+  
+  <!--=======================================================================
+      OVERRIDE compile.compile
+      
+      Performs the actual compile
+      ====================================================================-->
+  <target name="compile.compile" depends="init">
+    <javac destdir="${classes.dir}"
+           debug="${javac.debug}"
+           deprecation="${javac.deprecation}"
+           fork="true"
+           source="${javac.source}"
+           target="${javac.target}"
+           executable="${javac.executable}"
+           compiler="javac1.6">
+      <!-- specify directory where generated source files go -->
+      <compilerarg line="-s &quot;${src.dir}&quot;" />
+      <classpath>
+        <path refid="classpath" />
+      </classpath>
+      <src path="${src.dir}" />
+    </javac>
+  </target>
+  
+  
 </project>

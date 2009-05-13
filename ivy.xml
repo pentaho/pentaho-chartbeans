@@ -19,6 +19,9 @@
     <dependency org="${library.group}" name="libbase" rev="${libbase.revision}" transitive="true" changing="true" />
     <dependency org="${library.group}" name="libxml" rev="${libxml.revision}" transitive="true" changing="true" />
     <dependency org="${library.group}" name="libcss" rev="${libcss.revision}" transitive="true" changing="true" />
+    
+    <!-- pentaho-charting-annotations moves lock-step with pentaho-charting project revision -->
+    <dependency org="pentaho-charting" name="pentaho-charting-annotations" rev="${project.revision}"/>
 
     <!--  external dependencies -->
     <dependency org="jfree" name="jfreechart" rev="1.0.9" transitive="false" />

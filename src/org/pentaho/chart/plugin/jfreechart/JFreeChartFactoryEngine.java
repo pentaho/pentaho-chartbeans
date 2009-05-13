@@ -7,6 +7,7 @@ import java.awt.GradientPaint;
 import java.awt.Point;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.EnumSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,6 +35,8 @@ import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.StandardGradientPaintTransformer;
 import org.pentaho.chart.ChartDocumentContext;
 import org.pentaho.chart.ChartUtils;
+import org.pentaho.chart.annotations.StyleProcessor;
+import org.pentaho.chart.annotations.SupportedStyle;
 import org.pentaho.chart.core.ChartDocument;
 import org.pentaho.chart.core.ChartElement;
 import org.pentaho.chart.css.keys.ChartStyleKeys;
@@ -42,14 +45,12 @@ import org.pentaho.chart.data.ChartTableModel;
 import org.pentaho.chart.model.AreaPlot;
 import org.pentaho.chart.model.BarPlot;
 import org.pentaho.chart.model.ChartModel;
-import org.pentaho.chart.model.ChartTitle;
 import org.pentaho.chart.model.DialPlot;
 import org.pentaho.chart.model.GraphPlot;
 import org.pentaho.chart.model.LinePlot;
 import org.pentaho.chart.model.StyledText;
 import org.pentaho.chart.model.Axis.LabelOrientation;
 import org.pentaho.chart.model.BarPlot.BarPlotFlavor;
-import org.pentaho.chart.model.ChartTitle.TitleLocation;
 import org.pentaho.chart.model.CssStyle.FontStyle;
 import org.pentaho.chart.model.CssStyle.FontWeight;
 import org.pentaho.chart.model.DialPlot.DialRange;
@@ -169,96 +170,130 @@ public class JFreeChartFactoryEngine implements Serializable {
     return chart;
   }
   
+  @StyleProcessor("JFreeChart")
+  private class JFreeDialChartCreator {
+    
+    private final String DEFAULT_FONT_FAMILY = "sans-serif"; //$NON-NLS-1$
+    
+    private final String DEFAULT_FONT_STYLE = "NORMAL"; //$NON-NLS-1$
+    
+    private final String DEFAULT_FONT_WEIGHT = "NORMAL"; //$NON-NLS-1$
+    
+    @SupportedStyle(defaultValue=DEFAULT_FONT_FAMILY)
+    private String chartPlotAnnotation_fontFamily;
+    
+    @SupportedStyle(defaultValue=DEFAULT_FONT_STYLE)
+    private FontStyle chartPlotAnnotation_fontStyle;
+    
+    @SupportedStyle(defaultValue=DEFAULT_FONT_WEIGHT)
+    private FontWeight chartPlotAnnotation_fontWeight;
+    
+    
+    public JFreeChart createChart(ChartModel chartModel, ChartTableModel data) {  
+      
+      DialPlot chartBeansDialPlot = (DialPlot)chartModel.getPlot();
+  
+      org.jfree.chart.plot.dial.DialPlot jFreeDialPlot = new SquareDialPlot();
+  
+      final DefaultValueDataset dataset = new DefaultValueDataset();
+      dataset.setValue((Number) data.getValueAt(0, 0));
+  
+      jFreeDialPlot.setDataset(dataset);
+  
+      final DoubleLineDialFrame dialFrame = new DoubleLineDialFrame();
+      dialFrame.setForegroundPaint(new Color(0x8d8d8d));
+      dialFrame.setInnerForegroundPaint(new Color(0x5d5d5d));
+      dialFrame.setStroke(new BasicStroke(2));
+      dialFrame.setBackgroundPaint(Color.WHITE);
+      jFreeDialPlot.setDialFrame(dialFrame);
+  
+      for (DialRange dialRange : chartBeansDialPlot.getScale()) {
+        if (dialRange.getColor() != null) {
+          SingleLineDialRange standarddialrange = new SingleLineDialRange(dialRange.getMinValue().doubleValue(), dialRange.getMaxValue().doubleValue(), new Color(0x00FFFFFF & dialRange.getColor()));
+          standarddialrange.setInnerRadius(0.4D);
+          jFreeDialPlot.addLayer(standarddialrange);
+        }
+      }
+  
+      double scaleMajorTickIncrement = (chartBeansDialPlot.getScale().getMaxValue().doubleValue() - chartBeansDialPlot.getScale().getMinValue().doubleValue()) / 5;
+      FixedStandardDialScale standardDialScale = new FixedStandardDialScale(chartBeansDialPlot.getScale().getMinValue().doubleValue(), chartBeansDialPlot.getScale().getMaxValue().doubleValue(),
+          -150.0, -240.0, scaleMajorTickIncrement, 2);
+      standardDialScale.setTickRadius(0.88D);
+      standardDialScale.setTickLabelOffset(0.15D);
+      standardDialScale.setTickLabelFont(ChartUtils.getFont("sans-serif", FontStyle.NORMAL, FontWeight.NORMAL, 10));
+      standardDialScale.setTickLabelPaint(Color.BLACK);
+      standardDialScale.setMajorTickLength(0.04);
+      standardDialScale.setMajorTickPaint(Color.BLACK);
+      standardDialScale.setMajorTickStroke(new BasicStroke(2));
+      standardDialScale.setMinorTickLength(0.02);
+      standardDialScale.setMinorTickPaint(new Color(0x8b8b8b));
+      standardDialScale.setMinorTickStroke(new BasicStroke(1));
+      jFreeDialPlot.addScale(0, standardDialScale);
+  
+      DialCap dialCap = new DialCap();
+      dialCap.setRadius(0.06);
+      dialCap.setFillPaint(new Color(0x636363));
+      dialCap.setOutlinePaint(new Color(0x5d5d5d));
+      dialCap.setOutlineStroke(new BasicStroke(2));
+      jFreeDialPlot.setCap(dialCap);
+  
+      GradientPaint gradientpaint = new GradientPaint(new Point(), new Color(0xfcfcfc), new Point(), new Color(0xd7d8da));
+      DialBackground dialbackground = new DialBackground(gradientpaint); // specify Color here for no gradient
+      dialbackground.setGradientPaintTransformer(new StandardGradientPaintTransformer(GradientPaintTransformType.VERTICAL));
+      jFreeDialPlot.setBackground(dialbackground);
+  
+      VariableStrokePointer pointer = new VariableStrokePointer();
+      pointer.setRadius(0.9);
+      pointer.setOutlineStroke(new BasicStroke(2));
+      pointer.setWidthRadius(0.05);
+      pointer.setFillPaint(new Color(0x636363));
+      pointer.setOutlinePaint(new Color(0x5d5d5d));
+      jFreeDialPlot.addPointer(pointer);
+  
+      DialValueIndicator dialValueIndicator = new DialValueIndicator(0);
+      dialValueIndicator.setTemplateValue(chartBeansDialPlot.getScale().getMaxValue());   
+      dialValueIndicator.setFont(ChartUtils.getFont("Dialog", FontStyle.NORMAL, FontWeight.BOLD, 10));
+      dialValueIndicator.setPaint(Color.BLACK);
+      dialValueIndicator.setBackgroundPaint(Color.WHITE);
+      dialValueIndicator.setOutlineStroke(new BasicStroke(1));
+      dialValueIndicator.setOutlinePaint(new Color(0x8b8b8b));
+      jFreeDialPlot.addLayer(dialValueIndicator);
+      
+      if ((chartBeansDialPlot.getAnnotation() != null) && (chartBeansDialPlot.getAnnotation().getText() != null) && (chartBeansDialPlot.getAnnotation().getText().trim().length() > 0)) {
+        Font font = ChartUtils.getFont(chartPlotAnnotation_fontFamily, chartPlotAnnotation_fontStyle, chartPlotAnnotation_fontWeight, chartBeansDialPlot.getAnnotation().getFontSize());
+        if (font == null) {
+          font = ChartUtils.getFont(DEFAULT_FONT_FAMILY, FontStyle.NORMAL, FontWeight.NORMAL, 10);
+        }
+        DialTextAnnotation dialTextAnnotation = new DialTextAnnotation(chartBeansDialPlot.getAnnotation().getText().trim());
+        dialTextAnnotation.setFont(font);
+        dialTextAnnotation.setRadius(0.6);
+        jFreeDialPlot.addLayer(dialTextAnnotation);
+      }
+      
+      String title = "";
+      if ((chartModel.getTitle() != null) && (chartModel.getTitle().getText() != null)
+          && (chartModel.getTitle().getText().trim().length() > 0)) {
+        title = chartModel.getTitle().getText();
+      }
+      
+      JFreeChart chart = new JFreeChart(title, jFreeDialPlot);
+      initChart(chart, chartModel);
+      
+      return chart;
+  
+    }
+    
+    
+  }
+  
   protected JFreeChart makeDialChart(ChartModel chartModel, ChartTableModel data) {
     DialPlot chartBeansDialPlot = (DialPlot)chartModel.getPlot();
-
-    org.jfree.chart.plot.dial.DialPlot jFreeDialPlot = new SquareDialPlot();
-
-    final DefaultValueDataset dataset = new DefaultValueDataset();
-    dataset.setValue((Number) data.getValueAt(0, 0));
-
-    jFreeDialPlot.setDataset(dataset);
-
-    final DoubleLineDialFrame dialFrame = new DoubleLineDialFrame();
-    dialFrame.setForegroundPaint(new Color(0x8d8d8d));
-    dialFrame.setInnerForegroundPaint(new Color(0x5d5d5d));
-    dialFrame.setStroke(new BasicStroke(2));
-    dialFrame.setBackgroundPaint(Color.WHITE);
-    jFreeDialPlot.setDialFrame(dialFrame);
-
-    for (DialRange dialRange : chartBeansDialPlot.getScale()) {
-      if (dialRange.getColor() != null) {
-        SingleLineDialRange standarddialrange = new SingleLineDialRange(dialRange.getMinValue().doubleValue(), dialRange.getMaxValue().doubleValue(), new Color(0x00FFFFFF & dialRange.getColor()));
-        standarddialrange.setInnerRadius(0.4D);
-        jFreeDialPlot.addLayer(standarddialrange);
-      }
-    }
-
-    double scaleMajorTickIncrement = (chartBeansDialPlot.getScale().getMaxValue().doubleValue() - chartBeansDialPlot.getScale().getMinValue().doubleValue()) / 5;
-    FixedStandardDialScale standardDialScale = new FixedStandardDialScale(chartBeansDialPlot.getScale().getMinValue().doubleValue(), chartBeansDialPlot.getScale().getMaxValue().doubleValue(),
-        -150.0, -240.0, scaleMajorTickIncrement, 2);
-    standardDialScale.setTickRadius(0.88D);
-    standardDialScale.setTickLabelOffset(0.15D);
-    standardDialScale.setTickLabelFont(ChartUtils.getFont("sans-serif", FontStyle.NORMAL, FontWeight.NORMAL, 10));
-    standardDialScale.setTickLabelPaint(Color.BLACK);
-    standardDialScale.setMajorTickLength(0.04);
-    standardDialScale.setMajorTickPaint(Color.BLACK);
-    standardDialScale.setMajorTickStroke(new BasicStroke(2));
-    standardDialScale.setMinorTickLength(0.02);
-    standardDialScale.setMinorTickPaint(new Color(0x8b8b8b));
-    standardDialScale.setMinorTickStroke(new BasicStroke(1));
-    jFreeDialPlot.addScale(0, standardDialScale);
-
-    DialCap dialCap = new DialCap();
-    dialCap.setRadius(0.06);
-    dialCap.setFillPaint(new Color(0x636363));
-    dialCap.setOutlinePaint(new Color(0x5d5d5d));
-    dialCap.setOutlineStroke(new BasicStroke(2));
-    jFreeDialPlot.setCap(dialCap);
-
-    GradientPaint gradientpaint = new GradientPaint(new Point(), new Color(0xfcfcfc), new Point(), new Color(0xd7d8da));
-    DialBackground dialbackground = new DialBackground(gradientpaint); // specify Color here for no gradient
-    dialbackground.setGradientPaintTransformer(new StandardGradientPaintTransformer(GradientPaintTransformType.VERTICAL));
-    jFreeDialPlot.setBackground(dialbackground);
-
-    VariableStrokePointer pointer = new VariableStrokePointer();
-    pointer.setRadius(0.9);
-    pointer.setOutlineStroke(new BasicStroke(2));
-    pointer.setWidthRadius(0.05);
-    pointer.setFillPaint(new Color(0x636363));
-    pointer.setOutlinePaint(new Color(0x5d5d5d));
-    jFreeDialPlot.addPointer(pointer);
-
-    DialValueIndicator dialValueIndicator = new DialValueIndicator(0);
-    dialValueIndicator.setTemplateValue(chartBeansDialPlot.getScale().getMaxValue());   
-    dialValueIndicator.setFont(ChartUtils.getFont("Dialog", FontStyle.NORMAL, FontWeight.BOLD, 10));
-    dialValueIndicator.setPaint(Color.BLACK);
-    dialValueIndicator.setBackgroundPaint(Color.WHITE);
-    dialValueIndicator.setOutlineStroke(new BasicStroke(1));
-    dialValueIndicator.setOutlinePaint(new Color(0x8b8b8b));
-    jFreeDialPlot.addLayer(dialValueIndicator);
     
-    if ((chartBeansDialPlot.getAnnotation() != null) && (chartBeansDialPlot.getAnnotation().getText() != null) && (chartBeansDialPlot.getAnnotation().getText().trim().length() > 0)) {
-      Font font = ChartUtils.getFont(chartBeansDialPlot.getAnnotation().getFontFamily(), chartBeansDialPlot.getAnnotation().getFontStyle(), chartBeansDialPlot.getAnnotation().getFontWeight(), chartBeansDialPlot.getAnnotation().getFontSize());
-      if (font == null) {
-        font = ChartUtils.getFont("sans-serif", FontStyle.NORMAL, FontWeight.NORMAL, 10);
-      }
-      DialTextAnnotation dialTextAnnotation = new DialTextAnnotation(chartBeansDialPlot.getAnnotation().getText().trim());
-      dialTextAnnotation.setFont(font);
-      dialTextAnnotation.setRadius(0.6);
-      jFreeDialPlot.addLayer(dialTextAnnotation);
-    }
-    
-    String title = "";
-    if ((chartModel.getTitle() != null) && (chartModel.getTitle().getText() != null)
-        && (chartModel.getTitle().getText().trim().length() > 0)) {
-      title = chartModel.getTitle().getText();
-    }
-    
-    JFreeChart chart = new JFreeChart(title, jFreeDialPlot);
-    initChart(chart, chartModel);
-    
-    return chart;
+    JFreeDialChartCreator creator = new JFreeDialChartCreator();
+    creator.chartPlotAnnotation_fontFamily = chartBeansDialPlot.getAnnotation().getFontFamily();
+    creator.chartPlotAnnotation_fontStyle = chartBeansDialPlot.getAnnotation().getFontStyle();
+    creator.chartPlotAnnotation_fontWeight = chartBeansDialPlot.getAnnotation().getFontWeight();
+    return creator.createChart(chartModel, data);
   }
   
   protected void initChart(JFreeChart chart, ChartModel chartModel) {
