@@ -58,5 +58,33 @@
     </javac>
   </target>
   
-  
+  <!--=======================================================================
+      OVERRIDE javadoc
+      
+      Generates javadoc source documentation for this project
+      ====================================================================-->
+  <target name="javadoc"
+          depends="javadoc.init, compile">
+    <javadoc destdir="${javadoc.dir}/docs/api"
+             access="public"
+             source="1.5"
+             use="true"
+             notree="false"
+             nonavbar="false"
+             noindex="false"
+             splitindex="true"
+             author="true"
+             version="true"
+             maxmemory="256M"
+             nodeprecatedlist="false"
+             nodeprecated="false"
+             packagenames="${javadoc.packagenames}"
+             sourcepath="${src.dir}"
+             doctitle="${impl.title} documentation"
+             overview="${src.dir}/overview.html">
+      <!-- annotation processing writes to overview.html -->
+      <link href="http://java.sun.com/j2se/1.5.0/docs/api/" />
+      <classpath refid="classpath" />
+    </javadoc>
+  </target>
 </project>
