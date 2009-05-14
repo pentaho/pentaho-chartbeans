@@ -7,7 +7,6 @@ import java.awt.GradientPaint;
 import java.awt.Point;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.EnumSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,8 +34,8 @@ import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.StandardGradientPaintTransformer;
 import org.pentaho.chart.ChartDocumentContext;
 import org.pentaho.chart.ChartUtils;
-import org.pentaho.chart.annotations.StyleProcessor;
-import org.pentaho.chart.annotations.SupportedStyle;
+import org.pentaho.chart.annotations.style.Engine;
+import org.pentaho.chart.annotations.style.SupportedStyle;
 import org.pentaho.chart.core.ChartDocument;
 import org.pentaho.chart.core.ChartElement;
 import org.pentaho.chart.css.keys.ChartStyleKeys;
@@ -76,6 +75,7 @@ import org.pentaho.reporting.libraries.css.values.CSSConstant;
 import org.pentaho.reporting.libraries.css.values.CSSValue;
 import org.pentaho.util.messages.Messages;
 
+@Engine("JFreeChart")
 public class JFreeChartFactoryEngine implements Serializable {
 
   private static final Log logger = LogFactory.getLog(JFreeChartFactoryEngine.class);
@@ -101,9 +101,6 @@ public class JFreeChartFactoryEngine implements Serializable {
     return chartOutput;
   }
   
-  /* (non-Javadoc)
-   * @see org.pentaho.chart.plugin.api.engine.ChartFactoryEngine#makeAreaChart(org.pentaho.chart.data.ChartTableModel, org.pentaho.chart.core.ChartDocument, org.pentaho.chart.plugin.api.IOutput)
-   */
   protected JFreeChart makePieChart(ChartModel chartModel, ChartTableModel data) {
     final DefaultPieDataset dataset = new DefaultPieDataset();
     for (int row = 0; row < data.getRowCount(); row++) {
@@ -170,7 +167,7 @@ public class JFreeChartFactoryEngine implements Serializable {
     return chart;
   }
   
-  @StyleProcessor("JFreeChart")
+ 
   private class JFreeDialChartCreator {
     
     private final String DEFAULT_FONT_FAMILY = "sans-serif"; //$NON-NLS-1$
@@ -386,16 +383,10 @@ public class JFreeChartFactoryEngine implements Serializable {
     
   }
   
-  /* (non-Javadoc)
-   * @see org.pentaho.chart.plugin.api.engine.ChartFactoryEngine#makeLineChart(org.pentaho.chart.data.ChartTableModel, org.pentaho.chart.core.ChartDocument, org.pentaho.chart.plugin.api.IOutput)
-   */
   protected JFreeChart makeAreaChart(ChartModel chartModel, ChartTableModel data) {
     return makeGraphChart(chartModel, data);
   }
   
-  /* (non-Javadoc)
-   * @see org.pentaho.chart.plugin.api.engine.ChartFactoryEngine#makeLineChart(org.pentaho.chart.data.ChartTableModel, org.pentaho.chart.core.ChartDocument, org.pentaho.chart.plugin.api.IOutput)
-   */
   protected JFreeChart makeLineChart(ChartModel chartModel, ChartTableModel data) {
     return makeGraphChart(chartModel, data);
   }
@@ -537,13 +528,15 @@ public class JFreeChartFactoryEngine implements Serializable {
 
     return chart;
   }
-  /* (non-Javadoc)
-   * @see org.pentaho.chart.plugin.api.engine.ChartFactoryEngine#makeBarChart(org.pentaho.chart.data.ChartTableModel, org.pentaho.chart.core.ChartDocument, org.pentaho.chart.plugin.api.IOutput)
-   */
+  
   protected JFreeChart makeBarChart(ChartModel chartModel, ChartTableModel data) {
     return makeGraphChart(chartModel, data);
   }
 
+  /**
+   * @deprecated
+   */
+  @Deprecated
   public IOutput makeChart(final ChartTableModel data, final ChartDocumentContext chartDocumentContext, final ChartResult chartResult) {
     final ChartDocument chartDocument = chartDocumentContext.getChartDocument();
     final CSSConstant currentChartType = determineChartType(chartDocument);
@@ -605,9 +598,10 @@ public class JFreeChartFactoryEngine implements Serializable {
     return null;
   }
 
-  /* (non-Javadoc)
-   * @see org.pentaho.chart.plugin.api.engine.ChartFactoryEngine#makeAreaChart(org.pentaho.chart.data.ChartTableModel, org.pentaho.chart.core.ChartDocument, org.pentaho.chart.plugin.api.IOutput)
+  /**
+   * @deprecated
    */
+  @Deprecated
   public JFreeChart makeAreaChart(final ChartTableModel data, final ChartDocumentContext chartDocumentContext) {
     final ChartDocument chartDocument = chartDocumentContext.getChartDocument();
     final JFreeChart chart = createAreaChartSubtype(chartDocumentContext, data);
@@ -615,30 +609,40 @@ public class JFreeChartFactoryEngine implements Serializable {
     return chart;
   }
 
+  /**
+   * @deprecated
+   */
+  @Deprecated
   private JFreeChart createAreaChartSubtype(final ChartDocumentContext chartDocumentContext, final ChartTableModel data) {
     final JFreeAreaChartGeneratorFactory chartFacEngine = new JFreeAreaChartGeneratorFactory();
     final JFreeChart chart = chartFacEngine.createChart(chartDocumentContext, data);
     return chart;
   }
 
-  /* (non-Javadoc)
-   * @see org.pentaho.chart.plugin.api.engine.ChartFactoryEngine#makeAreaChart(org.pentaho.chart.data.ChartTableModel, org.pentaho.chart.core.ChartDocument, org.pentaho.chart.plugin.api.IOutput)
+  /**
+   * @deprecated
    */
+  @Deprecated
   public JFreeChart makePieChart(final ChartTableModel data, final ChartDocumentContext chartDocumentContext) {
     final JFreePieChartGeneratorFactory chartFacEngine = new JFreePieChartGeneratorFactory();
     final JFreeChart chart = chartFacEngine.createChart(chartDocumentContext, data);
     return chart;
   }
 
+  /**
+   * @deprecated
+   */
+  @Deprecated
   public JFreeChart makeDialChart(final ChartTableModel data, final ChartDocumentContext chartDocumentContext) {
     final JFreeDialChartGeneratorFactory chartFacEngine = new JFreeDialChartGeneratorFactory();
     final JFreeChart chart = chartFacEngine.createChart(chartDocumentContext, data);
     return chart;
   }
   
-  /* (non-Javadoc)
-   * @see org.pentaho.chart.plugin.api.engine.ChartFactoryEngine#makeBarChart(org.pentaho.chart.data.ChartTableModel, org.pentaho.chart.core.ChartDocument, org.pentaho.chart.plugin.api.IOutput)
+  /**
+   * @deprecated
    */
+  @Deprecated
   public JFreeChart makeBarChart(final ChartTableModel data, final ChartDocumentContext chartDocumentContext)
       throws Exception {
     final ChartDocument chartDocument = chartDocumentContext.getChartDocument();
@@ -648,15 +652,20 @@ public class JFreeChartFactoryEngine implements Serializable {
     return chart;
   }
 
+  /**
+   * @deprecated
+   */
+  @Deprecated
   private JFreeChart createBarChartSubtype(final ChartDocumentContext chartDocumentContext, final ChartTableModel data) {
     final JFreeBarChartGeneratorFactory chartFacEngine = new JFreeBarChartGeneratorFactory();
     final JFreeChart chart = chartFacEngine.createChart(chartDocumentContext, data);
     return chart;
   }
-
-  /* (non-Javadoc)
-   * @see org.pentaho.chart.plugin.api.engine.ChartFactoryEngine#makeLineChart(org.pentaho.chart.data.ChartTableModel, org.pentaho.chart.core.ChartDocument, org.pentaho.chart.plugin.api.IOutput)
+  
+  /**
+   * @deprecated
    */
+  @Deprecated
   public JFreeChart makeLineChart(final ChartTableModel data, final ChartDocumentContext chartDocumentContext)
       throws Exception {
     final ChartDocument chartDocument = chartDocumentContext.getChartDocument();
@@ -666,20 +675,20 @@ public class JFreeChartFactoryEngine implements Serializable {
     return chart;
   }
 
- /**
-   * @param chartDocumentContext
-   * @param data
-   * @return the newly created JFreeChart object
+  /**
+   * @deprecated
    */
+  @Deprecated
   private JFreeChart createLineChartSubtype(ChartDocumentContext chartDocumentContext, ChartTableModel data) {
     final JFreeLineChartGeneratorFactory chartFacEngine = new JFreeLineChartGeneratorFactory();
     final JFreeChart chart = chartFacEngine.createChart(chartDocumentContext, data);
     return chart;
   }
   
-  /* (non-Javadoc)
-   * @see org.pentaho.chart.plugin.api.engine.ChartFactoryEngine#makeAreaChart(org.pentaho.chart.data.ChartTableModel, org.pentaho.chart.core.ChartDocument, org.pentaho.chart.plugin.api.IOutput)
+  /**
+   * @deprecated
    */
+  @Deprecated
   public JFreeChart makeMultiChart(final ChartTableModel data, final ChartDocumentContext chartDocumentContext) {
     final ChartDocument chartDocument = chartDocumentContext.getChartDocument();
     final JFreeChart chart = createMultiChartSubtype(chartDocumentContext, data);
@@ -687,6 +696,10 @@ public class JFreeChartFactoryEngine implements Serializable {
     return chart;
   }
 
+  /**
+   * @deprecated
+   */
+  @Deprecated
   private JFreeChart createMultiChartSubtype(final ChartDocumentContext chartDocumentContext, final ChartTableModel data) {
     final JFreeMultiChartGeneratorFactory chartFacEngine = new JFreeMultiChartGeneratorFactory();
     final JFreeChart chart = chartFacEngine.createChart(chartDocumentContext, data);
@@ -698,7 +711,9 @@ public class JFreeChartFactoryEngine implements Serializable {
    *
    * @param chartDocument that defines what type of chart to use
    * @return a ChartType that represents the type of chart the chartDocument is requesting.
+   * @deprecated
    */
+  @Deprecated
   public CSSConstant determineChartType(final ChartDocument chartDocument) {
     final ChartElement[] elements = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_SERIES);
     for (final ChartElement element : elements) {

@@ -4,12 +4,12 @@ import java.awt.Color;
 import java.awt.Paint;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 import ofc4j.model.Chart;
 import ofc4j.model.Text;
 import ofc4j.model.axis.Axis;
 import ofc4j.model.axis.XAxis;
-import ofc4j.model.axis.XAxisLabels;
 import ofc4j.model.axis.YAxis;
 import ofc4j.model.axis.Label.Rotation;
 import ofc4j.model.elements.AreaHollowChart;
@@ -24,11 +24,10 @@ import ofc4j.model.elements.PieChart.Slice;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jfree.chart.JFreeChart;
 import org.pentaho.chart.ChartDocumentContext;
 import org.pentaho.chart.ChartUtils;
-import org.pentaho.chart.annotations.StyleProcessor;
-import org.pentaho.chart.annotations.SupportedStyle;
+import org.pentaho.chart.annotations.style.Engine;
+import org.pentaho.chart.annotations.style.SupportedStyle;
 import org.pentaho.chart.core.ChartDocument;
 import org.pentaho.chart.core.ChartElement;
 import org.pentaho.chart.css.keys.ChartStyleKeys;
@@ -60,14 +59,12 @@ import org.pentaho.reporting.libraries.css.values.CSSNumericValue;
 import org.pentaho.reporting.libraries.css.values.CSSValue;
 import org.pentaho.util.messages.Messages;
 
+@Engine("Open Flash Chart")
 public class OpenFlashChartFactoryEngine implements Serializable {
 
   private static final Log logger = LogFactory.getLog(OpenFlashChartFactoryEngine.class);
 
   private static final long serialVersionUID = -1079376910255750394L;
-
-  public OpenFlashChartFactoryEngine() {
-  }
 
   public IOutput makeChart(ChartModel chartModel, ChartTableModel chartTableModel) {
     IOutput chartOutput = null;
@@ -135,9 +132,8 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     return chart;
   }
   
-  private XAxis createXAxis(GraphPlot graphPlot, ArrayList<String> labels) {
+  private XAxis createXAxis(LabelOrientation labelOrientation, ArrayList<String> labels) {
     Rotation rotation = Rotation.HORIZONTAL;
-    LabelOrientation labelOrientation = graphPlot.getXAxis().getLabelOrientation();
     if ((labelOrientation != null) && (labelOrientation != LabelOrientation.HORIZONTAL)) {
       switch (labelOrientation) {
         case DIAGONAL:
@@ -156,121 +152,150 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     return xa;
   }
   
-  public Chart makeAreaChart(ChartModel chartModel, ChartTableModel chartTableModel) {
-    Chart chart = createBasicGraphChart(chartModel);
-    AreaPlot areaPlot = (AreaPlot)chartModel.getPlot();
 
-    ArrayList<String> domainValues = new ArrayList<String>();
-    for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
-      domainValues.add(chartTableModel.getColumnName(column));
-    }
+  private class OpenFlashChartAreaChartCreator {
+  
+    @SupportedStyle(defaultValue="HORIZONTAL", section="Line")
+    private LabelOrientation chartPlotXaxisLabel_orientation;
     
-    if (domainValues.size() > 0) {
-      chart.setXAxis(createXAxis(areaPlot, domainValues));
-    }
-
-    Palette palette = getPalette(areaPlot);
+    @SupportedStyle(beanProperty="chart.plot.palette.paint[i]", name="color", section="Area")
+    private List<Integer> chartPlotPalette;
     
-    Number maxValue = null;
-    Number minValue = null;
-    for (int row = 0; row < chartTableModel.getRowCount(); row++) {
-      AreaHollowChart areaChart = new AreaHollowChart();
-      areaChart.setHaloSize(0);
-      areaChart.setWidth(2);
-      areaChart.setDotSize(4);
+    public Chart createChart(ChartModel chartModel, ChartTableModel chartTableModel) {
+      Chart chart = createBasicGraphChart(chartModel);
+      AreaPlot areaPlot = (AreaPlot)chartModel.getPlot();
 
-      if (areaPlot.getOpacity() != null) {
-        areaChart.setAlpha(areaPlot.getOpacity());
-      }
-      if ((chartModel.getLegend() != null) && chartModel.getLegend().getVisible()) {
-        areaChart.setText(chartTableModel.getRowName(row));
-      }
-      areaChart.setTooltip("#val#");
-      if (palette.size() > row) {
-        String colorString = "#" + Integer.toHexString(0x00FFFFFF & palette.get(row));
-        areaChart.setFill(colorString);
-        areaChart.setColour(colorString);
-      }
-      ArrayList<Dot> dots = new ArrayList<Dot>();
+      ArrayList<String> domainValues = new ArrayList<String>();
       for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
-        Number value = (Number) chartTableModel.getValueAt(row, column);
-        if (maxValue == null) {
-          maxValue = value;
-        } else if (value != null) {
-          maxValue = Math.max(maxValue.doubleValue(), value.doubleValue());
-        }
-        if (minValue == null) {
-          minValue = value;
-        } else if (value != null) {
-          minValue = Math.min(minValue.doubleValue(), value.doubleValue());
-        }
-        if (value == null) {
-          dots.add(null);
-        } else {
-          dots.add(new Dot(value));
-        }
+        domainValues.add(chartTableModel.getColumnName(column));
+      }
+      
+      if (domainValues.size() > 0) {
+        chart.setXAxis(createXAxis(chartPlotXaxisLabel_orientation, domainValues));
       }
 
-      areaChart.addDots(dots);
-      chart.addElements(areaChart);
-    }
+      Number maxValue = null;
+      Number minValue = null;
+      for (int row = 0; row < chartTableModel.getRowCount(); row++) {
+        AreaHollowChart areaChart = new AreaHollowChart();
+        areaChart.setHaloSize(0);
+        areaChart.setWidth(2);
+        areaChart.setDotSize(4);
 
-    if ((maxValue != null) && (minValue != null)) {
-      YAxis yAxis = new YAxis();
-      setAxisRange(yAxis, areaPlot, minValue, maxValue);
-      chart.setYAxis(yAxis);
-    }
+        if (areaPlot.getOpacity() != null) {
+          areaChart.setAlpha(areaPlot.getOpacity());
+        }
+        if ((chartModel.getLegend() != null) && chartModel.getLegend().getVisible()) {
+          areaChart.setText(chartTableModel.getRowName(row));
+        }
+        areaChart.setTooltip("#val#");
+        if (chartPlotPalette.size() > row) {
+          String colorString = "#" + Integer.toHexString(0x00FFFFFF & chartPlotPalette.get(row));
+          areaChart.setFill(colorString);
+          areaChart.setColour(colorString);
+        }
+        ArrayList<Dot> dots = new ArrayList<Dot>();
+        for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
+          Number value = (Number) chartTableModel.getValueAt(row, column);
+          if (maxValue == null) {
+            maxValue = value;
+          } else if (value != null) {
+            maxValue = Math.max(maxValue.doubleValue(), value.doubleValue());
+          }
+          if (minValue == null) {
+            minValue = value;
+          } else if (value != null) {
+            minValue = Math.min(minValue.doubleValue(), value.doubleValue());
+          }
+          if (value == null) {
+            dots.add(null);
+          } else {
+            dots.add(new Dot(value));
+          }
+        }
 
-    return chart;
+        areaChart.addDots(dots);
+        chart.addElements(areaChart);
+      }
+
+      if ((maxValue != null) && (minValue != null)) {
+        YAxis yAxis = new YAxis();
+        setAxisRange(yAxis, areaPlot, minValue, maxValue);
+        chart.setYAxis(yAxis);
+      }
+
+      return chart;
+    }
   }
+  
+  public Chart makeAreaChart(ChartModel chartModel, ChartTableModel chartTableModel) {
+    AreaPlot areaPlot = (AreaPlot) chartModel.getPlot();
+    OpenFlashChartAreaChartCreator creator = new OpenFlashChartAreaChartCreator();
+    creator.chartPlotXaxisLabel_orientation = areaPlot.getXAxis().getLabelOrientation();
+    creator.chartPlotPalette = getPalette(areaPlot);
+    return creator.createChart(chartModel, chartTableModel);
+  }
+  
+  private class OpenFlashChartPieChartCreator {
+  
+    @SupportedStyle(beanProperty="chart.plot.palette.paint[i]", name="color", section="Pie")
+    private List<Integer> chartPlotPalette;
+    
+    public Chart createChart(ChartModel chartModel, ChartTableModel chartTableModel) {
+      PieChart pieChart = new PieChart();
+      PiePlot piePlot = (PiePlot)chartModel.getPlot();
+      pieChart.setAnimate(piePlot.getAnimate());
+      pieChart.setBorder(2);
+      if (piePlot.getLabels().getVisible() && (piePlot.getLabels().getFontSize() != null)) {
+        pieChart.setFontSize(piePlot.getLabels().getFontSize());
+      }
+      
+      if (piePlot.getStartAngle() != null) {
+        pieChart.setStartAngle(piePlot.getStartAngle());
+      }
+
+      if (piePlot.getOpacity() != null) {
+        pieChart.setAlpha(piePlot.getOpacity());
+      }
+
+      ArrayList<Slice> slices = new ArrayList<Slice>();
+      for (int row = 0; row < chartTableModel.getRowCount(); row++) {
+        Number value = (Number) chartTableModel.getValueAt(row, 0);
+        if (value instanceof Number) {
+          Slice slice = null;
+          if (piePlot.getLabels().getVisible()) {
+            slice = new Slice(value, "#val#", chartTableModel.getRowName(row));
+          } else {
+            slice = new Slice(value, "#val#");
+            slice.setTooltip(chartTableModel.getRowName(row) + " - " + value.toString());
+          }
+          slices.add(slice);
+        }
+      }
+      pieChart.addSlices(slices);
+      
+      ArrayList<String> strColors = new ArrayList<String>();
+      for (Integer color : chartPlotPalette) {
+        strColors.add("#" + Integer.toHexString(0x00FFFFFF & color));
+      }
+      pieChart.setColours(strColors);
+
+      Chart chart = createBasicChart(chartModel);
+      chart.addElements(pieChart);
+      return chart;
+      
+    }
+  }
+
   
   public Chart makePieChart(ChartModel chartModel, ChartTableModel chartTableModel) {
-    PieChart pieChart = new PieChart();
-    PiePlot piePlot = (PiePlot)chartModel.getPlot();
-    pieChart.setAnimate(piePlot.getAnimate());
-    pieChart.setBorder(2);
-    if (piePlot.getLabels().getVisible() && (piePlot.getLabels().getFontSize() != null)) {
-      pieChart.setFontSize(piePlot.getLabels().getFontSize());
-    }
-    
-    if (piePlot.getStartAngle() != null) {
-      pieChart.setStartAngle(piePlot.getStartAngle());
-    }
-
-    if (piePlot.getOpacity() != null) {
-      pieChart.setAlpha(piePlot.getOpacity());
-    }
-
-    ArrayList<Slice> slices = new ArrayList<Slice>();
-    for (int row = 0; row < chartTableModel.getRowCount(); row++) {
-      Number value = (Number) chartTableModel.getValueAt(row, 0);
-      if (value instanceof Number) {
-        Slice slice = null;
-        if (piePlot.getLabels().getVisible()) {
-          slice = new Slice(value, "#val#", chartTableModel.getRowName(row));
-        } else {
-          slice = new Slice(value, "#val#");
-          slice.setTooltip(chartTableModel.getRowName(row) + " - " + value.toString());
-        }
-        slices.add(slice);
-      }
-    }
-    pieChart.addSlices(slices);
-
-    Palette palette = getPalette(piePlot);
-    
-    ArrayList<String> strColors = new ArrayList<String>();
-    for (Integer color : palette) {
-      strColors.add("#" + Integer.toHexString(0x00FFFFFF & color));
-    }
-    pieChart.setColours(strColors);
-
-    Chart chart = createBasicChart(chartModel);
-    chart.addElements(pieChart);
-    return chart;
+    PiePlot piePlot = (PiePlot) chartModel.getPlot();
+    OpenFlashChartPieChartCreator creator = new OpenFlashChartPieChartCreator();
+    creator.chartPlotPalette = getPalette(piePlot);
+    return creator.createChart(chartModel, chartTableModel);
   }
   
-  private Palette getPalette(Plot plot) {
+  private List<Integer> getPalette(Plot plot) {
     Palette palette = new Palette();
     if (plot.getPalette() != null) {
       palette.addAll(plot.getPalette());
@@ -318,164 +343,187 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     axis.setRange(minValue.intValue(), maxValue.intValue(), stepSize);
   }
     
-  public Chart makeBarChart(ChartModel chartModel, ChartTableModel chartTableModel) {
-
-    Chart chart = createBasicGraphChart(chartModel);
-    BarPlot barPlot = (BarPlot) chartModel.getPlot();
-
-    Palette palette = getPalette(barPlot);
+  private class OpenFlashChartBarChartCreator {
+  
+    @SupportedStyle(defaultValue="HORIZONTAL", section="Bar")
+    private LabelOrientation chartPlotXaxisLabel_orientation;
     
-    if (Orientation.HORIZONTAL.equals(barPlot.getOrientation())) {
-      ArrayList<String> categories = new ArrayList<String>();
-      for (int i = 0; i < chartTableModel.getColumnCount(); i++) {
-        categories.add(chartTableModel.getColumnName(i));
-      }
-      if (categories.size() > 0) {
-        YAxis ya = new YAxis();
-        ya.setLabels(categories.toArray(new String[0]));
-        ya.setMax(categories.size());
-        chart.setYAxis(ya);
-      }
+    @SupportedStyle(defaultValue="0", section="Bar")
+    private Float chartPlot_opacity;
+    
+    @SupportedStyle(beanProperty="chart.plot.palette.paint[i]", name="color", section="Line")
+    private List<Integer> chartPlotPalette;
+    
+    public Chart createChart(ChartModel chartModel, ChartTableModel chartTableModel) {
+      Chart chart = createBasicGraphChart(chartModel);
+      BarPlot barPlot = (BarPlot) chartModel.getPlot();
 
-      Number maxValue = null;
-      Number minValue = null;
+      if (Orientation.HORIZONTAL.equals(barPlot.getOrientation())) {
+        ArrayList<String> categories = new ArrayList<String>();
+        for (int i = 0; i < chartTableModel.getColumnCount(); i++) {
+          categories.add(chartTableModel.getColumnName(i));
+        }
+        if (categories.size() > 0) {
+          YAxis ya = new YAxis();
+          ya.setLabels(categories.toArray(new String[0]));
+          ya.setMax(categories.size());
+          chart.setYAxis(ya);
+        }
 
-        
-      for (int row = 0; row < chartTableModel.getRowCount(); row++) {
-        HorizontalBarChart horizontalBarChart = new HorizontalBarChart();
-        if ((chartModel.getLegend() != null) && chartModel.getLegend().getVisible()) {
-          horizontalBarChart.setText(chartTableModel.getRowName(row));
-        }
-        horizontalBarChart.setTooltip("#val#");
-        if (barPlot.getOpacity() != null) {
-          horizontalBarChart.setAlpha(barPlot.getOpacity());
-        }
-        if (palette.size() > row) {
-          horizontalBarChart.setColour("#" + Integer.toHexString(0x00FFFFFF & palette.get(row)));
-        }
-        
-        ArrayList<ofc4j.model.elements.HorizontalBarChart.Bar> bars = new ArrayList<ofc4j.model.elements.HorizontalBarChart.Bar>();
-        for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
-          Number value = (Number) chartTableModel.getValueAt(row, column);
-          if (maxValue == null) {
-            maxValue = value;
-          } else if (value != null) {
-            maxValue = Math.max(maxValue.doubleValue(), value.doubleValue());
+        Number maxValue = null;
+        Number minValue = null;
+
+          
+        for (int row = 0; row < chartTableModel.getRowCount(); row++) {
+          HorizontalBarChart horizontalBarChart = new HorizontalBarChart();
+          if ((chartModel.getLegend() != null) && chartModel.getLegend().getVisible()) {
+            horizontalBarChart.setText(chartTableModel.getRowName(row));
           }
-          if (minValue == null) {
-            minValue = value;
-          } else if (value != null) {
-            minValue = Math.min(minValue.doubleValue(), value.doubleValue());
+          horizontalBarChart.setTooltip("#val#");
+          if (barPlot.getOpacity() != null) {
+            horizontalBarChart.setAlpha(chartPlot_opacity);
           }
-          if (value == null) {
-            bars.add(null);
+          if (chartPlotPalette.size() > row) {
+            horizontalBarChart.setColour("#" + Integer.toHexString(0x00FFFFFF & chartPlotPalette.get(row)));
+          }
+          
+          ArrayList<ofc4j.model.elements.HorizontalBarChart.Bar> bars = new ArrayList<ofc4j.model.elements.HorizontalBarChart.Bar>();
+          for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
+            Number value = (Number) chartTableModel.getValueAt(row, column);
+            if (maxValue == null) {
+              maxValue = value;
+            } else if (value != null) {
+              maxValue = Math.max(maxValue.doubleValue(), value.doubleValue());
+            }
+            if (minValue == null) {
+              minValue = value;
+            } else if (value != null) {
+              minValue = Math.min(minValue.doubleValue(), value.doubleValue());
+            }
+            if (value == null) {
+              bars.add(null);
+            } else {
+              bars.add(new ofc4j.model.elements.HorizontalBarChart.Bar(value));
+            }
+          }
+
+          horizontalBarChart.addBars(bars);
+          chart.addElements(horizontalBarChart);
+        }
+
+        if ((maxValue != null) && (minValue != null)) {
+          XAxis xAxis = new XAxis();
+          setAxisRange(xAxis, barPlot, minValue, maxValue);
+          Rotation rotation = Rotation.HORIZONTAL;
+          LabelOrientation labelOrientation = barPlot.getXAxis().getLabelOrientation();
+          if ((labelOrientation != null) && (labelOrientation != LabelOrientation.HORIZONTAL)) {
+            switch (labelOrientation) {
+              case DIAGONAL:
+                rotation = Rotation.DIAGONAL;
+                break;
+              case VERTICAL:
+                rotation = Rotation.VERTICAL;
+                break;
+            }
+            xAxis.getLabels().setRotation(rotation);
+          }
+          chart.setXAxis(xAxis);
+        }
+      } else {
+
+        ArrayList<String> categories = new ArrayList<String>();
+        for (int i = 0; i < chartTableModel.getColumnCount(); i++) {
+          categories.add(chartTableModel.getColumnName(i));
+        }
+        
+        if (categories.size() > 0) {
+          chart.setXAxis(createXAxis(chartPlotXaxisLabel_orientation, categories));
+        }
+
+        Number maxValue = null;
+        Number minValue = null;
+        for (int row = 0; row < chartTableModel.getRowCount(); row++) {
+          BarChart verticalBarChart = null;
+          if (barPlot.getFlavor() != null) {
+            switch (barPlot.getFlavor()) {
+              case THREED:
+                verticalBarChart = new BarChart(Style.THREED);
+                break;
+              case GLASS:
+                verticalBarChart = new BarChart(Style.GLASS);
+                break;
+              default:
+                verticalBarChart = new BarChart();
+                break;
+            }
           } else {
-            bars.add(new ofc4j.model.elements.HorizontalBarChart.Bar(value));
+            verticalBarChart = new BarChart();
           }
+          
+          if ((chartModel.getLegend() != null) && chartModel.getLegend().getVisible()) {
+            verticalBarChart.setText(chartTableModel.getRowName(row));
+          }
+          verticalBarChart.setTooltip("#val#");
+          if (barPlot.getOpacity() != null) {
+            verticalBarChart.setAlpha(chartPlot_opacity);
+          }
+          if (chartPlotPalette.size() > row) {
+            verticalBarChart.setColour("#" + Integer.toHexString(0x00FFFFFF & chartPlotPalette.get(row)));
+          }
+          ArrayList<Bar> bars = new ArrayList<Bar>();
+          for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
+            Number value = (Number) chartTableModel.getValueAt(row, column);
+            if (maxValue == null) {
+              maxValue = value;
+            } else if (value != null) {
+              maxValue = Math.max(maxValue.doubleValue(), value.doubleValue());
+            }
+            if (minValue == null) {
+              minValue = value;
+            } else if (value != null) {
+              minValue = Math.min(minValue.doubleValue(), value.doubleValue());
+            }
+            if (value == null) {
+              bars.add(null);
+            } else {
+              bars.add(new Bar(value));
+            }
+          }
+
+          verticalBarChart.addBars(bars);
+          chart.addElements(verticalBarChart);
         }
 
-        horizontalBarChart.addBars(bars);
-        chart.addElements(horizontalBarChart);
+        if ((maxValue != null) && (minValue != null)) {
+          YAxis yAxis = new YAxis();
+          setAxisRange(yAxis, barPlot, minValue, maxValue);
+          chart.setYAxis(yAxis);
+        }
       }
 
-      if ((maxValue != null) && (minValue != null)) {
-        XAxis xAxis = new XAxis();
-        setAxisRange(xAxis, barPlot, minValue, maxValue);
-        Rotation rotation = Rotation.HORIZONTAL;
-        LabelOrientation labelOrientation = barPlot.getXAxis().getLabelOrientation();
-        if ((labelOrientation != null) && (labelOrientation != LabelOrientation.HORIZONTAL)) {
-          switch (labelOrientation) {
-            case DIAGONAL:
-              rotation = Rotation.DIAGONAL;
-              break;
-            case VERTICAL:
-              rotation = Rotation.VERTICAL;
-              break;
-          }
-          xAxis.getLabels().setRotation(rotation);
-        }
-        chart.setXAxis(xAxis);
-      }
-    } else {
-
-      ArrayList<String> categories = new ArrayList<String>();
-      for (int i = 0; i < chartTableModel.getColumnCount(); i++) {
-        categories.add(chartTableModel.getColumnName(i));
-      }
-      
-      if (categories.size() > 0) {
-        chart.setXAxis(createXAxis(barPlot, categories));
-      }
-
-      Number maxValue = null;
-      Number minValue = null;
-      for (int row = 0; row < chartTableModel.getRowCount(); row++) {
-        BarChart verticalBarChart = null;
-        if (barPlot.getFlavor() != null) {
-          switch (barPlot.getFlavor()) {
-            case THREED:
-              verticalBarChart = new BarChart(Style.THREED);
-              break;
-            case GLASS:
-              verticalBarChart = new BarChart(Style.GLASS);
-              break;
-            default:
-              verticalBarChart = new BarChart();
-              break;
-          }
-        } else {
-          verticalBarChart = new BarChart();
-        }
-        
-        if ((chartModel.getLegend() != null) && chartModel.getLegend().getVisible()) {
-          verticalBarChart.setText(chartTableModel.getRowName(row));
-        }
-        verticalBarChart.setTooltip("#val#");
-        if (barPlot.getOpacity() != null) {
-          verticalBarChart.setAlpha(barPlot.getOpacity());
-        }
-        if (palette.size() > row) {
-          verticalBarChart.setColour("#" + Integer.toHexString(0x00FFFFFF & palette.get(row)));
-        }
-        ArrayList<Bar> bars = new ArrayList<Bar>();
-        for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
-          Number value = (Number) chartTableModel.getValueAt(row, column);
-          if (maxValue == null) {
-            maxValue = value;
-          } else if (value != null) {
-            maxValue = Math.max(maxValue.doubleValue(), value.doubleValue());
-          }
-          if (minValue == null) {
-            minValue = value;
-          } else if (value != null) {
-            minValue = Math.min(minValue.doubleValue(), value.doubleValue());
-          }
-          if (value == null) {
-            bars.add(null);
-          } else {
-            bars.add(new Bar(value));
-          }
-        }
-
-        verticalBarChart.addBars(bars);
-        chart.addElements(verticalBarChart);
-      }
-
-      if ((maxValue != null) && (minValue != null)) {
-        YAxis yAxis = new YAxis();
-        setAxisRange(yAxis, barPlot, minValue, maxValue);
-        chart.setYAxis(yAxis);
-      }
+      return chart;
     }
-
-    return chart;
   }
   
-  @StyleProcessor("Open Flash Chart")
+  public Chart makeBarChart(ChartModel chartModel, ChartTableModel chartTableModel) {
+    BarPlot barPlot = (BarPlot) chartModel.getPlot();
+    OpenFlashChartBarChartCreator creator = new OpenFlashChartBarChartCreator();
+    creator.chartPlotXaxisLabel_orientation = barPlot.getXAxis().getLabelOrientation();
+    creator.chartPlot_opacity = barPlot.getOpacity();
+    creator.chartPlotPalette = getPalette(barPlot);
+    return creator.createChart(chartModel, chartTableModel);
+  }
+  
   private class OpenFlashChartLineChartCreator {
     
     @SupportedStyle(defaultValue="0", section="Line")
     private Float chartPlot_opacity;
+    
+    @SupportedStyle(defaultValue="HORIZONTAL", section="Line")
+    private LabelOrientation chartPlotXaxisLabel_orientation;
+    
+    @SupportedStyle(beanProperty="chart.plot.palette.paint[i]", name="color", section="Line")
+    private List<Integer> chartPlotPalette;
     
     public Chart createChart(ChartModel chartModel, ChartTableModel chartTableModel) {
       Chart chart = createBasicGraphChart(chartModel);
@@ -486,13 +534,13 @@ public class OpenFlashChartFactoryEngine implements Serializable {
         domainValues.add(chartTableModel.getColumnName(column));
       }
       if (domainValues.size() > 0) {
-        chart.setXAxis(createXAxis(linePlot, domainValues));
+        chart.setXAxis(createXAxis(chartPlotXaxisLabel_orientation, domainValues));
       }
 
       Number maxValue = null;
       Number minValue = null;
       
-      Palette palette = getPalette(linePlot);
+      
 
       for (int row = 0; row < chartTableModel.getRowCount(); row++) {
         LineChart lineChart = new LineChart(LineChart.Style.DOT);
@@ -509,8 +557,8 @@ public class OpenFlashChartFactoryEngine implements Serializable {
         
         lineChart.setTooltip("#val#");
         
-        if (palette.size() > row) {
-          lineChart.setColour("#" + Integer.toHexString(0x00FFFFFF & palette.get(row)));
+        if (chartPlotPalette.size() > row) {
+          lineChart.setColour("#" + Integer.toHexString(0x00FFFFFF & chartPlotPalette.get(row)));
         }
         
         ArrayList<Dot> dots = new ArrayList<Dot>();
@@ -552,12 +600,15 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     LinePlot linePlot = (LinePlot)chartModel.getPlot();
     OpenFlashChartLineChartCreator creator = new OpenFlashChartLineChartCreator();
     creator.chartPlot_opacity = linePlot.getOpacity();
+    creator.chartPlotXaxisLabel_orientation = linePlot.getXAxis().getLabelOrientation();
+    creator.chartPlotPalette = getPalette(linePlot);
     return creator.createChart(chartModel, chartTableModel);
   }
   
   /**
    * @deprecated
    */
+  @Deprecated
   public IOutput makeChart(ChartTableModel data, ChartDocumentContext chartDocumentContext, ChartResult chartResult) {
     final CSSConstant currentChartType = determineChartType(chartDocumentContext.getChartDocument());
     IOutput chartOutput = null;
@@ -586,6 +637,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
   /**
    * @deprecated
    */
+  @Deprecated
   public Chart makeAreaChart(final ChartTableModel chartTableModel, final ChartDocumentContext chartDocumentContext) {
     ChartDocument chartDocument = chartDocumentContext.getChartDocument();
     Chart chart = createBasicGraphChart(chartDocument);
@@ -669,6 +721,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
   /**
    * @deprecated
    */
+  @Deprecated
   public Chart makePieChart(final ChartTableModel chartTableModel, final ChartDocumentContext chartDocumentContext) {
     ChartDocument chartDocument = chartDocumentContext.getChartDocument();
 
@@ -713,6 +766,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
   /**
    * @deprecated
    */
+  @Deprecated
   public Chart makeDialChart(final ChartTableModel data, final ChartDocumentContext chartDocumentContext) {
     Chart chartData = new Chart("The Title", "font-size: 14px; font-family: Verdana; text-align: center;");
     return chartData;
@@ -721,6 +775,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
   /**
    * @deprecated
    */
+  @Deprecated
   private String createCssFontStyleString(ChartElement element) {
     StringBuffer cssStyleString = new StringBuffer();
     String fontFamily = ChartUtils.getFontFamily(element);
@@ -750,6 +805,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
   /**
    * @deprecated
    */
+  @Deprecated
   private Chart createBasicGraphChart(ChartDocument chartDocument) {
     Chart chart = createBasicChart(chartDocument);
 
@@ -769,6 +825,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
   /**
   * @deprecated
   */
+  @Deprecated
   private Chart createBasicChart(ChartDocument chartDocument) {
     String chartTitle = null;
     String cssFontStyleString = null;
@@ -808,6 +865,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
   /**
    * @deprecated
    */
+  @Deprecated
   private boolean showLegend(ChartDocument chartDocument) {
     ChartElement[] children = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_LEGEND); //$NON-NLS-1$
     return (children != null) && (children.length > 0);
@@ -816,6 +874,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
   /**
    * @deprecated
    */
+  @Deprecated
   public Chart makeBarChart(final ChartTableModel chartTableModel, final ChartDocumentContext chartDocumentContext)
       throws Exception {
 
@@ -987,6 +1046,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
   /**
    * @deprecated
    */
+  @Deprecated
   public boolean getAnimate(ChartDocument chartDocument) {
     final ChartElement[] children = chartDocument.getRootElement().findChildrenByName("animate"); //$NON-NLS-1$
     return children != null && (children.length > 0) && Boolean.valueOf(children[0].getText());
@@ -995,6 +1055,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
   /**
    * @deprecated
    */
+  @Deprecated
   private CSSValue getPlotOrientation(final ChartDocument chartDocument) {
     CSSValue plotOrient = null;
     final ChartElement plotElement = chartDocument.getPlotElement();
@@ -1010,6 +1071,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
   /**
    * @deprecated
    */
+  @Deprecated
   public Chart makeLineChart(final ChartTableModel chartTableModel, final ChartDocumentContext chartDocumentContext) {
 
     ChartDocument chartDocument = chartDocumentContext.getChartDocument();
@@ -1093,6 +1155,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
   /**
    * @deprecated
    */
+  @Deprecated
   public CSSConstant determineChartType(final ChartDocument chartDocument) {
     final ChartElement[] elements = chartDocument.getRootElement().findChildrenByName(ChartElement.TAG_NAME_SERIES);
     for (final ChartElement element : elements) {
@@ -1117,6 +1180,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
   /**
    * @deprecated
    */
+  @Deprecated
   public Text getText(final ChartDocument chartDocument, String elementName) {
     Text text = null;
     ChartElement[] children = chartDocument.getRootElement().findChildrenByName(elementName); //$NON-NLS-1$

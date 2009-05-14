@@ -593,7 +593,7 @@ public class PluginTest extends TestCase {
       for (int row = 0; row < chartData.length; row++) {
         for (int column = 0; column < chartData[row].length; column++) {
           if (column == 1) {
-            assertTrue(jsonString.indexOf("{\"value\":" + chartData[row][1].toString()) >= 0);
+            assertTrue(jsonString.indexOf("\"value\":" + chartData[row][1].toString()) >= 0);
           } else {
             assertTrue(jsonString.indexOf(chartData[row][column].toString()) >= 0);
           }
