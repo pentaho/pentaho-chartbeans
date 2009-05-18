@@ -161,7 +161,7 @@ public class JFreeChartFactoryEngine implements Serializable {
       jFreePiePlot.setLabelGenerator(null);
     }
     
-    jFreePiePlot.setStartAngle(chartBeansPiePlot.getStartAngle());
+    jFreePiePlot.setStartAngle(-chartBeansPiePlot.getStartAngle());
     
     
     return chart;
