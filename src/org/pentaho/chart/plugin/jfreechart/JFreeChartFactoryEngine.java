@@ -42,14 +42,12 @@ import org.pentaho.chart.data.ChartTableModel;
 import org.pentaho.chart.model.AreaPlot;
 import org.pentaho.chart.model.BarPlot;
 import org.pentaho.chart.model.ChartModel;
-import org.pentaho.chart.model.ChartTitle;
 import org.pentaho.chart.model.DialPlot;
 import org.pentaho.chart.model.GraphPlot;
 import org.pentaho.chart.model.LinePlot;
 import org.pentaho.chart.model.StyledText;
 import org.pentaho.chart.model.Axis.LabelOrientation;
 import org.pentaho.chart.model.BarPlot.BarPlotFlavor;
-import org.pentaho.chart.model.ChartTitle.TitleLocation;
 import org.pentaho.chart.model.CssStyle.FontStyle;
 import org.pentaho.chart.model.CssStyle.FontWeight;
 import org.pentaho.chart.model.DialPlot.DialRange;
@@ -500,6 +498,23 @@ public class JFreeChartFactoryEngine implements Serializable {
       }
     }
 
+    Font yAxisFont = ChartUtils.getFont(graphPlot.getYAxis().getFontFamily(), graphPlot.getYAxis().getFontStyle(), graphPlot.getYAxis().getFontWeight(), graphPlot.getYAxis().getFontSize());
+    Font xAxisFont = ChartUtils.getFont(graphPlot.getXAxis().getFontFamily(), graphPlot.getXAxis().getFontStyle(), graphPlot.getXAxis().getFontWeight(), graphPlot.getXAxis().getFontSize());
+    Font domainAxisFont = null;
+    Font rangeAxisFont = null;
+    if (graphPlot.getOrientation() == Orientation.HORIZONTAL) {
+      rangeAxisFont = xAxisFont;
+      domainAxisFont = yAxisFont;
+    } else {
+      domainAxisFont = xAxisFont;
+      rangeAxisFont = yAxisFont;
+    }
+    if (domainAxisFont != null) {
+      domainAxis.setTickLabelFont(domainAxisFont);
+    }
+    if (rangeAxisFont != null) {
+      valueAxis.setTickLabelFont(rangeAxisFont);
+    }
     return chart;
   }
   /* (non-Javadoc)

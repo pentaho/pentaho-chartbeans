@@ -7,9 +7,7 @@ import java.util.ArrayList;
 
 import ofc4j.model.Chart;
 import ofc4j.model.Text;
-import ofc4j.model.axis.Axis;
 import ofc4j.model.axis.XAxis;
-import ofc4j.model.axis.XAxisLabels;
 import ofc4j.model.axis.YAxis;
 import ofc4j.model.axis.Label.Rotation;
 import ofc4j.model.elements.AreaHollowChart;
@@ -62,6 +60,18 @@ public class OpenFlashChartFactoryEngine implements Serializable {
   private static final Log logger = LogFactory.getLog(OpenFlashChartFactoryEngine.class);
 
   private static final long serialVersionUID = -1079376910255750394L;
+  
+  private class RangeDescription {
+    private RangeDescription(int minValue, int maxValue, int stepSize) {
+      this.maxValue= maxValue;
+      this.minValue = minValue;
+      this.stepSize = stepSize;
+    }
+    
+    int minValue;
+    int maxValue;
+    int stepSize;
+  }
 
   public OpenFlashChartFactoryEngine() {
   }
@@ -132,6 +142,33 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     return chart;
   }
   
+  private YAxis createYAxis(RangeDescription rangeDescription) {
+    
+    YAxis ya = new YAxis();
+    ya.setRange(rangeDescription.minValue, rangeDescription.maxValue, rangeDescription.stepSize);
+    return ya;
+  }
+  
+  private XAxis createXAxis(GraphPlot graphPlot, RangeDescription rangeDescription) {
+    Rotation rotation = Rotation.HORIZONTAL;
+    LabelOrientation labelOrientation = graphPlot.getXAxis().getLabelOrientation();
+    if ((labelOrientation != null) && (labelOrientation != LabelOrientation.HORIZONTAL)) {
+      switch (labelOrientation) {
+        case DIAGONAL:
+          rotation = Rotation.DIAGONAL;
+          break;
+        case VERTICAL:
+          rotation = Rotation.VERTICAL;
+          break;
+      }
+    }
+    
+    XAxis xa = new XAxis();
+    xa.setRange(rangeDescription.minValue, rangeDescription.maxValue, rangeDescription.stepSize);
+    xa.getLabels().setRotation(rotation);
+    return xa;
+  }
+  
   private XAxis createXAxis(GraphPlot graphPlot, ArrayList<String> labels) {
     Rotation rotation = Rotation.HORIZONTAL;
     LabelOrientation labelOrientation = graphPlot.getXAxis().getLabelOrientation();
@@ -151,6 +188,13 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     xa.getLabels().setRotation(rotation);
     xa.setMax(labels.size() - 1);
     return xa;
+  }
+  
+  private YAxis createYAxis(ArrayList<String> labels) {
+    YAxis ya = new YAxis();
+    ya.setLabels(labels.toArray(new String[0]));
+    ya.setMax(labels.size());
+    return ya;
   }
   
   public Chart makeAreaChart(ChartModel chartModel, ChartTableModel chartTableModel) {
@@ -213,9 +257,8 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     }
 
     if ((maxValue != null) && (minValue != null)) {
-      YAxis yAxis = new YAxis();
-      setAxisRange(yAxis, areaPlot, minValue, maxValue);
-      chart.setYAxis(yAxis);
+      RangeDescription rangeDescription = getRangeDescription(areaPlot, minValue, maxValue);
+      chart.setYAxis(createYAxis(rangeDescription));
     }
 
     return chart;
@@ -280,7 +323,9 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     return palette;
   }
   
-  private void setAxisRange(Axis axis, GraphPlot graphPlot, Number minDataValue, Number maxDataValue) {
+  
+  private RangeDescription getRangeDescription(GraphPlot graphPlot, Number minDataValue, Number maxDataValue) {
+    
     Number minValue = minDataValue.doubleValue();
     Number maxValue = maxDataValue.doubleValue();
     if ((graphPlot.getMinValue() != null) && (graphPlot.getMinValue().doubleValue() <= minDataValue.doubleValue())) {
@@ -312,9 +357,10 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     if ((maxValue.doubleValue() % stepSize) != 0) {
       maxValue = (maxValue.doubleValue() - (maxValue.doubleValue() % stepSize)) + stepSize;
     }
-    axis.setRange(minValue.intValue(), maxValue.intValue(), stepSize);
-  }
     
+    return new RangeDescription(minValue.intValue(), maxValue.intValue(), stepSize);
+  }
+  
   public Chart makeBarChart(ChartModel chartModel, ChartTableModel chartTableModel) {
 
     Chart chart = createBasicGraphChart(chartModel);
@@ -328,10 +374,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
         categories.add(chartTableModel.getColumnName(i));
       }
       if (categories.size() > 0) {
-        YAxis ya = new YAxis();
-        ya.setLabels(categories.toArray(new String[0]));
-        ya.setMax(categories.size());
-        chart.setYAxis(ya);
+        chart.setYAxis(createYAxis(categories));
       }
 
       Number maxValue = null;
@@ -376,21 +419,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       }
 
       if ((maxValue != null) && (minValue != null)) {
-        XAxis xAxis = new XAxis();
-        setAxisRange(xAxis, barPlot, minValue, maxValue);
-        Rotation rotation = Rotation.HORIZONTAL;
-        LabelOrientation labelOrientation = barPlot.getXAxis().getLabelOrientation();
-        if ((labelOrientation != null) && (labelOrientation != LabelOrientation.HORIZONTAL)) {
-          switch (labelOrientation) {
-            case DIAGONAL:
-              rotation = Rotation.DIAGONAL;
-              break;
-            case VERTICAL:
-              rotation = Rotation.VERTICAL;
-              break;
-          }
-          xAxis.getLabels().setRotation(rotation);
-        }
+        XAxis xAxis = createXAxis(barPlot, getRangeDescription(barPlot, minValue, maxValue));
         chart.setXAxis(xAxis);
       }
     } else {
@@ -459,9 +488,8 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       }
 
       if ((maxValue != null) && (minValue != null)) {
-        YAxis yAxis = new YAxis();
-        setAxisRange(yAxis, barPlot, minValue, maxValue);
-        chart.setYAxis(yAxis);
+        RangeDescription rangeDescription = getRangeDescription(barPlot, minValue, maxValue);
+        chart.setYAxis(createYAxis(rangeDescription));
       }
     }
 
@@ -530,9 +558,8 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     }
 
     if ((maxValue != null) && (minValue != null)) {
-      YAxis yAxis = new YAxis();
-      setAxisRange(yAxis, linePlot, minValue, maxValue);
-      chart.setYAxis(yAxis);
+      RangeDescription rangeDescription = getRangeDescription(linePlot, minValue, maxValue);
+      chart.setYAxis(createYAxis(rangeDescription));
     }
 
     return chart;
@@ -831,10 +858,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
         categories.add(chartTableModel.getColumnName(i));
       }
       if (categories.size() > 0) {
-        YAxis ya = new YAxis();
-        ya.setLabels(categories.toArray(new String[0]));
-        ya.setMax(categories.size());
-        chart.setYAxis(ya);
+        chart.setYAxis(createYAxis(categories));
       }
 
       Number maxValue = null;
