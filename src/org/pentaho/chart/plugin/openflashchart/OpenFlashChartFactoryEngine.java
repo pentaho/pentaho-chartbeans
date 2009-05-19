@@ -335,7 +335,13 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     }
     
     if (graphPlot.getMaxValue() != null) {
-      maxValue = Math.max(graphPlot.getMaxValue().doubleValue(), maxValue.doubleValue());
+      maxValue = graphPlot.getMaxValue().doubleValue();
+//      maxValue = Math.max(graphPlot.getMaxValue().doubleValue(), maxValue.doubleValue());
+    }
+    
+    if (graphPlot.getMinValue() != null) {
+      minValue = graphPlot.getMinValue().doubleValue();
+//      maxValue = Math.max(graphPlot.getMaxValue().doubleValue(), maxValue.doubleValue());
     }
     
     minValue = Math.floor(minValue.doubleValue());
