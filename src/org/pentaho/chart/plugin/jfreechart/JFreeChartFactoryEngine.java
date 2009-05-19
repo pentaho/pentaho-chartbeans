@@ -15,6 +15,7 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.CategoryLabelPositions;
+import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.block.BlockBorder;
 import org.jfree.chart.labels.StandardPieSectionLabelGenerator;
@@ -391,27 +392,47 @@ public class JFreeChartFactoryEngine implements Serializable {
     
     String domainAxisLabel = "";
     String rangeAxisLabel = "";
-    
-    if ((graphPlot.getXAxis() != null) 
-        && (graphPlot.getXAxis().getLegend() != null) 
-        && (graphPlot.getXAxis().getLegend().getText() != null)
-        && (graphPlot.getXAxis().getLegend().getText().trim().length() > 0)) {
-      if (graphPlot.getOrientation() == Orientation.HORIZONTAL) {
+    Font domainAxisFont = null;
+    Font rangeAxisFont = null;   
+    Font rangeTitleFont = null;
+    Font domainTitleFont = null;
+    Font yAxisFont = ChartUtils.getFont(graphPlot.getYAxis().getFontFamily(), graphPlot.getYAxis().getFontStyle(), graphPlot.getYAxis().getFontWeight(), graphPlot.getYAxis().getFontSize());
+    Font xAxisFont = ChartUtils.getFont(graphPlot.getXAxis().getFontFamily(), graphPlot.getXAxis().getFontStyle(), graphPlot.getXAxis().getFontWeight(), graphPlot.getXAxis().getFontSize());
+    LabelOrientation labelOrientation = graphPlot.getXAxis().getLabelOrientation();
+    if (graphPlot.getOrientation() == Orientation.HORIZONTAL) {
+      if ((graphPlot.getXAxis() != null) 
+          && (graphPlot.getXAxis().getLegend() != null) 
+          && (graphPlot.getXAxis().getLegend().getText() != null)
+          && (graphPlot.getXAxis().getLegend().getText().trim().length() > 0)) {
         rangeAxisLabel = graphPlot.getXAxis().getLegend().getText();
-      } else {
+      }
+      if ((graphPlot.getYAxis() != null) 
+          && (graphPlot.getYAxis().getLegend() != null) 
+          && (graphPlot.getYAxis().getLegend().getText() != null)
+          && (graphPlot.getYAxis().getLegend().getText().trim().length() > 0)) {
+        domainAxisLabel = graphPlot.getYAxis().getLegend().getText();
+      }
+      rangeTitleFont = ChartUtils.getFont(graphPlot.getXAxis().getLegend().getFontFamily(), graphPlot.getXAxis().getLegend().getFontStyle(), graphPlot.getXAxis().getLegend().getFontWeight(), graphPlot.getXAxis().getLegend().getFontSize());
+      domainTitleFont = ChartUtils.getFont(graphPlot.getYAxis().getLegend().getFontFamily(), graphPlot.getYAxis().getLegend().getFontStyle(), graphPlot.getYAxis().getLegend().getFontWeight(), graphPlot.getYAxis().getLegend().getFontSize());
+      rangeAxisFont = xAxisFont;
+      domainAxisFont = yAxisFont;
+    } else {
+      if ((graphPlot.getXAxis() != null) 
+          && (graphPlot.getXAxis().getLegend() != null) 
+          && (graphPlot.getXAxis().getLegend().getText() != null)
+          && (graphPlot.getXAxis().getLegend().getText().trim().length() > 0)) {
         domainAxisLabel = graphPlot.getXAxis().getLegend().getText();
       }
-    }
-    
-    if ((graphPlot.getYAxis() != null) 
-        && (graphPlot.getYAxis().getLegend() != null) 
-        && (graphPlot.getYAxis().getLegend().getText() != null)
-        && (graphPlot.getYAxis().getLegend().getText().trim().length() > 0)) {
-      if (graphPlot.getOrientation() == Orientation.HORIZONTAL) {
-        domainAxisLabel = graphPlot.getYAxis().getLegend().getText();
-      } else {
+      if ((graphPlot.getYAxis() != null) 
+          && (graphPlot.getYAxis().getLegend() != null) 
+          && (graphPlot.getYAxis().getLegend().getText() != null)
+          && (graphPlot.getYAxis().getLegend().getText().trim().length() > 0)) {
         rangeAxisLabel = graphPlot.getYAxis().getLegend().getText();
       }
+      rangeTitleFont = ChartUtils.getFont(graphPlot.getYAxis().getLegend().getFontFamily(), graphPlot.getYAxis().getLegend().getFontStyle(), graphPlot.getYAxis().getLegend().getFontWeight(), graphPlot.getYAxis().getLegend().getFontSize());
+      domainTitleFont = ChartUtils.getFont(graphPlot.getXAxis().getLegend().getFontFamily(), graphPlot.getXAxis().getLegend().getFontStyle(), graphPlot.getXAxis().getLegend().getFontWeight(), graphPlot.getXAxis().getLegend().getFontSize());
+      domainAxisFont = xAxisFont;
+      rangeAxisFont = yAxisFont;
     }
     
     boolean showLegend = (chartModel.getLegend() != null) && (chartModel.getLegend().getVisible());
@@ -457,38 +478,20 @@ public class JFreeChartFactoryEngine implements Serializable {
     initChart(chart, chartModel);
     
     CategoryAxis domainAxis = categoryPlot.getDomainAxis();
-    ValueAxis valueAxis = categoryPlot.getRangeAxis();
+    ValueAxis rangeAxis = categoryPlot.getRangeAxis();
     
-    if (rangeAxisLabel.length() > 0) {
-      Font font = null;
-      if (graphPlot.getOrientation() == Orientation.HORIZONTAL) {
-        font = ChartUtils.getFont(graphPlot.getXAxis().getLegend().getFontFamily(), graphPlot.getXAxis().getLegend().getFontStyle(), graphPlot.getXAxis().getLegend().getFontWeight(), graphPlot.getXAxis().getLegend().getFontSize());
-      } else {
-        font = ChartUtils.getFont(graphPlot.getYAxis().getLegend().getFontFamily(), graphPlot.getYAxis().getLegend().getFontStyle(), graphPlot.getYAxis().getLegend().getFontWeight(), graphPlot.getYAxis().getLegend().getFontSize());
-      }
-      if (font != null) {
-        categoryPlot.getRangeAxis().setLabelFont(font);
-      }
+    if ((rangeAxisLabel.length() > 0) && (rangeTitleFont != null)) {
+      rangeAxis.setLabelFont(rangeTitleFont);
     }
     
-    if (domainAxisLabel.length() > 0) {
-      Font font = null;
-      if (graphPlot.getOrientation() == Orientation.HORIZONTAL) {
-        font = ChartUtils.getFont(graphPlot.getYAxis().getLegend().getFontFamily(), graphPlot.getYAxis().getLegend().getFontStyle(), graphPlot.getYAxis().getLegend().getFontWeight(), graphPlot.getYAxis().getLegend().getFontSize());
-      } else {
-        font = ChartUtils.getFont(graphPlot.getXAxis().getLegend().getFontFamily(), graphPlot.getXAxis().getLegend().getFontStyle(), graphPlot.getXAxis().getLegend().getFontWeight(), graphPlot.getXAxis().getLegend().getFontSize());
-      }
-      
-      if (font != null) {
-        domainAxis.setLabelFont(font);
-      }      
+    if ((domainAxisLabel.length() > 0) && (domainTitleFont != null)) {      
+      domainAxis.setLabelFont(domainTitleFont);
     }
     
-    LabelOrientation labelOrientation = graphPlot.getXAxis().getLabelOrientation();
     if ((labelOrientation != null) && (labelOrientation != LabelOrientation.HORIZONTAL)) {
       if (graphPlot.getOrientation() == Orientation.HORIZONTAL) {
         if (labelOrientation == LabelOrientation.VERTICAL) {
-          valueAxis.setVerticalTickLabels(true);
+          rangeAxis.setVerticalTickLabels(true);
         }
       } else {
         switch (labelOrientation) {
@@ -502,23 +505,20 @@ public class JFreeChartFactoryEngine implements Serializable {
       }
     }
 
-    Font yAxisFont = ChartUtils.getFont(graphPlot.getYAxis().getFontFamily(), graphPlot.getYAxis().getFontStyle(), graphPlot.getYAxis().getFontWeight(), graphPlot.getYAxis().getFontSize());
-    Font xAxisFont = ChartUtils.getFont(graphPlot.getXAxis().getFontFamily(), graphPlot.getXAxis().getFontStyle(), graphPlot.getXAxis().getFontWeight(), graphPlot.getXAxis().getFontSize());
-    Font domainAxisFont = null;
-    Font rangeAxisFont = null;
-    if (graphPlot.getOrientation() == Orientation.HORIZONTAL) {
-      rangeAxisFont = xAxisFont;
-      domainAxisFont = yAxisFont;
-    } else {
-      domainAxisFont = xAxisFont;
-      rangeAxisFont = yAxisFont;
-    }
     if (domainAxisFont != null) {
       domainAxis.setTickLabelFont(domainAxisFont);
     }
     if (rangeAxisFont != null) {
-      valueAxis.setTickLabelFont(rangeAxisFont);
+      rangeAxis.setTickLabelFont(rangeAxisFont);
     }
+
+    if (graphPlot.getMinValue() != null) {
+      rangeAxis.setLowerBound(graphPlot.getMinValue().doubleValue());
+    }
+    if (graphPlot.getMaxValue() != null) {
+      rangeAxis.setUpperBound(graphPlot.getMaxValue().doubleValue());
+    }
+
     return chart;
   }
   /* (non-Javadoc)
