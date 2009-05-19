@@ -326,22 +326,15 @@ public class OpenFlashChartFactoryEngine implements Serializable {
   
   private RangeDescription getRangeDescription(GraphPlot graphPlot, Number minDataValue, Number maxDataValue) {
     
-    Number minValue = minDataValue.doubleValue();
+    Number minValue = Math.min(0, minDataValue.doubleValue());
     Number maxValue = maxDataValue.doubleValue();
-    if ((graphPlot.getMinValue() != null) && (graphPlot.getMinValue().doubleValue() <= minDataValue.doubleValue())) {
-      minValue = graphPlot.getMinValue();
-    } else {
-      minValue = Math.min(0, minValue.doubleValue());
-    }
     
     if (graphPlot.getMaxValue() != null) {
       maxValue = graphPlot.getMaxValue().doubleValue();
-//      maxValue = Math.max(graphPlot.getMaxValue().doubleValue(), maxValue.doubleValue());
     }
     
     if (graphPlot.getMinValue() != null) {
       minValue = graphPlot.getMinValue().doubleValue();
-//      maxValue = Math.max(graphPlot.getMaxValue().doubleValue(), maxValue.doubleValue());
     }
     
     minValue = Math.floor(minValue.doubleValue());
