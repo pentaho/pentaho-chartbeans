@@ -517,8 +517,10 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     for (int row = 0; row < chartTableModel.getRowCount(); row++) {
       LineChart lineChart = new LineChart(LineChart.Style.DOT);
       lineChart.setHaloSize(0);
-      lineChart.setWidth(2);
-      lineChart.setDotSize(4);
+      
+      Integer lineWidth = linePlot.getLineWidth();
+      lineChart.setWidth((lineWidth == null || lineWidth <= 0) ? 1 : lineWidth);
+      lineChart.setDotSize(lineChart.getWidth() + 2);
       if (linePlot.getOpacity() != null) {
         lineChart.setAlpha(linePlot.getOpacity());
       }

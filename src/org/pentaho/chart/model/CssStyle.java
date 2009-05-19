@@ -10,6 +10,7 @@ public class CssStyle extends HashMap<String, String> implements Serializable {
   public static final String BACKGROUND_COLOR_STYLE = "background-color";
   public static final String BORDER_WIDTH_STYLE = "border-top-width";
   public static final String BORDER_COLOR_STYLE = "border-top-color";
+  public static final String BORDER_LINE_STYLE = "border-top-style";
   public static final String FONT_SIZE_STYLE = "font-size";
   public static final String FONT_WEIGHT_STYLE = "font-weight";
   public static final String FONT_STYLE = "font-style";
@@ -21,6 +22,28 @@ public class CssStyle extends HashMap<String, String> implements Serializable {
   public enum FontWeight {NORMAL, BOLD};
   public enum FontStyle {NORMAL,ITALIC,OBLIQUE};
   public enum TextAlignment {LEFT, CENTER, RIGHT};
+  public enum LineStyle {SOLID, DASHED, DOTTED};
+  
+  public LineStyle getBorderLineStyle() {
+    LineStyle style = LineStyle.SOLID;
+    String str = get(BORDER_LINE_STYLE);
+    if (str != null) {
+      try {
+        style = Enum.valueOf(LineStyle.class, str.toUpperCase());
+      } catch (NumberFormatException ex) {
+        // Do nothing we'll return a solid line style.
+      }
+    }
+    return style;
+  }
+  
+  public void setBorderLineStyle(LineStyle lineStyle) {
+    if (lineStyle == null) {
+      remove(BORDER_LINE_STYLE);
+    } else {
+      put(BORDER_LINE_STYLE, lineStyle.toString().toLowerCase());
+    }
+  }
   
   public Integer getBorderWidth() {
     Integer width = null;

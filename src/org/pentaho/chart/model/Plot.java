@@ -17,11 +17,11 @@ public abstract class Plot implements Serializable {
   
   public enum Orientation {VERTICAL, HORIZONTAL};
   
-  Orientation orientation = Orientation.VERTICAL;
-  String backgroundImageLocation;
-  Texture backgroundTexture;
-  Gradient backgroundGradient;
-  CssStyle style = new CssStyle();
+  protected Orientation orientation = Orientation.VERTICAL;
+  protected String backgroundImageLocation;
+  protected Texture backgroundTexture;
+  protected Gradient backgroundGradient;
+  protected CssStyle style = new CssStyle();
   
   public Object getBackground() {
     Object background = null;

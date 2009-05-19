@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Point;
+import java.awt.Stroke;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -415,21 +416,24 @@ public class JFreeChartFactoryEngine implements Serializable {
     
     boolean showLegend = (chartModel.getLegend() != null) && (chartModel.getLegend().getVisible());
     JFreeChart chart = null;
-    if (chartModel.getPlot() instanceof BarPlot) {
+    if (graphPlot instanceof BarPlot) {
       if (BarPlotFlavor.THREED == ((BarPlot)graphPlot).getFlavor()) {
         chart = ChartFactory.createBarChart3D(title, domainAxisLabel, rangeAxisLabel, categoryDataset, plotOrientation, showLegend, true, false);
       } else {
         chart = ChartFactory.createBarChart(title, domainAxisLabel, rangeAxisLabel, categoryDataset, plotOrientation, showLegend, true, false);
       }
-    } else if (chartModel.getPlot() instanceof LinePlot) {
-      if (((LinePlot)graphPlot).getFlavor() == LinePlotFlavor.THREED) {
+    } else if (graphPlot instanceof LinePlot) {
+      LinePlot linePlot = (LinePlot)graphPlot;
+      if (linePlot.getFlavor() == LinePlotFlavor.THREED) {
         chart = ChartFactory.createLineChart3D(title, domainAxisLabel, rangeAxisLabel, categoryDataset, plotOrientation,
             showLegend, true, false);
       } else {
         chart = ChartFactory.createLineChart(title, domainAxisLabel, rangeAxisLabel, categoryDataset, plotOrientation,
             showLegend, true, false);
+        Stroke stroke = getLineStyleStroke(linePlot.getFlavor(), linePlot.getLineWidth());
+        ((CategoryPlot)chart.getPlot()).getRenderer().setStroke(stroke);
       }
-    } else if (chartModel.getPlot() instanceof AreaPlot) {
+    } else if (graphPlot instanceof AreaPlot) {
       chart = ChartFactory.createAreaChart(title, domainAxisLabel, rangeAxisLabel, categoryDataset, plotOrientation,
           showLegend, true, false);
     }
@@ -700,5 +704,40 @@ public class JFreeChartFactoryEngine implements Serializable {
       }
     }
     return ChartSeriesType.UNDEFINED;
+  }
+  
+  protected Stroke getLineStyleStroke(LinePlotFlavor flavor, Integer lineWidth) {
+
+    BasicStroke stroke = null;
+    float[] strokeSteps = null;
+
+    // Negative linewidths not allowed; reset to default;
+    if ((lineWidth == null) || (lineWidth <= 0)) {
+      lineWidth = 1;
+    }
+
+    if (flavor != null) {
+      switch (flavor) {
+        case DOT:
+          strokeSteps = new float[] { 2.0f, 6.0f };
+          break;
+        case DASH:
+          strokeSteps = new float[] { 6.0f, 6.0f };
+          break;
+        case DASHDOT:
+          strokeSteps = new float[] { 10.0f, 6.0f, 2.0f, 6.0f };
+          break;
+        case DASHDOTDOT:
+          strokeSteps = new float[] { 10.0f, 6.0f, 2.0f, 6.0f, 2.0f, 6.0f };
+          break;
+      }
+    }
+
+    if (strokeSteps != null) {
+      stroke = new BasicStroke(lineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, strokeSteps, 0.0f);
+    } else {
+      stroke = new BasicStroke(lineWidth);
+    }
+    return stroke;
   }
 }
