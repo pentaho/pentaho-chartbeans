@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class BarPlot extends GraphPlot implements Serializable {
   private static final float DEFAULT_OPACITY = 0.85f;
-  public enum BarPlotFlavor {PLAIN, THREED, GLASS};
+  public enum BarPlotFlavor {PLAIN, THREED, GLASS, SKETCH};
   
   BarPlotFlavor flavor = BarPlotFlavor.PLAIN;
 

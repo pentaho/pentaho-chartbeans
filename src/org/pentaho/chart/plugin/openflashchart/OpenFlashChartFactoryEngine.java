@@ -15,6 +15,7 @@ import ofc4j.model.elements.BarChart;
 import ofc4j.model.elements.HorizontalBarChart;
 import ofc4j.model.elements.LineChart;
 import ofc4j.model.elements.PieChart;
+import ofc4j.model.elements.SketchBarChart;
 import ofc4j.model.elements.BarChart.Bar;
 import ofc4j.model.elements.BarChart.Style;
 import ofc4j.model.elements.LineChart.Dot;
@@ -440,9 +441,13 @@ public class OpenFlashChartFactoryEngine implements Serializable {
           switch (barPlot.getFlavor()) {
             case THREED:
               verticalBarChart = new BarChart(Style.THREED);
+              chart.getXAxis().set3D(3);
               break;
             case GLASS:
               verticalBarChart = new BarChart(Style.GLASS);
+              break;
+            case SKETCH:
+              verticalBarChart = new SketchBarChart();
               break;
             default:
               verticalBarChart = new BarChart();
