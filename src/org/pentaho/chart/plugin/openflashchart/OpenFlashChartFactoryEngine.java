@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Paint;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 import ofc4j.model.Chart;
 import ofc4j.model.Text;
@@ -16,10 +18,14 @@ import ofc4j.model.elements.HorizontalBarChart;
 import ofc4j.model.elements.LineChart;
 import ofc4j.model.elements.PieChart;
 import ofc4j.model.elements.SketchBarChart;
+import ofc4j.model.elements.StackedBarChart;
 import ofc4j.model.elements.BarChart.Bar;
 import ofc4j.model.elements.BarChart.Style;
 import ofc4j.model.elements.LineChart.Dot;
 import ofc4j.model.elements.PieChart.Slice;
+import ofc4j.model.elements.StackedBarChart.Stack;
+import ofc4j.model.elements.StackedBarChart.StackKey;
+import ofc4j.model.elements.StackedBarChart.StackValue;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -61,6 +67,9 @@ public class OpenFlashChartFactoryEngine implements Serializable {
   private static final Log logger = LogFactory.getLog(OpenFlashChartFactoryEngine.class);
 
   private static final long serialVersionUID = -1079376910255750394L;
+  
+  private static final int STACK_MIN_INDEX = 0;
+  private static final int STACK_MAX_INDEX = 1;
   
   private class RangeDescription {
     private RangeDescription(int minValue, int maxValue, int stepSize) {
@@ -213,8 +222,6 @@ public class OpenFlashChartFactoryEngine implements Serializable {
 
     Palette palette = getPalette(areaPlot);
     
-    Number maxValue = null;
-    Number minValue = null;
     for (int row = 0; row < chartTableModel.getRowCount(); row++) {
       AreaHollowChart areaChart = new AreaHollowChart();
       areaChart.setHaloSize(0);
@@ -226,6 +233,10 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       }
       if ((chartModel.getLegend() != null) && chartModel.getLegend().getVisible()) {
         areaChart.setText(chartTableModel.getRowName(row));
+        Integer legendSize = chartModel.getLegend().getFontSize();
+        if ((legendSize != null) && (legendSize > 0)) {
+          areaChart.setFontSize(legendSize);
+        }
       }
       areaChart.setTooltip("#val#");
       if (palette.size() > row) {
@@ -236,16 +247,6 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       ArrayList<Dot> dots = new ArrayList<Dot>();
       for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
         Number value = (Number) chartTableModel.getValueAt(row, column);
-        if (maxValue == null) {
-          maxValue = value;
-        } else if (value != null) {
-          maxValue = Math.max(maxValue.doubleValue(), value.doubleValue());
-        }
-        if (minValue == null) {
-          minValue = value;
-        } else if (value != null) {
-          minValue = Math.min(minValue.doubleValue(), value.doubleValue());
-        }
         if (value == null) {
           dots.add(null);
         } else {
@@ -256,9 +257,9 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       areaChart.addDots(dots);
       chart.addElements(areaChart);
     }
-
-    if ((maxValue != null) && (minValue != null)) {
-      RangeDescription rangeDescription = getRangeDescription(areaPlot, minValue, maxValue);
+    
+    RangeDescription rangeDescription = getRangeDescription(areaPlot, chartTableModel);
+    if (rangeDescription != null) {
       chart.setYAxis(createYAxis(rangeDescription));
     }
 
@@ -325,174 +326,282 @@ public class OpenFlashChartFactoryEngine implements Serializable {
   }
   
   
-  private RangeDescription getRangeDescription(GraphPlot graphPlot, Number minDataValue, Number maxDataValue) {
+  private RangeDescription getRangeDescription(GraphPlot graphPlot, ChartTableModel chartTableModel) {
+    Number minValue = graphPlot.getMinValue();
+    Number maxValue = graphPlot.getMaxValue();
     
-    Number minValue = Math.min(0, minDataValue.doubleValue());
-    Number maxValue = maxDataValue.doubleValue();
+    boolean calculateMinValue = (minValue == null);
+    boolean calculateMaxValue = (maxValue == null);
     
-    if (graphPlot.getMaxValue() != null) {
-      maxValue = graphPlot.getMaxValue().doubleValue();
+    boolean hasChartData = false;
+    
+    if ((graphPlot instanceof BarPlot) && (((BarPlot)graphPlot).getFlavor() == BarPlotFlavor.STACKED)) {
+      Number[][] stackRanges =new Number[chartTableModel.getColumnCount()][];
+      for (int row = 0; row < chartTableModel.getRowCount(); row++) {
+        for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
+          Number value = (Number) chartTableModel.getValueAt(row, column);
+          hasChartData = hasChartData || (value != null);
+          if (value != null) {
+            Number[] stackRange = stackRanges[column];
+            if (stackRange == null) {
+              if (value.doubleValue() < 0) {
+                stackRanges[column] = new Number[] { value, 0 };
+              } else {
+                stackRanges[column] = new Number[] { 0, value };
+              }
+            } else {
+              if (value.doubleValue() < 0) {
+                stackRange[STACK_MIN_INDEX] = stackRange[STACK_MIN_INDEX].doubleValue() + value.doubleValue();
+              } else {
+                stackRange[STACK_MAX_INDEX] = stackRange[STACK_MAX_INDEX].doubleValue() + value.doubleValue();
+              }
+            }
+          }
+        }
+      }
+      if (hasChartData) {
+        for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
+          Number[] stackRange = stackRanges[column];
+          
+          if (calculateMaxValue) {
+            if (maxValue == null) {
+              maxValue = stackRange[STACK_MAX_INDEX];
+            } else if (stackRange[STACK_MAX_INDEX] != null) {
+              maxValue = Math.max(maxValue.doubleValue(), stackRange[STACK_MAX_INDEX].doubleValue());
+            }
+          }
+          
+          if (calculateMinValue) {
+            if (minValue == null) {
+              minValue = stackRange[STACK_MIN_INDEX];
+            } else if (stackRange[STACK_MIN_INDEX] != null) {
+              minValue = Math.min(minValue.doubleValue(), stackRange[STACK_MIN_INDEX].doubleValue());
+            }
+          }
+        }
+      }
+    } else {
+      for (int row = 0; row < chartTableModel.getRowCount(); row++) {
+        for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
+          Number value = (Number) chartTableModel.getValueAt(row, column);
+          if (calculateMaxValue) {
+            if (maxValue == null) {
+              maxValue = value;
+            } else if (value != null) {
+              maxValue = Math.max(maxValue.doubleValue(), value.doubleValue());
+            }
+          }
+          
+          if (calculateMinValue) {
+            if (minValue == null) {
+              minValue = value;
+            } else if (value != null) {
+              minValue = Math.min(minValue.doubleValue(), value.doubleValue());
+            }
+          }
+          
+          hasChartData = hasChartData || (value != null);
+        }
+      }
     }
-    
-    if (graphPlot.getMinValue() != null) {
-      minValue = graphPlot.getMinValue().doubleValue();
-    }
-    
-    minValue = Math.floor(minValue.doubleValue());
-    maxValue = Math.ceil(maxValue.doubleValue());
-    
-    if (maxValue.equals(minValue)) {
-      maxValue = maxValue.intValue() + 1;
-    }
-    
-    Number spread = maxValue.doubleValue() - minValue.doubleValue();
-    
-    int exponent = Integer.toString(Math.abs(spread.intValue())).length() - 1;
 
-    int stepSize = (int) (((long) (spread.intValue() / Math.pow(10, exponent))) * Math.pow(10, exponent - 1)) * 2;
-    if (stepSize < 1) {
-      stepSize = 1;
+    RangeDescription rangeDescription = null;
+    
+    if (hasChartData) {
+    	if (calculateMinValue) {
+    		minValue = Math.min(0, minValue.doubleValue());
+    	}	
+      minValue = Math.floor(minValue.doubleValue());
+      maxValue = Math.ceil(maxValue.doubleValue());
+      
+      if (maxValue.equals(minValue)) {
+        maxValue = maxValue.intValue() + 1;
+      }
+      
+      Number spread = maxValue.doubleValue() - minValue.doubleValue();
+      
+      int exponent = Integer.toString(Math.abs(spread.intValue())).length() - 1;
+
+      int stepSize = (int) (((long) (spread.intValue() / Math.pow(10, exponent))) * Math.pow(10, exponent - 1)) * 2;
+      if (stepSize < 1) {
+        stepSize = 1;
+      }
+      
+      if ((maxValue.doubleValue() % stepSize) != 0) {
+        maxValue = (maxValue.doubleValue() - (maxValue.doubleValue() % stepSize)) + stepSize;
+      }
+      
+      rangeDescription = new RangeDescription(minValue.intValue(), maxValue.intValue(), stepSize);
     }
     
-    if ((maxValue.doubleValue() % stepSize) != 0) {
-      maxValue = (maxValue.doubleValue() - (maxValue.doubleValue() % stepSize)) + stepSize;
+    return rangeDescription;
+  }
+  
+  private StackedBarChart makeStackedBarChart(ChartModel chartModel, ChartTableModel chartTableModel) {    
+    StackedBarChart stackedBarChart = new StackedBarChart();
+    
+
+    BarPlot barPlot = (BarPlot)chartModel.getPlot();
+    Palette palette = getPalette(barPlot);
+    
+    if (barPlot.getOpacity() != null) {
+      stackedBarChart.setAlpha(barPlot.getOpacity());
     }
     
-    return new RangeDescription(minValue.intValue(), maxValue.intValue(), stepSize);
+    for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
+      Stack stack = stackedBarChart.newStack();
+      for (int row = 0; row < chartTableModel.getRowCount(); row++) {
+        String color = "#" + Integer.toHexString(0x00FFFFFF & palette.get(row));
+        if ((column == 0) && (chartModel.getLegend() != null) && chartModel.getLegend().getVisible()) {
+          StackKey key = new StackKey();
+          key.setText(chartTableModel.getRowName(row));
+          key.setColour(color);
+          Integer legendSize = chartModel.getLegend().getFontSize();
+          if ((legendSize != null) && (legendSize > 0)) {
+            stackedBarChart.setFontSize(legendSize);
+          }
+          stackedBarChart.addKeys(key);
+        }
+        StackValue stackValue = new StackValue((Number)chartTableModel.getValueAt(row, column), color);
+        stack.addStackValues(stackValue);
+      }
+    }
+    
+    return stackedBarChart;
+  }
+  
+  private HorizontalBarChart makeHorizontalBarChart(ChartModel chartModel, ChartTableModel chartTableModel, int row) {
+    HorizontalBarChart horizontalBarChart = new HorizontalBarChart();
+    
+    if ((chartModel.getLegend() != null) && chartModel.getLegend().getVisible()) {
+      horizontalBarChart.setText(chartTableModel.getRowName(row));
+      Integer legendSize = chartModel.getLegend().getFontSize();
+      if ((legendSize != null) && (legendSize > 0)) {
+        horizontalBarChart.setFontSize(legendSize);
+      }
+    }
+    horizontalBarChart.setTooltip("#val#");
+    
+    BarPlot barPlot = (BarPlot) chartModel.getPlot();    
+    Palette palette = getPalette(barPlot);
+    if (barPlot.getOpacity() != null) {
+      horizontalBarChart.setAlpha(barPlot.getOpacity());
+    }
+    if (palette.size() > row) {
+      horizontalBarChart.setColour("#" + Integer.toHexString(0x00FFFFFF & palette.get(row)));
+    }
+    
+    ArrayList<ofc4j.model.elements.HorizontalBarChart.Bar> bars = new ArrayList<ofc4j.model.elements.HorizontalBarChart.Bar>();
+    for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
+      Number value = (Number) chartTableModel.getValueAt(row, column);
+      if (value == null) {
+        bars.add(null);
+      } else {
+        bars.add(new ofc4j.model.elements.HorizontalBarChart.Bar(value));
+      }
+    }
+    
+    horizontalBarChart.addBars(bars);
+    return horizontalBarChart;
+  }
+  
+  private BarChart makeVerticalBarChart(ChartModel chartModel, ChartTableModel chartTableModel, int row) {
+    BarChart verticalBarChart = null;
+    BarPlot barPlot = (BarPlot) chartModel.getPlot();
+    Palette palette = getPalette(barPlot);
+    if (barPlot.getFlavor() != null) {
+      switch (barPlot.getFlavor()) {
+        case THREED:
+          verticalBarChart = new BarChart(Style.THREED);
+          break;
+        case GLASS:
+          verticalBarChart = new BarChart(Style.GLASS);
+          break;
+        case SKETCH:
+          verticalBarChart = new SketchBarChart();
+          break;
+        default:
+          verticalBarChart = new BarChart();
+          break;
+      }
+    } else {
+      verticalBarChart = new BarChart();
+    }
+    
+    if ((chartModel.getLegend() != null) && chartModel.getLegend().getVisible()) {
+      verticalBarChart.setText(chartTableModel.getRowName(row));
+      Integer legendSize = chartModel.getLegend().getFontSize();
+      if ((legendSize != null) && (legendSize > 0)) {
+        verticalBarChart.setFontSize(legendSize);
+      }
+    }
+    verticalBarChart.setTooltip("#val#");
+    if (barPlot.getOpacity() != null) {
+      verticalBarChart.setAlpha(barPlot.getOpacity());
+    }
+    if (palette.size() > row) {
+      verticalBarChart.setColour("#" + Integer.toHexString(0x00FFFFFF & palette.get(row)));
+    }
+    ArrayList<Bar> bars = new ArrayList<Bar>();
+    for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
+      Number value = (Number) chartTableModel.getValueAt(row, column);
+      if (value == null) {
+        bars.add(null);
+      } else {
+        bars.add(new Bar(value));
+      }
+    }
+    
+    verticalBarChart.addBars(bars);
+    return verticalBarChart;
+  }
+  
+  private ArrayList<String> getCategories(ChartTableModel chartTableModel) {
+    ArrayList<String> categories = new ArrayList<String>();
+    for (int i = 0; i < chartTableModel.getColumnCount(); i++) {
+      categories.add(chartTableModel.getColumnName(i));
+    }
+    return categories;
   }
   
   public Chart makeBarChart(ChartModel chartModel, ChartTableModel chartTableModel) {
-
     Chart chart = createBasicGraphChart(chartModel);
     BarPlot barPlot = (BarPlot) chartModel.getPlot();
 
-    Palette palette = getPalette(barPlot);
+    ArrayList<String> categories = getCategories(chartTableModel);
     
     if (Orientation.HORIZONTAL.equals(barPlot.getOrientation())) {
-      ArrayList<String> categories = new ArrayList<String>();
-      for (int i = 0; i < chartTableModel.getColumnCount(); i++) {
-        categories.add(chartTableModel.getColumnName(i));
+
+      for (int row = 0; row < chartTableModel.getRowCount(); row++) {
+        chart.addElements(makeHorizontalBarChart(chartModel, chartTableModel, row));
       }
+
       if (categories.size() > 0) {
         chart.setYAxis(createYAxis(categories));
       }
-
-      Number maxValue = null;
-      Number minValue = null;
-
-        
-      for (int row = 0; row < chartTableModel.getRowCount(); row++) {
-        HorizontalBarChart horizontalBarChart = new HorizontalBarChart();
-        if ((chartModel.getLegend() != null) && chartModel.getLegend().getVisible()) {
-          horizontalBarChart.setText(chartTableModel.getRowName(row));
-        }
-        horizontalBarChart.setTooltip("#val#");
-        if (barPlot.getOpacity() != null) {
-          horizontalBarChart.setAlpha(barPlot.getOpacity());
-        }
-        if (palette.size() > row) {
-          horizontalBarChart.setColour("#" + Integer.toHexString(0x00FFFFFF & palette.get(row)));
-        }
-        
-        ArrayList<ofc4j.model.elements.HorizontalBarChart.Bar> bars = new ArrayList<ofc4j.model.elements.HorizontalBarChart.Bar>();
-        for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
-          Number value = (Number) chartTableModel.getValueAt(row, column);
-          if (maxValue == null) {
-            maxValue = value;
-          } else if (value != null) {
-            maxValue = Math.max(maxValue.doubleValue(), value.doubleValue());
-          }
-          if (minValue == null) {
-            minValue = value;
-          } else if (value != null) {
-            minValue = Math.min(minValue.doubleValue(), value.doubleValue());
-          }
-          if (value == null) {
-            bars.add(null);
-          } else {
-            bars.add(new ofc4j.model.elements.HorizontalBarChart.Bar(value));
-          }
-        }
-
-        horizontalBarChart.addBars(bars);
-        chart.addElements(horizontalBarChart);
-      }
-
-      if ((maxValue != null) && (minValue != null)) {
-        XAxis xAxis = createXAxis(barPlot, getRangeDescription(barPlot, minValue, maxValue));
-        chart.setXAxis(xAxis);
+      
+      RangeDescription rangeDescription = getRangeDescription(barPlot, chartTableModel);
+      if (rangeDescription != null) {
+        chart.setXAxis(createXAxis(barPlot, rangeDescription));
       }
     } else {
-
-      ArrayList<String> categories = new ArrayList<String>();
-      for (int i = 0; i < chartTableModel.getColumnCount(); i++) {
-        categories.add(chartTableModel.getColumnName(i));
+      if (barPlot.getFlavor() == BarPlotFlavor.STACKED) {
+        chart.addElements(makeStackedBarChart(chartModel, chartTableModel));
+      } else {
+        for (int row = 0; row < chartTableModel.getRowCount(); row++) {
+          chart.addElements(makeVerticalBarChart(chartModel, chartTableModel, row));
+        }
       }
       
       if (categories.size() > 0) {
         chart.setXAxis(createXAxis(barPlot, categories));
+        if (barPlot.getFlavor() == BarPlotFlavor.THREED) {
+          chart.getXAxis().set3D(3);
+        }
       }
-
-      Number maxValue = null;
-      Number minValue = null;
-      for (int row = 0; row < chartTableModel.getRowCount(); row++) {
-        BarChart verticalBarChart = null;
-        if (barPlot.getFlavor() != null) {
-          switch (barPlot.getFlavor()) {
-            case THREED:
-              verticalBarChart = new BarChart(Style.THREED);
-              chart.getXAxis().set3D(3);
-              break;
-            case GLASS:
-              verticalBarChart = new BarChart(Style.GLASS);
-              break;
-            case SKETCH:
-              verticalBarChart = new SketchBarChart();
-              break;
-            default:
-              verticalBarChart = new BarChart();
-              break;
-          }
-        } else {
-          verticalBarChart = new BarChart();
-        }
-        
-        if ((chartModel.getLegend() != null) && chartModel.getLegend().getVisible()) {
-          verticalBarChart.setText(chartTableModel.getRowName(row));
-        }
-        verticalBarChart.setTooltip("#val#");
-        if (barPlot.getOpacity() != null) {
-          verticalBarChart.setAlpha(barPlot.getOpacity());
-        }
-        if (palette.size() > row) {
-          verticalBarChart.setColour("#" + Integer.toHexString(0x00FFFFFF & palette.get(row)));
-        }
-        ArrayList<Bar> bars = new ArrayList<Bar>();
-        for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
-          Number value = (Number) chartTableModel.getValueAt(row, column);
-          if (maxValue == null) {
-            maxValue = value;
-          } else if (value != null) {
-            maxValue = Math.max(maxValue.doubleValue(), value.doubleValue());
-          }
-          if (minValue == null) {
-            minValue = value;
-          } else if (value != null) {
-            minValue = Math.min(minValue.doubleValue(), value.doubleValue());
-          }
-          if (value == null) {
-            bars.add(null);
-          } else {
-            bars.add(new Bar(value));
-          }
-        }
-
-        verticalBarChart.addBars(bars);
-        chart.addElements(verticalBarChart);
-      }
-
-      if ((maxValue != null) && (minValue != null)) {
-        RangeDescription rangeDescription = getRangeDescription(barPlot, minValue, maxValue);
+      
+      RangeDescription rangeDescription = getRangeDescription(barPlot, chartTableModel);
+      if (rangeDescription != null) {
         chart.setYAxis(createYAxis(rangeDescription));
       }
     }
@@ -531,6 +640,10 @@ public class OpenFlashChartFactoryEngine implements Serializable {
 
       if ((chartModel.getLegend() != null) && chartModel.getLegend().getVisible()) {
         lineChart.setText(chartTableModel.getRowName(row));
+        Integer legendSize = chartModel.getLegend().getFontSize();
+        if ((legendSize != null) && (legendSize > 0)) {
+          lineChart.setFontSize(legendSize);
+        }
       }
       
       lineChart.setTooltip("#val#");
@@ -563,8 +676,8 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       chart.addElements(lineChart);
     }
 
-    if ((maxValue != null) && (minValue != null)) {
-      RangeDescription rangeDescription = getRangeDescription(linePlot, minValue, maxValue);
+    RangeDescription rangeDescription = getRangeDescription(linePlot, chartTableModel);
+    if (rangeDescription != null) {
       chart.setYAxis(createYAxis(rangeDescription));
     }
 
