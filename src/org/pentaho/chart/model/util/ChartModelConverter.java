@@ -11,6 +11,7 @@ import org.pentaho.chart.model.LinePlot;
 import org.pentaho.chart.model.Palette;
 import org.pentaho.chart.model.PiePlot;
 import org.pentaho.chart.model.Plot;
+import org.pentaho.chart.model.ScatterPlot;
 import org.pentaho.chart.model.StyledText;
 import org.pentaho.chart.model.Axis.LabelOrientation;
 import org.pentaho.chart.model.BarPlot.BarPlotFlavor;
@@ -196,6 +197,8 @@ public class ChartModelConverter implements Converter {
       plot = linePlot;
     } else if (reader.getNodeName().equals("areaPlot")) {
       plot = new AreaPlot();
+    } else if (reader.getNodeName().equals("scatterPlot")) {
+      plot = new ScatterPlot();
     } else if (reader.getNodeName().equals("piePlot")) {
       PiePlot piePlot = new PiePlot();
       piePlot.getLabels().setVisible(false);

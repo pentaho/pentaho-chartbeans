@@ -3,9 +3,10 @@ package org.pentaho.chart.plugin.openflashchart;
 import java.awt.Color;
 import java.awt.Paint;
 import java.io.Serializable;
+import java.text.MessageFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.List;
 
 import ofc4j.model.Chart;
 import ofc4j.model.Text;
@@ -14,9 +15,11 @@ import ofc4j.model.axis.YAxis;
 import ofc4j.model.axis.Label.Rotation;
 import ofc4j.model.elements.AreaHollowChart;
 import ofc4j.model.elements.BarChart;
+import ofc4j.model.elements.Element;
 import ofc4j.model.elements.HorizontalBarChart;
 import ofc4j.model.elements.LineChart;
 import ofc4j.model.elements.PieChart;
+import ofc4j.model.elements.ScatterChart;
 import ofc4j.model.elements.SketchBarChart;
 import ofc4j.model.elements.StackedBarChart;
 import ofc4j.model.elements.BarChart.Bar;
@@ -45,6 +48,7 @@ import org.pentaho.chart.model.LinePlot;
 import org.pentaho.chart.model.Palette;
 import org.pentaho.chart.model.PiePlot;
 import org.pentaho.chart.model.Plot;
+import org.pentaho.chart.model.ScatterPlot;
 import org.pentaho.chart.model.StyledText;
 import org.pentaho.chart.model.Axis.LabelOrientation;
 import org.pentaho.chart.model.BarPlot.BarPlotFlavor;
@@ -71,8 +75,8 @@ public class OpenFlashChartFactoryEngine implements Serializable {
   private static final int STACK_MIN_INDEX = 0;
   private static final int STACK_MAX_INDEX = 1;
   
-  private class RangeDescription {
-    private RangeDescription(int minValue, int maxValue, int stepSize) {
+  private class AxisConfiguration {
+    private AxisConfiguration(int minValue, int maxValue, int stepSize) {
       this.maxValue= maxValue;
       this.minValue = minValue;
       this.stepSize = stepSize;
@@ -94,6 +98,8 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       chartOutput = new OpenFlashChartOutput(makeLineChart(chartModel, chartTableModel));
     } else if (chartModel.getPlot() instanceof AreaPlot) {
       chartOutput = new OpenFlashChartOutput(makeAreaChart(chartModel, chartTableModel));
+    } else if (chartModel.getPlot() instanceof ScatterPlot) {
+      chartOutput = new OpenFlashChartOutput(makeScatterChart(chartModel, chartTableModel));
     } else if (chartModel.getPlot() instanceof PiePlot) {
       chartOutput = new OpenFlashChartOutput(makePieChart(chartModel, chartTableModel));
     }
@@ -152,16 +158,15 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     return chart;
   }
   
-  private YAxis createYAxis(RangeDescription rangeDescription) {
+  private YAxis createYAxis(AxisConfiguration rangeDescription) {
     
     YAxis ya = new YAxis();
     ya.setRange(rangeDescription.minValue, rangeDescription.maxValue, rangeDescription.stepSize);
     return ya;
   }
   
-  private XAxis createXAxis(GraphPlot graphPlot, RangeDescription rangeDescription) {
+  private XAxis createXAxis(LabelOrientation labelOrientation, AxisConfiguration rangeDescription) {
     Rotation rotation = Rotation.HORIZONTAL;
-    LabelOrientation labelOrientation = graphPlot.getXAxis().getLabelOrientation();
     if ((labelOrientation != null) && (labelOrientation != LabelOrientation.HORIZONTAL)) {
       switch (labelOrientation) {
         case DIAGONAL:
@@ -258,7 +263,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       chart.addElements(areaChart);
     }
     
-    RangeDescription rangeDescription = getRangeDescription(areaPlot, chartTableModel);
+    AxisConfiguration rangeDescription = getAxisConfiguration(areaPlot, chartTableModel);
     if (rangeDescription != null) {
       chart.setYAxis(createYAxis(rangeDescription));
     }
@@ -325,8 +330,70 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     return palette;
   }
   
+  private AxisConfiguration getAxisConfiguration(ScatterPlot scatterPlot, ChartTableModel chartTableModel, int column) {
+
+    Number minValue = scatterPlot.getMinValue();
+    Number maxValue = scatterPlot.getMaxValue();
+
+    boolean calculateMinValue = (minValue == null);
+    boolean calculateMaxValue = (maxValue == null);
+
+    boolean hasChartData = false;
+
+    for (int row = 0; row < chartTableModel.getRowCount(); row++) {
+      Number value = (Number) chartTableModel.getValueAt(row, column);
+      if (calculateMaxValue) {
+        if (maxValue == null) {
+          maxValue = value;
+        } else if (value != null) {
+          maxValue = Math.max(maxValue.doubleValue(), value.doubleValue());
+        }
+      }
+
+      if (calculateMinValue) {
+        if (minValue == null) {
+          minValue = value;
+        } else if (value != null) {
+          minValue = Math.min(minValue.doubleValue(), value.doubleValue());
+        }
+      }
+
+      hasChartData = hasChartData || (value != null);
+    }
+    
+    AxisConfiguration rangeDescription = null;
+    
+    if (hasChartData) {
+      if (calculateMinValue) {
+        minValue = Math.min(0, minValue.doubleValue());
+      } 
+      minValue = Math.floor(minValue.doubleValue());
+      maxValue = Math.ceil(maxValue.doubleValue());
+      
+      if (maxValue.equals(minValue)) {
+        maxValue = maxValue.intValue() + 1;
+      }
+      
+      Number spread = maxValue.doubleValue() - minValue.doubleValue();
+      
+      int exponent = Integer.toString(Math.abs(spread.intValue())).length() - 1;
+
+      int stepSize = (int) (((long) (spread.intValue() / Math.pow(10, exponent))) * Math.pow(10, exponent - 1)) * 2;
+      if (stepSize < 1) {
+        stepSize = 1;
+      }
+      
+      if ((maxValue.doubleValue() % stepSize) != 0) {
+        maxValue = (maxValue.doubleValue() - (maxValue.doubleValue() % stepSize)) + stepSize;
+      }
+      
+      rangeDescription = new AxisConfiguration(minValue.intValue(), maxValue.intValue(), stepSize);
+    }
+    
+    return rangeDescription;
+  }
   
-  private RangeDescription getRangeDescription(GraphPlot graphPlot, ChartTableModel chartTableModel) {
+  private AxisConfiguration getAxisConfiguration(GraphPlot graphPlot, ChartTableModel chartTableModel) {
     Number minValue = graphPlot.getMinValue();
     Number maxValue = graphPlot.getMaxValue();
     
@@ -405,7 +472,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       }
     }
 
-    RangeDescription rangeDescription = null;
+    AxisConfiguration rangeDescription = null;
     
     if (hasChartData) {
     	if (calculateMinValue) {
@@ -431,7 +498,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
         maxValue = (maxValue.doubleValue() - (maxValue.doubleValue() % stepSize)) + stepSize;
       }
       
-      rangeDescription = new RangeDescription(minValue.intValue(), maxValue.intValue(), stepSize);
+      rangeDescription = new AxisConfiguration(minValue.intValue(), maxValue.intValue(), stepSize);
     }
     
     return rangeDescription;
@@ -468,6 +535,46 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     }
     
     return stackedBarChart;
+  }
+  
+  private Chart makeScatterChart(ChartModel chartModel, ChartTableModel chartTableModel) {        
+    ScatterPlot scatterPlot = (ScatterPlot)chartModel.getPlot();
+    Chart chart = null;
+    
+    AxisConfiguration xAxisConfiguration = getAxisConfiguration(scatterPlot, chartTableModel, 0);
+    AxisConfiguration yAxisConfiguration = getAxisConfiguration(scatterPlot, chartTableModel, 1);
+    if ((xAxisConfiguration != null) && (yAxisConfiguration != null)) {
+      chart = createBasicGraphChart(chartModel);
+      chart.setXAxis(createXAxis(scatterPlot.getXAxis().getLabelOrientation(), xAxisConfiguration));
+      chart.setYAxis(createYAxis(yAxisConfiguration));
+      
+      
+      ScatterChart sc = new ScatterChart(""); //$NON-NLS-1$
+      String color = "#000000";
+      if (scatterPlot.getPalette().size() > 0) {
+        color = "#" + Integer.toHexString(0x00FFFFFF & scatterPlot.getPalette().get(0));
+      }
+      sc.setColour(color);
+      sc.setDotSize(3);
+      if (scatterPlot.getOpacity() != null) {
+        sc.setAlpha(scatterPlot.getOpacity());
+      }
+      
+      for (int row = 0; row < chartTableModel.getRowCount(); row++) {
+        Number x = (Number)chartTableModel.getValueAt(row, 0);
+        Number y = (Number)chartTableModel.getValueAt(row, 1);
+
+//        String text = chartTableModel.getRowName(row);        
+//        sc.setTooltip(MessageFormat.format("{0}: {1}, {2}", text,  //$NON-NLS-1$
+//            NumberFormat.getInstance().format(x), NumberFormat.getInstance().format(y)));
+
+        sc.addPoint(x.doubleValue(), y.doubleValue());      
+      }
+      
+      chart.addElements(sc);
+    }
+    
+    return chart;
   }
   
   private HorizontalBarChart makeHorizontalBarChart(ChartModel chartModel, ChartTableModel chartTableModel, int row) {
@@ -580,9 +687,9 @@ public class OpenFlashChartFactoryEngine implements Serializable {
         chart.setYAxis(createYAxis(categories));
       }
       
-      RangeDescription rangeDescription = getRangeDescription(barPlot, chartTableModel);
+      AxisConfiguration rangeDescription = getAxisConfiguration(barPlot, chartTableModel);
       if (rangeDescription != null) {
-        chart.setXAxis(createXAxis(barPlot, rangeDescription));
+        chart.setXAxis(createXAxis(barPlot.getXAxis().getLabelOrientation(), rangeDescription));
       }
     } else {
       if (barPlot.getFlavor() == BarPlotFlavor.STACKED) {
@@ -600,7 +707,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
         }
       }
       
-      RangeDescription rangeDescription = getRangeDescription(barPlot, chartTableModel);
+      AxisConfiguration rangeDescription = getAxisConfiguration(barPlot, chartTableModel);
       if (rangeDescription != null) {
         chart.setYAxis(createYAxis(rangeDescription));
       }
@@ -676,7 +783,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       chart.addElements(lineChart);
     }
 
-    RangeDescription rangeDescription = getRangeDescription(linePlot, chartTableModel);
+    AxisConfiguration rangeDescription = getAxisConfiguration(linePlot, chartTableModel);
     if (rangeDescription != null) {
       chart.setYAxis(createYAxis(rangeDescription));
     }
