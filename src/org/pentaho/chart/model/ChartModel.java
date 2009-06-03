@@ -7,6 +7,7 @@ import java.util.List;
 import org.pentaho.chart.model.Theme.ChartTheme;
 
 public class ChartModel implements Serializable {
+  public static final int CHART_ENGINE_UNDEFINED = -1;
   public static final int CHART_ENGINE_JFREE = 0;
   public static final int CHART_ENGINE_OPENFLASH = 1;
   
