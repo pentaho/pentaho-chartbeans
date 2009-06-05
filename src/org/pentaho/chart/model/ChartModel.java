@@ -21,7 +21,7 @@ public class ChartModel implements Serializable {
   Texture backgroundTexture;
   Gradient backgroundGradient;
   Plot plot;
-  int chartEngine = CHART_ENGINE_OPENFLASH;
+  int chartEngine = CHART_ENGINE_UNDEFINED;
   ChartTheme theme;
   CssStyle style = new CssStyle();
   
