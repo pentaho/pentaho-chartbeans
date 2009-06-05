@@ -3,35 +3,30 @@ package org.pentaho.chart.plugin.openflashchart;
 import java.awt.Color;
 import java.awt.Paint;
 import java.io.Serializable;
-import java.text.MessageFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.List;
 
-import ofc4j.model.Chart;
-import ofc4j.model.Text;
-import ofc4j.model.axis.XAxis;
-import ofc4j.model.axis.YAxis;
-import ofc4j.model.axis.Label.Rotation;
-import ofc4j.model.elements.AreaHollowChart;
-import ofc4j.model.elements.BarChart;
-import ofc4j.model.elements.Element;
-import ofc4j.model.elements.HorizontalBarChart;
-import ofc4j.model.elements.LineChart;
-import ofc4j.model.elements.PieChart;
-import ofc4j.model.elements.ScatterChart;
-import ofc4j.model.elements.SketchBarChart;
-import ofc4j.model.elements.StackedBarChart;
-import ofc4j.model.elements.BarChart.Bar;
-import ofc4j.model.elements.BarChart.Style;
-import ofc4j.model.elements.LineChart.Dot;
-import ofc4j.model.elements.PieChart.Slice;
-import ofc4j.model.elements.StackedBarChart.Stack;
-import ofc4j.model.elements.StackedBarChart.StackKey;
-import ofc4j.model.elements.StackedBarChart.StackValue;
+import jofc2.model.Chart;
+import jofc2.model.Text;
+import jofc2.model.axis.XAxis;
+import jofc2.model.axis.YAxis;
+import jofc2.model.axis.Label.Rotation;
+import jofc2.model.elements.AreaHollowChart;
+import jofc2.model.elements.BarChart;
+import jofc2.model.elements.HorizontalBarChart;
+import jofc2.model.elements.LineChart;
+import jofc2.model.elements.PieChart;
+import jofc2.model.elements.ScatterChart;
+import jofc2.model.elements.SketchBarChart;
+import jofc2.model.elements.StackedBarChart;
+import jofc2.model.elements.BarChart.Bar;
+import jofc2.model.elements.BarChart.Style;
+import jofc2.model.elements.LineChart.Dot;
+import jofc2.model.elements.LineChart.Style.Type;
+import jofc2.model.elements.PieChart.Slice;
+import jofc2.model.elements.StackedBarChart.Key;
+import jofc2.model.elements.StackedBarChart.Stack;
+import jofc2.model.elements.StackedBarChart.StackValue;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.pentaho.chart.ChartDocumentContext;
 import org.pentaho.chart.ChartUtils;
 import org.pentaho.chart.core.ChartDocument;
@@ -68,7 +63,7 @@ import org.pentaho.util.messages.Messages;
 
 public class OpenFlashChartFactoryEngine implements Serializable {
 
-  private static final Log logger = LogFactory.getLog(OpenFlashChartFactoryEngine.class);
+  //private static final Log logger = LogFactory.getLog(OpenFlashChartFactoryEngine.class);
 
   private static final long serialVersionUID = -1079376910255750394L;
   
@@ -246,7 +241,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       areaChart.setTooltip("#val#");
       if (palette.size() > row) {
         String colorString = "#" + Integer.toHexString(0x00FFFFFF & palette.get(row));
-        areaChart.setFill(colorString);
+        areaChart.setFillColor(colorString);
         areaChart.setColour(colorString);
       }
       ArrayList<Dot> dots = new ArrayList<Dot>();
@@ -294,10 +289,11 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       if (value instanceof Number) {
         Slice slice = null;
         if (piePlot.getLabels().getVisible()) {
-          slice = new Slice(value, "#val#", chartTableModel.getRowName(row));
+          slice = new Slice(value, chartTableModel.getRowName(row));
+          slice.setText("#val#");
         } else {
           slice = new Slice(value, "#val#");
-          slice.setTooltip(chartTableModel.getRowName(row) + " - " + value.toString());
+          slice.setTip(chartTableModel.getRowName(row) + " - " + value.toString());
         }
         slices.add(slice);
       }
@@ -520,13 +516,15 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       for (int row = 0; row < chartTableModel.getRowCount(); row++) {
         String color = "#" + Integer.toHexString(0x00FFFFFF & palette.get(row));
         if ((column == 0) && (chartModel.getLegend() != null) && chartModel.getLegend().getVisible()) {
-          StackKey key = new StackKey();
+          Key key = new Key(color, chartTableModel.getRowName(row), chartModel.getLegend().getFontSize());
+/*
           key.setText(chartTableModel.getRowName(row));
           key.setColour(color);
           Integer legendSize = chartModel.getLegend().getFontSize();
           if ((legendSize != null) && (legendSize > 0)) {
             stackedBarChart.setFontSize(legendSize);
           }
+*/          
           stackedBarChart.addKeys(key);
         }
         StackValue stackValue = new StackValue((Number)chartTableModel.getValueAt(row, column), color);
@@ -549,7 +547,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       chart.setYAxis(createYAxis(yAxisConfiguration));
       
       
-      ScatterChart sc = new ScatterChart(""); //$NON-NLS-1$
+      ScatterChart sc = new ScatterChart();
       String color = "#000000";
       if (scatterPlot.getPalette().size() > 0) {
         color = "#" + Integer.toHexString(0x00FFFFFF & scatterPlot.getPalette().get(0));
@@ -598,13 +596,13 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       horizontalBarChart.setColour("#" + Integer.toHexString(0x00FFFFFF & palette.get(row)));
     }
     
-    ArrayList<ofc4j.model.elements.HorizontalBarChart.Bar> bars = new ArrayList<ofc4j.model.elements.HorizontalBarChart.Bar>();
+    ArrayList<jofc2.model.elements.HorizontalBarChart.Bar> bars = new ArrayList<jofc2.model.elements.HorizontalBarChart.Bar>();
     for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
       Number value = (Number) chartTableModel.getValueAt(row, column);
       if (value == null) {
         bars.add(null);
       } else {
-        bars.add(new ofc4j.model.elements.HorizontalBarChart.Bar(value));
+        bars.add(new jofc2.model.elements.HorizontalBarChart.Bar(value));
       }
     }
     
@@ -735,7 +733,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     Palette palette = getPalette(linePlot);
 
     for (int row = 0; row < chartTableModel.getRowCount(); row++) {
-      LineChart lineChart = new LineChart(LineChart.Style.DOT);
+      LineChart lineChart = new LineChart(new LineChart.Style(Type.DOT));
       lineChart.setHaloSize(0);
       
       Integer lineWidth = linePlot.getLineWidth();
@@ -864,7 +862,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
         Paint color = (layoutStyle != null ? (Paint) layoutStyle.getValue(ColorStyleKeys.COLOR) : null);
         if (color instanceof Color) {
           String colorString = "#" + Integer.toHexString(0x00FFFFFF & ((Color) color).getRGB());
-          areaChart.setFill(colorString);
+          areaChart.setFillColor(colorString);
           areaChart.setColour(colorString);
         }
       }
@@ -926,7 +924,8 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     ArrayList<Slice> slices = new ArrayList<Slice>();
     for (int row = 0; row < chartTableModel.getRowCount(); row++) {
       Number value = (Number) chartTableModel.getValueAt(row, 0);
-      Slice slice = new Slice(value, "#val#", chartTableModel.getRowName(row));
+      Slice slice = new Slice(value, chartTableModel.getRowName(row));
+      slice.setText("#val#");
       slices.add(slice);
     }
     pieChart.addSlices(slices);
@@ -1270,7 +1269,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     Number maxValue = null;
     Number minValue = null;
     for (int row = 0; row < chartTableModel.getRowCount(); row++) {
-      LineChart lineChart = new LineChart(LineChart.Style.DOT);
+      LineChart lineChart = new LineChart(new LineChart.Style(Type.DOT));
       lineChart.setHaloSize(0);
       lineChart.setWidth(2);
       lineChart.setDotSize(4);
