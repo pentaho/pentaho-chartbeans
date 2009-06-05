@@ -49,10 +49,10 @@ public class ChartModel implements Serializable {
    * If the friendly name is one of "JFreeChart" or "OpenFlashChart" then the engine
    * is set accordingly
    * @param chartEngineFriendlyName
-   * @return -1 if chartEngineFriendlyName ws invalid
+   * @return CHART_ENGINE_UNDEFINED if chartEngineFriendlyName ws invalid
    */
   public static int getChartEngineIdFromFriendlyName(String chartEngineFriendlyName){
-    int chartEngine = -1;
+    int chartEngine = CHART_ENGINE_UNDEFINED;
     
     if(chartEngineFriendlyName != null){
       if(chartEngineFriendlyName.equalsIgnoreCase("JFreeChart")){  //$NON-NLS-1$
