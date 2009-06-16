@@ -338,12 +338,12 @@ public class JFreeChartFactoryEngine implements Serializable {
         Font font = ChartUtils.getFont(subtitle.getFontFamily(), subtitle.getFontStyle(), subtitle.getFontWeight(), subtitle.getFontSize());
         if (font != null) {
           textTitle.setFont(font);
-          if (subtitle.getColor() != null) {
-            textTitle.setPaint(new Color(0x00FFFFFF & subtitle.getColor()));
-          }
-          if (subtitle.getBackgroundColor() != null) {
-            textTitle.setBackgroundPaint(new Color(0x00FFFFFF & subtitle.getBackgroundColor()));
-          }
+        }
+        if (subtitle.getColor() != null) {
+          textTitle.setPaint(new Color(0x00FFFFFF & subtitle.getColor()));
+        }
+        if (subtitle.getBackgroundColor() != null) {
+          textTitle.setBackgroundPaint(new Color(0x00FFFFFF & subtitle.getBackgroundColor()));
         }
         chart.addSubtitle(textTitle);
       }

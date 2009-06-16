@@ -26,7 +26,7 @@ public class StyledText implements Serializable{
   }
   
   public StyledText() {
-    setFont("serif", 14);
+    setFont("arial", 14);
   }
   
   public String getText() {
