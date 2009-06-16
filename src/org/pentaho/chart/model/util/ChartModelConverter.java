@@ -254,8 +254,9 @@ public class ChartModelConverter implements Converter {
       if ((reader.getNodeName().equals("yAxis") || reader.getNodeName().equals("xAxis")) && (plot instanceof GraphPlot)) {
         GraphPlot graphPlot = (GraphPlot)plot;
         Axis axis = (reader.getNodeName().equals("yAxis") ? graphPlot.getYAxis() : graphPlot.getXAxis());
+        String axisLabelOrientation = reader.getAttribute("labelOrientation");
         try {
-          axis.setLabelOrientation(Enum.valueOf(LabelOrientation.class, orientation.toUpperCase()));
+          axis.setLabelOrientation(Enum.valueOf(LabelOrientation.class, axisLabelOrientation.toUpperCase()));
         } catch (Exception ex) {
           // Do nothing, we'll stay with the default.
         }
