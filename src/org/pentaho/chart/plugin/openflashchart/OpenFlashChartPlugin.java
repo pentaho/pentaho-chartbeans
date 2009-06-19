@@ -34,6 +34,8 @@ import org.pentaho.chart.plugin.api.IOutput;
  */
 public class OpenFlashChartPlugin extends AbstractChartPlugin
 {
+  public static final String PLUGIN_ID = "OpenFlashChart";
+  
   private final OpenFlashChartFactoryEngine chartFactory;
   private static final Set<IOutput.OutputTypes> supportedOutputs =
       EnumSet.of(IOutput.OutputTypes.DATA_TYPE_STREAM);
@@ -71,5 +73,9 @@ public class OpenFlashChartPlugin extends AbstractChartPlugin
   public Set<IOutput.OutputTypes> getSupportedOutputs()
   {
     return supportedOutputs;
+  }
+  
+  public String getPluginId() {
+    return PLUGIN_ID;
   }
 }

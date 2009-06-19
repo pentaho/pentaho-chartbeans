@@ -7,10 +7,6 @@ import java.util.List;
 import org.pentaho.chart.model.Theme.ChartTheme;
 
 public class ChartModel implements Serializable {
-  public static final int CHART_ENGINE_UNDEFINED = -1;
-  public static final int CHART_ENGINE_JFREE = 0;
-  public static final int CHART_ENGINE_OPENFLASH = 1;
-  
   public static final String DEFAULT_FAMILY = "serif";
   public static final int DEFAULT_SIZE = 14;
   
@@ -21,55 +17,17 @@ public class ChartModel implements Serializable {
   Texture backgroundTexture;
   Gradient backgroundGradient;
   Plot plot;
-  int chartEngine = CHART_ENGINE_UNDEFINED;
+  String chartEngineId;
   ChartTheme theme;
   CssStyle style = new CssStyle();
   
-  /**
-   * Get the user friendly name of the currently implemented engine
-   * @param chartEngine value of ChartModel.CHART_ENGINE_JFREE or ChartModel.CHART_ENGINE_OPENFLASH
-   * @return The friendly name of the implemented engine
-   */
-  public static String getChartEngineFriendlyNameFromId(int chartEngine){
-    String chartEngineFriendlyName = null;
-    
-    switch(chartEngine){
-      case CHART_ENGINE_JFREE:{
-        chartEngineFriendlyName = "JFreeChart";  //$NON-NLS-1$
-      }break;
-      case CHART_ENGINE_OPENFLASH:{
-        chartEngineFriendlyName = "OpenFlashChart";  //$NON-NLS-1$
-      }break;
-    }
-    
-    return chartEngineFriendlyName;
-  }
-
-  /**
-   * If the friendly name is one of "JFreeChart" or "OpenFlashChart" then the engine
-   * is set accordingly
-   * @param chartEngineFriendlyName
-   * @return CHART_ENGINE_UNDEFINED if chartEngineFriendlyName ws invalid
-   */
-  public static int getChartEngineIdFromFriendlyName(String chartEngineFriendlyName){
-    int chartEngine = CHART_ENGINE_UNDEFINED;
-    
-    if(chartEngineFriendlyName != null){
-      if(chartEngineFriendlyName.equalsIgnoreCase("JFreeChart")){  //$NON-NLS-1$
-        chartEngine = CHART_ENGINE_JFREE;
-      } else if (chartEngineFriendlyName.equalsIgnoreCase("OpenFlashChart")){  //$NON-NLS-1$
-        chartEngine = CHART_ENGINE_OPENFLASH;
-      }
-    }
-    return chartEngine;
-  }
   
-  public int getChartEngine() {
-    return chartEngine;
+  public String getChartEngineId() {
+    return chartEngineId;
   }
 
-  public void setChartEngine(int chartEngine) {
-    this.chartEngine = chartEngine;
+  public void setChartEngineId(String id) {
+    this.chartEngineId = id;
   }
 
   public ChartTheme getTheme() {

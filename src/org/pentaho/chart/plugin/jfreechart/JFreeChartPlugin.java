@@ -34,6 +34,7 @@ import org.pentaho.chart.plugin.api.IOutput;
  */
 public class JFreeChartPlugin extends AbstractChartPlugin
 {
+  public static final String PLUGIN_ID = "JFreeChart";
   private final JFreeChartFactoryEngine chartFactory;
   private static final Set<IOutput.OutputTypes> supportedOutputs =
       EnumSet.of(IOutput.OutputTypes.FILE_TYPE_JPEG, IOutput.OutputTypes.FILE_TYPE_PNG);
@@ -59,6 +60,10 @@ public class JFreeChartPlugin extends AbstractChartPlugin
     }
 
     return null;
+  }
+
+  public String getPluginId() {
+    return PLUGIN_ID;
   }
 
   public IOutput renderChartDocument(ChartModel chartModel, final ChartTableModel data)

@@ -22,6 +22,7 @@ import java.util.Set;
 import org.pentaho.chart.ChartDocumentContext;
 import org.pentaho.chart.core.ChartDocument;
 import org.pentaho.chart.data.ChartTableModel;
+import org.pentaho.chart.model.ChartModel;
 import org.pentaho.chart.plugin.api.ChartResult;
 import org.pentaho.chart.plugin.api.IOutput;
 
@@ -36,6 +37,8 @@ public interface IChartPlugin {
   public static final int ERROR_DUPLICATE_SINGLETON = 4;    // One item was expected but more than one was found
   public static final int ERROR_INDETERMINATE_CHART_TYPE = 5; // Couldn't figure out the chart type
 
+  public String getPluginId();
+  
   /**
    * Validates the current chart document.  AbstractChartPlugin implements the validations that are
    * NOT plugin specific.  The plugin should override and call the super before doing it's validation
@@ -55,6 +58,8 @@ public interface IChartPlugin {
    */
   public IOutput renderChartDocument(ChartDocumentContext chartDocumentContext, ChartTableModel data);
 
+  public IOutput renderChartDocument(ChartModel chartDocumentContext, ChartTableModel data);
+  
   /**
    * Returns a set of OutputTypes that this plugin can return (via the IOutput returned from renderChartDocument).
    * @return
