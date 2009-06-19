@@ -28,6 +28,7 @@ import org.pentaho.chart.model.Plot.Orientation;
 import org.pentaho.chart.model.Theme.ChartTheme;
 import org.pentaho.chart.model.util.ChartSerializer;
 import org.pentaho.chart.model.util.ChartSerializer.ChartSerializationFormat;
+import org.pentaho.chart.plugin.jfreechart.JFreeChartPlugin;
 
 public class SerializationTest {
 
@@ -59,7 +60,7 @@ public class SerializationTest {
   public void testDialPlot() {
     ChartModel chartModel = new ChartModel();
     chartModel.setTheme(ChartTheme.THEME4);
-    chartModel.setChartEngine(ChartModel.CHART_ENGINE_JFREE);
+    chartModel.setChartEngineId(JFreeChartPlugin.PLUGIN_ID);
     chartModel.setBackground(0x343434);
     chartModel.setBorderColor(0x987654);
     chartModel.setBorderVisible(true);
@@ -169,7 +170,7 @@ public class SerializationTest {
     barPlot.setOpacity(0.75f);
     barPlot.setOrientation(Orientation.HORIZONTAL);
     barPlot.setPalette(new Palette(0x001111, 0x222222, 0x333333));
-    barPlot.getXAxis().setLabelOrientation(LabelOrientation.VERTICAL);
+    barPlot.getXAxis().setLabelOrientation(LabelOrientation.DIAGONAL);
     barPlot.getXAxis().getLegend().setText("xAxis");
     barPlot.getXAxis().getLegend().setColor(0x192837);
     barPlot.getXAxis().getLegend().setFont("san-serif", 10, FontStyle.NORMAL, FontWeight.NORMAL);
@@ -215,6 +216,7 @@ public class SerializationTest {
     assertEquals(palette.get(0), 0x001111);
     assertEquals(palette.get(1), 0x222222);
     assertEquals(palette.get(2), 0x333333);
+    assertEquals(barPlot.getXAxis().getLabelOrientation(), LabelOrientation.DIAGONAL);
     assertEquals(barPlot.getXAxis().getLegend().getText(), "xAxis");
     assertEquals(barPlot.getXAxis().getLegend().getColor(), 0x192837);
     assertEquals(barPlot.getXAxis().getLegend().getFontFamily(), "san-serif");
