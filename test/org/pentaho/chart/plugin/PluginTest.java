@@ -47,6 +47,7 @@ import org.pentaho.chart.model.Theme.ChartTheme;
 import org.pentaho.chart.plugin.api.ChartResult;
 import org.pentaho.chart.plugin.api.IOutput;
 import org.pentaho.chart.plugin.jfreechart.utils.JFreeChartUtils;
+import org.pentaho.chart.plugin.openflashchart.OpenFlashChartPlugin;
 import org.pentaho.chart.plugin.xml.XmlChartPlugin;
 
 /**
@@ -421,7 +422,7 @@ public class PluginTest extends TestCase {
         {"Europe", "2009", new Integer(101290)}  
     };
     ChartModel chartModel = new ChartModel();
-    chartModel.setChartEngine(ChartModel.CHART_ENGINE_OPENFLASH);
+    chartModel.setChartEngineId(OpenFlashChartPlugin.PLUGIN_ID);
     chartModel.setTitle(new ChartTitle("testOpenFlashChart"));
     
     BarPlot barPlot = new BarPlot();
@@ -491,7 +492,7 @@ public class PluginTest extends TestCase {
         {"Europe", "2009", new Integer(101290)}  
     };
     ChartModel chartModel = new ChartModel();
-    chartModel.setChartEngine(ChartModel.CHART_ENGINE_OPENFLASH);
+    chartModel.setChartEngineId(OpenFlashChartPlugin.PLUGIN_ID);
     chartModel.setTitle(new ChartTitle("testOpenFlashChart"));
     
     LinePlot linePlot = new LinePlot();
@@ -535,7 +536,7 @@ public class PluginTest extends TestCase {
         {"Europe", "2009", new Integer(101290)}  
     };
     ChartModel chartModel = new ChartModel();
-    chartModel.setChartEngine(ChartModel.CHART_ENGINE_OPENFLASH);
+    chartModel.setChartEngineId(OpenFlashChartPlugin.PLUGIN_ID);
     chartModel.setTitle(new ChartTitle("testOpenFlashChart"));
     
     AreaPlot areaPlot = new AreaPlot();
@@ -571,7 +572,7 @@ public class PluginTest extends TestCase {
         {"Europe", new Integer(121300)}  
     };
     ChartModel chartModel = new ChartModel();
-    chartModel.setChartEngine(ChartModel.CHART_ENGINE_OPENFLASH);
+    chartModel.setChartEngineId(OpenFlashChartPlugin.PLUGIN_ID);
     chartModel.setTitle(new ChartTitle("testOpenFlashChart"));
     
     PiePlot piePlot = new PiePlot();
