@@ -32,7 +32,7 @@ public class ChartModelConverter implements Converter {
 
   public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
     ChartModel chartModel = (ChartModel)value;
-    writer.addAttribute("chartEngine", Integer.toString(chartModel.getChartEngine()));
+    writer.addAttribute("chartEngine", chartModel.getChartEngineId());
     
     if (chartModel.getTheme() != null) {
       writer.addAttribute("theme", chartModel.getTheme().toString());
@@ -99,16 +99,9 @@ public class ChartModelConverter implements Converter {
   public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
     
     ChartModel chartModel = new ChartModel();
-    String attribute = reader.getAttribute("chartEngine");
-    if (attribute != null) {
-      try {
-        chartModel.setChartEngine(Integer.parseInt(attribute));
-      } catch (Exception e) {
-        // Do nothing
-      }
-    }
+    chartModel.setChartEngineId(reader.getAttribute("chartEngine"));
     
-    attribute = reader.getAttribute("theme");
+    String attribute = reader.getAttribute("theme");
     if (attribute != null) {
       ;
       try {
