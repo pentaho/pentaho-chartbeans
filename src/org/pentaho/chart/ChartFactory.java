@@ -91,7 +91,7 @@ public class ChartFactory {
 
   private static List<IChartPlugin> initPlugins() {
     ArrayList<IChartPlugin> plugins = new ArrayList<IChartPlugin>();
-    InputStream in = ChartFactory.class.getClassLoader().getSystemResourceAsStream(CHART_PLUGINS_PROPERTIES_FILE);
+    InputStream in = ChartFactory.class.getClassLoader().getResourceAsStream(CHART_PLUGINS_PROPERTIES_FILE);
     if (in != null) {
       Properties properties = new Properties();
       try {
