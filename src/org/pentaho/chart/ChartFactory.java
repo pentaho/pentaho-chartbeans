@@ -67,7 +67,7 @@ public class ChartFactory {
 
   private static List<IChartPlugin> chartPlugins = initPlugins();
 
-  private static final String CHART_PLUGINS_PROPERTIES_FILE = "org/pentaho/chart/plugin/chartPlugins.properties";
+  private static final String CHART_PLUGINS_PROPERTIES_FILE = "chartPlugins.properties";
 
   private ChartFactory() {
   }
@@ -79,10 +79,10 @@ public class ChartFactory {
         plugin = tmpPlugin;
       }
     }
-    if (plugin == null) {
-      if (pluginId.equals("JFreeChart")) {
+    if ((plugin == null) && (chartPlugins.size() == 0)) {
+      if (JFreeChartPlugin.PLUGIN_ID.equals(pluginId)) {
         plugin = new JFreeChartPlugin();
-      } else {
+      } else if (OpenFlashChartPlugin.PLUGIN_ID.equals(pluginId)){
         plugin = new OpenFlashChartPlugin();
       }
     }
