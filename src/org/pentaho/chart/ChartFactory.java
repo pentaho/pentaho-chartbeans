@@ -43,6 +43,8 @@ import org.pentaho.chart.plugin.IChartPlugin;
 import org.pentaho.chart.plugin.api.IOutput;
 import org.pentaho.chart.plugin.api.PersistenceException;
 import org.pentaho.chart.plugin.api.IOutput.OutputTypes;
+import org.pentaho.chart.plugin.jfreechart.JFreeChartPlugin;
+import org.pentaho.chart.plugin.openflashchart.OpenFlashChartPlugin;
 import org.pentaho.reporting.libraries.css.dom.LayoutStyle;
 import org.pentaho.reporting.libraries.css.keys.color.ColorStyleKeys;
 import org.pentaho.reporting.libraries.css.keys.font.FontStyleKeys;
@@ -62,7 +64,9 @@ import org.pentaho.reporting.libraries.resourceloader.ResourceKeyCreationExcepti
  */
 public class ChartFactory {
   private static final String UNIDENTIFIED = "Unable To Identify";
+
   private static List<IChartPlugin> chartPlugins = initPlugins();
+
   private static final String CHART_PLUGINS_PROPERTIES_FILE = "org/pentaho/chart/plugin/chartPlugins.properties";
 
   private ChartFactory() {
@@ -75,19 +79,26 @@ public class ChartFactory {
         plugin = tmpPlugin;
       }
     }
+    if (plugin == null) {
+      if (pluginId.equals("JFreeChart")) {
+        plugin = new JFreeChartPlugin();
+      } else {
+        plugin = new OpenFlashChartPlugin();
+      }
+    }
     return plugin;
   }
-  
+
   private static List<IChartPlugin> initPlugins() {
     ArrayList<IChartPlugin> plugins = new ArrayList<IChartPlugin>();
-    InputStream in = ClassLoader.getSystemResourceAsStream(CHART_PLUGINS_PROPERTIES_FILE);
+    InputStream in = ChartFactory.class.getClassLoader().getSystemResourceAsStream(CHART_PLUGINS_PROPERTIES_FILE);
     if (in != null) {
-      Properties properties = new Properties ();
+      Properties properties = new Properties();
       try {
-        properties.load (in);
+        properties.load(in);
         for (Enumeration enumeration = properties.elements(); enumeration.hasMoreElements();) {
           try {
-            plugins.add((IChartPlugin)Class.forName(enumeration.nextElement().toString()).newInstance());
+            plugins.add((IChartPlugin) Class.forName(enumeration.nextElement().toString()).newInstance());
           } catch (Exception ex) {
             //Not able to construct the plugin so we won't add it to the list.
           }
@@ -98,7 +109,7 @@ public class ChartFactory {
     }
     return plugins;
   }
-  
+
   /**
    * Creates a chart based on the chart definition
    * TODO: document / complete
@@ -111,10 +122,10 @@ public class ChartFactory {
     return ChartFactory.generateChart(chartURL, null);
   }
 
-  public static ChartDocument getChartDocument(final URL chartURL)  throws ResourceException {
+  public static ChartDocument getChartDocument(final URL chartURL) throws ResourceException {
     return getChartDocument(chartURL, true);
   }
-  
+
   public static ChartDocument getChartDocument(final URL chartURL, boolean cascadeStyles) throws ResourceException {
     // Parse the chart
     final ChartXMLParser chartParser = new ChartXMLParser();
@@ -127,10 +138,10 @@ public class ChartFactory {
       // Resolve the style information
       ChartFactory.resolveStyles(chart, cdc);
     }
-    
+
     return chart;
   }
-  
+
   /**
    * Creats a chart based on the chart definition and the table model
    * TODO: document / complete
@@ -140,11 +151,13 @@ public class ChartFactory {
    * @throws ResourceException      indicates an error loading the chart resources
    * @throws InvalidChartDefinition indicates an error with chart definition
    */
-  public static ChartDocumentContext generateChart(final URL chartURL, final ChartTableModel tableModel) throws ResourceException {
+  public static ChartDocumentContext generateChart(final URL chartURL, final ChartTableModel tableModel)
+      throws ResourceException {
     return generateChart(getChartDocument(chartURL), tableModel);
   }
 
-  public static ChartDocumentContext generateChart(ChartDocument chart, final ChartTableModel tableModel) throws ResourceException {
+  public static ChartDocumentContext generateChart(ChartDocument chart, final ChartTableModel tableModel)
+      throws ResourceException {
     // Create a ChartDocumentContext
     final ChartDocumentContext cdc = new ChartDocumentContext(chart);
     // Link the series tags with the tabel model
@@ -154,7 +167,7 @@ public class ChartFactory {
     // temporary
     return cdc;
   }
-  
+
   /**
    * Returns the initialized <code>StyleResolver</code>.
    * NOTE: this method is protected for testing purposes only
@@ -187,41 +200,47 @@ public class ChartFactory {
       element = element.getNextDepthFirstItem();
     }
   }
-  
-  public static InputStream createChart(Object[][] queryResults, ChartModel chartModel, int width, int height, OutputTypes outputType) throws ChartProcessingException, SQLException, ResourceKeyCreationException, PersistenceException {
+
+  public static InputStream createChart(Object[][] queryResults, ChartModel chartModel, int width, int height,
+      OutputTypes outputType) throws ChartProcessingException, SQLException, ResourceKeyCreationException,
+      PersistenceException {
     int rangeColumnIndex = 0;
     int domainColumnIndex = -1;
     int categoryColumnIndex = -1;
-    
+
     if ((queryResults.length > 0) && (queryResults[0].length > 1)) {
       domainColumnIndex = 1;
     }
-    
+
     if ((queryResults.length > 0) && (queryResults[0].length > 2)) {
       categoryColumnIndex = 2;
     }
-    return createChart(queryResults, false, rangeColumnIndex, domainColumnIndex, categoryColumnIndex, chartModel, width, height, outputType);
+    return createChart(queryResults, false, rangeColumnIndex, domainColumnIndex, categoryColumnIndex, chartModel,
+        width, height, outputType);
   }
-  
-  public static InputStream createChart(Object[][] queryResults, boolean convertNullsToZero, int rangeColumnIndex, int domainColumnIdx, int categoryColumnIdx, ChartModel chartModel, int width, int height, OutputTypes outputType) throws ChartProcessingException, SQLException, ResourceKeyCreationException, PersistenceException {
+
+  public static InputStream createChart(Object[][] queryResults, boolean convertNullsToZero, int rangeColumnIndex,
+      int domainColumnIdx, int categoryColumnIdx, ChartModel chartModel, int width, int height, OutputTypes outputType)
+      throws ChartProcessingException, SQLException, ResourceKeyCreationException, PersistenceException {
     ByteArrayInputStream inputStream = null;
-    
-    ChartTableModel chartTableModel = createChartTableModel(queryResults, convertNullsToZero, categoryColumnIdx, domainColumnIdx, rangeColumnIndex);
-    
+
+    ChartTableModel chartTableModel = createChartTableModel(queryResults, convertNullsToZero, categoryColumnIdx,
+        domainColumnIdx, rangeColumnIndex);
+
     boolean noChartData = true;
     boolean isPieChart = chartModel.getPlot() instanceof PiePlot;
     if ((chartTableModel.getRowCount() > 0) && (chartTableModel.getColumnCount() > 0)) {
       for (int row = 0; (row < chartTableModel.getRowCount()) && noChartData; row++) {
         for (int column = 0; (column < chartTableModel.getColumnCount()) && noChartData; column++) {
-          Number value = ((Number)chartTableModel.getValueAt(row, column));
+          Number value = ((Number) chartTableModel.getValueAt(row, column));
           noChartData = (value == null) || ((value.doubleValue() == 0) && isPieChart);
         }
       }
     }
-    
+
     if (!noChartData) {
       IOutput output = null;
-      IChartPlugin chartPlugin = getPlugin(chartModel.getChartEngineId() );
+      IChartPlugin chartPlugin = getPlugin(chartModel.getChartEngineId());
       if (chartPlugin != null) {
         output = chartPlugin.renderChartDocument(chartModel, chartTableModel);
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -231,25 +250,25 @@ public class ChartFactory {
         throw new ChartProcessingException("Unknown chart engine.");
       }
     }
-    
+
     return inputStream;
   }
-  
-  public static ChartTableModel createChartTableModel(Object[][] queryResults, boolean convertNullsToZero, int categoryColumn, int domainColumn, int rangeColumn) {
+
+  public static ChartTableModel createChartTableModel(Object[][] queryResults, boolean convertNullsToZero,
+      int categoryColumn, int domainColumn, int rangeColumn) {
     ChartTableModel chartTableModel = new ChartTableModel();
-    
+
     SortedSet<String> categories = new TreeSet<String>();
     SortedSet<String> domains = new TreeSet<String>();
 
     for (int i = 0; i < queryResults.length; i++) {
       if (categoryColumn >= 0) {
-        categories.add(queryResults[i][categoryColumn] != null ? queryResults[i][categoryColumn]
-            .toString() : UNIDENTIFIED);
+        categories.add(queryResults[i][categoryColumn] != null ? queryResults[i][categoryColumn].toString()
+            : UNIDENTIFIED);
       }
 
       if (domainColumn >= 0) {
-        domains.add(queryResults[i][domainColumn] != null ? queryResults[i][domainColumn]
-            .toString() : UNIDENTIFIED);
+        domains.add(queryResults[i][domainColumn] != null ? queryResults[i][domainColumn].toString() : UNIDENTIFIED);
       }
     }
 
@@ -261,25 +280,25 @@ public class ChartFactory {
     for (int i = 0; i < queryResults.length; i++) {
       int chartDataRow = 0;
       if (domainColumn != -1) {
-        String domainName = (queryResults[i][domainColumn] != null ? queryResults[i][domainColumn]
-            .toString() : UNIDENTIFIED);
+        String domainName = (queryResults[i][domainColumn] != null ? queryResults[i][domainColumn].toString()
+            : UNIDENTIFIED);
         chartDataRow = domainsList.indexOf(domainName.toString());
       }
-      
+
       int chartDataColumn = 0;
       if (categoryColumn != -1) {
-        String categoryName = (queryResults[i][categoryColumn] != null ? queryResults[i][categoryColumn]
-            .toString() : UNIDENTIFIED);
+        String categoryName = (queryResults[i][categoryColumn] != null ? queryResults[i][categoryColumn].toString()
+            : UNIDENTIFIED);
         chartDataColumn = categoriesList.indexOf(categoryName.toString());
       }
 
       Number value = null;
       if (queryResults[i][rangeColumn] instanceof Number) {
-        value = (Number)queryResults[i][rangeColumn];
+        value = (Number) queryResults[i][rangeColumn];
       } else if (convertNullsToZero && (queryResults[i][rangeColumn] == null)) {
         value = 0;
       }
-      
+
       if (chartData[chartDataRow][chartDataColumn] == null) {
         chartData[chartDataRow][chartDataColumn] = value;
       } else if (value != null) {
@@ -306,8 +325,9 @@ public class ChartFactory {
     }
     return chartTableModel;
   }
-  
-  private static void setElementFont(ChartElement chartElement, String fontFamily, Integer fontSize, FontStyle fontStyle, FontWeight fontWeight) {
+
+  private static void setElementFont(ChartElement chartElement, String fontFamily, Integer fontSize,
+      FontStyle fontStyle, FontWeight fontWeight) {
     LayoutStyle style = chartElement.getLayoutStyle();
     if (fontFamily != null) {
       style.setValue(FontStyleKeys.FONT_FAMILY, new CSSConstant(fontFamily));
@@ -322,6 +342,7 @@ public class ChartFactory {
       style.setValue(FontStyleKeys.FONT_WEIGHT, new CSSConstant(fontWeight.toString().toLowerCase()));
     }
   }
+
   private static ChartElement createTextElement(String elementName, StyledText styledText) {
     ChartElement chartElement = null;
     if ((styledText != null) && (styledText.getText() != null)) {
@@ -329,12 +350,13 @@ public class ChartFactory {
       chartElement.setTagName(elementName);
       chartElement.setText(styledText.getText());
       LayoutStyle style = chartElement.getLayoutStyle();
-      setElementFont(chartElement, styledText.getFontFamily(), styledText.getFontSize(), styledText.getFontStyle(), styledText.getFontWeight());
+      setElementFont(chartElement, styledText.getFontFamily(), styledText.getFontSize(), styledText.getFontStyle(),
+          styledText.getFontWeight());
       if (styledText.getColor() != null) {
         style.setValue(ColorStyleKeys.COLOR, new CSSColorValue(new Color(styledText.getColor() & 0x00FFFFFF)));
       }
     }
     return chartElement;
   }
-  
+
 }
