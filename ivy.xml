@@ -7,7 +7,7 @@
     <conf name="test" visibility="private" />
     <conf name="source" />
   </configurations>
-
+ 
   <publications>
     <artifact name="${ivy.artifact.id}" type="jar" conf="default" />
     <artifact name="${ivy.artifact.id}" m:classifier="sources" type="source" ext="jar" conf="source" />
@@ -29,7 +29,7 @@
     <dependency org="stax" name="stax" rev="1.2.0" />
     <dependency org="org.codehaus.jettison" name="jettison" rev="1.0.1" />
     <dependency org="org.codehaus.jettison" name="jettison" rev="1.0.1" />
-    <dependency org="jofc2" name="jofc2" rev="${dependency.jofc2.revision}" />
+    <dependency org="ofc4j" name="ofc4j" rev="1.0-alpha5-pentaho"/>
 
 
     <!--  Testing dependencies -->
