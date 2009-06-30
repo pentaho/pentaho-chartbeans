@@ -36,7 +36,8 @@ public class OpenFlashChartPlugin extends AbstractChartPlugin
 {
   public static final String PLUGIN_ID = "OpenFlashChart";
   
-  protected OpenFlashChartFactoryEngine chartFactory;
+  private OpenFlashChartFactoryEngine chartFactory;
+  
   private static final Set<IOutput.OutputTypes> supportedOutputs =
       EnumSet.of(IOutput.OutputTypes.DATA_TYPE_STREAM);
 
@@ -77,5 +78,13 @@ public class OpenFlashChartPlugin extends AbstractChartPlugin
   
   public String getPluginId() {
     return PLUGIN_ID;
+  }
+
+  protected OpenFlashChartFactoryEngine getChartFactory() {
+    return chartFactory;
+  }
+
+  protected void setChartFactory(OpenFlashChartFactoryEngine chartFactory) {
+    this.chartFactory = chartFactory;
   }
 }
