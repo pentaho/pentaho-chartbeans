@@ -65,7 +65,7 @@ import org.pentaho.reporting.libraries.resourceloader.ResourceKeyCreationExcepti
 public class ChartFactory {
   private static final String UNIDENTIFIED = "Unable To Identify";
 
-  private static List<IChartPlugin> chartPlugins = initPlugins();
+  private static List<IChartPlugin> chartPlugins;//= initPlugins();
 
   private static final String CHART_PLUGINS_PROPERTIES_FILE = "chartPlugins.properties";
 
@@ -89,26 +89,14 @@ public class ChartFactory {
     return plugin;
   }
 
-  private static List<IChartPlugin> initPlugins() {
-    ArrayList<IChartPlugin> plugins = new ArrayList<IChartPlugin>();
-    InputStream in = ChartFactory.class.getClassLoader().getResourceAsStream(CHART_PLUGINS_PROPERTIES_FILE);
-    if (in != null) {
-      Properties properties = new Properties();
-      try {
-        properties.load(in);
-        for (Enumeration enumeration = properties.elements(); enumeration.hasMoreElements();) {
-          try {
-            plugins.add((IChartPlugin) Class.forName(enumeration.nextElement().toString()).newInstance());
-          } catch (Exception ex) {
-            //Not able to construct the plugin so we won't add it to the list.
-          }
-        }
-      } catch (Exception ex) {
-        // We'll return an empty plugin list.
-      }
-    }
-    return plugins;
+  /**
+   *  This method is called from a platform system listener on startup,
+   *  to initialize the available plugins from the chartbeans configuration file. 
+   */
+  public static void loadDefaultChartPlugins(List <IChartPlugin> plugins) {
+	  chartPlugins = plugins;
   }
+
 
   /**
    * Creates a chart based on the chart definition
