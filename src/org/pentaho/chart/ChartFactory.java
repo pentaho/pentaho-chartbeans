@@ -65,9 +65,7 @@ import org.pentaho.reporting.libraries.resourceloader.ResourceKeyCreationExcepti
 public class ChartFactory {
   private static final String UNIDENTIFIED = "Unable To Identify";
 
-  private static List<IChartPlugin> chartPlugins;//= initPlugins();
-
-  private static final String CHART_PLUGINS_PROPERTIES_FILE = "chartPlugins.properties";
+  private static List<IChartPlugin> chartPlugins = new ArrayList<IChartPlugin>();
 
   private ChartFactory() {
   }
