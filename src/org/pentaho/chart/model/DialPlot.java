@@ -141,6 +141,7 @@ public class DialPlot extends Plot implements Serializable {
   
   Scale scale = new Scale();
   StyledText annotation = new StyledText();
+  boolean animate = false;
 
   public DialPlot() {
     setPalette(null);
@@ -157,5 +158,12 @@ public class DialPlot extends Plot implements Serializable {
   public void setAnnotation(StyledText annotation) {
     this.annotation = annotation;
   }
-    
+  public boolean getAnimate() {
+    return animate;
+  }
+
+  public void setAnimate(boolean animate) {
+    this.animate = animate;
+  }
+
 }
