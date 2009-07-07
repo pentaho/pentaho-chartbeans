@@ -151,6 +151,7 @@ public class SerializationTest {
   public void testBarPlot(){
     
     ChartModel chartModel = new ChartModel();
+    chartModel.setChartEngineId(JFreeChartPlugin.PLUGIN_ID);
     chartModel.setTheme(ChartTheme.THEME4);
     chartModel.setBackground(0x343434);
     chartModel.setBorderColor(0x987654);
@@ -235,6 +236,7 @@ public class SerializationTest {
   public void testLinePlot(){
     
     ChartModel chartModel = new ChartModel();
+    chartModel.setChartEngineId(JFreeChartPlugin.PLUGIN_ID);
     chartModel.setTheme(ChartTheme.THEME4);
     chartModel.setBackground(0x343434);
     chartModel.setBorderColor(0x987654);
@@ -302,6 +304,7 @@ public class SerializationTest {
   public void testAreaPlot(){
     
     ChartModel chartModel = new ChartModel();
+    chartModel.setChartEngineId(JFreeChartPlugin.PLUGIN_ID);
     chartModel.setTheme(ChartTheme.THEME4);
     chartModel.setBackground(0x343434);
     chartModel.setBorderColor(0x987654);
@@ -380,6 +383,7 @@ public class SerializationTest {
   public void testPiePlot(){
     
     ChartModel chartModel = new ChartModel();
+    chartModel.setChartEngineId(JFreeChartPlugin.PLUGIN_ID);
     chartModel.setTheme(ChartTheme.THEME4);
     chartModel.setBackground(0x343434);
     chartModel.setBorderColor(0x987654);
