@@ -208,7 +208,15 @@ public class OpenFlashChartFactoryEngine implements Serializable {
   private YAxis createYAxis(ArrayList<String> labels) {
     YAxis ya = new YAxis();
     ya.setLabels(labels.toArray(new String[0]));
-    ya.setMax(labels.size());
+    
+    // HACK: If you try to set the max size, OFC2 will add one to max; otherwise, allow 
+    // him to calculate the max, and the axis will render the appropriate steps.
+    
+    //ya.setMax(labels.size());
+    
+    // The category labels set up aligned properly if offset = true.
+    ya.setOffset(true);
+    
     return ya;
   }
   
@@ -599,6 +607,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     }
     
     ArrayList<ofc4j.model.elements.HorizontalBarChart.Bar> bars = new ArrayList<ofc4j.model.elements.HorizontalBarChart.Bar>();
+    
     for (int column = 0; column < chartTableModel.getColumnCount(); column++) {
       Number value = (Number) chartTableModel.getValueAt(row, column);
       if (value == null) {
@@ -663,21 +672,18 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     return verticalBarChart;
   }
   
-  private ArrayList<String> getCategories(ChartTableModel chartTableModel) {
-    ArrayList<String> categories = new ArrayList<String>();
-    for (int i = 0; i < chartTableModel.getColumnCount(); i++) {
-      categories.add(chartTableModel.getColumnName(i));
-    }
-    return categories;
-  }
-  
   public Chart makeBarChart(ChartModel chartModel, ChartTableModel chartTableModel) {
     Chart chart = createBasicGraphChart(chartModel);
     BarPlot barPlot = (BarPlot) chartModel.getPlot();
 
-    ArrayList<String> categories = getCategories(chartTableModel);
+    ArrayList<String> categories = new ArrayList<String>();
     
     if (Orientation.HORIZONTAL.equals(barPlot.getOrientation())) {
+
+      // BISERVER-3075 hack for bug in OFC2 where categories are rendered backwards...
+      for (int i = chartTableModel.getColumnCount()-1; i >=0; i--) {
+        categories.add(chartTableModel.getColumnName(i));
+      }
 
       for (int row = 0; row < chartTableModel.getRowCount(); row++) {
         chart.addElements(makeHorizontalBarChart(chartModel, chartTableModel, row));
@@ -692,6 +698,11 @@ public class OpenFlashChartFactoryEngine implements Serializable {
         chart.setXAxis(createXAxis(barPlot.getXAxis().getLabelOrientation(), rangeDescription));
       }
     } else {
+
+      for (int i = 0; i < chartTableModel.getColumnCount(); i++) {
+        categories.add(chartTableModel.getColumnName(i));
+      }
+      
       if (barPlot.getFlavor() == BarPlotFlavor.STACKED) {
         chart.addElements(makeStackedBarChart(chartModel, chartTableModel));
       } else {
