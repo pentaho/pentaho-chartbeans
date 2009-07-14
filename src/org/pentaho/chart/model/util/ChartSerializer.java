@@ -4,6 +4,7 @@ import org.pentaho.chart.model.ChartDataDefinition;
 import org.pentaho.chart.model.ChartLegend;
 import org.pentaho.chart.model.ChartModel;
 import org.pentaho.chart.model.CssStyle;
+import org.pentaho.chart.model.DialPlot;
 import org.pentaho.chart.model.GraphPlot;
 import org.pentaho.chart.model.PiePlot;
 import org.pentaho.chart.model.BarPlot.BarPlotFlavor;
@@ -39,6 +40,7 @@ public class ChartSerializer {
     jsonChartWriter.registerConverter(new AxisConverter());
     jsonChartWriter.registerConverter(new ChartTitleConverter());
     jsonChartWriter.useAttributeFor(PiePlot.class, "animate"); //$NON-NLS-1$
+    jsonChartWriter.useAttributeFor(DialPlot.class, "animate"); //$NON-NLS-1$
     jsonChartWriter.useAttributeFor(PiePlot.class, "startAngle"); //$NON-NLS-1$
     jsonChartWriter.omitField(PiePlot.class, "slices"); //$NON-NLS-1$
     jsonChartWriter.omitField(PiePlot.class, "labels"); //$NON-NLS-1$
@@ -61,6 +63,7 @@ public class ChartSerializer {
     xmlChartWriter.registerConverter(new AxisConverter());
     xmlChartWriter.registerConverter(new ChartTitleConverter());
     xmlChartWriter.useAttributeFor(PiePlot.class, "animate"); //$NON-NLS-1$
+    xmlChartWriter.useAttributeFor(DialPlot.class, "animate"); //$NON-NLS-1$
     xmlChartWriter.useAttributeFor(PiePlot.class, "startAngle"); //$NON-NLS-1$
     xmlChartWriter.omitField(PiePlot.class, "slices"); //$NON-NLS-1$
     xmlChartWriter.omitField(PiePlot.class, "labels"); //$NON-NLS-1$

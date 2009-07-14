@@ -204,6 +204,7 @@ public class ChartModelConverter implements Converter {
       plot = piePlot;
     } else if (reader.getNodeName().equals("dialPlot")) {
       DialPlot dialPlot = new DialPlot();
+      dialPlot.setAnimate(Boolean.parseBoolean(reader.getAttribute("animate")));
       plot = dialPlot;
     }
     

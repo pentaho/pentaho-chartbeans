@@ -77,9 +77,10 @@ public class SerializationTest {
     subtitle.setBackgroundColor(0x0000FF);
     chartModel.getSubtitles().add(subtitle);;
     chartModel.getSubtitles().add(new StyledText("subtitle 2"));;
-    
+
     
     DialPlot dialPlot = new DialPlot();
+    dialPlot.setAnimate(true);
     dialPlot.setBackground(0x765890);
     dialPlot.setOpacity(0.75f);
     dialPlot.getScale().addRange(new DialRange(0, 100, Color.RED.getRGB()));
@@ -134,6 +135,7 @@ public class SerializationTest {
     assertEquals(dialPlot.getAnnotation().getFontSize(), new Integer(10));
     assertEquals(dialPlot.getAnnotation().getFontStyle(), FontStyle.ITALIC);
     assertEquals(dialPlot.getAnnotation().getFontWeight(), FontWeight.BOLD);
+    assertEquals(dialPlot.getAnimate(), true);
     Scale scale = dialPlot.getScale();
     assertEquals(scale.size(), 2);
     for (DialRange dialRange : scale) {
