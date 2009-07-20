@@ -7,6 +7,7 @@ import java.util.Set;
 import org.pentaho.chart.ChartDocumentContext;
 import org.pentaho.chart.core.ChartDocument;
 import org.pentaho.chart.data.ChartTableModel;
+import org.pentaho.chart.data.IChartDataModel;
 import org.pentaho.chart.model.ChartModel;
 import org.pentaho.chart.model.util.ChartSerializer;
 import org.pentaho.chart.model.util.ChartSerializer.ChartSerializationFormat;
@@ -31,7 +32,7 @@ public class XmlChartPlugin extends AbstractChartPlugin
   {
   }
 
-  public IOutput renderChartDocument(ChartModel chartModel, ChartTableModel data) {
+  public IOutput renderChartDocument(ChartModel chartModel, IChartDataModel data) {
     //TODO finish this.
     return null;
   }

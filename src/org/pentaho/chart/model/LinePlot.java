@@ -4,16 +4,18 @@ import java.io.Serializable;
 
 import org.pentaho.chart.model.CssStyle.LineStyle;
 
-public class LinePlot extends GraphPlot implements Serializable {
+public class LinePlot extends TwoAxisPlot implements Serializable {
 
   public enum LinePlotFlavor {PLAIN, THREED, DOT, DASH, DASHDOT, DASHDOTDOT};
   
   LinePlotFlavor flavor = LinePlotFlavor.PLAIN;
 
   public LinePlot() {
+    super(new Axis(), new NumericAxis());
   }
 
   public LinePlot(LinePlotFlavor flavor) {
+    this();
     setFlavor(flavor);
   }
   

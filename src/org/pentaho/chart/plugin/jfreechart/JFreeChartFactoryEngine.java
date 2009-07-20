@@ -8,6 +8,7 @@ import java.awt.Point;
 import java.awt.Stroke;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,6 +23,7 @@ import org.jfree.chart.labels.StandardPieSectionLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.plot.dial.DialBackground;
 import org.jfree.chart.plot.dial.DialCap;
 import org.jfree.chart.plot.dial.DialTextAnnotation;
@@ -30,6 +32,8 @@ import org.jfree.chart.title.TextTitle;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.DefaultValueDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.GradientPaintTransformType;
 import org.jfree.ui.HorizontalAlignment;
 import org.jfree.ui.RectangleEdge;
@@ -40,13 +44,25 @@ import org.pentaho.chart.core.ChartDocument;
 import org.pentaho.chart.core.ChartElement;
 import org.pentaho.chart.css.keys.ChartStyleKeys;
 import org.pentaho.chart.css.styles.ChartSeriesType;
+import org.pentaho.chart.data.CategoricalDataModel;
 import org.pentaho.chart.data.ChartTableModel;
+import org.pentaho.chart.data.IChartDataModel;
+import org.pentaho.chart.data.MultiSeriesXYDataModel;
+import org.pentaho.chart.data.NamedValue;
+import org.pentaho.chart.data.NamedValuesDataModel;
+import org.pentaho.chart.data.BasicDataModel;
+import org.pentaho.chart.data.XYDataModel;
+import org.pentaho.chart.data.XYDataPoint;
+import org.pentaho.chart.data.CategoricalDataModel.Category;
+import org.pentaho.chart.data.MultiSeriesXYDataModel.Series;
 import org.pentaho.chart.model.AreaPlot;
 import org.pentaho.chart.model.BarPlot;
 import org.pentaho.chart.model.ChartModel;
 import org.pentaho.chart.model.DialPlot;
-import org.pentaho.chart.model.GraphPlot;
 import org.pentaho.chart.model.LinePlot;
+import org.pentaho.chart.model.NumericAxis;
+import org.pentaho.chart.model.Plot;
+import org.pentaho.chart.model.ScatterPlot;
 import org.pentaho.chart.model.StyledText;
 import org.pentaho.chart.model.Axis.LabelOrientation;
 import org.pentaho.chart.model.BarPlot.BarPlotFlavor;
@@ -76,6 +92,10 @@ import org.pentaho.reporting.libraries.css.values.CSSValue;
 import org.pentaho.util.messages.Messages;
 
 public class JFreeChartFactoryEngine implements Serializable {
+  private class AxesLabels {
+    String domainAxisLabel = "";
+    String rangeAxisLabel = "";
+  }
 
   private static final Log logger = LogFactory.getLog(JFreeChartFactoryEngine.class);
   
@@ -84,31 +104,33 @@ public class JFreeChartFactoryEngine implements Serializable {
   public JFreeChartFactoryEngine(){
   }
 
-  public IOutput makeChart(ChartModel chartModel, ChartTableModel chartTableModel) {
+  public IOutput makeChart(ChartModel chartModel, IChartDataModel chartDataModel) {
     IOutput chartOutput = null;
     if (chartModel.getPlot() instanceof BarPlot) {
-      chartOutput = new JFreeChartOutput(makeBarChart(chartModel, chartTableModel));
+      chartOutput = new JFreeChartOutput(makeBarChart(chartModel, (CategoricalDataModel)chartDataModel));
     } else if (chartModel.getPlot() instanceof LinePlot) {
-      chartOutput = new JFreeChartOutput(makeLineChart(chartModel, chartTableModel));
+      chartOutput = new JFreeChartOutput(makeLineChart(chartModel, (CategoricalDataModel)chartDataModel));
     } else if (chartModel.getPlot() instanceof AreaPlot) {
-      chartOutput = new JFreeChartOutput(makeAreaChart(chartModel, chartTableModel));
+      chartOutput = new JFreeChartOutput(makeAreaChart(chartModel, (CategoricalDataModel)chartDataModel));
     } else if (chartModel.getPlot() instanceof DialPlot) {
-      chartOutput = new JFreeChartOutput(makeDialChart(chartModel, chartTableModel));
+      chartOutput = new JFreeChartOutput(makeDialChart(chartModel, chartDataModel));
     } else if (chartModel.getPlot() instanceof org.pentaho.chart.model.PiePlot) {
-      chartOutput = new JFreeChartOutput(makePieChart(chartModel, chartTableModel));
+      chartOutput = new JFreeChartOutput(makePieChart(chartModel, (NamedValuesDataModel)chartDataModel));
+    } else if (chartModel.getPlot() instanceof ScatterPlot) {
+      if (chartDataModel instanceof MultiSeriesXYDataModel) {
+        chartOutput = new JFreeChartOutput(makeScatterChart(chartModel, (MultiSeriesXYDataModel)chartDataModel));
+      } else {
+        chartOutput = new JFreeChartOutput(makeScatterChart(chartModel, (XYDataModel)chartDataModel));
+      }
     }
     return chartOutput;
   }
   
-  /* (non-Javadoc)
-   * @see org.pentaho.chart.plugin.api.engine.ChartFactoryEngine#makeAreaChart(org.pentaho.chart.data.ChartTableModel, org.pentaho.chart.core.ChartDocument, org.pentaho.chart.plugin.api.IOutput)
-   */
-  protected JFreeChart makePieChart(ChartModel chartModel, ChartTableModel data) {
+  protected JFreeChart makePieChart(ChartModel chartModel, NamedValuesDataModel dataModel) {
     final DefaultPieDataset dataset = new DefaultPieDataset();
-    for (int row = 0; row < data.getRowCount(); row++) {
-      if (data.getValueAt(row, 0) instanceof Number) {
-        final Number number = (Number) data.getValueAt(row, 0);
-        dataset.setValue(data.getRowName(row), number);
+    for (NamedValue namedValue : dataModel) {
+      if (namedValue.getName() != null) {
+        dataset.setValue(namedValue.getName(), namedValue.getValue());
       }
     }
 
@@ -121,6 +143,7 @@ public class JFreeChartFactoryEngine implements Serializable {
     }
     
     final JFreeChart chart = ChartFactory.createPieChart(title, dataset, showLegend, true, false);
+    
     initChart(chart, chartModel);
     
     final PiePlot jFreePiePlot = (PiePlot)chart.getPlot();
@@ -131,19 +154,14 @@ public class JFreeChartFactoryEngine implements Serializable {
     
     org.pentaho.chart.model.PiePlot chartBeansPiePlot = (org.pentaho.chart.model.PiePlot)chartModel.getPlot();
     
-    ArrayList<Integer> colors = new ArrayList<Integer>();
-    if (chartBeansPiePlot.getPalette() != null) {
-      colors.addAll(chartBeansPiePlot.getPalette());
-    }    
-    ArrayList<Integer> defaultColors = new ArrayList<Integer>(org.pentaho.chart.model.Plot.DEFAULT_PALETTE);
-    defaultColors.removeAll(colors);
-    colors.addAll(defaultColors);
+    List<Integer> colors = getPlotColors(chartBeansPiePlot);
 
-    for (int i = 0; i < data.getRowCount(); i++) {
-      final Comparable rowName = data.getRowName(i);
-      if ((rowName != null) && (i < colors.size())) {
-        jFreePiePlot.setSectionPaint(rowName, new Color(0x00FFFFFF & colors.get(i)));
+    int index = 0;
+    for (NamedValue namedValue : dataModel) {
+      if (namedValue.getName() != null) {
+        jFreePiePlot.setSectionPaint(namedValue.getName(), new Color(0x00FFFFFF & colors.get(index % colors.size())));
       }
+      index++;
     }
     
     if (chartBeansPiePlot.getLabels().getVisible()) {
@@ -169,13 +187,13 @@ public class JFreeChartFactoryEngine implements Serializable {
     return chart;
   }
   
-  protected JFreeChart makeDialChart(ChartModel chartModel, ChartTableModel data) {
+  protected JFreeChart makeDialChart(ChartModel chartModel, IChartDataModel data) {
     DialPlot chartBeansDialPlot = (DialPlot)chartModel.getPlot();
 
     org.jfree.chart.plot.dial.DialPlot jFreeDialPlot = new SquareDialPlot();
 
     final DefaultValueDataset dataset = new DefaultValueDataset();
-    dataset.setValue((Number) data.getValueAt(0, 0));
+    dataset.setValue(((BasicDataModel)data).getData().get(0));
 
     jFreeDialPlot.setDataset(dataset);
 
@@ -268,16 +286,6 @@ public class JFreeChartFactoryEngine implements Serializable {
       chart.setBackgroundPaint(Color.WHITE);
     }
     
-    if (chartModel.getPlot().getBackground() instanceof Integer) {
-      chart.getPlot().setBackgroundPaint(new Color(0x00FFFFFF & (Integer)chartModel.getPlot().getBackground()));
-    } else {
-      chart.getPlot().setBackgroundPaint(Color.WHITE);
-    }
-
-    if (chartModel.getPlot().getOpacity() != null) {
-      chart.getPlot().setForegroundAlpha(chartModel.getPlot().getOpacity());
-    }
-    
     if ((chartModel.getTitle() != null) && (chartModel.getTitle().getText() != null) && (chartModel.getTitle().getText().trim().length() > 0)) {
       Font font = ChartUtils.getFont(chartModel.getTitle().getFontFamily(), chartModel.getTitle().getFontStyle(), chartModel.getTitle().getFontWeight(), chartModel.getTitle().getFontSize());
       if (font != null) {
@@ -347,127 +355,180 @@ public class JFreeChartFactoryEngine implements Serializable {
         }
         chart.addSubtitle(textTitle);
       }
+    }    
+  }
+  
+  /* (non-Javadoc)
+   * @see org.pentaho.chart.plugin.api.engine.ChartFactoryEngine#makeLineChart(org.pentaho.chart.data.ChartTableModel, org.pentaho.chart.core.ChartDocument, org.pentaho.chart.plugin.api.IOutput)
+   */
+  protected JFreeChart makeAreaChart(ChartModel chartModel, CategoricalDataModel dataModel) {
+    DefaultCategoryDataset categoryDataset = createCategoryDataset(dataModel);
+    org.pentaho.chart.model.TwoAxisPlot graphPlot = (org.pentaho.chart.model.TwoAxisPlot)chartModel.getPlot();       
+    
+    String title = "";
+    if ((chartModel.getTitle() != null) && (chartModel.getTitle().getText() != null) && (chartModel.getTitle().getText().trim().length() > 0)) {
+      title = chartModel.getTitle().getText();
+    }    
+    AxesLabels axesLabels = getAxesLabels(chartModel);   
+    PlotOrientation plotOrientation = (graphPlot.getOrientation() == Orientation.HORIZONTAL) ? PlotOrientation.HORIZONTAL : PlotOrientation.VERTICAL;
+    boolean showLegend = (chartModel.getLegend() != null) && (chartModel.getLegend().getVisible());
+    
+    JFreeChart chart = ChartFactory.createAreaChart(title, axesLabels.domainAxisLabel, axesLabels.rangeAxisLabel, categoryDataset, plotOrientation, showLegend, true, false);
+    
+    initCategoryPlot(chart, chartModel);    
+    initChart(chart, chartModel);
+    
+
+    return chart;
+  }
+  
+  /* (non-Javadoc)
+   * @see org.pentaho.chart.plugin.api.engine.ChartFactoryEngine#makeLineChart(org.pentaho.chart.data.ChartTableModel, org.pentaho.chart.core.ChartDocument, org.pentaho.chart.plugin.api.IOutput)
+   */
+  protected JFreeChart makeLineChart(ChartModel chartModel, CategoricalDataModel dataModel) {
+    DefaultCategoryDataset categoryDataset = createCategoryDataset(dataModel);
+    org.pentaho.chart.model.TwoAxisPlot graphPlot = (org.pentaho.chart.model.TwoAxisPlot)chartModel.getPlot();       
+    
+    String title = "";
+    if ((chartModel.getTitle() != null) && (chartModel.getTitle().getText() != null) && (chartModel.getTitle().getText().trim().length() > 0)) {
+      title = chartModel.getTitle().getText();
+    }    
+    AxesLabels axesLabels = getAxesLabels(chartModel);    
+    PlotOrientation plotOrientation = (graphPlot.getOrientation() == Orientation.HORIZONTAL) ? PlotOrientation.HORIZONTAL : PlotOrientation.VERTICAL;
+    boolean showLegend = (chartModel.getLegend() != null) && (chartModel.getLegend().getVisible());
+    JFreeChart chart = null;
+    
+    LinePlot linePlot = (LinePlot)graphPlot;
+    if (linePlot.getFlavor() == LinePlotFlavor.THREED) {
+      chart = ChartFactory.createLineChart3D(title, axesLabels.domainAxisLabel, axesLabels.rangeAxisLabel, categoryDataset, plotOrientation,
+          showLegend, true, false);
+    } else {
+      chart = ChartFactory.createLineChart(title, axesLabels.domainAxisLabel, axesLabels.rangeAxisLabel, categoryDataset, plotOrientation,
+          showLegend, true, false);
+      Stroke stroke = getLineStyleStroke(linePlot.getFlavor(), linePlot.getLineWidth());
+      ((CategoryPlot)chart.getPlot()).getRenderer().setStroke(stroke);
+    }
+
+    initCategoryPlot(chart, chartModel);    
+    initChart(chart, chartModel);
+    
+    return chart;
+  }
+  
+  private XYSeries createXYSeries(XYDataModel xyDataModel) {  
+    
+    XYSeries series = null;
+    if (xyDataModel instanceof Series) {
+      series = new XYSeries(((Series)xyDataModel).getSeriesName());
+    } else {
+      series = new XYSeries("");
+    }
+    for (XYDataPoint dataPoint : xyDataModel) {
+      series.add(dataPoint.getDomainValue(), dataPoint.getRangeValue());
     }
     
+    return series;
   }
   
-  /* (non-Javadoc)
-   * @see org.pentaho.chart.plugin.api.engine.ChartFactoryEngine#makeLineChart(org.pentaho.chart.data.ChartTableModel, org.pentaho.chart.core.ChartDocument, org.pentaho.chart.plugin.api.IOutput)
-   */
-  protected JFreeChart makeAreaChart(ChartModel chartModel, ChartTableModel data) {
-    return makeGraphChart(chartModel, data);
+  protected JFreeChart makeScatterChart(ChartModel chartModel, XYDataModel data) {
+    XYSeriesCollection dataset = new XYSeriesCollection();
+    
+    dataset.addSeries(createXYSeries(data));
+    
+    org.pentaho.chart.model.TwoAxisPlot graphPlot = (org.pentaho.chart.model.TwoAxisPlot)chartModel.getPlot();       
+    
+    String title = "";
+    if ((chartModel.getTitle() != null) && (chartModel.getTitle().getText() != null) && (chartModel.getTitle().getText().trim().length() > 0)) {
+      title = chartModel.getTitle().getText();
+    }    
+    
+    AxesLabels axesLabels = getAxesLabels(chartModel);    
+    PlotOrientation plotOrientation = (graphPlot.getOrientation() == Orientation.HORIZONTAL) ? PlotOrientation.HORIZONTAL : PlotOrientation.VERTICAL;
+    boolean showLegend = (chartModel.getLegend() != null) && (chartModel.getLegend().getVisible());
+    JFreeChart chart = ChartFactory.createScatterPlot(title, axesLabels.domainAxisLabel, axesLabels.rangeAxisLabel, dataset, plotOrientation, showLegend, true, false);
+
+    initXYPlot(chart, chartModel);    
+    initChart(chart, chartModel);
+    
+    return chart;
   }
   
-  /* (non-Javadoc)
-   * @see org.pentaho.chart.plugin.api.engine.ChartFactoryEngine#makeLineChart(org.pentaho.chart.data.ChartTableModel, org.pentaho.chart.core.ChartDocument, org.pentaho.chart.plugin.api.IOutput)
-   */
-  protected JFreeChart makeLineChart(ChartModel chartModel, ChartTableModel data) {
-    return makeGraphChart(chartModel, data);
+  protected JFreeChart makeScatterChart(ChartModel chartModel, MultiSeriesXYDataModel data) {
+
+    XYSeriesCollection dataset = new XYSeriesCollection();
+    
+    for (Series series : data.getSeries()) {
+      dataset.addSeries(createXYSeries(series));
+    }
+    
+    org.pentaho.chart.model.TwoAxisPlot graphPlot = (org.pentaho.chart.model.TwoAxisPlot)chartModel.getPlot();       
+    
+    String title = "";
+    if ((chartModel.getTitle() != null) && (chartModel.getTitle().getText() != null) && (chartModel.getTitle().getText().trim().length() > 0)) {
+      title = chartModel.getTitle().getText();
+    }    
+    
+    AxesLabels axesLabels = getAxesLabels(chartModel);    
+    PlotOrientation plotOrientation = (graphPlot.getOrientation() == Orientation.HORIZONTAL) ? PlotOrientation.HORIZONTAL : PlotOrientation.VERTICAL;
+    boolean showLegend = (chartModel.getLegend() != null) && (chartModel.getLegend().getVisible());
+    JFreeChart chart = ChartFactory.createScatterPlot(title, axesLabels.domainAxisLabel, axesLabels.rangeAxisLabel, dataset, plotOrientation, showLegend, true, false);
+
+    initXYPlot(chart, chartModel);    
+    initChart(chart, chartModel);
+    
+    return chart;
   }
   
-  protected DefaultCategoryDataset createCategoryDataset(ChartTableModel data) {
+  protected DefaultCategoryDataset createCategoryDataset(CategoricalDataModel data) {
     DefaultCategoryDataset categoryDataset = new DefaultCategoryDataset();
-    for (int row = 0; row < data.getRowCount(); row++) {
-      for (int column = 0; column < data.getColumnCount(); column++) {
-        final Object rawValue = data.getValueAt(row, column);
-        if (rawValue instanceof Number) {
-          final Number number = (Number) rawValue;
-          categoryDataset.setValue(number, data.getRowName(row), data.getColumnName(column));
-        }
+    for (Category category : data.getCategories()) {
+      for (NamedValue dataPoint : category) {
+        categoryDataset.setValue(dataPoint.getValue(), dataPoint.getName(), category.getCategoryName());
       }
     }
     return categoryDataset;
   }
   
-  protected JFreeChart makeGraphChart(ChartModel chartModel, ChartTableModel data) {
-    DefaultCategoryDataset categoryDataset = createCategoryDataset(data);
+  private AxesLabels getAxesLabels(ChartModel chartModel) {
+    org.pentaho.chart.model.TwoAxisPlot graphPlot = (org.pentaho.chart.model.TwoAxisPlot)chartModel.getPlot();
+    AxesLabels graphLabelsAndFonts = new AxesLabels();
 
-    GraphPlot graphPlot = (GraphPlot)chartModel.getPlot();
-    
-    PlotOrientation plotOrientation = (graphPlot.getOrientation() == Orientation.HORIZONTAL) ? PlotOrientation.HORIZONTAL : PlotOrientation.VERTICAL;
-    String title = "";
-    if ((chartModel.getTitle() != null) && (chartModel.getTitle().getText() != null) && (chartModel.getTitle().getText().trim().length() > 0)) {
-      title = chartModel.getTitle().getText();
+    if ((graphPlot.getRangeAxis() != null) 
+        && (graphPlot.getRangeAxis().getLegend() != null) 
+        && (graphPlot.getRangeAxis().getLegend().getText() != null)
+        && (graphPlot.getRangeAxis().getLegend().getText().trim().length() > 0)) {
+      graphLabelsAndFonts.rangeAxisLabel = graphPlot.getRangeAxis().getLegend().getText();
+    }
+    if ((graphPlot.getDomainAxis() != null) 
+        && (graphPlot.getDomainAxis().getLegend() != null) 
+        && (graphPlot.getDomainAxis().getLegend().getText() != null)
+        && (graphPlot.getDomainAxis().getLegend().getText().trim().length() > 0)) {
+      graphLabelsAndFonts.domainAxisLabel = graphPlot.getDomainAxis().getLegend().getText();
     }
     
-    String domainAxisLabel = "";
-    String rangeAxisLabel = "";
-    Font domainAxisFont = null;
-    Font rangeAxisFont = null;   
-    Font rangeTitleFont = null;
-    Font domainTitleFont = null;
-    Font yAxisFont = ChartUtils.getFont(graphPlot.getYAxis().getFontFamily(), graphPlot.getYAxis().getFontStyle(), graphPlot.getYAxis().getFontWeight(), graphPlot.getYAxis().getFontSize());
-    Font xAxisFont = ChartUtils.getFont(graphPlot.getXAxis().getFontFamily(), graphPlot.getXAxis().getFontStyle(), graphPlot.getXAxis().getFontWeight(), graphPlot.getXAxis().getFontSize());
-    LabelOrientation labelOrientation = graphPlot.getXAxis().getLabelOrientation();
-    if (graphPlot.getOrientation() == Orientation.HORIZONTAL) {
-      if ((graphPlot.getXAxis() != null) 
-          && (graphPlot.getXAxis().getLegend() != null) 
-          && (graphPlot.getXAxis().getLegend().getText() != null)
-          && (graphPlot.getXAxis().getLegend().getText().trim().length() > 0)) {
-        rangeAxisLabel = graphPlot.getXAxis().getLegend().getText();
-      }
-      if ((graphPlot.getYAxis() != null) 
-          && (graphPlot.getYAxis().getLegend() != null) 
-          && (graphPlot.getYAxis().getLegend().getText() != null)
-          && (graphPlot.getYAxis().getLegend().getText().trim().length() > 0)) {
-        domainAxisLabel = graphPlot.getYAxis().getLegend().getText();
-      }
-      rangeTitleFont = ChartUtils.getFont(graphPlot.getXAxis().getLegend().getFontFamily(), graphPlot.getXAxis().getLegend().getFontStyle(), graphPlot.getXAxis().getLegend().getFontWeight(), graphPlot.getXAxis().getLegend().getFontSize());
-      domainTitleFont = ChartUtils.getFont(graphPlot.getYAxis().getLegend().getFontFamily(), graphPlot.getYAxis().getLegend().getFontStyle(), graphPlot.getYAxis().getLegend().getFontWeight(), graphPlot.getYAxis().getLegend().getFontSize());
-      rangeAxisFont = xAxisFont;
-      domainAxisFont = yAxisFont;
-    } else {
-      if ((graphPlot.getXAxis() != null) 
-          && (graphPlot.getXAxis().getLegend() != null) 
-          && (graphPlot.getXAxis().getLegend().getText() != null)
-          && (graphPlot.getXAxis().getLegend().getText().trim().length() > 0)) {
-        domainAxisLabel = graphPlot.getXAxis().getLegend().getText();
-      }
-      if ((graphPlot.getYAxis() != null) 
-          && (graphPlot.getYAxis().getLegend() != null) 
-          && (graphPlot.getYAxis().getLegend().getText() != null)
-          && (graphPlot.getYAxis().getLegend().getText().trim().length() > 0)) {
-        rangeAxisLabel = graphPlot.getYAxis().getLegend().getText();
-      }
-      rangeTitleFont = ChartUtils.getFont(graphPlot.getYAxis().getLegend().getFontFamily(), graphPlot.getYAxis().getLegend().getFontStyle(), graphPlot.getYAxis().getLegend().getFontWeight(), graphPlot.getYAxis().getLegend().getFontSize());
-      domainTitleFont = ChartUtils.getFont(graphPlot.getXAxis().getLegend().getFontFamily(), graphPlot.getXAxis().getLegend().getFontStyle(), graphPlot.getXAxis().getLegend().getFontWeight(), graphPlot.getXAxis().getLegend().getFontSize());
-      domainAxisFont = xAxisFont;
-      rangeAxisFont = yAxisFont;
-    }
-    
-    boolean showLegend = (chartModel.getLegend() != null) && (chartModel.getLegend().getVisible());
-    JFreeChart chart = null;
-    if (graphPlot instanceof BarPlot) {
-      if (BarPlotFlavor.THREED == ((BarPlot)graphPlot).getFlavor()) {
-        chart = ChartFactory.createBarChart3D(title, domainAxisLabel, rangeAxisLabel, categoryDataset, plotOrientation, showLegend, true, false);
-      } else {
-        chart = ChartFactory.createBarChart(title, domainAxisLabel, rangeAxisLabel, categoryDataset, plotOrientation, showLegend, true, false);
-      }
-    } else if (graphPlot instanceof LinePlot) {
-      LinePlot linePlot = (LinePlot)graphPlot;
-      if (linePlot.getFlavor() == LinePlotFlavor.THREED) {
-        chart = ChartFactory.createLineChart3D(title, domainAxisLabel, rangeAxisLabel, categoryDataset, plotOrientation,
-            showLegend, true, false);
-      } else {
-        chart = ChartFactory.createLineChart(title, domainAxisLabel, rangeAxisLabel, categoryDataset, plotOrientation,
-            showLegend, true, false);
-        Stroke stroke = getLineStyleStroke(linePlot.getFlavor(), linePlot.getLineWidth());
-        ((CategoryPlot)chart.getPlot()).getRenderer().setStroke(stroke);
-      }
-    } else if (graphPlot instanceof AreaPlot) {
-      chart = ChartFactory.createAreaChart(title, domainAxisLabel, rangeAxisLabel, categoryDataset, plotOrientation,
-          showLegend, true, false);
-    }
-
-    final CategoryPlot categoryPlot = chart.getCategoryPlot();
-    
+    return graphLabelsAndFonts;
+  }
+  
+  private List<Integer> getPlotColors(Plot plot) {
     ArrayList<Integer> colors = new ArrayList<Integer>();
-    if (graphPlot.getPalette() != null) {
-      colors.addAll(graphPlot.getPalette());
+    if (plot.getPalette() != null) {
+      colors.addAll(plot.getPalette());
     }    
+    
     ArrayList<Integer> defaultColors = new ArrayList<Integer>(org.pentaho.chart.model.Plot.DEFAULT_PALETTE);
     defaultColors.removeAll(colors);
     colors.addAll(defaultColors);
+    
+    return colors;
+  }
+  
+  private void initCategoryPlot(JFreeChart chart, ChartModel chartModel) {
+    initPlot(chart, chartModel);
+    
+    org.pentaho.chart.model.TwoAxisPlot graphPlot = (org.pentaho.chart.model.TwoAxisPlot)chartModel.getPlot();
+    CategoryPlot categoryPlot = chart.getCategoryPlot();
+    
+    List<Integer> colors = getPlotColors(graphPlot);
     
     for (int i = 0; i < colors.size(); i++) {
       for (int j = 0; j < categoryPlot.getDatasetCount(); j++) {
@@ -475,19 +536,24 @@ public class JFreeChartFactoryEngine implements Serializable {
       }
     }
     
-    initChart(chart, chartModel);
-    
+    Font domainAxisFont = ChartUtils.getFont(graphPlot.getDomainAxis().getFontFamily(), graphPlot.getDomainAxis().getFontStyle(), graphPlot.getDomainAxis().getFontWeight(), graphPlot.getDomainAxis().getFontSize());
+    Font rangeAxisFont = ChartUtils.getFont(graphPlot.getRangeAxis().getFontFamily(), graphPlot.getRangeAxis().getFontStyle(), graphPlot.getRangeAxis().getFontWeight(), graphPlot.getRangeAxis().getFontSize());
+    Font rangeTitleFont = ChartUtils.getFont(graphPlot.getRangeAxis().getLegend().getFontFamily(), graphPlot.getRangeAxis().getLegend().getFontStyle(), graphPlot.getRangeAxis().getLegend().getFontWeight(), graphPlot.getRangeAxis().getLegend().getFontSize());
+    Font domainTitleFont = ChartUtils.getFont(graphPlot.getDomainAxis().getLegend().getFontFamily(), graphPlot.getDomainAxis().getLegend().getFontStyle(), graphPlot.getDomainAxis().getLegend().getFontWeight(), graphPlot.getDomainAxis().getLegend().getFontSize());
+       
     CategoryAxis domainAxis = categoryPlot.getDomainAxis();
     ValueAxis rangeAxis = categoryPlot.getRangeAxis();
     
-    if ((rangeAxisLabel.length() > 0) && (rangeTitleFont != null)) {
+    AxesLabels axesLabels = getAxesLabels(chartModel);
+    if ((axesLabels.rangeAxisLabel.length() > 0) && (rangeTitleFont != null)) {
       rangeAxis.setLabelFont(rangeTitleFont);
     }
     
-    if ((domainAxisLabel.length() > 0) && (domainTitleFont != null)) {      
+    if ((axesLabels.domainAxisLabel.length() > 0) && (domainTitleFont != null)) {      
       domainAxis.setLabelFont(domainTitleFont);
     }
     
+    LabelOrientation labelOrientation = graphPlot.getHorizontalAxis().getLabelOrientation();
     if ((labelOrientation != null) && (labelOrientation != LabelOrientation.HORIZONTAL)) {
       if (graphPlot.getOrientation() == Orientation.HORIZONTAL) {
         if (labelOrientation == LabelOrientation.VERTICAL) {
@@ -512,20 +578,112 @@ public class JFreeChartFactoryEngine implements Serializable {
       rangeAxis.setTickLabelFont(rangeAxisFont);
     }
 
-    if (graphPlot.getMinValue() != null) {
-      rangeAxis.setLowerBound(graphPlot.getMinValue().doubleValue());
+    Number rangeMin = graphPlot.getRangeAxis().getMinValue();
+    if (rangeMin != null) {
+      rangeAxis.setLowerBound(rangeMin.doubleValue());
     }
-    if (graphPlot.getMaxValue() != null) {
-      rangeAxis.setUpperBound(graphPlot.getMaxValue().doubleValue());
+    Number rangeMax = graphPlot.getRangeAxis().getMaxValue();
+    if (rangeMax != null) {
+      rangeAxis.setUpperBound(rangeMax.doubleValue());
+    }  
+  }
+  
+  private void initXYPlot(JFreeChart chart, ChartModel chartModel) {
+    initPlot(chart, chartModel);
+    
+    org.pentaho.chart.model.TwoAxisPlot graphPlot = (org.pentaho.chart.model.TwoAxisPlot)chartModel.getPlot();
+    XYPlot xyPlot = chart.getXYPlot();
+    
+    List<Integer> colors = getPlotColors(graphPlot);
+    
+    for (int i = 0; i < colors.size(); i++) {
+      for (int j = 0; j < xyPlot.getDatasetCount(); j++) {
+        xyPlot.getRenderer(j).setSeriesPaint(i, new Color(0xFF0000)/*0x00FFFFFF & colors.get(i))*/);
+      }
+    }
+    
+    Font domainAxisFont = ChartUtils.getFont(graphPlot.getDomainAxis().getFontFamily(), graphPlot.getDomainAxis().getFontStyle(), graphPlot.getDomainAxis().getFontWeight(), graphPlot.getDomainAxis().getFontSize());
+    Font rangeAxisFont = ChartUtils.getFont(graphPlot.getRangeAxis().getFontFamily(), graphPlot.getRangeAxis().getFontStyle(), graphPlot.getRangeAxis().getFontWeight(), graphPlot.getRangeAxis().getFontSize());
+    Font rangeTitleFont = ChartUtils.getFont(graphPlot.getRangeAxis().getLegend().getFontFamily(), graphPlot.getRangeAxis().getLegend().getFontStyle(), graphPlot.getRangeAxis().getLegend().getFontWeight(), graphPlot.getRangeAxis().getLegend().getFontSize());
+    Font domainTitleFont = ChartUtils.getFont(graphPlot.getDomainAxis().getLegend().getFontFamily(), graphPlot.getDomainAxis().getLegend().getFontStyle(), graphPlot.getDomainAxis().getLegend().getFontWeight(), graphPlot.getDomainAxis().getLegend().getFontSize());
+       
+       
+    NumberAxis domainAxis = (NumberAxis)xyPlot.getDomainAxis();
+    NumberAxis rangeAxis = (NumberAxis)xyPlot.getRangeAxis();
+    
+    domainAxis.setAutoRangeIncludesZero(true);
+    rangeAxis.setAutoRangeIncludesZero(true);
+    
+    AxesLabels axesLabels = getAxesLabels(chartModel);
+    if ((axesLabels.rangeAxisLabel.length() > 0) && (rangeTitleFont != null)) {
+      rangeAxis.setLabelFont(rangeTitleFont);
+    }
+    
+    if ((axesLabels.domainAxisLabel.length() > 0) && (domainTitleFont != null)) {      
+      domainAxis.setLabelFont(domainTitleFont);
+    }
+    
+    domainAxis.setVerticalTickLabels(graphPlot.getHorizontalAxis().getLabelOrientation() == LabelOrientation.VERTICAL);
+
+    if (domainAxisFont != null) {
+      domainAxis.setTickLabelFont(domainAxisFont);
+    }
+    if (rangeAxisFont != null) {
+      rangeAxis.setTickLabelFont(rangeAxisFont);
     }
 
-    return chart;
+    Number rangeMin = ((NumericAxis)graphPlot.getRangeAxis()).getMinValue();
+    if (rangeMin != null) {
+      rangeAxis.setLowerBound(rangeMin.doubleValue());
+    }
+    Number rangeMax = ((NumericAxis)graphPlot.getRangeAxis()).getMaxValue();
+    if (rangeMax != null) {
+      rangeAxis.setUpperBound(rangeMax.doubleValue());
+    }  
   }
+  
+  private void initPlot(JFreeChart chart, ChartModel chartModel) {
+    Plot plot = chartModel.getPlot();
+    
+    if (plot.getBackground() instanceof Integer) {
+      chart.getPlot().setBackgroundPaint(new Color(0x00FFFFFF & (Integer)chartModel.getPlot().getBackground()));
+    } else {
+      chart.getPlot().setBackgroundPaint(Color.WHITE);
+    }
+
+    if (plot.getOpacity() != null) {
+      chart.getPlot().setForegroundAlpha(chartModel.getPlot().getOpacity());
+    }
+    
+    
+  }
+   
   /* (non-Javadoc)
    * @see org.pentaho.chart.plugin.api.engine.ChartFactoryEngine#makeBarChart(org.pentaho.chart.data.ChartTableModel, org.pentaho.chart.core.ChartDocument, org.pentaho.chart.plugin.api.IOutput)
    */
-  protected JFreeChart makeBarChart(ChartModel chartModel, ChartTableModel data) {
-    return makeGraphChart(chartModel, data);
+  protected JFreeChart makeBarChart(ChartModel chartModel, CategoricalDataModel dataModel) {
+    DefaultCategoryDataset categoryDataset = createCategoryDataset(dataModel);
+    org.pentaho.chart.model.TwoAxisPlot graphPlot = (org.pentaho.chart.model.TwoAxisPlot)chartModel.getPlot();       
+    
+    String title = "";
+    if ((chartModel.getTitle() != null) && (chartModel.getTitle().getText() != null) && (chartModel.getTitle().getText().trim().length() > 0)) {
+      title = chartModel.getTitle().getText();
+    }    
+    AxesLabels axesLabels = getAxesLabels(chartModel);    
+    PlotOrientation plotOrientation = (graphPlot.getOrientation() == Orientation.HORIZONTAL) ? PlotOrientation.HORIZONTAL : PlotOrientation.VERTICAL;
+    boolean showLegend = (chartModel.getLegend() != null) && (chartModel.getLegend().getVisible());
+    JFreeChart chart = null;
+    
+    if (BarPlotFlavor.THREED == ((BarPlot)graphPlot).getFlavor()) {
+      chart = ChartFactory.createBarChart3D(title, axesLabels.domainAxisLabel, axesLabels.rangeAxisLabel, categoryDataset, plotOrientation, showLegend, true, false);
+    } else {
+      chart = ChartFactory.createBarChart(title, axesLabels.domainAxisLabel, axesLabels.rangeAxisLabel, categoryDataset, plotOrientation, showLegend, true, false);
+    }
+
+    initCategoryPlot(chart, chartModel);    
+    initChart(chart, chartModel);
+    
+    return chart;
   }
 
   public IOutput makeChart(final ChartTableModel data, final ChartDocumentContext chartDocumentContext, final ChartResult chartResult) {

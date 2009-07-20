@@ -1,25 +1,12 @@
 package org.pentaho.chart.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
-public class GraphPlot extends Plot implements Serializable {
-  
+public class NumericAxis extends Axis implements Serializable {
+
   Number minValue = null;
   Number maxValue = null;
   
-  Axis xAxis = new Axis();
-  Axis yAxis = new Axis();
-  
-  public Axis getXAxis() {
-    return xAxis;
-  }
-  
-  public Axis getYAxis() {
-    return yAxis;
-  }
-
   public Number getMinValue() {
     return minValue;
   }
@@ -35,5 +22,4 @@ public class GraphPlot extends Plot implements Serializable {
   public void setMaxValue(Number maxValue) {
     this.maxValue = maxValue;
   }
-
 }

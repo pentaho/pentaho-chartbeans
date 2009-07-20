@@ -1,6 +1,7 @@
 package org.pentaho.chart.model.util;
 
 import org.pentaho.chart.model.Axis;
+import org.pentaho.chart.model.NumericAxis;
 import org.pentaho.chart.model.StyledText;
 import org.pentaho.chart.model.Axis.LabelOrientation;
 
@@ -30,7 +31,7 @@ public class AxisConverter implements Converter {
   }
 
   public boolean canConvert(Class clazz) {
-    return clazz.equals(Axis.class);
+    return clazz.equals(Axis.class) || clazz.equals(NumericAxis.class);
   }
 
 }

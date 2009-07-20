@@ -5,8 +5,8 @@ import org.pentaho.chart.model.ChartLegend;
 import org.pentaho.chart.model.ChartModel;
 import org.pentaho.chart.model.CssStyle;
 import org.pentaho.chart.model.DialPlot;
-import org.pentaho.chart.model.GraphPlot;
 import org.pentaho.chart.model.PiePlot;
+import org.pentaho.chart.model.TwoAxisPlot;
 import org.pentaho.chart.model.BarPlot.BarPlotFlavor;
 import org.pentaho.chart.model.LinePlot.LinePlotFlavor;
 import org.pentaho.chart.model.PiePlot.PieLabels;
@@ -45,8 +45,8 @@ public class ChartSerializer {
     jsonChartWriter.omitField(PiePlot.class, "slices"); //$NON-NLS-1$
     jsonChartWriter.omitField(PiePlot.class, "labels"); //$NON-NLS-1$
     jsonChartWriter.omitField(PieLabels.class, "visible"); //$NON-NLS-1$
-    jsonChartWriter.omitField(GraphPlot.class, "xAxis"); //$NON-NLS-1$  
-    jsonChartWriter.omitField(GraphPlot.class, "yAxis"); //$NON-NLS-1$
+    jsonChartWriter.omitField(TwoAxisPlot.class, "xAxis"); //$NON-NLS-1$  
+    jsonChartWriter.omitField(TwoAxisPlot.class, "yAxis"); //$NON-NLS-1$
     
     xmlChartWriter.setMode(XStream.NO_REFERENCES);
     xmlChartWriter.alias("chartModel", ChartModel.class); //$NON-NLS-1$
@@ -68,8 +68,8 @@ public class ChartSerializer {
     xmlChartWriter.omitField(PiePlot.class, "slices"); //$NON-NLS-1$
     xmlChartWriter.omitField(PiePlot.class, "labels"); //$NON-NLS-1$
     xmlChartWriter.omitField(PieLabels.class, "visible"); //$NON-NLS-1$
-    xmlChartWriter.omitField(GraphPlot.class, "xAxis"); //$NON-NLS-1$
-    xmlChartWriter.omitField(GraphPlot.class, "yAxis"); //$NON-NLS-1$
+    xmlChartWriter.omitField(TwoAxisPlot.class, "xAxis"); //$NON-NLS-1$
+    xmlChartWriter.omitField(TwoAxisPlot.class, "yAxis"); //$NON-NLS-1$
     
     jsonChartDefWriter.setMode(XStream.NO_REFERENCES);
     jsonChartDefWriter.alias("chartDataModel", ChartDataDefinition.class); //$NON-NLS-1$

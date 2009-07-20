@@ -173,13 +173,13 @@ public class SerializationTest {
     barPlot.setOpacity(0.75f);
     barPlot.setOrientation(Orientation.HORIZONTAL);
     barPlot.setPalette(new Palette(0x001111, 0x222222, 0x333333));
-    barPlot.getXAxis().setLabelOrientation(LabelOrientation.DIAGONAL);
-    barPlot.getXAxis().getLegend().setText("xAxis");
-    barPlot.getXAxis().getLegend().setColor(0x192837);
-    barPlot.getXAxis().getLegend().setFont("san-serif", 10, FontStyle.NORMAL, FontWeight.NORMAL);
-    barPlot.getYAxis().getLegend().setText("yAxis");
-    barPlot.getYAxis().getLegend().setColor(0x192837);
-    barPlot.getYAxis().getLegend().setFont("san-serif", 12, FontStyle.OBLIQUE, FontWeight.BOLD);
+    barPlot.getHorizontalAxis().setLabelOrientation(LabelOrientation.DIAGONAL);
+    barPlot.getHorizontalAxis().getLegend().setText("xAxis");
+    barPlot.getHorizontalAxis().getLegend().setColor(0x192837);
+    barPlot.getHorizontalAxis().getLegend().setFont("san-serif", 10, FontStyle.NORMAL, FontWeight.NORMAL);
+    barPlot.getVerticalAxis().getLegend().setText("yAxis");
+    barPlot.getVerticalAxis().getLegend().setColor(0x192837);
+    barPlot.getVerticalAxis().getLegend().setFont("san-serif", 12, FontStyle.OBLIQUE, FontWeight.BOLD);
     
     chartModel.setPlot(barPlot);
     
@@ -219,19 +219,19 @@ public class SerializationTest {
     assertEquals(palette.get(0), 0x001111);
     assertEquals(palette.get(1), 0x222222);
     assertEquals(palette.get(2), 0x333333);
-    assertEquals(barPlot.getXAxis().getLabelOrientation(), LabelOrientation.DIAGONAL);
-    assertEquals(barPlot.getXAxis().getLegend().getText(), "xAxis");
-    assertEquals(barPlot.getXAxis().getLegend().getColor(), 0x192837);
-    assertEquals(barPlot.getXAxis().getLegend().getFontFamily(), "san-serif");
-    assertEquals(barPlot.getXAxis().getLegend().getFontSize(), 10);
-    assertEquals(barPlot.getXAxis().getLegend().getFontStyle(), FontStyle.NORMAL);
-    assertEquals(barPlot.getXAxis().getLegend().getFontWeight(), FontWeight.NORMAL);
-    assertEquals(barPlot.getYAxis().getLegend().getText(), "yAxis");
-    assertEquals(barPlot.getYAxis().getLegend().getColor(), 0x192837);
-    assertEquals(barPlot.getYAxis().getLegend().getFontFamily(), "san-serif");
-    assertEquals(barPlot.getYAxis().getLegend().getFontSize(), 12);
-    assertEquals(barPlot.getYAxis().getLegend().getFontStyle(), FontStyle.OBLIQUE);
-    assertEquals(barPlot.getYAxis().getLegend().getFontWeight(), FontWeight.BOLD);    
+    assertEquals(barPlot.getHorizontalAxis().getLabelOrientation(), LabelOrientation.DIAGONAL);
+    assertEquals(barPlot.getHorizontalAxis().getLegend().getText(), "xAxis");
+    assertEquals(barPlot.getHorizontalAxis().getLegend().getColor(), 0x192837);
+    assertEquals(barPlot.getHorizontalAxis().getLegend().getFontFamily(), "san-serif");
+    assertEquals(barPlot.getHorizontalAxis().getLegend().getFontSize(), 10);
+    assertEquals(barPlot.getHorizontalAxis().getLegend().getFontStyle(), FontStyle.NORMAL);
+    assertEquals(barPlot.getHorizontalAxis().getLegend().getFontWeight(), FontWeight.NORMAL);
+    assertEquals(barPlot.getVerticalAxis().getLegend().getText(), "yAxis");
+    assertEquals(barPlot.getVerticalAxis().getLegend().getColor(), 0x192837);
+    assertEquals(barPlot.getVerticalAxis().getLegend().getFontFamily(), "san-serif");
+    assertEquals(barPlot.getVerticalAxis().getLegend().getFontSize(), 12);
+    assertEquals(barPlot.getVerticalAxis().getLegend().getFontStyle(), FontStyle.OBLIQUE);
+    assertEquals(barPlot.getVerticalAxis().getLegend().getFontWeight(), FontWeight.BOLD);    
   }
   
   @Test
@@ -258,8 +258,8 @@ public class SerializationTest {
     linePlot.setFlavor(LinePlotFlavor.THREED);
     linePlot.setOpacity(0.75f);
     linePlot.setPalette(new Palette(0x001111, 0x222222, 0x333333));
-    linePlot.getXAxis().setLabelOrientation(LabelOrientation.VERTICAL);
-    linePlot.getYAxis().setLabelOrientation(LabelOrientation.VERTICAL);
+    linePlot.getHorizontalAxis().setLabelOrientation(LabelOrientation.VERTICAL);
+    linePlot.getVerticalAxis().setLabelOrientation(LabelOrientation.VERTICAL);
     
     chartModel.setPlot(linePlot);
     
@@ -298,8 +298,8 @@ public class SerializationTest {
     assertEquals(palette.get(0), 0x001111);
     assertEquals(palette.get(1), 0x222222);
     assertEquals(palette.get(2), 0x333333);
-    assertEquals(linePlot.getXAxis().getLabelOrientation(), LabelOrientation.VERTICAL);
-    assertEquals(linePlot.getYAxis().getLabelOrientation(), LabelOrientation.VERTICAL);
+    assertEquals(linePlot.getHorizontalAxis().getLabelOrientation(), LabelOrientation.VERTICAL);
+    assertEquals(linePlot.getVerticalAxis().getLabelOrientation(), LabelOrientation.VERTICAL);
   }
   
   @Test
@@ -324,12 +324,12 @@ public class SerializationTest {
     areaPlot.setBackground(0x765890);
     areaPlot.setOpacity(0.75f);
     areaPlot.setPalette(new Palette(0x001111, 0x222222, 0x333333));
-    areaPlot.getXAxis().getLegend().setText("xAxis");
-    areaPlot.getXAxis().getLegend().setColor(0x192837);
-    areaPlot.getXAxis().getLegend().setFont("san-serif", 10, FontStyle.NORMAL, FontWeight.NORMAL);
-    areaPlot.getYAxis().getLegend().setText("yAxis");
-    areaPlot.getYAxis().getLegend().setColor(0x192837);
-    areaPlot.getYAxis().getLegend().setFont("san-serif", 12, FontStyle.OBLIQUE, FontWeight.BOLD);
+    areaPlot.getHorizontalAxis().getLegend().setText("xAxis");
+    areaPlot.getHorizontalAxis().getLegend().setColor(0x192837);
+    areaPlot.getHorizontalAxis().getLegend().setFont("san-serif", 10, FontStyle.NORMAL, FontWeight.NORMAL);
+    areaPlot.getVerticalAxis().getLegend().setText("yAxis");
+    areaPlot.getVerticalAxis().getLegend().setColor(0x192837);
+    areaPlot.getVerticalAxis().getLegend().setFont("san-serif", 12, FontStyle.OBLIQUE, FontWeight.BOLD);
     
     chartModel.setPlot(areaPlot);
     
@@ -367,18 +367,18 @@ public class SerializationTest {
     assertEquals(palette.get(0), 0x001111);
     assertEquals(palette.get(1), 0x222222);
     assertEquals(palette.get(2), 0x333333);
-    assertEquals(areaPlot.getXAxis().getLegend().getText(), "xAxis");
-    assertEquals(areaPlot.getXAxis().getLegend().getColor(), 0x192837);
-    assertEquals(areaPlot.getXAxis().getLegend().getFontFamily(), "san-serif");
-    assertEquals(areaPlot.getXAxis().getLegend().getFontSize(), 10);
-    assertEquals(areaPlot.getXAxis().getLegend().getFontStyle(), FontStyle.NORMAL);
-    assertEquals(areaPlot.getXAxis().getLegend().getFontWeight(), FontWeight.NORMAL);
-    assertEquals(areaPlot.getYAxis().getLegend().getText(), "yAxis");
-    assertEquals(areaPlot.getYAxis().getLegend().getColor(), 0x192837);
-    assertEquals(areaPlot.getYAxis().getLegend().getFontFamily(), "san-serif");
-    assertEquals(areaPlot.getYAxis().getLegend().getFontSize(), 12);
-    assertEquals(areaPlot.getYAxis().getLegend().getFontStyle(), FontStyle.OBLIQUE);
-    assertEquals(areaPlot.getYAxis().getLegend().getFontWeight(), FontWeight.BOLD);    
+    assertEquals(areaPlot.getHorizontalAxis().getLegend().getText(), "xAxis");
+    assertEquals(areaPlot.getHorizontalAxis().getLegend().getColor(), 0x192837);
+    assertEquals(areaPlot.getHorizontalAxis().getLegend().getFontFamily(), "san-serif");
+    assertEquals(areaPlot.getHorizontalAxis().getLegend().getFontSize(), 10);
+    assertEquals(areaPlot.getHorizontalAxis().getLegend().getFontStyle(), FontStyle.NORMAL);
+    assertEquals(areaPlot.getHorizontalAxis().getLegend().getFontWeight(), FontWeight.NORMAL);
+    assertEquals(areaPlot.getVerticalAxis().getLegend().getText(), "yAxis");
+    assertEquals(areaPlot.getVerticalAxis().getLegend().getColor(), 0x192837);
+    assertEquals(areaPlot.getVerticalAxis().getLegend().getFontFamily(), "san-serif");
+    assertEquals(areaPlot.getVerticalAxis().getLegend().getFontSize(), 12);
+    assertEquals(areaPlot.getVerticalAxis().getLegend().getFontStyle(), FontStyle.OBLIQUE);
+    assertEquals(areaPlot.getVerticalAxis().getLegend().getFontWeight(), FontWeight.BOLD);    
   }
   
   @Test

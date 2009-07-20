@@ -22,6 +22,7 @@ import java.util.Set;
 import org.pentaho.chart.ChartDocumentContext;
 import org.pentaho.chart.core.ChartDocument;
 import org.pentaho.chart.data.ChartTableModel;
+import org.pentaho.chart.data.IChartDataModel;
 import org.pentaho.chart.model.ChartModel;
 import org.pentaho.chart.plugin.api.ChartResult;
 import org.pentaho.chart.plugin.api.IOutput;
@@ -58,7 +59,7 @@ public interface IChartPlugin {
    */
   public IOutput renderChartDocument(ChartDocumentContext chartDocumentContext, ChartTableModel data);
 
-  public IOutput renderChartDocument(ChartModel chartDocumentContext, ChartTableModel data);
+  public IOutput renderChartDocument(ChartModel chartDocumentContext, IChartDataModel data);
   
   /**
    * Returns a set of OutputTypes that this plugin can return (via the IOutput returned from renderChartDocument).

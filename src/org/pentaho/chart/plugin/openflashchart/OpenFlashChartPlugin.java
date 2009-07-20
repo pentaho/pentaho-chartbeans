@@ -23,6 +23,7 @@ import java.util.Set;
 import org.pentaho.chart.ChartDocumentContext;
 import org.pentaho.chart.core.ChartDocument;
 import org.pentaho.chart.data.ChartTableModel;
+import org.pentaho.chart.data.IChartDataModel;
 import org.pentaho.chart.model.ChartModel;
 import org.pentaho.chart.plugin.AbstractChartPlugin;
 import org.pentaho.chart.plugin.IChartPlugin;
@@ -46,7 +47,7 @@ public class OpenFlashChartPlugin extends AbstractChartPlugin
     chartFactory = new OpenFlashChartFactoryEngine();
   }
 
-  public IOutput renderChartDocument(ChartModel chartModel, ChartTableModel chartTableModel) {
+  public IOutput renderChartDocument(ChartModel chartModel, IChartDataModel chartTableModel) {
     return chartFactory.makeChart(chartModel, chartTableModel);
   }
   

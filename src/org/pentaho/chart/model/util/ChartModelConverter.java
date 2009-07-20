@@ -6,13 +6,13 @@ import org.pentaho.chart.model.BarPlot;
 import org.pentaho.chart.model.ChartModel;
 import org.pentaho.chart.model.CssStyle;
 import org.pentaho.chart.model.DialPlot;
-import org.pentaho.chart.model.GraphPlot;
 import org.pentaho.chart.model.LinePlot;
 import org.pentaho.chart.model.Palette;
 import org.pentaho.chart.model.PiePlot;
 import org.pentaho.chart.model.Plot;
 import org.pentaho.chart.model.ScatterPlot;
 import org.pentaho.chart.model.StyledText;
+import org.pentaho.chart.model.TwoAxisPlot;
 import org.pentaho.chart.model.Axis.LabelOrientation;
 import org.pentaho.chart.model.BarPlot.BarPlotFlavor;
 import org.pentaho.chart.model.ChartTitle.TitleLocation;
@@ -32,7 +32,9 @@ public class ChartModelConverter implements Converter {
 
   public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
     ChartModel chartModel = (ChartModel)value;
-    writer.addAttribute("chartEngine", chartModel.getChartEngineId());
+    if (chartModel.getChartEngineId() != null) {
+      writer.addAttribute("chartEngine", chartModel.getChartEngineId());
+    }
     
     if (chartModel.getTheme() != null) {
       writer.addAttribute("theme", chartModel.getTheme().toString());
@@ -75,19 +77,19 @@ public class ChartModelConverter implements Converter {
           writer.endNode();
         }
       }
-      if (chartModel.getPlot() instanceof GraphPlot) {
-        GraphPlot graphPlot = (GraphPlot)chartModel.getPlot();
-        Axis xAxis = graphPlot.getXAxis();
+      if (chartModel.getPlot() instanceof TwoAxisPlot) {
+        TwoAxisPlot graphPlot = (TwoAxisPlot)chartModel.getPlot();
+        Axis xAxis = graphPlot.getHorizontalAxis();
         if ((xAxis.getLabelOrientation() != LabelOrientation.HORIZONTAL)
             || ((xAxis.getLegend().getText() != null) && (xAxis.getLegend().getText().trim().length() > 0))) {
-          ExtendedHierarchicalStreamWriterHelper.startNode(writer, "xAxis", xAxis.getClass());
+          ExtendedHierarchicalStreamWriterHelper.startNode(writer, "horizontalAxis", xAxis.getClass());
           context.convertAnother(xAxis);
           writer.endNode();
         }
-        Axis yAxis = graphPlot.getYAxis();
+        Axis yAxis = graphPlot.getVerticalAxis();
         if ((yAxis.getLabelOrientation() != LabelOrientation.HORIZONTAL)
             || ((yAxis.getLegend().getText() != null) && (yAxis.getLegend().getText().trim().length() > 0))) {
-          ExtendedHierarchicalStreamWriterHelper.startNode(writer, "yAxis", yAxis.getClass());
+          ExtendedHierarchicalStreamWriterHelper.startNode(writer, "verticalAxis", yAxis.getClass());
           context.convertAnother(yAxis);
           writer.endNode();
         }
@@ -245,9 +247,9 @@ public class ChartModelConverter implements Converter {
           plot.setPalette(palette);
         }
       }
-      if ((reader.getNodeName().equals("yAxis") || reader.getNodeName().equals("xAxis")) && (plot instanceof GraphPlot)) {
-        GraphPlot graphPlot = (GraphPlot)plot;
-        Axis axis = (reader.getNodeName().equals("yAxis") ? graphPlot.getYAxis() : graphPlot.getXAxis());
+      if ((reader.getNodeName().equals("verticalAxis") || reader.getNodeName().equals("horizontalAxis")) && (plot instanceof TwoAxisPlot)) {
+        TwoAxisPlot graphPlot = (TwoAxisPlot)plot;
+        Axis axis = (reader.getNodeName().equals("verticalAxis") ? graphPlot.getVerticalAxis() : graphPlot.getHorizontalAxis());
         String axisLabelOrientation = reader.getAttribute("labelOrientation");
         try {
           axis.setLabelOrientation(Enum.valueOf(LabelOrientation.class, axisLabelOrientation.toUpperCase()));
@@ -313,25 +315,6 @@ public class ChartModelConverter implements Converter {
           dialPlot.getAnnotation().getStyle().setStyleString(cssStyle);
         }
       }
-      if (reader.getNodeName().equals("xAxisLabel") && (plot instanceof GraphPlot)) {
-        String title = reader.getValue();
-        if (title != null) {
-          ((GraphPlot)plot).getXAxis().getLegend().setText(title);
-        } 
-        cssStyle = reader.getAttribute("style");
-        if (cssStyle != null) {
-          ((GraphPlot)plot).getXAxis().getLegend().getStyle().setStyleString(cssStyle);
-        }
-      } else if (reader.getNodeName().equals("yAxisLabel") && (plot instanceof GraphPlot)) {
-        String title = reader.getValue();
-        if (title != null) {
-          ((GraphPlot)plot).getYAxis().getLegend().setText(title);
-        } 
-        cssStyle = reader.getAttribute("style");
-        if (cssStyle != null) {
-          ((GraphPlot)plot).getYAxis().getLegend().getStyle().setStyleString(cssStyle);
-        }
-      }  
       reader.moveUp();
     }
     return plot;

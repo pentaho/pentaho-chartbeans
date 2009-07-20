@@ -28,6 +28,7 @@ import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
+import org.pentaho.chart.ChartBeanFactory;
 import org.pentaho.chart.ChartBoot;
 import org.pentaho.chart.ChartDocumentContext;
 import org.pentaho.chart.ChartFactory;
@@ -40,7 +41,6 @@ import org.pentaho.chart.model.ChartModel;
 import org.pentaho.chart.model.ChartTitle;
 import org.pentaho.chart.model.LinePlot;
 import org.pentaho.chart.model.PiePlot;
-import org.pentaho.chart.model.StyledText;
 import org.pentaho.chart.model.PiePlot.Slice;
 import org.pentaho.chart.model.Plot.Orientation;
 import org.pentaho.chart.model.Theme.ChartTheme;
@@ -427,13 +427,13 @@ public class PluginTest extends TestCase {
     
     BarPlot barPlot = new BarPlot();
     barPlot.setOrientation(Orientation.VERTICAL);
-    barPlot.getXAxis().getLegend().setText("categoryAxisLabel");
-    barPlot.getYAxis().getLegend().setText("valueAxisLabel");
+    barPlot.getHorizontalAxis().getLegend().setText("categoryAxisLabel");
+    barPlot.getVerticalAxis().getLegend().setText("valueAxisLabel");
     chartModel.setPlot(barPlot);
     chartModel.setTheme(ChartTheme.THEME1);
     InputStream inputStream = null;
     try {
-      inputStream = ChartFactory.createChart(chartData, false, 2, 0, 1, chartModel, 100, 100, null);
+      inputStream = ChartBeanFactory.createChart(chartData, false, 2, 0, 1, chartModel, 100, 100, null);
       String jsonString = convertStreamToString(inputStream);
       for (int row = 0; row < chartData.length; row++) {
         for (int column = 0; column < chartData[row].length; column++) {
@@ -445,19 +445,19 @@ public class PluginTest extends TestCase {
         }
       }
       assertTrue(jsonString.indexOf(chartModel.getTitle().getText()) >= 0);
-      assertTrue(jsonString.indexOf(barPlot.getXAxis().getLegend().getText()) >= 0);
-      assertTrue(jsonString.indexOf(barPlot.getYAxis().getLegend().getText()) >= 0);
+      assertTrue(jsonString.indexOf(barPlot.getHorizontalAxis().getLegend().getText()) >= 0);
+      assertTrue(jsonString.indexOf(barPlot.getVerticalAxis().getLegend().getText()) >= 0);
     } catch (Exception e) {
       fail("Unexpected exception");
     }
     
     barPlot = new BarPlot();
     barPlot.setOrientation(Orientation.HORIZONTAL);
-    barPlot.getXAxis().getLegend().setText("categoryAxisLabel");
-    barPlot.getYAxis().getLegend().setText("valueAxisLabel");
+    barPlot.getHorizontalAxis().getLegend().setText("categoryAxisLabel");
+    barPlot.getVerticalAxis().getLegend().setText("valueAxisLabel");
     chartModel.setPlot(barPlot);
     try {
-      inputStream = ChartFactory.createChart(chartData, false, 2, 0, 1, chartModel, 100, 100, null);
+      inputStream = ChartBeanFactory.createChart(chartData, false, 2, 0, 1, chartModel, 100, 100, null);
       String jsonString = convertStreamToString(inputStream);
       for (int row = 0; row < chartData.length; row++) {
         for (int column = 0; column < chartData[row].length; column++) {
@@ -469,8 +469,8 @@ public class PluginTest extends TestCase {
         }
       }
       assertTrue(jsonString.indexOf(chartModel.getTitle().getText()) >= 0);
-      assertTrue(jsonString.indexOf(barPlot.getXAxis().getLegend().getText()) >= 0);
-      assertTrue(jsonString.indexOf(barPlot.getYAxis().getLegend().getText()) >= 0);
+      assertTrue(jsonString.indexOf(barPlot.getHorizontalAxis().getLegend().getText()) >= 0);
+      assertTrue(jsonString.indexOf(barPlot.getVerticalAxis().getLegend().getText()) >= 0);
     } catch (Exception e) {
       fail("Unexpected exception");
     }
@@ -496,12 +496,12 @@ public class PluginTest extends TestCase {
     chartModel.setTitle(new ChartTitle("testOpenFlashChart"));
     
     LinePlot linePlot = new LinePlot();
-    linePlot.getXAxis().getLegend().setText("categoryAxisLabel");
-    linePlot.getYAxis().getLegend().setText("valueAcisLabel");
+    linePlot.getHorizontalAxis().getLegend().setText("categoryAxisLabel");
+    linePlot.getVerticalAxis().getLegend().setText("valueAcisLabel");
     chartModel.setPlot(linePlot);
     chartModel.setTheme(ChartTheme.THEME2);
     try {
-      InputStream inputStream = ChartFactory.createChart(chartData, false, 2, 0, 1, chartModel, 100, 100, null);
+      InputStream inputStream = ChartBeanFactory.createChart(chartData, false, 2, 0, 1, chartModel, 100, 100, null);
       String jsonString = convertStreamToString(inputStream);
       for (int row = 0; row < chartData.length; row++) {
         for (int column = 0; column < chartData[row].length; column++) {
@@ -513,8 +513,8 @@ public class PluginTest extends TestCase {
         }
       }
       assertTrue(jsonString.indexOf(chartModel.getTitle().getText()) >= 0);
-      assertTrue(jsonString.indexOf(linePlot.getXAxis().getLegend().getText()) >= 0);
-      assertTrue(jsonString.indexOf(linePlot.getYAxis().getLegend().getText()) >= 0);
+      assertTrue(jsonString.indexOf(linePlot.getHorizontalAxis().getLegend().getText()) >= 0);
+      assertTrue(jsonString.indexOf(linePlot.getVerticalAxis().getLegend().getText()) >= 0);
     } catch (Exception e) {
       fail("Unexpected exception");
     }
@@ -540,12 +540,12 @@ public class PluginTest extends TestCase {
     chartModel.setTitle(new ChartTitle("testOpenFlashChart"));
     
     AreaPlot areaPlot = new AreaPlot();
-    areaPlot.getXAxis().getLegend().setText("categoryAxisLabel");
-    areaPlot.getYAxis().getLegend().setText("valueAcisLabel");
+    areaPlot.getHorizontalAxis().getLegend().setText("categoryAxisLabel");
+    areaPlot.getVerticalAxis().getLegend().setText("valueAcisLabel");
     chartModel.setPlot(areaPlot);
     chartModel.setTheme(ChartTheme.THEME2);
     try {
-      InputStream inputStream = ChartFactory.createChart(chartData, false, 2, 0, 1, chartModel, 100, 100, null);
+      InputStream inputStream = ChartBeanFactory.createChart(chartData, false, 2, 0, 1, chartModel, 100, 100, null);
       String jsonString = convertStreamToString(inputStream);
       for (int row = 0; row < chartData.length; row++) {
         for (int column = 0; column < chartData[row].length; column++) {
@@ -557,8 +557,8 @@ public class PluginTest extends TestCase {
         }
       }
       assertTrue(jsonString.indexOf(chartModel.getTitle().getText()) >= 0);
-      assertTrue(jsonString.indexOf(areaPlot.getXAxis().getLegend().getText()) >= 0);
-      assertTrue(jsonString.indexOf(areaPlot.getYAxis().getLegend().getText()) >= 0);
+      assertTrue(jsonString.indexOf(areaPlot.getHorizontalAxis().getLegend().getText()) >= 0);
+      assertTrue(jsonString.indexOf(areaPlot.getVerticalAxis().getLegend().getText()) >= 0);
     } catch (Exception e) {
       fail("Unexpected exception");
     }
@@ -589,7 +589,7 @@ public class PluginTest extends TestCase {
     chartModel.setPlot(piePlot);
     chartModel.setTheme(ChartTheme.THEME2);
     try {
-      InputStream inputStream = ChartFactory.createChart(chartData, false, 1, 0, -1, chartModel, 100, 100, null);
+      InputStream inputStream = ChartBeanFactory.createChart(chartData, false, 1, 0, -1, chartModel, 100, 100, null);
       String jsonString = convertStreamToString(inputStream);
       for (int row = 0; row < chartData.length; row++) {
         for (int column = 0; column < chartData[row].length; column++) {
