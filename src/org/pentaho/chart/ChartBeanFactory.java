@@ -45,15 +45,8 @@ import org.pentaho.chart.plugin.jfreechart.JFreeChartPlugin;
 import org.pentaho.chart.plugin.openflashchart.OpenFlashChartPlugin;
 import org.pentaho.reporting.libraries.resourceloader.ResourceKeyCreationException;
 
-/**
- * API for generating charts
- *
- * @author David Kincade
- */
 public class ChartBeanFactory {
-  private static List<IChartPlugin> chartPlugins = initPlugins();
-
-  private static final String CHART_PLUGINS_PROPERTIES_FILE = "chartPlugins.properties";
+  private static List<IChartPlugin> chartPlugins = new ArrayList<IChartPlugin>();
 
   private ChartBeanFactory() {
   }
@@ -75,29 +68,14 @@ public class ChartBeanFactory {
     return plugin;
   }
 
-  private static List<IChartPlugin> initPlugins() {
-    ArrayList<IChartPlugin> plugins = new ArrayList<IChartPlugin>();
-    InputStream in = ChartBeanFactory.class.getClassLoader().getResourceAsStream(CHART_PLUGINS_PROPERTIES_FILE);
-    if (in != null) {
-      Properties properties = new Properties();
-      try {
-        properties.load(in);
-        for (Enumeration enumeration = properties.elements(); enumeration.hasMoreElements();) {
-          try {
-            plugins.add((IChartPlugin) Class.forName(enumeration.nextElement().toString()).newInstance());
-          } catch (Exception ex) {
-            //Not able to construct the plugin so we won't add it to the list.
-          }
-        }
-      } catch (Exception ex) {
-        // We'll return an empty plugin list.
-      }
-    }
-    return plugins;
+  /**
+   *  This method is called from a platform system listener on startup,
+   *  to initialize the available plugins from the chartbeans configuration file. 
+   */
+  public static void loadDefaultChartPlugins(List <IChartPlugin> plugins) {
+    chartPlugins = plugins;
   }
-
-
-
+  
   public static InputStream createChart(Object[][] queryResults, ChartModel chartModel, int width, int height,
       OutputTypes outputType) throws ChartProcessingException, SQLException, ResourceKeyCreationException,
       PersistenceException {
