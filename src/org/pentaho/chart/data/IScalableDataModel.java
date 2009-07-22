@@ -16,5 +16,7 @@
  */
 package org.pentaho.chart.data;
 
-public interface IChartDataModel {
+public interface IScalableDataModel {
+  public void setScalingFactor(Number scalingFactor);
+  public Number getScalingFactor();
 }

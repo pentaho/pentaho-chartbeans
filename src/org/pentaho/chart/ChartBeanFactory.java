@@ -1,17 +1,18 @@
 /*
- * Copyright 2007 Pentaho Corporation.  All rights reserved. 
- * This software was developed by Pentaho Corporation and is provided under the terms 
- * of the Mozilla Public License, Version 1.1, or any later version. You may not use 
- * this file except in compliance with the license. If you need a copy of the license, 
- * please go to http://www.mozilla.org/MPL/MPL-1.1.txt. The Original Code is the Pentaho 
- * BI Platform.  The Initial Developer is Pentaho Corporation.
+ * This program is free software; you can redistribute it and/or modify it under the 
+ * terms of the GNU Lesser General Public License, version 2.1 as published by the Free Software 
+ * Foundation.
  *
- * Software distributed under the Mozilla Public License is distributed on an "AS IS" 
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or  implied. Please refer to 
- * the license for the specific language governing your rights and limitations.
+ * You should have received a copy of the GNU Lesser General Public License along with this 
+ * program; if not, you can obtain a copy at http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html 
+ * or from the Free Software Foundation, Inc., 
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Created 2/7/2008 
- * @author David Kincade 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * Copyright 2008 Pentaho Corporation.  All rights reserved.
  */
 package org.pentaho.chart;
 
@@ -20,16 +21,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.Properties;
 
+import org.pentaho.chart.data.BasicDataModel;
 import org.pentaho.chart.data.CategoricalDataModel;
-import org.pentaho.chart.data.MultiSeriesXYDataModel;
 import org.pentaho.chart.data.IChartDataModel;
+import org.pentaho.chart.data.IScalableDataModel;
+import org.pentaho.chart.data.MultiSeriesXYDataModel;
 import org.pentaho.chart.data.NamedValue;
 import org.pentaho.chart.data.NamedValuesDataModel;
-import org.pentaho.chart.data.BasicDataModel;
 import org.pentaho.chart.data.XYDataModel;
 import org.pentaho.chart.data.XYDataPoint;
 import org.pentaho.chart.data.CategoricalDataModel.Category;
@@ -90,11 +90,12 @@ public class ChartBeanFactory {
     if ((queryResults.length > 0) && (queryResults[0].length > 2)) {
       categoryColumnIndex = 2;
     }
-    return createChart(queryResults, false, rangeColumnIndex, domainColumnIndex, categoryColumnIndex, chartModel,
+    
+    return createChart(queryResults, 1, false, rangeColumnIndex, domainColumnIndex, categoryColumnIndex, chartModel,
         width, height, outputType);
   }
 
-  public static InputStream createChart(Object[][] queryResults, boolean convertNullsToZero, int rangeColumnIndex,
+  public static InputStream createChart(Object[][] queryResults, Number scalingFactor, boolean convertNullsToZero, int rangeColumnIndex,
       int domainColumnIdx, int categoryColumnIdx, ChartModel chartModel, int width, int height, OutputTypes outputType)
       throws ChartProcessingException, SQLException, ResourceKeyCreationException, PersistenceException {
     ByteArrayInputStream inputStream = null;
@@ -140,6 +141,9 @@ public class ChartBeanFactory {
     }
     
     if (chartDataModel != null) {
+      if (chartDataModel instanceof IScalableDataModel) {
+        ((IScalableDataModel)chartDataModel).setScalingFactor(scalingFactor);
+      }
       IOutput output = null;
       IChartPlugin chartPlugin = getPlugin(chartModel.getChartEngineId());
       if (chartPlugin != null) {

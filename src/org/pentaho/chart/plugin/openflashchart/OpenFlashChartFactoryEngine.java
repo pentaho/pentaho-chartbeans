@@ -1,3 +1,19 @@
+/*
+ * This program is free software; you can redistribute it and/or modify it under the 
+ * terms of the GNU Lesser General Public License, version 2.1 as published by the Free Software 
+ * Foundation.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with this 
+ * program; if not, you can obtain a copy at http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html 
+ * or from the Free Software Foundation, Inc., 
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * Copyright 2008 Pentaho Corporation.  All rights reserved.
+ */
 package org.pentaho.chart.plugin.openflashchart;
 
 import java.awt.Color;
@@ -275,10 +291,11 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       ArrayList<Dot> dots = new ArrayList<Dot>();
       
       for (NamedValue namedValue : series) {
-        if (namedValue.getValue() == null) {
+        Number value = namedValue.getValue();
+        if (value == null) {
           dots.add(null);
         } else {
-          dots.add(new Dot(namedValue.getValue()));
+          dots.add(new Dot(scaleNumber(value, chartTableModel.getScalingFactor())));
         }
       }
 
@@ -297,6 +314,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
   }
   
   public Chart makePieChart(ChartModel chartModel, NamedValuesDataModel chartTableModel) {
+    
     PieChart pieChart = new PieChart();
     PiePlot piePlot = (PiePlot)chartModel.getPlot();
     pieChart.setAnimate(piePlot.getAnimate());
@@ -319,9 +337,9 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       if (value != null) {
         Slice slice = null;
         if (piePlot.getLabels().getVisible()) {
-          slice = new Slice(value, "", chartDataPoint.getName());
+          slice = new Slice(scaleNumber(value, chartTableModel.getScalingFactor()), "", chartDataPoint.getName());
         } else {
-          slice = new Slice(value, "");
+          slice = new Slice(scaleNumber(value, chartTableModel.getScalingFactor()), "");
           slice.setTooltip(chartDataPoint.getName() + " - " + value.toString());
         }
         slices.add(slice);
@@ -434,20 +452,22 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       for (Series series : seriesList) {
         int index = 0;
         for (NamedValue namedValue : series) {
-          hasChartData = hasChartData || (namedValue.getValue() != null);
-          if (namedValue.getValue() != null) {
+          Number value = namedValue.getValue();
+          hasChartData = hasChartData || (value != null);
+          if (value != null) {
+            value = scaleNumber(value, chartTableModel.getScalingFactor());
             Number[] stackRange = stackRanges[index];
             if (stackRange == null) {
-              if (namedValue.getValue().doubleValue() < 0) {
-                stackRanges[index] = new Number[] { namedValue.getValue(), 0 };
+              if (value.doubleValue() < 0) {
+                stackRanges[index] = new Number[] { value, 0 };
               } else {
-                stackRanges[index] = new Number[] { 0, namedValue.getValue() };
+                stackRanges[index] = new Number[] { 0, value };
               }
             } else {
-              if (namedValue.getValue().doubleValue() < 0) {
-                stackRange[STACK_MIN_INDEX] = stackRange[STACK_MIN_INDEX].doubleValue() + namedValue.getValue().doubleValue();
+              if (value.doubleValue() < 0) {
+                stackRange[STACK_MIN_INDEX] = stackRange[STACK_MIN_INDEX].doubleValue() + value.doubleValue();
               } else {
-                stackRange[STACK_MAX_INDEX] = stackRange[STACK_MAX_INDEX].doubleValue() + namedValue.getValue().doubleValue();
+                stackRange[STACK_MAX_INDEX] = stackRange[STACK_MAX_INDEX].doubleValue() + value.doubleValue();
               }
             }
           }
@@ -479,6 +499,10 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       for (Series series : seriesList) {
         for (NamedValue namedValue : series) {
           Number value = namedValue.getValue();
+          hasChartData = hasChartData || (value != null);
+          if (value != null) {
+            value = scaleNumber(value, chartTableModel.getScalingFactor());
+          }
           if (calculateMaxValue) {
             if (maxValue == null) {
               maxValue = value;
@@ -495,7 +519,6 @@ public class OpenFlashChartFactoryEngine implements Serializable {
             }
           }
           
-          hasChartData = hasChartData || (value != null);
         }
       }
     }
@@ -559,8 +582,12 @@ public class OpenFlashChartFactoryEngine implements Serializable {
           }
           stackedBarChart.addKeys(key);
         }
-        StackValue stackValue = new StackValue(namedValue.getValue(), color);
-        stack.addStackValues(stackValue);
+        
+        Number value = namedValue.getValue();
+        if ((value != null) && !value.equals(0)) {
+          StackValue stackValue = new StackValue(scaleNumber(value, chartTableModel.getScalingFactor()), color);
+          stack.addStackValues(stackValue);
+        }
         index++;
       }
       firstCategory = false;
@@ -659,7 +686,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     return chart;
   }
   
-  private HorizontalBarChart makeHorizontalBarChart(ChartModel chartModel, Series dataSeries, int seriesIdx) {
+  private HorizontalBarChart makeHorizontalBarChart(ChartModel chartModel, Series dataSeries, int seriesIdx, Number scalingFactor) {
     HorizontalBarChart horizontalBarChart = new HorizontalBarChart();
     
     if ((chartModel.getLegend() != null) && chartModel.getLegend().getVisible()) {
@@ -686,7 +713,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       if (value == null) {
         bars.add(null);
       } else {
-        bars.add(new ofc4j.model.elements.HorizontalBarChart.Bar(value));
+        bars.add(new ofc4j.model.elements.HorizontalBarChart.Bar(scaleNumber(value, scalingFactor)));
       }
     }
     
@@ -694,7 +721,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     return horizontalBarChart;
   }
   
-  private BarChart makeVerticalBarChart(ChartModel chartModel, Series dataSeries, int seriesIdx) {
+  private BarChart makeVerticalBarChart(ChartModel chartModel, Series dataSeries, int seriesIdx, Number scalingFactor) {
     BarChart verticalBarChart = null;
     BarPlot barPlot = (BarPlot) chartModel.getPlot();
     Palette palette = getPalette(barPlot);
@@ -741,7 +768,8 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       if (value == null) {
         bars.add(null);
       } else {
-        bars.add(new Bar(value));
+        Bar bar = new Bar(scaleNumber(value, scalingFactor));
+        bars.add(bar);
       }
     }
     
@@ -757,7 +785,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
 
       int index = 0;
       for (Series series : dataModel.getSeries()) {
-        chart.addElements(makeHorizontalBarChart(chartModel, series, index));
+        chart.addElements(makeHorizontalBarChart(chartModel, series, index, dataModel.getScalingFactor()));
         index++;
       }
 
@@ -776,7 +804,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       } else {
         int index = 0;
         for (Series series : dataModel.getSeries()) {
-          chart.addElements(makeVerticalBarChart(chartModel, series, index));
+          chart.addElements(makeVerticalBarChart(chartModel, series, index, dataModel.getScalingFactor()));
           index++;
         }
       }
@@ -802,9 +830,6 @@ public class OpenFlashChartFactoryEngine implements Serializable {
 
     chart.setXAxis(createXAxis(linePlot, chartTableModel.getCategories()));
 
-    Number maxValue = null;
-    Number minValue = null;
-    
     Palette palette = getPalette(linePlot);
 
     int index = 0;
@@ -836,20 +861,10 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       ArrayList<Dot> dots = new ArrayList<Dot>();
       for (NamedValue namedValue : dataSeries) {
         Number value = namedValue.getValue();
-        if (maxValue == null) {
-          maxValue = value;
-        } else if (value != null) {
-          maxValue = Math.max(maxValue.doubleValue(), value.doubleValue());
-        }
-        if (minValue == null) {
-          minValue = value;
-        } else if (value != null) {
-          minValue = Math.min(minValue.doubleValue(), value.doubleValue());
-        }
         if (value == null) {
           dots.add(null);
         } else {
-          dots.add(new Dot(value));
+          dots.add(new Dot(scaleNumber(value, chartTableModel.getScalingFactor())));
         }
       }
 
@@ -1446,4 +1461,21 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     return text;
   }
   
+  protected Number scaleNumber(Number number, Number scale) {
+    Number scaledNumber = number;
+    if ((number != null) && (scale != null) && !scale.equals(1) && !scale.equals(0)) {
+      scaledNumber = number.doubleValue() / scale.doubleValue();
+      int startingSignificantDigits = 0;
+      if (!(number instanceof Integer) && (number.doubleValue() != number.intValue())) {
+        startingSignificantDigits = (int)Math.abs(Math.log10(number.doubleValue() - (int)number.doubleValue()));
+      }
+      int preferredSignificantDigits = Math.max(2, Math.min(startingSignificantDigits, 6));
+      int scaledSignificantDigits = (scaledNumber.doubleValue() != scaledNumber.intValue()) ? (int)Math.abs(Math.log10(Math.abs(scaledNumber.doubleValue() - (int)scaledNumber.doubleValue()))) : 0;
+      if (scaledSignificantDigits > preferredSignificantDigits) {
+        double multiplier = Math.pow(10, preferredSignificantDigits);
+        scaledNumber = Math.round(scaledNumber.doubleValue() * multiplier) / multiplier;
+      }
+    }  
+    return scaledNumber;
+  }
 }

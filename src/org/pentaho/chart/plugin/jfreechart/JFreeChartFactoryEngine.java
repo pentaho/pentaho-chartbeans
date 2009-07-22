@@ -1,3 +1,19 @@
+/*
+ * This program is free software; you can redistribute it and/or modify it under the 
+ * terms of the GNU Lesser General Public License, version 2.1 as published by the Free Software 
+ * Foundation.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with this 
+ * program; if not, you can obtain a copy at http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html 
+ * or from the Free Software Foundation, Inc., 
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * Copyright 2008 Pentaho Corporation.  All rights reserved.
+ */
 package org.pentaho.chart.plugin.jfreechart;
 
 import java.awt.BasicStroke;
@@ -113,7 +129,7 @@ public class JFreeChartFactoryEngine implements Serializable {
     } else if (chartModel.getPlot() instanceof AreaPlot) {
       chartOutput = new JFreeChartOutput(makeAreaChart(chartModel, (CategoricalDataModel)chartDataModel));
     } else if (chartModel.getPlot() instanceof DialPlot) {
-      chartOutput = new JFreeChartOutput(makeDialChart(chartModel, chartDataModel));
+      chartOutput = new JFreeChartOutput(makeDialChart(chartModel, (BasicDataModel)chartDataModel));
     } else if (chartModel.getPlot() instanceof org.pentaho.chart.model.PiePlot) {
       chartOutput = new JFreeChartOutput(makePieChart(chartModel, (NamedValuesDataModel)chartDataModel));
     } else if (chartModel.getPlot() instanceof ScatterPlot) {
@@ -130,7 +146,7 @@ public class JFreeChartFactoryEngine implements Serializable {
     final DefaultPieDataset dataset = new DefaultPieDataset();
     for (NamedValue namedValue : dataModel) {
       if (namedValue.getName() != null) {
-        dataset.setValue(namedValue.getName(), namedValue.getValue());
+        dataset.setValue(namedValue.getName(), scaleNumber(namedValue.getValue(), dataModel.getScalingFactor()));
       }
     }
 
@@ -187,13 +203,13 @@ public class JFreeChartFactoryEngine implements Serializable {
     return chart;
   }
   
-  protected JFreeChart makeDialChart(ChartModel chartModel, IChartDataModel data) {
+  protected JFreeChart makeDialChart(ChartModel chartModel, BasicDataModel data) {
     DialPlot chartBeansDialPlot = (DialPlot)chartModel.getPlot();
 
     org.jfree.chart.plot.dial.DialPlot jFreeDialPlot = new SquareDialPlot();
 
     final DefaultValueDataset dataset = new DefaultValueDataset();
-    dataset.setValue(((BasicDataModel)data).getData().get(0));
+    dataset.setValue(scaleNumber(data.getData().get(0), data.getScalingFactor()));
 
     jFreeDialPlot.setDataset(dataset);
 
@@ -483,7 +499,7 @@ public class JFreeChartFactoryEngine implements Serializable {
     DefaultCategoryDataset categoryDataset = new DefaultCategoryDataset();
     for (Category category : data.getCategories()) {
       for (NamedValue dataPoint : category) {
-        categoryDataset.setValue(dataPoint.getValue(), dataPoint.getName(), category.getCategoryName());
+        categoryDataset.setValue(scaleNumber(dataPoint.getValue(), data.getScalingFactor()), dataPoint.getName(), category.getCategoryName());
       }
     }
     return categoryDataset;
@@ -897,5 +913,23 @@ public class JFreeChartFactoryEngine implements Serializable {
       stroke = new BasicStroke(lineWidth);
     }
     return stroke;
+  }
+  
+  protected Number scaleNumber(Number number, Number scale) {
+    Number scaledNumber = number;
+    if ((number != null) && (scale != null) && !scale.equals(1) && !scale.equals(0)) {
+      scaledNumber = number.doubleValue() / scale.doubleValue();
+      int startingSignificantDigits = 0;
+      if (!(number instanceof Integer) && (number.doubleValue() != number.intValue())) {
+        startingSignificantDigits = (int)Math.abs(Math.log10(number.doubleValue() - (int)number.doubleValue()));
+      }
+      int preferredSignificantDigits = Math.max(2, Math.min(startingSignificantDigits, 6));
+      int scaledSignificantDigits = (scaledNumber.doubleValue() != scaledNumber.intValue()) ? (int)Math.abs(Math.log10(Math.abs(scaledNumber.doubleValue() - (int)scaledNumber.doubleValue()))) : 0;
+      if (scaledSignificantDigits > preferredSignificantDigits) {
+        double multiplier = Math.pow(10, preferredSignificantDigits);
+        scaledNumber = Math.round(scaledNumber.doubleValue() * multiplier) / multiplier;
+      }
+    }  
+    return scaledNumber;
   }
 }
