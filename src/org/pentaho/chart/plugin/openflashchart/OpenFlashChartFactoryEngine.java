@@ -233,7 +233,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     XAxis xa = new XAxis();
     xa.setLabels(labels);
     xa.getLabels().setRotation(rotation);
-    xa.setMax(labels.size() - 1);
+//    xa.setMax(labels.size() - 1);
     return xa;
   }
   
