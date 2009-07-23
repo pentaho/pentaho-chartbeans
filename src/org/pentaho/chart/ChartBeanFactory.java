@@ -35,6 +35,8 @@ import org.pentaho.chart.data.XYDataPoint;
 import org.pentaho.chart.data.CategoricalDataModel.Category;
 import org.pentaho.chart.data.MultiSeriesXYDataModel.Series;
 import org.pentaho.chart.model.ChartModel;
+import org.pentaho.chart.model.DialPlot;
+import org.pentaho.chart.model.PiePlot;
 import org.pentaho.chart.model.ScatterPlot;
 import org.pentaho.chart.plugin.ChartProcessingException;
 import org.pentaho.chart.plugin.IChartPlugin;
@@ -102,7 +104,9 @@ public class ChartBeanFactory {
 
     IChartDataModel chartDataModel = null;
     
-    if (categoryColumnIdx >= 0) {
+    if ((categoryColumnIdx >= 0) 
+        && !(chartModel.getPlot() instanceof PiePlot)
+        && !(chartModel.getPlot() instanceof DialPlot)) {
       if (chartModel.getPlot() instanceof ScatterPlot) {
         MultiSeriesXYDataModel categoricalXYDataModel = createMultiSeriesXYDataModel(queryResults, categoryColumnIdx, domainColumnIdx, rangeColumnIndex, convertNullsToZero);
         for (Series series : categoricalXYDataModel.getSeries()) {
@@ -123,7 +127,8 @@ public class ChartBeanFactory {
           }
         }
       }
-    } else if (domainColumnIdx >= 0) {
+    } else if ((domainColumnIdx >= 0)
+        && !(chartModel.getPlot() instanceof DialPlot)) {
       if (chartModel.getPlot() instanceof ScatterPlot) {
         XYDataModel xyDataModel = createXYDataModel(queryResults, domainColumnIdx, rangeColumnIndex, convertNullsToZero);
         if (xyDataModel.size() > 0) {
@@ -137,7 +142,7 @@ public class ChartBeanFactory {
         }
       }
     } else {
-      chartDataModel = createOneDimensionalDataModel(queryResults, rangeColumnIndex, true, true);
+      chartDataModel = createBasicDataModel(queryResults, rangeColumnIndex, true, true);
     }
     
     if (chartDataModel != null) {
@@ -247,7 +252,7 @@ public class ChartBeanFactory {
     return basicChartDataModel;
   }
   
-  private static BasicDataModel createOneDimensionalDataModel(Object[][] queryResults, int rangeColumn, boolean convertNullsToZero, boolean autoSum) {
+  private static BasicDataModel createBasicDataModel(Object[][] queryResults, int rangeColumn, boolean convertNullsToZero, boolean autoSum) {
     BasicDataModel oneDimensionalDataModel = new BasicDataModel(autoSum);
     
     for (int i = 0; i < queryResults.length; i++) {
