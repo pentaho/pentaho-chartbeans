@@ -918,13 +918,26 @@ public class JFreeChartFactoryEngine implements Serializable {
   protected Number scaleNumber(Number number, Number scale) {
     Number scaledNumber = number;
     if ((number != null) && (scale != null) && !scale.equals(1) && !scale.equals(0)) {
-      scaledNumber = number.doubleValue() / scale.doubleValue();
+      
       int startingSignificantDigits = 0;
-      if (!(number instanceof Integer) && (number.doubleValue() != number.intValue())) {
-        startingSignificantDigits = (int)Math.abs(Math.log10(number.doubleValue() - (int)number.doubleValue()));
+      if (!(number instanceof Integer)) {
+        String fractionalPart = Double.toString(number.doubleValue());
+        fractionalPart = fractionalPart.substring(fractionalPart.indexOf(".") + 1);
+        if ((fractionalPart.length() > 1) || Integer.parseInt(fractionalPart) > 0) {
+          startingSignificantDigits = fractionalPart.length();
+        }
       }
+      
       int preferredSignificantDigits = Math.max(2, Math.min(startingSignificantDigits, 6));
-      int scaledSignificantDigits = (scaledNumber.doubleValue() != scaledNumber.intValue()) ? (int)Math.abs(Math.log10(Math.abs(scaledNumber.doubleValue() - (int)scaledNumber.doubleValue()))) : 0;
+      
+      scaledNumber = number.doubleValue() / scale.doubleValue();
+      int scaledSignificantDigits = 0;
+      String fractionalPart = Double.toString(scaledNumber.doubleValue());
+      fractionalPart = fractionalPart.substring(fractionalPart.indexOf(".") + 1);
+      if ((fractionalPart.length() > 1) || Integer.parseInt(fractionalPart) > 0) {
+        scaledSignificantDigits = fractionalPart.length();
+      }
+      
       if (scaledSignificantDigits > preferredSignificantDigits) {
         double multiplier = Math.pow(10, preferredSignificantDigits);
         scaledNumber = Math.round(scaledNumber.doubleValue() * multiplier) / multiplier;
