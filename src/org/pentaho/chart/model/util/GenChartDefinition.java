@@ -32,8 +32,20 @@ public class GenChartDefinition {
   public static void main(String[] args) {
 
     if ((args == null) || (args.length<=0)){
-      // send some help
+      System.out.println("========================");
+      System.out.println("USAGE: GenChartDefinition");
+      System.out.println("========================");
+      System.out.println();
+      System.out.println("      GenChartDefinition will accept any number of space separated strings as ");
+      System.out.println("      arguments, and will print to system out a full featured chart definition in XML. ");
+      System.out.println("      Valid chart strings are: ");
+      System.out.println("      BAR LINE HBAR PIE AREA DIAL SCATTER ");
+      System.out.println();
+      System.out.println("      GenChartDefinition string1 string2 stringN ..."   );
+      System.out.println();
+      System.out.println();
     }
+
     for (String chart : args) {
       charts type = charts.valueOf(chart);
       switch (type) {
