@@ -27,6 +27,10 @@ public class Palette extends ArrayList<Integer> implements Serializable {
     this.addAll(otherPalette);
   }
   
+  /**
+   * Create a palette with a given list of colors in RGB Hex format (i.e- #ffffff)
+   * @param colors
+   */
   public Palette(Integer... colors) {
     for (Integer rgb : colors) {
       add(rgb);

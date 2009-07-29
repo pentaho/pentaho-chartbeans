@@ -40,6 +40,10 @@ public class DialPlot extends Plot implements Serializable {
       return maxValue;
     }
     
+    /**
+     * Each range has a minimum value, a maximum value and a color in RGB Hex format.
+     * @param dialRange
+     */
     public void addRange(DialRange dialRange) {
       if (!contains(dialRange)) {
         TreeSet<DialRange> ranges = new TreeSet<DialRange>(this);
@@ -171,13 +175,22 @@ public class DialPlot extends Plot implements Serializable {
     return annotation;
   }
 
+  /**
+   * @see StyledText
+   * @param annotation
+   */
   public void setAnnotation(StyledText annotation) {
     this.annotation = annotation;
   }
+  
   public boolean getAnimate() {
     return animate;
   }
-
+  
+  /**
+   * {@link org.pentaho.chart.model.PiePlot#setAnimate(boolean)}
+   * @return
+   */
   public void setAnimate(boolean animate) {
     this.animate = animate;
   }

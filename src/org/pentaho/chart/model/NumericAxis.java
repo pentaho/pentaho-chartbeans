@@ -27,6 +27,10 @@ public class NumericAxis extends Axis implements Serializable {
     return minValue;
   }
 
+  /**
+   * The minumum value of the axis
+   * @param minValue
+   */
   public void setMinValue(Number minValue) {
     this.minValue = minValue;
   }
@@ -35,6 +39,10 @@ public class NumericAxis extends Axis implements Serializable {
     return maxValue;
   }
 
+  /**
+   * The maximum value of the axis
+   * @param maxValue
+   */
   public void setMaxValue(Number maxValue) {
     this.maxValue = maxValue;
   }

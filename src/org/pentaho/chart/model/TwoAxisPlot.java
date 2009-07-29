@@ -43,6 +43,9 @@ public class TwoAxisPlot extends Plot implements Serializable {
     return  (NumericAxis)(getOrientation() == Orientation.HORIZONTAL ? horizontalAxis : verticalAxis);
   }
 
+  /**
+   * {@link org.pentaho.chart.model.Plot#setOrientation(Orientation)}
+   */
   public void setOrientation(Orientation orientation) {
     if (this.orientation != orientation) {
       Axis tmpAxis = verticalAxis;

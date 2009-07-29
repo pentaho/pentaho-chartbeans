@@ -53,6 +53,19 @@ public class CssStyle extends HashMap<String, String> implements Serializable {
     return style;
   }
   
+  /**
+   * The visual style of the line around the associated element.
+   * <p>
+   * <table>
+   *   <tr><th>Possible values</th></tr>
+   *   <tr><td>SOLID</td></tr>
+   *   <tr><td>DASHED</td></tr>
+   *   <tr><td>DOTTED</td></tr>
+   * </table>
+   * </p>
+   * 
+   * @param lineStyle
+   */
   public void setBorderLineStyle(LineStyle lineStyle) {
     if (lineStyle == null) {
       remove(BORDER_LINE_STYLE);
@@ -74,6 +87,10 @@ public class CssStyle extends HashMap<String, String> implements Serializable {
     return width;
   }
   
+  /**
+   * The width of the around the associated element in pixels.
+   * @param width
+   */
   public void setBorderWidth(Integer width) {
     if (width == null) {
       remove(BORDER_WIDTH_STYLE);
@@ -96,6 +113,10 @@ public class CssStyle extends HashMap<String, String> implements Serializable {
     return color;
   }
   
+  /**
+   * {@link org.pentaho.chart.model.ChartModel#setBorderColor(Integer)}
+   * @param color
+   */
   public void setBorderColor(Integer color) {
     if (color == null) {
       remove(BORDER_COLOR_STYLE);
@@ -122,6 +143,10 @@ public class CssStyle extends HashMap<String, String> implements Serializable {
     return color;
   }
   
+  /**
+   * {@link org.pentaho.chart.model.StyledText#setBackgroundColor(Integer)}
+   * @param color
+   */
   public void setBackgroundColor(Integer color) {
     if (color == null) {
       remove(BACKGROUND_COLOR_STYLE);
@@ -147,6 +172,10 @@ public class CssStyle extends HashMap<String, String> implements Serializable {
     return fontStyle == null ? FontStyle.NORMAL : fontStyle;
   }
   
+  /**
+   * {@link org.pentaho.chart.model.StyledText#setFont(String, Integer, FontStyle, FontWeight)}
+   * 
+   */
   public void setFontStyle(FontStyle style) {
     if ((style == null) || (style == FontStyle.NORMAL)) {
       remove(FONT_STYLE);
@@ -168,6 +197,10 @@ public class CssStyle extends HashMap<String, String> implements Serializable {
     return fontWeight == null ? FontWeight.NORMAL : fontWeight;
   }
   
+  /**
+   * {@link org.pentaho.chart.model.StyledText#setFont(String, Integer, FontStyle, FontWeight)}
+   * 
+   */
   public void setFontWeight(FontWeight weight) {
     if ((weight == null) || (weight == FontWeight.NORMAL)) {
       remove(FONT_WEIGHT_STYLE);
@@ -192,6 +225,10 @@ public class CssStyle extends HashMap<String, String> implements Serializable {
     return size;
   }
   
+  /**
+   * {@link org.pentaho.chart.model.StyledText#setFont(String, Integer, FontStyle, FontWeight)}
+   * 
+   */
   public void setFontSize(Integer size) {
     if (size == null) {
       remove(FONT_SIZE_STYLE);
@@ -204,6 +241,10 @@ public class CssStyle extends HashMap<String, String> implements Serializable {
     return get(FONT_FAMILY_STYLE);
   }
   
+  /**
+   * {@link org.pentaho.chart.model.StyledText#setFont(String, Integer, FontStyle, FontWeight)}
+   * 
+   */
   public void setFontFamily(String family) {
     if (family == null) {
       remove(FONT_FAMILY_STYLE);
@@ -212,11 +253,19 @@ public class CssStyle extends HashMap<String, String> implements Serializable {
     }
   }
   
+  /**
+   * {@link org.pentaho.chart.model.StyledText#setFont(String, Integer, FontStyle, FontWeight)}
+   * 
+   */
   public void setFont(String family, Integer size) {  
     setFontFamily(family);
     setFontSize(size);
   }
   
+  /**
+   * {@link org.pentaho.chart.model.StyledText#setFont(String, Integer, FontStyle, FontWeight)}
+   * 
+   */
   public void setFont(String family, Integer size, FontStyle fontStyle, FontWeight fontWeight) {  
     setFontFamily(family);
     setFontSize(size);
@@ -238,6 +287,10 @@ public class CssStyle extends HashMap<String, String> implements Serializable {
     return color;
   }
   
+  /**
+   * {@link org.pentaho.chart.model.StyledText#setColor(Integer)}
+   * @param color
+   */
   public void setColor(Integer color) {
     if (color == null) {
       remove(COLOR_STYLE);
@@ -250,6 +303,10 @@ public class CssStyle extends HashMap<String, String> implements Serializable {
     }
   }
   
+  /**
+   * A value between 0.00 (transparent) and 1.00 (opaque)
+   * @param opacity
+   */
   public void setOpacity(Float opacity) {
     if (opacity == null) {
       remove(OPACITY_STYLE);
@@ -291,6 +348,10 @@ public class CssStyle extends HashMap<String, String> implements Serializable {
     return getBorderWidth() != null;
   }
 
+  /**
+   * Not implemented
+   * @param visible
+   */
   public void setBorderVisible(boolean visible) {
     if (!visible) {
       setBorderColor(null);
@@ -300,6 +361,10 @@ public class CssStyle extends HashMap<String, String> implements Serializable {
     }
   }
   
+  /**
+   * Set additional style properties in a standard CSS format (name-one: value; name-two: value;)
+   * @param cssStyle
+   */
   public void setStyleString(String cssStyle) {
     clear();
     if (cssStyle != null) {
@@ -317,6 +382,10 @@ public class CssStyle extends HashMap<String, String> implements Serializable {
     }
   }
   
+  /**
+   * {@link org.pentaho.chart.model.StyledText#setAlignment(TextAlignment)}
+   * @param textAlignment
+   */
   public void setTextAlignment(TextAlignment textAlignment) {
     if (textAlignment == null) {
       remove(TEXT_ALIGNMENT_STYLE);

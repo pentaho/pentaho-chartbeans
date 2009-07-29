@@ -38,6 +38,20 @@ public class BarPlot extends TwoAxisPlot implements Serializable {
     return flavor;
   }
 
+  /**
+   * Set the visual appeal of the chart.
+   * <p>
+   * <table>
+   *   <tr><th colspan="2">Possible values</th></tr>
+   *   <tr><td>PLAIN</td><td>Standard two-dimensional chart</td></tr>
+   *   <tr><td>THREED</td><td>Three-dimensional chart</td></tr>
+   *   <tr><td>GLASS</td><td>Chart with glass components</td></tr>
+   *   <tr><td>SKETCH</td><td>Chart that has been sketched</td></tr>
+   *   <tr><td>STACKED</td><td>A stacked chart</td></tr>
+   * </table>
+   * </p>
+   * @param flavor
+   */
   public void setFlavor(BarPlotFlavor flavor) {
     this.flavor = flavor;
   }

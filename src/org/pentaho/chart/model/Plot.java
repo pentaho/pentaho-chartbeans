@@ -53,6 +53,10 @@ public abstract class Plot implements Serializable {
     return background;
   }
 
+  /**
+   * {@link org.pentaho.chart.model.StyledText#setBackgroundColor(Integer)}
+   * @param backgroundColor
+   */
   public void setBackground(Integer backgroundColor) {
     style.setBackgroundColor(backgroundColor);
     if (backgroundColor != null) {
@@ -62,6 +66,10 @@ public abstract class Plot implements Serializable {
     }
   }
 
+  /**
+   * Not implemented
+   * @param backgroundImageLocation
+   */
   public void setBackground(String backgroundImageLocation) {
     this.backgroundImageLocation = backgroundImageLocation;
     if (backgroundImageLocation != null) {
@@ -71,6 +79,10 @@ public abstract class Plot implements Serializable {
     }
   }
   
+  /**
+   * Not implemented
+   * @param backgroundGradient
+   */
   public void setBackground(Gradient backgroundGradient) {
     this.backgroundGradient = backgroundGradient;
     if (backgroundGradient != null) {
@@ -80,6 +92,10 @@ public abstract class Plot implements Serializable {
     }
   }
   
+  /**
+   * Not implemented
+   * @param backgroundTexture
+   */
   public void setBackground(Texture backgroundTexture) {
     this.backgroundTexture = backgroundTexture;
     if (backgroundTexture != null) {
@@ -93,6 +109,17 @@ public abstract class Plot implements Serializable {
     return orientation;
   }
 
+  /**
+   * Orientation of the chart.
+   * <p>
+   * <table>
+   *   <tr><th>Possible values</th></tr>
+   *   <tr><td>vertical</td></tr>
+   *   <tr><td>horizontal</td></tr>
+   * </table>
+   * </p>
+   * @param orientation
+   */
   public void setOrientation(Orientation orientation) {
     this.orientation = orientation;
   }
@@ -101,6 +128,10 @@ public abstract class Plot implements Serializable {
     return palette;
   }
 
+  /**
+   * A Palette is a list of RGB colors in Hex format (i.e. - #ffffff)
+   * @param colorPalette
+   */
   public void setPalette(Palette colorPalette) {
     this.palette = colorPalette;
   }
@@ -109,6 +140,10 @@ public abstract class Plot implements Serializable {
     return style.getOpacity();
   }
 
+  /**
+   * {@link org.pentaho.chart.model.CssStyle#setOpacity(Float)}
+   * @param opacity
+   */
   public void setOpacity(Float opacity) {
     style.setOpacity(opacity);
   }

@@ -107,6 +107,10 @@ public class PiePlot extends Plot implements Serializable {
       return exploded;
     }
 
+    /**
+     * Not implemented
+     * @param exploded
+     */
     public void setExploded(boolean exploded) {
       this.exploded = exploded;
     }
@@ -121,6 +125,10 @@ public class PiePlot extends Plot implements Serializable {
     return slices;
   }
 
+  /**
+   * @see Slice
+   * @param slices
+   */
   public void setSlices(List<Slice> slices) {
     this.slices = slices;
   }
@@ -129,6 +137,18 @@ public class PiePlot extends Plot implements Serializable {
     return animate;
   }
 
+  /**
+   * Animate the chart when it loads
+   * <p>
+   * <table>
+   *   <tr><th>Possible values</th></tr>
+   *   <tr><td>true</td></tr>
+   *   <tr><td>false</td></tr>
+   * </table>
+   * </p>
+   * 
+   * @param animate
+   */
   public void setAnimate(boolean animate) {
     this.animate = animate;
   }
@@ -137,6 +157,10 @@ public class PiePlot extends Plot implements Serializable {
     return startAngle == null ? DEFAULT_START_ANGLE : startAngle;
   }
 
+  /**
+   * The starting angle of the pie chart. Valid values are 0-360.
+   * @param startAngle
+   */
   public void setStartAngle(Integer startAngle) {
     this.startAngle = startAngle;
   }

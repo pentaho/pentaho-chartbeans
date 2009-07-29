@@ -22,6 +22,17 @@ import java.util.List;
 
 import org.pentaho.chart.model.Theme.ChartTheme;
 
+/**
+ * The documentation for this class is from the perspective
+ * of the ChartModel file. The valid property parameters may
+ * not match the property parameter type, but instead reflects
+ * the values that may be present in the file.
+ * 
+ * Properties which are classes have their own configurable
+ * properties and are therefore linked. Please reference the
+ * respective class for its attributes. 
+ * 
+ */
 public class ChartModel implements Serializable {
   public static final String DEFAULT_FAMILY = "serif";
   public static final int DEFAULT_SIZE = 14;
@@ -37,11 +48,22 @@ public class ChartModel implements Serializable {
   ChartTheme theme;
   CssStyle style = new CssStyle();
   
-  
   public String getChartEngineId() {
     return chartEngineId;
   }
 
+  /**
+   * Desired renderer of the chart.
+   * <p> 
+   * <table>
+   *   <tr><th>Possible values</th></tr>
+   *   <tr><td>JFreeChart</td></tr>
+   *   <tr><td>OpenFlashChart</td></tr>
+   * </table>
+   * </p>
+   * 
+   * @param id
+   */
   public void setChartEngineId(String id) {
     this.chartEngineId = id;
   }
@@ -50,6 +72,23 @@ public class ChartModel implements Serializable {
     return theme;
   }
 
+  /**
+   * 
+   * Set an overall color and style scheme for the chart.
+   * <p>
+   * <table>
+   *   <tr><th>Possible values</th></tr>
+   *   <tr><td>THEME1</td></tr>
+   *   <tr><td>THEME2</td></tr>
+   *   <tr><td>THEME3</td></tr>
+   *   <tr><td>THEME4</td></tr>
+   *   <tr><td>THEME5</td></tr>
+   *   <tr><td>THEME6</td></tr>
+   * </table>
+   * </p>
+   * 
+   * @param theme
+   */
   public void setTheme(ChartTheme theme) {
     this.theme = theme;
   }
@@ -58,6 +97,10 @@ public class ChartModel implements Serializable {
     return subtitles;
   }
   
+  /**
+   * @see StyledText
+   * @param subtitles
+   */
   public void setSubtitles(List<StyledText> subtitles) {
     subtitles.clear();
     if (subtitles != null) {
@@ -69,6 +112,10 @@ public class ChartModel implements Serializable {
     return subtitles.size() > 0 ? subtitles.get(0) : null;
   }
 
+  /**
+   * @see StyledText
+   * @param title
+   */
   public void setSubtitle(StyledText title) {
     subtitles.clear();
     if (title != null) {
@@ -80,10 +127,18 @@ public class ChartModel implements Serializable {
     return legend;
   }
 
+  /**
+   * @see ChartLegend
+   * @param chartLegend
+   */
   public void setLegend(ChartLegend chartLegend) {
     this.legend = chartLegend;
   }
 
+  /**
+   * Get the currently set background
+   * @return The currently set background
+   */
   public Object getBackground() {
     Object background = null;
     if (style.getBackgroundColor() != null) {
@@ -97,7 +152,12 @@ public class ChartModel implements Serializable {
     }
     return background;
   }
-
+  
+  /**
+   * {@link org.pentaho.chart.model.StyledText#setBackgroundColor(Integer)}
+   * 
+   * @param backgroundColor
+   */
   public void setBackground(Integer backgroundColor) {
     style.setBackgroundColor(backgroundColor);
     if (backgroundColor != null) {
@@ -107,6 +167,10 @@ public class ChartModel implements Serializable {
     }
   }
 
+  /**
+   * Not implemented
+   * @param backgroundImageLocation
+   */
   public void setBackground(String backgroundImageLocation) {
     this.backgroundImageLocation = backgroundImageLocation;
     if (backgroundImageLocation != null) {
@@ -116,6 +180,12 @@ public class ChartModel implements Serializable {
     }
   }
   
+  
+  /**
+   * Not implemented
+   * @see Gradient
+   * @param backgroundGradient
+   */
   public void setBackground(Gradient backgroundGradient) {
     this.backgroundGradient = backgroundGradient;
     if (backgroundGradient != null) {
@@ -125,6 +195,10 @@ public class ChartModel implements Serializable {
     }
   }
   
+  /**
+   * Not implemented
+   * @param backgroundTexture
+   */
   public void setBackground(Texture backgroundTexture) {
     this.backgroundTexture = backgroundTexture;
     if (backgroundTexture != null) {
@@ -134,10 +208,29 @@ public class ChartModel implements Serializable {
     }
   }
   
+  /**
+   * 
+   * @return Instance of plot implementation
+   */
   public Plot getPlot() {
     return plot;
   }
 
+  /**
+   * The plot is the area on which the chart will be rendered.
+   * <p>
+   * <table>
+   *   <tr><th>Possible values</th></tr>
+   *   <tr><td>barPlot</td></tr>
+   *   <tr><td>areaPlot</td></tr>
+   *   <tr><td>linePlot</td></tr>
+   *   <tr><td>piePlot</td></tr>
+   *   <tr><td>dialPlot</td></tr>
+   * </table>
+   * </p>
+   * 
+   * @param plot
+   */
   public void setPlot(Plot plot) {
     this.plot = plot;
   }
@@ -146,6 +239,10 @@ public class ChartModel implements Serializable {
     return title;
   }
 
+  /**
+   * @see ChartTitle
+   * @param title
+   */
   public void setTitle(ChartTitle title) {
     this.title = title;
   }
@@ -162,14 +259,38 @@ public class ChartModel implements Serializable {
     return style.getBorderWidth();
   }
 
+  /**
+   * Hex RGB notation of the desired border color
+   * <p>
+   * <table>
+   *   <tr><th colspan="2">Basic colors</th></tr>
+   *   <tr><td>White: </td><td>#FFFFFF</td></tr>
+   *   <tr><td>Black: </td><td>#000000</td></tr>
+   *   <tr><td>Grey:  </td><td>#888888</td></tr>
+   *   <tr><td>Red:   </td><td>#FF0000</td></tr>
+   *   <tr><td>Green: </td><td>#00FF00</td></tr>
+   *   <tr><td>Blue:  </td><td>#0000FF</td></tr>
+   * </table>
+   * </p>
+   * 
+   * @param color
+   */
   public void setBorderColor(Integer color) {
     style.setBorderColor(color);
   }
 
+  /**
+   * Not implemented
+   * @param visible
+   */
   public void setBorderVisible(boolean visible) {
     style.setBorderVisible(visible);
   }
 
+  /**
+   * Width of the entire chart area in pixels
+   * @param width
+   */
   public void setBorderWidth(Integer width) {
     style.setBorderWidth(width);
   }

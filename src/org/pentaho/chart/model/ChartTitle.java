@@ -21,6 +21,12 @@ import java.io.Serializable;
 import org.pentaho.chart.model.CssStyle.FontStyle;
 import org.pentaho.chart.model.CssStyle.FontWeight;
 
+/**
+ * The Chart Title appears prominently on the chart to give succinct explanation
+ * of the chart. The Chart Title supports all of the parameters of StyledText.
+ * @see StyledText
+ *
+ */
 public class ChartTitle extends StyledText implements Serializable {
   public enum TitleLocation {BOTTOM, LEFT, TOP, RIGHT};
   
@@ -42,6 +48,10 @@ public class ChartTitle extends StyledText implements Serializable {
     return location;
   }
 
+  /**
+   * Not implemented. Presently all titles will appear at the Chart Engines default location.
+   * @param location
+   */
   public void setLocation(TitleLocation location) {
     this.location = location;
   }
