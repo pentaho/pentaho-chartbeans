@@ -1,0 +1,37 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0" byrow="off">
+
+  <stylesheet>
+    .pie1 {
+    color: red;
+    font-family: sans-serif;
+    font-variant: small-caps;
+    font-size: 16pt;
+    font-style: italic;
+    -x-pentaho-chart-item-label-text: '{2}';
+    -x-pentaho-chart-series-type: pie;
+    -x-pentaho-chart-pie-explode-percent: 20%;
+    }
+
+    .pie2 {
+    color: black;
+    -x-pentaho-chart-series-type: pie;
+    }
+
+    .pie3 {
+    color: green;
+    -x-pentaho-chart-series-type: pie;
+    }
+  </stylesheet>
+
+  <title>Test for Pie charts - Percent Labels and Explode</title>
+  
+  <series name="budget" class="pie1" row-pos="0"/>
+
+  <series name="sales" class="pie2" row-pos="1"/>
+
+  <series name="forecast" class="pie3" row-pos="2"/>
+
+  <plot style="-x-pentaho-chart-drill-url-template: url(http://localhost:8080/Pentaho/JPivot);">
+    <dataset type="pie"/>
+  </plot>
+</chart>

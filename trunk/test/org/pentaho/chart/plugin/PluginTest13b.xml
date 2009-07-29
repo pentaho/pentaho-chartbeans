@@ -1,0 +1,35 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+
+  <stylesheet>
+    .area1 {
+    color: blue;
+    -x-pentaho-chart-series-type: area;
+    -x-pentaho-chart-area-style: area;
+    -x-pentaho-chart-categorical: true;
+    }
+
+    .area2 {
+    color: yellow;
+    -x-pentaho-chart-series-type: area;
+    -x-pentaho-chart-area-style: area;
+    -x-pentaho-chart-categorical: true;
+    }
+
+    .area3 {
+    color: green;
+    -x-pentaho-chart-series-type: area;
+    -x-pentaho-chart-area-style: area;
+    -x-pentaho-chart-categorical: true;
+    }
+  </stylesheet>
+
+  <title>Test for Area charts - Horizontal</title>
+  
+  <series name="budget" class="area1" column-pos="0"/>
+
+  <series name="sales" class="area2" column-pos="1"/>
+
+  <series name="forecast" class="area3" column-pos="2"/>
+
+  <plot style="-x-pentaho-chart-orientation: horizontal; -x-pentaho-chart-drill-url-template: url(http://localhost:8080/Pentaho/JPivot); -x-pentaho-chart-scale: 1"/>
+</chart>

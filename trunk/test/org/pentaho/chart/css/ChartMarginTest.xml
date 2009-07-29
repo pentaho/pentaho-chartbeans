@@ -1,0 +1,6 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+	<axis style="-x-pentaho-chart-axis-item-margin: secondary12334"/><!-- misspelled -->
+  <axis style="-x-pentaho-chart-axis-item-margin:"/><!-- misspelled -->
+	<axis style="-x-pentaho-chart-axis-item-margin: 75%"/><!-- misspelled -->
+	<axis style="-x-pentaho-chart-axis-item-margin: 50%"/><!-- misspelled -->
+</chart>

@@ -1,0 +1,65 @@
+<!--
+  ~ Copyright (c) 2008, Your Corporation. All Rights Reserved.
+  -->
+
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+
+  <stylesheet>
+    .bar1 {
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+    font-family: sans-serif;
+    font-variant: small-caps;
+    font-size: 8pt;
+    font-style: italic;
+    -x-pentaho-chart-item-label-text: '{0,number,$##.##}';
+    -x-pentaho-chart-item-label-visible: yes;
+    -x-pentaho-chart-series-type: bar;
+    -x-pentaho-chart-bar-style: waterfall;
+    -x-pentaho-chart-bar-max-width: 10%;
+    }
+
+    .bar2 {
+    border-style: solid;
+    border-width: 4px;
+    border-color: rgb(250,0,0);
+    font-family: cursive;
+    font-size: 8pt;    
+    font-variant: normal;
+    font-style: normal;
+    -x-pentaho-chart-item-label-text: '{0,number,$##.##}';
+    -x-pentaho-chart-item-label-visible: yes;
+    -x-pentaho-chart-series-type: bar;
+    -x-pentaho-chart-bar-style: waterfall;
+    -x-pentaho-chart-bar-max-width: 10%;
+    }
+
+    .bar3 {
+    border-style: dashed;
+    border-width: thick;    
+    border-color: #FF0000;
+    font-size: 8pt;
+    font-style: oblique;    
+    font-variant: small-caps;
+    -x-pentaho-chart-item-label-text: '{0,number,$##.##}';
+    -x-pentaho-chart-item-label-visible: yes;
+    -x-pentaho-chart-series-type: bar;
+    -x-pentaho-chart-bar-style: waterfall;
+    -x-pentaho-chart-bar-max-width: 10%;
+    }
+    
+  
+  </stylesheet>
+
+  <title>Waterfall bars</title>
+  
+  <series name="budget" class="bar1" column-pos="2"/>
+
+  <series name="sales" class="bar2" column-name="sales"/>
+
+  <series name="forecast" class="bar3" column-pos="0"/>
+
+  <plot style="-x-pentaho-chart-first-bar-color: orange; -x-pentaho-chart-last-bar-color: black; -x-pentaho-chart-positive-bar-color: blue; -x-pentaho-chart-negative-bar-color: green; -x-pentaho-chart-orientation: vertic
+  al; -x-pentaho-chart-scale: 0.10;-x-pentaho-chart-drill-url-template: url(http://localhost:8080/Pentaho/JPivot)"/>
+</chart>

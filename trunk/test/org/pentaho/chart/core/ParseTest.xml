@@ -1,0 +1,63 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+
+  <stylesheet>
+    axis {
+    color: #FFF000;
+    font-family: sans-serif;
+    }
+    axis label {
+    font-weight: bold;
+    }
+    axis[type="numeric"] {
+    format: "#.00%";
+    }
+    axis[type="datetime"] {
+    format: "MM/dd hh:mm a";
+    }
+    axis.myAxis {
+    color: blue;
+    font-family: "Comic Sans MS";
+    }
+
+  </stylesheet>
+
+  <stylesheet href="sample1.css"/>
+
+  <plot/>
+  <axis type="numeric" id="y1" position="left" style="">
+    <!-- This label represents the title for the axis -->
+    <label><![CDATA[This is <b>my</b> chart]]></label>
+  </axis>
+
+  <axis class="myAxis" type="numeric" id="y2" position="right">
+    <!-- This label represents the title for the axis -->
+    <label>Test</label>
+  </axis>
+  <axis type="datetime" id="x1" position="bottom">
+    <!-- This label represents the title for the axis -->
+    <label/>
+  </axis>
+
+  <legend/>
+
+  <title/>
+
+  <subtitles>
+    <subtitle></subtitle>
+    <subtitle></subtitle>
+  </subtitles>
+
+  <chart-series>
+    <series id="" position="0" axis="y1"></series>
+    <series id="" position="1" axis="y2"></series>
+  </chart-series>
+
+  <annotations>
+    <annotation></annotation>
+  </annotations>
+
+  <intervals>
+    <interval></interval>
+  </intervals>
+
+</chart>

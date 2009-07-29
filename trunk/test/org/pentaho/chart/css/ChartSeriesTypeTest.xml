@@ -1,0 +1,9 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+<series/>
+<series style="-x-pentaho-chart-series-type: bar"/>
+<series style="-x-pentaho-chart-series-type: line"/>
+<series style="-x-pentaho-chart-series-type: pie"/>
+<series style="-x-pentaho-chart-series-type: junk"/>
+<series style="-x-pentaho-chart-series-type: ba"/><!-- misspelled -->
+<series style="-x-pentaho-chart-series-type: dial"/>
+</chart>

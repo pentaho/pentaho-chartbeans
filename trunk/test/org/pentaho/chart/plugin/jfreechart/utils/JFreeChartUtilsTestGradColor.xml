@@ -1,0 +1,25 @@
+<chart categorical="true" byrow="on">
+	<stylesheet/>
+	<plot style="-x-pentaho-chart-orientation: horizontal; -x-pentaho-chart-drill-url-template: url(DrillUrlTest.xml)"/>
+  <junk/>
+  <series/>
+  <series style="-x-pentaho-chart-gradient-type: points;"/>
+	<series style="-x-pentaho-chart-gradient-type: points; -x-pentaho-chart-gradient-start: 0.5, 99.90"/> 
+	<series style="-x-pentaho-chart-gradient-type: points; -x-pentaho-chart-gradient-start: 1, 2"/> 
+	<series style="-x-pentaho-chart-gradient-type: points; -x-pentaho-chart-gradient-end: 1.5, 8.5"/> 
+	<series style="-x-pentaho-chart-gradient-type: points; -x-pentaho-chart-gradient-end: 3, 4"/> 
+	<series style="-x-pentaho-chart-gradient-type: points; -x-pentaho-chart-gradient-start: 1,2; -x-pentaho-chart-gradient-end: 3,4;-x-pentaho-chart-gradient-color: gray, cyan;"/> 
+	<series style="-x-pentaho-chart-gradient: red, white points 1,10 2,20"/>		
+	<series style="-x-pentaho-chart-gradient-type: points; -x-pentaho-chart-gradient-color: rgb(0,255,0), rgb(255,0,0)"/> 
+	<series style="-x-pentaho-chart-gradient-type: points; -x-pentaho-chart-gradient-color: gray, cyan"/>
+	<series style="-x-pentaho-chart-gradient-type: points; -x-pentaho-chart-gradient-color: #FFFF00, #0000FF"/>
+	<series style="-x-pentaho-chart-gradient-type: points; -x-pentaho-chart-gradient-color: yellow, blue"/>
+	<series style="-x-pentaho-chart-gradient-type: points; -x-pentaho-chart-gradient-color: red, white"/>
+	<series style="-x-pentaho-chart-gradient-type: points; -x-pentaho-chart-gradient-color: "/>	<!-- no color values provided, would get defaults -->
+	<series style="-x-pentaho-chart-gradient-type: points; -x-pentaho-chart-gradient-color: black, "/>	<!-- only one color provided, would get defaults for both-->
+	<series style="-x-pentaho-chart-gradient-type: points; -x-pentaho-chart-gradient-color: , white"/>	<!-- only one color provided, would get defaults for both-->
+	<series style="-x-pentaho-chart-gradient-type: points; -x-pentaho-chart-gradient-color: junk, junk"/>	<!-- incorrect color values provided, would get defaults -->
+	<series style="-x-pentaho-chart-gradient-type: points; -x-pentaho-chart-gradient-color: rgb(0,255,0), yellow"/> 
+	<series style="-x-pentaho-chart-gradient-type: points; -x-pentaho-chart-gradient-color: rgb(0,255,0), #0000FF"/>
+	<series style="-x-pentaho-chart-gradient-type: points; -x-pentaho-chart-gradient-color: yellow, #0000FF"/>-->
+</chart>

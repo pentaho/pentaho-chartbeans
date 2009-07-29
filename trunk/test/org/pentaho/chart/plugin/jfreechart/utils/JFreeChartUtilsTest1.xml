@@ -1,0 +1,7 @@
+<something>
+  <chart categorical="true" byrow="on">
+    <stylesheet/>
+    <junk/>
+    <plot style="-x-pentaho-chart-orientation: ;-x-pentaho-chart-drill-url-template:"/>
+  </chart>
+</something>

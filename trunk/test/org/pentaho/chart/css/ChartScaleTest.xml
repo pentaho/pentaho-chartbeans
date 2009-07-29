@@ -1,0 +1,7 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+	<plot style="-x-pentaho-chart-scale: 1"/>
+	<plot style="-x-pentaho-chart-scale: 2.5"/>
+	<plot style="-x-pentaho-chart-scale: 0.001"/>		
+	<plot style="-x-pentaho-chart-scale:"/><!-- would default to 1 -->
+	<plot style="-x-pentaho-chart-scale: junk"/><!-- misspelled, would default to 1-->
+</chart>

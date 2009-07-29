@@ -1,0 +1,43 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0" byrow="off">
+
+  <stylesheet>
+    .area1 {
+    color: gray;
+    -x-pentaho-chart-series-type: area;
+    -x-pentaho-chart-area-style: stacked;
+    -x-pentaho-chart-categorical: true;
+    -x-pentaho-chart-item-label-text: '{0,number,Yen ##.##}';
+    -x-pentaho-chart-item-label-visible: visible;
+    }
+
+    .area2 {
+    color: yellow;
+    -x-pentaho-chart-series-type: area;
+    -x-pentaho-chart-area-style: stacked;
+    -x-pentaho-chart-categorical: true;
+    -x-pentaho-chart-item-label-text: '{0,number,Yen ##.##}';
+    -x-pentaho-chart-item-label-visible: visible;
+    }
+
+    .area3 {
+    color: green;
+    -x-pentaho-chart-series-type: area;
+    -x-pentaho-chart-area-style: stacked;
+    -x-pentaho-chart-categorical: true;
+    -x-pentaho-chart-item-label-text: '{0,number,Yen ##.##}';
+    -x-pentaho-chart-item-label-visible: visible;
+    }
+  </stylesheet>
+
+  <title>Test for Area charts - Item labels</title>
+  
+  <series name="budget" class="area1" column-pos="0"/>
+
+  <series name="sales" class="area2" column-pos="1"/>
+
+  <series name="forecast" class="area3" column-pos="2"/>
+
+  <plot style="-x-pentaho-chart-orientation: vertical; -x-pentaho-chart-drill-url-template: url(http://localhost:8080/Pentaho/JPivot); -x-pentaho-chart-scale: 1"/>
+
+  <axis id="domain#1" type="domain" style="-x-pentaho-chart-axis-item-margin: 0; -x-pentaho-chart-axis-category-margin: 0;"/>
+</chart>

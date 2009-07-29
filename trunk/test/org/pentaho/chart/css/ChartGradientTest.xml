@@ -1,0 +1,8 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+		<axis style="-x-pentaho-chart-gradient: red, white horizontal 1,10 2,20"/>
+		<axis style="-x-pentaho-chart-gradient: junk, junk junk wrong,wrong wrong,wrong"/> <!-- all incorrect values, would get default for all -->		
+		<axis style="-x-pentaho-chart-gradient: red, white vertical 1,19.22zzzz 2,20zzzzz"/> <!--  start and end pos values are wrong, would get default for all -->
+ 	  <axis style="-x-pentaho-chart-gradient: red, white vertical 1,19.22"/> <!--  end pos is missing, would get default for all -->		
+ 	  <axis style="-x-pentaho-chart-gradient: "/> <!--  blank, would get default for all -->		
+ 	  <axis style="-x-pentaho-chart-gradient: red, white "/> <!-- some values are missing, would get default for all -->		
+</chart>

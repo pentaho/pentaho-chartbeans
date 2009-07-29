@@ -1,0 +1,14 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+	<series style="-x-pentaho-chart-gradient-color: rgb(0,255,0), rgb(255,0,0)"/> 
+	<series style="-x-pentaho-chart-gradient-color: gray, cyan"/>
+	<series style="-x-pentaho-chart-gradient-color: #FFFF00, #0000FF"/>
+	<series style="-x-pentaho-chart-gradient-color: yellow, blue"/>
+	<series style="-x-pentaho-chart-gradient-color: red, white"/>
+	<series style="-x-pentaho-chart-gradient-color: "/>	<!-- no color values provided, would get defaults -->
+	<series style="-x-pentaho-chart-gradient-color: black, "/>	<!-- only one color provided, would get defaults for both-->
+	<series style="-x-pentaho-chart-gradient-color: , white"/>	<!-- only one color provided, would get defaults for both-->
+	<series style="-x-pentaho-chart-gradient-color: junk, junk"/>	<!-- incorrect color values provided, would get defaults -->
+	<series style="-x-pentaho-chart-gradient-color: rgb(0,255,0), yellow"/> 
+	<series style="-x-pentaho-chart-gradient-color: rgb(0,255,0), #0000FF"/>
+	<series style="-x-pentaho-chart-gradient-color: yellow, #0000FF"/>-->
+</chart>

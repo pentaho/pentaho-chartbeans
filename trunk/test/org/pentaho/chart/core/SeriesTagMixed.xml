@@ -1,0 +1,32 @@
+<chart xmlns="http://reporting.pentaho.org/namespaces/charting/1.0">
+	
+	<!-- Following is a series of incorrect data positions -->
+	<series column-pos="0" column-name="First Name"/> <!-- correct column pos and name -->
+	<series column-pos="10" column-name="Last Name"/> <!-- incorrect col pos but correct column name -->
+	<series column-pos="2" column-name="Fav Sport123" axis="X"/> <!-- correct col pos and incorrect col name -->
+	<series /> <!-- Would be based on series tag -->
+	<series axis="Z"/> 
+	<series column-pos="20"/> <!-- This column pos is greater than number of cols in data -->
+	<series column-name="Soup"/> <!-- This column name does not exist -->
+	
+  <stylesheet>
+    axis {
+    color: #FFF000;
+    font-family: sans-serif;
+    }
+    axis label {
+    font-weight: bold;
+    }
+    axis[type="numeric"] {
+    format: "#.00%";
+    }
+    axis[type="datetime"] {
+    format: "MM/dd hh:mm a";
+    }
+    axis.myAxis {
+    color: blue;
+    font-family: "Comic Sans MS";
+    }
+
+  </stylesheet>
+</chart>
