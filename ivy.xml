@@ -29,7 +29,7 @@
     <dependency org="stax" name="stax" rev="1.2.0" />
     <dependency org="org.codehaus.jettison" name="jettison" rev="1.0.1" />
     <dependency org="org.codehaus.jettison" name="jettison" rev="1.0.1" />
-    <dependency org="ofc4j" name="ofc4j" rev="1.0-alpha5-pentaho"/>
+    <dependency org="ofc4j" name="ofc4j" rev="1.0-alpha5-pentaho-0.2"/>
 
 
     <!--  Testing dependencies -->

@@ -25,6 +25,7 @@ import java.util.List;
 
 import ofc4j.model.Chart;
 import ofc4j.model.Text;
+import ofc4j.model.Tooltip;
 import ofc4j.model.axis.XAxis;
 import ofc4j.model.axis.YAxis;
 import ofc4j.model.axis.Label.Rotation;
@@ -784,6 +785,9 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     if (Orientation.HORIZONTAL.equals(barPlot.getOrientation())) {
 
       int index = 0;
+      // Fix for BISERVER-3027, incorrect hover tip placement on hbar
+      chart.setTooltip(new Tooltip());
+
       for (Series series : dataModel.getSeries()) {
         chart.addElements(makeHorizontalBarChart(chartModel, series, index, dataModel.getScalingFactor()));
         index++;
