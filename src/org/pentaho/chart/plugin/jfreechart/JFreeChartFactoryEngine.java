@@ -921,10 +921,12 @@ public class JFreeChartFactoryEngine implements Serializable {
       
       int startingSignificantDigits = 0;
       if (!(number instanceof Integer)) {
-        String fractionalPart = Double.toString(number.doubleValue());
-        fractionalPart = fractionalPart.substring(fractionalPart.indexOf(".") + 1);
-        if ((fractionalPart.length() > 1) || Integer.parseInt(fractionalPart) > 0) {
-          startingSignificantDigits = fractionalPart.length();
+        int indexOfDecimalPoint = number.toString().indexOf(".");
+        if (indexOfDecimalPoint >= 0) {
+          String fractionalPart = number.toString().substring(indexOfDecimalPoint + 1);
+          if ((fractionalPart.length() > 1) || Integer.parseInt(fractionalPart) > 0) {
+            startingSignificantDigits = fractionalPart.length();
+          }
         }
       }
       
@@ -932,8 +934,8 @@ public class JFreeChartFactoryEngine implements Serializable {
       
       scaledNumber = number.doubleValue() / scale.doubleValue();
       int scaledSignificantDigits = 0;
-      String fractionalPart = Double.toString(scaledNumber.doubleValue());
-      fractionalPart = fractionalPart.substring(fractionalPart.indexOf(".") + 1);
+      int indexOfDecimalPoint = scaledNumber.toString().indexOf(".");
+      String fractionalPart = scaledNumber.toString().substring(indexOfDecimalPoint + 1);
       if ((fractionalPart.length() > 1) || Integer.parseInt(fractionalPart) > 0) {
         scaledSignificantDigits = fractionalPart.length();
       }
