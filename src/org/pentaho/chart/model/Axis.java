@@ -22,10 +22,16 @@ import org.pentaho.chart.model.CssStyle.FontStyle;
 import org.pentaho.chart.model.CssStyle.FontWeight;
 
 public class Axis implements Serializable {
+  public static final int DEFAULT_AXIS_COLOR = 0x808080;
   public enum LabelOrientation {HORIZONTAL, VERTICAL, DIAGONAL}; 
   
   LabelOrientation labelOrientation = LabelOrientation.HORIZONTAL;
+  CssStyle style = new CssStyle();
   StyledText legend = new StyledText();
+  
+  public Axis() {
+    setColor(DEFAULT_AXIS_COLOR);
+  }
   
   public StyledText getLegend() {
     return legend;
@@ -81,5 +87,17 @@ public class Axis implements Serializable {
 
   public void setFontWeight(FontWeight weight) {
     legend.setFontWeight(weight);
+  }
+
+  public Integer getColor() {
+    return style.getColor();
+  }
+
+  public void setColor(Integer color) {
+    style.setColor(color);
+  }
+
+  public CssStyle getStyle() {
+    return style;
   }
 }

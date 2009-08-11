@@ -67,6 +67,7 @@ import org.pentaho.chart.data.CategoricalDataModel.Series;
 import org.pentaho.chart.model.AreaPlot;
 import org.pentaho.chart.model.BarPlot;
 import org.pentaho.chart.model.ChartModel;
+import org.pentaho.chart.model.Grid;
 import org.pentaho.chart.model.LinePlot;
 import org.pentaho.chart.model.NumericAxis;
 import org.pentaho.chart.model.Palette;
@@ -187,59 +188,15 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     return chart;
   }
   
-  private YAxis createYAxis(AxisConfiguration rangeDescription) {
+  private YAxis createYAxis(TwoAxisPlot twoAxisPlot, AxisConfiguration rangeDescription) {
     
-    YAxis ya = new YAxis();
+    YAxis ya = createYAxis(twoAxisPlot);
     ya.setRange(rangeDescription.minValue, rangeDescription.maxValue, rangeDescription.stepSize);
     return ya;
   }
   
-  private XAxis createXAxis(LabelOrientation labelOrientation, AxisConfiguration rangeDescription) {
-    Rotation rotation = Rotation.HORIZONTAL;
-    if ((labelOrientation != null) && (labelOrientation != LabelOrientation.HORIZONTAL)) {
-      switch (labelOrientation) {
-        case DIAGONAL:
-          rotation = Rotation.DIAGONAL;
-          break;
-        case VERTICAL:
-          rotation = Rotation.VERTICAL;
-          break;
-      }
-    }
-    
-    XAxis xa = new XAxis();
-    xa.setRange(rangeDescription.minValue, rangeDescription.maxValue, rangeDescription.stepSize);
-    xa.getLabels().setRotation(rotation);
-    return xa;
-  }
-  
-  private XAxis createXAxis(TwoAxisPlot graphPlot, List<Category> categories) {
-    Rotation rotation = Rotation.HORIZONTAL;
-    LabelOrientation labelOrientation = graphPlot.getHorizontalAxis().getLabelOrientation();
-    if ((labelOrientation != null) && (labelOrientation != LabelOrientation.HORIZONTAL)) {
-      switch (labelOrientation) {
-        case DIAGONAL:
-          rotation = Rotation.DIAGONAL;
-          break;
-        case VERTICAL:
-          rotation = Rotation.VERTICAL;
-          break;
-      }
-    }
-    
-    List<String> labels = new ArrayList<String>();
-    for (Category category : categories) {
-      labels.add(category.getCategoryName());
-    }
-    XAxis xa = new XAxis();
-    xa.setLabels(labels);
-    xa.getLabels().setRotation(rotation);
-//    xa.setMax(labels.size() - 1);
-    return xa;
-  }
-  
-  private YAxis createYAxis(List<Category> categories) {
-    YAxis ya = new YAxis();
+  private YAxis createYAxis(TwoAxisPlot twoAxisPlot, List<Category> categories) {
+    YAxis ya = createYAxis(twoAxisPlot);
     ArrayList<String> labels = new ArrayList<String>();
     for (Category category : categories) {
       labels.add(category.getCategoryName());
@@ -255,6 +212,80 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     ya.setOffset(true);
     
     return ya;
+  }
+  
+  private YAxis createYAxis(TwoAxisPlot twoAxisPlot) {
+    YAxis ya = new YAxis();
+    Grid grid = twoAxisPlot.getGrid();
+    if (twoAxisPlot.getGrid().getHorizontalLinesVisible()) {
+      Integer color = grid.getHorizontalLineColor();
+      if (color == null) {
+        color = Grid.DEFAULT_GRID_COLOR;
+      }
+      ya.setGridColour("#" + Integer.toHexString(0x00FFFFFF & color));
+    } else if (twoAxisPlot.getBackground() instanceof Integer) { 
+      ya.setGridColour("#" + Integer.toHexString(0x00FFFFFF & (Integer)twoAxisPlot.getBackground()));
+    } else {
+      ya.setGridColour("#" + Integer.toHexString(Color.WHITE.getRGB()));
+    }
+    if (twoAxisPlot.getVerticalAxis().getColor() != null) {
+      ya.setColour("#" + Integer.toHexString(twoAxisPlot.getVerticalAxis().getColor()));
+    }
+    return ya;
+  }
+  
+  private XAxis createXAxis(TwoAxisPlot twoAxisPlot, AxisConfiguration rangeDescription) {
+    XAxis xa = createXAxis(twoAxisPlot);
+    xa.setRange(rangeDescription.minValue, rangeDescription.maxValue, rangeDescription.stepSize);
+    xa.getLabels().setRotation(getLabelRotation(twoAxisPlot.getHorizontalAxis()));
+    return xa;
+  }
+  
+  private XAxis createXAxis(TwoAxisPlot twoAxisPlot, List<Category> categories) {
+    XAxis xa = createXAxis(twoAxisPlot);    
+    List<String> labels = new ArrayList<String>();
+    for (Category category : categories) {
+      labels.add(category.getCategoryName());
+    }
+    xa.setLabels(labels);
+    xa.getLabels().setRotation(getLabelRotation(twoAxisPlot.getHorizontalAxis()));
+    return xa;
+  }
+  
+  private Rotation getLabelRotation(org.pentaho.chart.model.Axis axis) {
+    Rotation rotation = Rotation.HORIZONTAL;
+    LabelOrientation labelOrientation = axis.getLabelOrientation();
+    if ((labelOrientation != null) && (labelOrientation != LabelOrientation.HORIZONTAL)) {
+      switch (labelOrientation) {
+        case DIAGONAL:
+          rotation = Rotation.DIAGONAL;
+          break;
+        case VERTICAL:
+          rotation = Rotation.VERTICAL;
+          break;
+      }
+    }
+    return rotation;
+  }
+  
+  private XAxis createXAxis(TwoAxisPlot twoAxisPlot) {
+    XAxis xa = new XAxis();
+    Grid grid = twoAxisPlot.getGrid();
+    if (grid.getVerticalLinesVisible()) {
+      Integer color = grid.getVerticalLineColor();
+      if (color == null) {
+        color = Grid.DEFAULT_GRID_COLOR;
+      }
+      xa.setGridColour("#" + Integer.toHexString(0x00FFFFFF & color));
+    } else if (twoAxisPlot.getBackground() instanceof Integer) { 
+      xa.setGridColour("#" + Integer.toHexString(0x00FFFFFF & (Integer)twoAxisPlot.getBackground()));
+    } else {
+      xa.setGridColour("#" + Integer.toHexString(Color.WHITE.getRGB()));
+    }
+    if (twoAxisPlot.getHorizontalAxis().getColor() != null) {
+      xa.setColour("#" + Integer.toHexString(twoAxisPlot.getHorizontalAxis().getColor()));
+    }
+    return xa;
   }
   
   public Chart makeAreaChart(ChartModel chartModel, CategoricalDataModel chartTableModel) {
@@ -308,7 +339,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     
     AxisConfiguration rangeDescription = getAxisConfiguration(areaPlot, chartTableModel);
     if (rangeDescription != null) {
-      chart.setYAxis(createYAxis(rangeDescription));
+      chart.setYAxis(createYAxis(areaPlot, rangeDescription));
     }
 
     return chart;
@@ -436,9 +467,9 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     return rangeDescription;
   }
   
-  private AxisConfiguration getAxisConfiguration(TwoAxisPlot graphPlot, CategoricalDataModel chartTableModel) {
-    Number minValue = graphPlot.getRangeAxis().getMinValue();
-    Number maxValue = graphPlot.getRangeAxis().getMaxValue();
+  private AxisConfiguration getAxisConfiguration(TwoAxisPlot twoAxisPlot, CategoricalDataModel chartTableModel) {
+    Number minValue = twoAxisPlot.getRangeAxis().getMinValue();
+    Number maxValue = twoAxisPlot.getRangeAxis().getMaxValue();
     
     boolean calculateMinValue = (minValue == null);
     boolean calculateMaxValue = (maxValue == null);
@@ -447,7 +478,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     
     List<Series> seriesList = chartTableModel.getSeries();
     
-    if ((graphPlot instanceof BarPlot) && (((BarPlot)graphPlot).getFlavor() == BarPlotFlavor.STACKED)) {
+    if ((twoAxisPlot instanceof BarPlot) && (((BarPlot)twoAxisPlot).getFlavor() == BarPlotFlavor.STACKED)) {
       int numCategories = chartTableModel.getCategories().size();
       Number[][] stackRanges = new Number[numCategories][];
       for (Series series : seriesList) {
@@ -615,8 +646,8 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     
     if ((xAxisConfiguration != null) && (yAxisConfiguration != null)) {
       chart = createBasicGraphChart(chartModel);
-      chart.setXAxis(createXAxis(scatterPlot.getXAxis().getLabelOrientation(), xAxisConfiguration));
-      chart.setYAxis(createYAxis(yAxisConfiguration));
+      chart.setXAxis(createXAxis(scatterPlot, xAxisConfiguration));
+      chart.setYAxis(createYAxis(scatterPlot, yAxisConfiguration));
       
       
       ScatterChart sc = new ScatterChart(""); //$NON-NLS-1$
@@ -660,8 +691,8 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       
       int index = 0;
       for (org.pentaho.chart.data.MultiSeriesXYDataModel.Series series : chartTableModel.getSeries()) {
-        chart.setXAxis(createXAxis(scatterPlot.getXAxis().getLabelOrientation(), xAxisConfiguration));
-        chart.setYAxis(createYAxis(yAxisConfiguration));
+        chart.setXAxis(createXAxis(scatterPlot, xAxisConfiguration));
+        chart.setYAxis(createYAxis(scatterPlot, yAxisConfiguration));
         
         
         ScatterChart sc = new ScatterChart(""); //$NON-NLS-1$
@@ -796,11 +827,11 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       List<Category> categories = dataModel.getCategories();
       // BISERVER-3075 hack for bug in OFC2 where categories are rendered backwards...
       Collections.reverse(categories);
-      chart.setYAxis(createYAxis(categories));
+      chart.setYAxis(createYAxis(barPlot, categories));
       
       AxisConfiguration rangeDescription = getAxisConfiguration(barPlot, dataModel);
       if (rangeDescription != null) {
-        chart.setXAxis(createXAxis(barPlot.getHorizontalAxis().getLabelOrientation(), rangeDescription));
+        chart.setXAxis(createXAxis(barPlot, rangeDescription));
       }
     } else {
       if (barPlot.getFlavor() == BarPlotFlavor.STACKED) {
@@ -820,7 +851,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       
       AxisConfiguration rangeDescription = getAxisConfiguration(barPlot, dataModel);
       if (rangeDescription != null) {
-        chart.setYAxis(createYAxis(rangeDescription));
+        chart.setYAxis(createYAxis(barPlot, rangeDescription));
       }
     }
 
@@ -880,7 +911,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
 
     AxisConfiguration rangeDescription = getAxisConfiguration(linePlot, chartTableModel);
     if (rangeDescription != null) {
-      chart.setYAxis(createYAxis(rangeDescription));
+      chart.setYAxis(createYAxis(linePlot, rangeDescription));
     }
 
     return chart;

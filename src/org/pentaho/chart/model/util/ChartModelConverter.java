@@ -22,6 +22,7 @@ import org.pentaho.chart.model.BarPlot;
 import org.pentaho.chart.model.ChartModel;
 import org.pentaho.chart.model.CssStyle;
 import org.pentaho.chart.model.DialPlot;
+import org.pentaho.chart.model.Grid;
 import org.pentaho.chart.model.LinePlot;
 import org.pentaho.chart.model.Palette;
 import org.pentaho.chart.model.PiePlot;
@@ -94,19 +95,22 @@ public class ChartModelConverter implements Converter {
         }
       }
       if (chartModel.getPlot() instanceof TwoAxisPlot) {
-        TwoAxisPlot graphPlot = (TwoAxisPlot)chartModel.getPlot();
-        Axis xAxis = graphPlot.getHorizontalAxis();
-        if ((xAxis.getLabelOrientation() != LabelOrientation.HORIZONTAL)
-            || ((xAxis.getLegend().getText() != null) && (xAxis.getLegend().getText().trim().length() > 0))) {
-          ExtendedHierarchicalStreamWriterHelper.startNode(writer, "horizontalAxis", xAxis.getClass());
-          context.convertAnother(xAxis);
-          writer.endNode();
-        }
-        Axis yAxis = graphPlot.getVerticalAxis();
-        if ((yAxis.getLabelOrientation() != LabelOrientation.HORIZONTAL)
-            || ((yAxis.getLegend().getText() != null) && (yAxis.getLegend().getText().trim().length() > 0))) {
-          ExtendedHierarchicalStreamWriterHelper.startNode(writer, "verticalAxis", yAxis.getClass());
-          context.convertAnother(yAxis);
+        TwoAxisPlot twoAxisPlot = (TwoAxisPlot)chartModel.getPlot();
+        
+        Axis xAxis = twoAxisPlot.getHorizontalAxis();
+        ExtendedHierarchicalStreamWriterHelper.startNode(writer, "horizontalAxis", xAxis.getClass());
+        context.convertAnother(xAxis);
+        writer.endNode();
+        
+        Axis yAxis = twoAxisPlot.getVerticalAxis();
+        ExtendedHierarchicalStreamWriterHelper.startNode(writer, "verticalAxis", yAxis.getClass());
+        context.convertAnother(yAxis);
+        writer.endNode();
+        
+        Grid grid = twoAxisPlot.getGrid();
+        if (grid.getVisible()) {
+          ExtendedHierarchicalStreamWriterHelper.startNode(writer, "grid", grid.getClass());
+          context.convertAnother(grid);
           writer.endNode();
         }
       }
@@ -185,7 +189,8 @@ public class ChartModelConverter implements Converter {
   private Plot createPlot(HierarchicalStreamReader reader) {
     Plot plot = null;
     if (reader.getNodeName().equals("barPlot")) {
-      BarPlot barPlot = new BarPlot();       
+      BarPlot barPlot = new BarPlot();   
+      barPlot.getGrid().setVisible(false);
       String flavor = reader.getAttribute("flavor");
       if (flavor != null) {
         try {
@@ -197,6 +202,7 @@ public class ChartModelConverter implements Converter {
       plot = barPlot;
     } else if (reader.getNodeName().equals("linePlot")) {
       LinePlot linePlot = new LinePlot();
+      linePlot.getGrid().setVisible(false);
       String flavor = reader.getAttribute("flavor");
       if (flavor != null) {
         try {
@@ -207,9 +213,13 @@ public class ChartModelConverter implements Converter {
       }
       plot = linePlot;
     } else if (reader.getNodeName().equals("areaPlot")) {
-      plot = new AreaPlot();
+      AreaPlot areaPlot = new AreaPlot();
+      areaPlot.getGrid().setVisible(false);
+      plot = areaPlot;
     } else if (reader.getNodeName().equals("scatterPlot")) {
-      plot = new ScatterPlot();
+      ScatterPlot scatterPlot = new ScatterPlot();
+      scatterPlot.getGrid().setVisible(false);
+      plot = scatterPlot;
     } else if (reader.getNodeName().equals("piePlot")) {
       PiePlot piePlot = new PiePlot();
       piePlot.getLabels().setVisible(false);
@@ -264,13 +274,17 @@ public class ChartModelConverter implements Converter {
         }
       }
       if ((reader.getNodeName().equals("verticalAxis") || reader.getNodeName().equals("horizontalAxis")) && (plot instanceof TwoAxisPlot)) {
-        TwoAxisPlot graphPlot = (TwoAxisPlot)plot;
-        Axis axis = (reader.getNodeName().equals("verticalAxis") ? graphPlot.getVerticalAxis() : graphPlot.getHorizontalAxis());
+        TwoAxisPlot twoAxisPlot = (TwoAxisPlot)plot;
+        Axis axis = (reader.getNodeName().equals("verticalAxis") ? twoAxisPlot.getVerticalAxis() : twoAxisPlot.getHorizontalAxis());
         String axisLabelOrientation = reader.getAttribute("labelOrientation");
         try {
           axis.setLabelOrientation(Enum.valueOf(LabelOrientation.class, axisLabelOrientation.toUpperCase()));
         } catch (Exception ex) {
           // Do nothing, we'll stay with the default.
+        }
+        cssStyle = reader.getAttribute("style");
+        if (cssStyle != null) {
+          axis.getStyle().setStyleString(cssStyle);
         }
         while (reader.hasMoreChildren()) {
           reader.moveDown();
@@ -281,6 +295,28 @@ public class ChartModelConverter implements Converter {
           cssStyle = reader.getAttribute("style");
           if (cssStyle != null) {
             axis.getLegend().getStyle().setStyleString(cssStyle);
+          }
+          reader.moveUp();
+        }
+      }
+      
+      if (reader.getNodeName().equals("grid") && (plot instanceof TwoAxisPlot)) {
+        TwoAxisPlot twoAxisPlot = (TwoAxisPlot)plot;
+        Grid grid = twoAxisPlot.getGrid();
+        grid.setVisible(true);
+        while (reader.hasMoreChildren()) {
+          reader.moveDown();
+          if (reader.getNodeName().equals("verticalLines")) {
+            cssStyle = reader.getAttribute("style");
+            if (cssStyle != null) {
+              grid.getVerticalLineStyle().setStyleString(cssStyle);
+            }
+          }
+          else if (reader.getNodeName().equals("horizontalLines")) {
+            cssStyle = reader.getAttribute("style");
+            if (cssStyle != null) {
+              grid.getHorizontalLineStyle().setStyleString(cssStyle);
+            }
           }
           reader.moveUp();
         }

@@ -19,6 +19,8 @@ package org.pentaho.chart.model;
 import java.io.Serializable;
 
 public class TwoAxisPlot extends Plot implements Serializable {
+  
+  Grid grid = new Grid();
   Axis verticalAxis;
   Axis horizontalAxis;
   
@@ -53,6 +55,10 @@ public class TwoAxisPlot extends Plot implements Serializable {
       horizontalAxis = tmpAxis;
     }
     super.setOrientation(orientation);
+  }
+
+  public Grid getGrid() {
+    return grid;
   }
 
 }

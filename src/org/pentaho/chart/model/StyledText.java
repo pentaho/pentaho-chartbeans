@@ -185,19 +185,7 @@ public class StyledText implements Serializable{
   }
 
   /**
-   * Hex RGB notation of the desired color
-   * <p>
-   * <table>
-   *   <tr><th colspan="2">Basic colors</th></tr>
-   *   <tr><td>White </td><td>#FFFFFF</td></tr>
-   *   <tr><td>Black </td><td>#000000</td></tr>
-   *   <tr><td>Grey  </td><td>#888888</td></tr>
-   *   <tr><td>Red   </td><td>#FF0000</td></tr>
-   *   <tr><td>Green </td><td>#00FF00</td></tr>
-   *   <tr><td>Blue  </td><td>#0000FF</td></tr>
-   * </table>
-   * </p>
-   * 
+   * {@link org.pentaho.chart.model.CssStyle#setColor(Integer)}
    * @param color
    */
   public void setColor(Integer color) {

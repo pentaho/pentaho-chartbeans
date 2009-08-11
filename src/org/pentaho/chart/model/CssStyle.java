@@ -32,6 +32,7 @@ public class CssStyle extends HashMap<String, String> implements Serializable {
   public static final String FONT_STYLE = "font-style";
   public static final String FONT_FAMILY_STYLE = "font-family";
   public static final String COLOR_STYLE = "color";
+  public static final String VISIBILITY_STYLE = "color";
   public static final String TEXT_ALIGNMENT_STYLE = "text-align";
   public static final String OPACITY_STYLE = "opacity";
   
@@ -39,6 +40,7 @@ public class CssStyle extends HashMap<String, String> implements Serializable {
   public enum FontStyle {NORMAL,ITALIC,OBLIQUE};
   public enum TextAlignment {LEFT, CENTER, RIGHT};
   public enum LineStyle {SOLID, DASHED, DOTTED};
+  public enum VisibilityStyle {VISIBLE, HIDDEN};
   
   public LineStyle getBorderLineStyle() {
     LineStyle style = LineStyle.SOLID;
@@ -288,7 +290,19 @@ public class CssStyle extends HashMap<String, String> implements Serializable {
   }
   
   /**
-   * {@link org.pentaho.chart.model.StyledText#setColor(Integer)}
+   * Hex RGB notation of the desired color
+   * <p>
+   * <table>
+   *   <tr><th colspan="2">Basic colors</th></tr>
+   *   <tr><td>White </td><td>#FFFFFF</td></tr>
+   *   <tr><td>Black </td><td>#000000</td></tr>
+   *   <tr><td>Grey  </td><td>#888888</td></tr>
+   *   <tr><td>Red   </td><td>#FF0000</td></tr>
+   *   <tr><td>Green </td><td>#00FF00</td></tr>
+   *   <tr><td>Blue  </td><td>#0000FF</td></tr>
+   * </table>
+   * </p>
+   * 
    * @param color
    */
   public void setColor(Integer color) {
@@ -300,6 +314,40 @@ public class CssStyle extends HashMap<String, String> implements Serializable {
         colorStr.insert(1, 0);
       }
       put(COLOR_STYLE, colorStr.toString());
+    }
+  }
+  
+  public VisibilityStyle getVisibility() {
+    VisibilityStyle style = VisibilityStyle.VISIBLE;
+    
+    String str = get(VISIBILITY_STYLE);
+    if (str != null) {
+      try {
+        style = Enum.valueOf(VisibilityStyle.class, str.toUpperCase());
+      } catch (IllegalArgumentException ex) {
+        // Do nothing we'll return visible.
+      }
+    }
+    return style;  
+  }
+  
+  /**
+   * The visibility of the associated element.
+   * <p>
+   * <table>
+   *   <tr><th>Possible values</th></tr>
+   *   <tr><td>VISIBLE</td></tr>
+   *   <tr><td>HIDDEN</td></tr>
+   * </table>
+   * </p>
+   * 
+   * @param lineStyle
+   */
+  public void setVisibility(VisibilityStyle visibility) {
+    if (visibility == null) {
+      remove(VISIBILITY_STYLE);
+    } else {
+      put(VISIBILITY_STYLE, visibility.toString().toLowerCase());
     }
   }
   

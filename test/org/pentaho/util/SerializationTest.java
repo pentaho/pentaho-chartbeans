@@ -173,13 +173,16 @@ public class SerializationTest {
     barPlot.setOpacity(0.75f);
     barPlot.setOrientation(Orientation.HORIZONTAL);
     barPlot.setPalette(new Palette(0x001111, 0x222222, 0x333333));
+    barPlot.getHorizontalAxis().setColor(0x987654);
     barPlot.getHorizontalAxis().setLabelOrientation(LabelOrientation.DIAGONAL);
     barPlot.getHorizontalAxis().getLegend().setText("xAxis");
     barPlot.getHorizontalAxis().getLegend().setColor(0x192837);
     barPlot.getHorizontalAxis().getLegend().setFont("san-serif", 10, FontStyle.NORMAL, FontWeight.NORMAL);
+    barPlot.getVerticalAxis().setColor(0x456789);
     barPlot.getVerticalAxis().getLegend().setText("yAxis");
     barPlot.getVerticalAxis().getLegend().setColor(0x192837);
     barPlot.getVerticalAxis().getLegend().setFont("san-serif", 12, FontStyle.OBLIQUE, FontWeight.BOLD);
+    barPlot.getGrid().setVisible(false);
     
     chartModel.setPlot(barPlot);
     
@@ -220,18 +223,21 @@ public class SerializationTest {
     assertEquals(palette.get(1), 0x222222);
     assertEquals(palette.get(2), 0x333333);
     assertEquals(barPlot.getHorizontalAxis().getLabelOrientation(), LabelOrientation.DIAGONAL);
+    assertEquals(barPlot.getHorizontalAxis().getColor(), 0x987654);
     assertEquals(barPlot.getHorizontalAxis().getLegend().getText(), "xAxis");
     assertEquals(barPlot.getHorizontalAxis().getLegend().getColor(), 0x192837);
     assertEquals(barPlot.getHorizontalAxis().getLegend().getFontFamily(), "san-serif");
     assertEquals(barPlot.getHorizontalAxis().getLegend().getFontSize(), 10);
     assertEquals(barPlot.getHorizontalAxis().getLegend().getFontStyle(), FontStyle.NORMAL);
     assertEquals(barPlot.getHorizontalAxis().getLegend().getFontWeight(), FontWeight.NORMAL);
+    assertEquals(barPlot.getVerticalAxis().getColor(), 0x456789);
     assertEquals(barPlot.getVerticalAxis().getLegend().getText(), "yAxis");
     assertEquals(barPlot.getVerticalAxis().getLegend().getColor(), 0x192837);
     assertEquals(barPlot.getVerticalAxis().getLegend().getFontFamily(), "san-serif");
     assertEquals(barPlot.getVerticalAxis().getLegend().getFontSize(), 12);
     assertEquals(barPlot.getVerticalAxis().getLegend().getFontStyle(), FontStyle.OBLIQUE);
     assertEquals(barPlot.getVerticalAxis().getLegend().getFontWeight(), FontWeight.BOLD);    
+    assertTrue(!barPlot.getGrid().getVisible());
   }
   
   @Test
@@ -260,6 +266,7 @@ public class SerializationTest {
     linePlot.setPalette(new Palette(0x001111, 0x222222, 0x333333));
     linePlot.getHorizontalAxis().setLabelOrientation(LabelOrientation.VERTICAL);
     linePlot.getVerticalAxis().setLabelOrientation(LabelOrientation.VERTICAL);
+    linePlot.getGrid().setVerticalLinesVisible(false);
     
     chartModel.setPlot(linePlot);
     
@@ -300,6 +307,9 @@ public class SerializationTest {
     assertEquals(palette.get(2), 0x333333);
     assertEquals(linePlot.getHorizontalAxis().getLabelOrientation(), LabelOrientation.VERTICAL);
     assertEquals(linePlot.getVerticalAxis().getLabelOrientation(), LabelOrientation.VERTICAL);
+    assertTrue(linePlot.getGrid().getVisible());
+    assertTrue(linePlot.getGrid().getHorizontalLinesVisible());
+    assertTrue(!linePlot.getGrid().getVerticalLinesVisible());
   }
   
   @Test
@@ -330,10 +340,10 @@ public class SerializationTest {
     areaPlot.getVerticalAxis().getLegend().setText("yAxis");
     areaPlot.getVerticalAxis().getLegend().setColor(0x192837);
     areaPlot.getVerticalAxis().getLegend().setFont("san-serif", 12, FontStyle.OBLIQUE, FontWeight.BOLD);
+    areaPlot.getGrid().setColor(Color.RED.getRGB());
     
     chartModel.setPlot(areaPlot);
-    
-    
+        
     String result = ChartSerializer.serialize(chartModel, ChartSerializationFormat.XML);
     
     System.out.println(result);
@@ -378,8 +388,11 @@ public class SerializationTest {
     assertEquals(areaPlot.getVerticalAxis().getLegend().getFontFamily(), "san-serif");
     assertEquals(areaPlot.getVerticalAxis().getLegend().getFontSize(), 12);
     assertEquals(areaPlot.getVerticalAxis().getLegend().getFontStyle(), FontStyle.OBLIQUE);
-    assertEquals(areaPlot.getVerticalAxis().getLegend().getFontWeight(), FontWeight.BOLD);    
+    assertEquals(areaPlot.getVerticalAxis().getLegend().getFontWeight(), FontWeight.BOLD);
+    assertEquals(areaPlot.getGrid().getVerticalLineColor(), 0x00FFFFFF & Color.RED.getRGB());
+    assertEquals(areaPlot.getGrid().getHorizontalLineColor(), 0x00FFFFFF & Color.RED.getRGB());
   }
+  
   
   @Test
   public void testPiePlot(){

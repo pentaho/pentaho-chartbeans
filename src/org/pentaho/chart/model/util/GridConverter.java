@@ -16,10 +16,7 @@
  */
 package org.pentaho.chart.model.util;
 
-import org.pentaho.chart.model.Axis;
-import org.pentaho.chart.model.NumericAxis;
-import org.pentaho.chart.model.StyledText;
-import org.pentaho.chart.model.Axis.LabelOrientation;
+import org.pentaho.chart.model.Grid;
 
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
@@ -28,21 +25,21 @@ import com.thoughtworks.xstream.io.ExtendedHierarchicalStreamWriterHelper;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
-public class AxisConverter implements Converter {
+public class GridConverter implements Converter {
 
   public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
-    Axis axis = (Axis)value;
-    if (axis.getLabelOrientation() != LabelOrientation.HORIZONTAL) {
-      writer.addAttribute("labelOrientation", axis.getLabelOrientation().toString());
-    }
-    if (axis.getStyle().size() > 0) {
-      writer.addAttribute("style", axis.getStyle().getStyleString());
-    }
-    if ((axis.getLegend().getText() != null) && (axis.getLegend().getText().length() > 0)) {
-      ExtendedHierarchicalStreamWriterHelper.startNode(writer, "legend", axis.getLegend().getClass());
-      context.convertAnother(axis.getLegend());
+    Grid grid = (Grid)value;
+    if (grid.getVerticalLineStyle().size() > 0) {
+      ExtendedHierarchicalStreamWriterHelper.startNode(writer, "verticalLines", null);
+      writer.addAttribute("style", grid.getVerticalLineStyle().getStyleString());
       writer.endNode();
     }
+    if (grid.getHorizontalLineStyle().size() > 0) {
+      ExtendedHierarchicalStreamWriterHelper.startNode(writer, "horizontalLines", null);
+      writer.addAttribute("style", grid.getHorizontalLineStyle().getStyleString());
+      writer.endNode();
+    }
+    
   }
 
   public Object unmarshal(HierarchicalStreamReader arg0, UnmarshallingContext arg1) {
@@ -50,7 +47,7 @@ public class AxisConverter implements Converter {
   }
 
   public boolean canConvert(Class clazz) {
-    return clazz.equals(Axis.class) || clazz.equals(NumericAxis.class);
+    return clazz.equals(Grid.class);
   }
 
 }

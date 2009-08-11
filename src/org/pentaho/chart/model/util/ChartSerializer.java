@@ -21,6 +21,7 @@ import org.pentaho.chart.model.ChartLegend;
 import org.pentaho.chart.model.ChartModel;
 import org.pentaho.chart.model.CssStyle;
 import org.pentaho.chart.model.DialPlot;
+import org.pentaho.chart.model.Grid;
 import org.pentaho.chart.model.PiePlot;
 import org.pentaho.chart.model.TwoAxisPlot;
 import org.pentaho.chart.model.BarPlot.BarPlotFlavor;
@@ -55,6 +56,7 @@ public class ChartSerializer {
     jsonChartWriter.registerConverter(new ChartModelConverter());
     jsonChartWriter.registerConverter(new AxisConverter());
     jsonChartWriter.registerConverter(new ChartTitleConverter());
+    jsonChartWriter.registerConverter(new GridConverter());
     jsonChartWriter.useAttributeFor(PiePlot.class, "animate"); //$NON-NLS-1$
     jsonChartWriter.useAttributeFor(DialPlot.class, "animate"); //$NON-NLS-1$
     jsonChartWriter.useAttributeFor(PiePlot.class, "startAngle"); //$NON-NLS-1$
@@ -63,6 +65,7 @@ public class ChartSerializer {
     jsonChartWriter.omitField(PieLabels.class, "visible"); //$NON-NLS-1$
     jsonChartWriter.omitField(TwoAxisPlot.class, "horizontalAxis"); //$NON-NLS-1$  
     jsonChartWriter.omitField(TwoAxisPlot.class, "verticalAxis"); //$NON-NLS-1$
+    jsonChartWriter.omitField(TwoAxisPlot.class, "grid"); //$NON-NLS-1$
     
     xmlChartWriter.setMode(XStream.NO_REFERENCES);
     xmlChartWriter.alias("chartModel", ChartModel.class); //$NON-NLS-1$
@@ -78,6 +81,7 @@ public class ChartSerializer {
     xmlChartWriter.registerConverter(new ChartModelConverter());
     xmlChartWriter.registerConverter(new AxisConverter());
     xmlChartWriter.registerConverter(new ChartTitleConverter());
+    xmlChartWriter.registerConverter(new GridConverter());
     xmlChartWriter.useAttributeFor(PiePlot.class, "animate"); //$NON-NLS-1$
     xmlChartWriter.useAttributeFor(DialPlot.class, "animate"); //$NON-NLS-1$
     xmlChartWriter.useAttributeFor(PiePlot.class, "startAngle"); //$NON-NLS-1$
@@ -86,6 +90,7 @@ public class ChartSerializer {
     xmlChartWriter.omitField(PieLabels.class, "visible"); //$NON-NLS-1$
     xmlChartWriter.omitField(TwoAxisPlot.class, "horizontalAxis"); //$NON-NLS-1$
     xmlChartWriter.omitField(TwoAxisPlot.class, "verticalAxis"); //$NON-NLS-1$
+    xmlChartWriter.omitField(TwoAxisPlot.class, "grid"); //$NON-NLS-1$
     
     jsonChartDefWriter.setMode(XStream.NO_REFERENCES);
     jsonChartDefWriter.alias("chartDataModel", ChartDataDefinition.class); //$NON-NLS-1$

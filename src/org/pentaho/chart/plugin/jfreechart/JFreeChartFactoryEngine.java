@@ -60,13 +60,13 @@ import org.pentaho.chart.core.ChartDocument;
 import org.pentaho.chart.core.ChartElement;
 import org.pentaho.chart.css.keys.ChartStyleKeys;
 import org.pentaho.chart.css.styles.ChartSeriesType;
+import org.pentaho.chart.data.BasicDataModel;
 import org.pentaho.chart.data.CategoricalDataModel;
 import org.pentaho.chart.data.ChartTableModel;
 import org.pentaho.chart.data.IChartDataModel;
 import org.pentaho.chart.data.MultiSeriesXYDataModel;
 import org.pentaho.chart.data.NamedValue;
 import org.pentaho.chart.data.NamedValuesDataModel;
-import org.pentaho.chart.data.BasicDataModel;
 import org.pentaho.chart.data.XYDataModel;
 import org.pentaho.chart.data.XYDataPoint;
 import org.pentaho.chart.data.CategoricalDataModel.Category;
@@ -75,6 +75,7 @@ import org.pentaho.chart.model.AreaPlot;
 import org.pentaho.chart.model.BarPlot;
 import org.pentaho.chart.model.ChartModel;
 import org.pentaho.chart.model.DialPlot;
+import org.pentaho.chart.model.Grid;
 import org.pentaho.chart.model.LinePlot;
 import org.pentaho.chart.model.NumericAxis;
 import org.pentaho.chart.model.Plot;
@@ -379,14 +380,14 @@ public class JFreeChartFactoryEngine implements Serializable {
    */
   protected JFreeChart makeAreaChart(ChartModel chartModel, CategoricalDataModel dataModel) {
     DefaultCategoryDataset categoryDataset = createCategoryDataset(dataModel);
-    org.pentaho.chart.model.TwoAxisPlot graphPlot = (org.pentaho.chart.model.TwoAxisPlot)chartModel.getPlot();       
+    org.pentaho.chart.model.TwoAxisPlot twoAxisPlot = (org.pentaho.chart.model.TwoAxisPlot)chartModel.getPlot();       
     
     String title = "";
     if ((chartModel.getTitle() != null) && (chartModel.getTitle().getText() != null) && (chartModel.getTitle().getText().trim().length() > 0)) {
       title = chartModel.getTitle().getText();
     }    
     AxesLabels axesLabels = getAxesLabels(chartModel);   
-    PlotOrientation plotOrientation = (graphPlot.getOrientation() == Orientation.HORIZONTAL) ? PlotOrientation.HORIZONTAL : PlotOrientation.VERTICAL;
+    PlotOrientation plotOrientation = (twoAxisPlot.getOrientation() == Orientation.HORIZONTAL) ? PlotOrientation.HORIZONTAL : PlotOrientation.VERTICAL;
     boolean showLegend = (chartModel.getLegend() != null) && (chartModel.getLegend().getVisible());
     
     JFreeChart chart = ChartFactory.createAreaChart(title, axesLabels.domainAxisLabel, axesLabels.rangeAxisLabel, categoryDataset, plotOrientation, showLegend, true, false);
@@ -403,18 +404,18 @@ public class JFreeChartFactoryEngine implements Serializable {
    */
   protected JFreeChart makeLineChart(ChartModel chartModel, CategoricalDataModel dataModel) {
     DefaultCategoryDataset categoryDataset = createCategoryDataset(dataModel);
-    org.pentaho.chart.model.TwoAxisPlot graphPlot = (org.pentaho.chart.model.TwoAxisPlot)chartModel.getPlot();       
+    org.pentaho.chart.model.TwoAxisPlot twoAxisPlot = (org.pentaho.chart.model.TwoAxisPlot)chartModel.getPlot();       
     
     String title = "";
     if ((chartModel.getTitle() != null) && (chartModel.getTitle().getText() != null) && (chartModel.getTitle().getText().trim().length() > 0)) {
       title = chartModel.getTitle().getText();
     }    
     AxesLabels axesLabels = getAxesLabels(chartModel);    
-    PlotOrientation plotOrientation = (graphPlot.getOrientation() == Orientation.HORIZONTAL) ? PlotOrientation.HORIZONTAL : PlotOrientation.VERTICAL;
+    PlotOrientation plotOrientation = (twoAxisPlot.getOrientation() == Orientation.HORIZONTAL) ? PlotOrientation.HORIZONTAL : PlotOrientation.VERTICAL;
     boolean showLegend = (chartModel.getLegend() != null) && (chartModel.getLegend().getVisible());
     JFreeChart chart = null;
     
-    LinePlot linePlot = (LinePlot)graphPlot;
+    LinePlot linePlot = (LinePlot)twoAxisPlot;
     if (linePlot.getFlavor() == LinePlotFlavor.THREED) {
       chart = ChartFactory.createLineChart3D(title, axesLabels.domainAxisLabel, axesLabels.rangeAxisLabel, categoryDataset, plotOrientation,
           showLegend, true, false);
@@ -451,7 +452,7 @@ public class JFreeChartFactoryEngine implements Serializable {
     
     dataset.addSeries(createXYSeries(data));
     
-    org.pentaho.chart.model.TwoAxisPlot graphPlot = (org.pentaho.chart.model.TwoAxisPlot)chartModel.getPlot();       
+    org.pentaho.chart.model.TwoAxisPlot twoAxisPlot = (org.pentaho.chart.model.TwoAxisPlot)chartModel.getPlot();       
     
     String title = "";
     if ((chartModel.getTitle() != null) && (chartModel.getTitle().getText() != null) && (chartModel.getTitle().getText().trim().length() > 0)) {
@@ -459,7 +460,7 @@ public class JFreeChartFactoryEngine implements Serializable {
     }    
     
     AxesLabels axesLabels = getAxesLabels(chartModel);    
-    PlotOrientation plotOrientation = (graphPlot.getOrientation() == Orientation.HORIZONTAL) ? PlotOrientation.HORIZONTAL : PlotOrientation.VERTICAL;
+    PlotOrientation plotOrientation = (twoAxisPlot.getOrientation() == Orientation.HORIZONTAL) ? PlotOrientation.HORIZONTAL : PlotOrientation.VERTICAL;
     boolean showLegend = (chartModel.getLegend() != null) && (chartModel.getLegend().getVisible());
     JFreeChart chart = ChartFactory.createScatterPlot(title, axesLabels.domainAxisLabel, axesLabels.rangeAxisLabel, dataset, plotOrientation, showLegend, true, false);
 
@@ -477,7 +478,7 @@ public class JFreeChartFactoryEngine implements Serializable {
       dataset.addSeries(createXYSeries(series));
     }
     
-    org.pentaho.chart.model.TwoAxisPlot graphPlot = (org.pentaho.chart.model.TwoAxisPlot)chartModel.getPlot();       
+    org.pentaho.chart.model.TwoAxisPlot twoAxisPlot = (org.pentaho.chart.model.TwoAxisPlot)chartModel.getPlot();       
     
     String title = "";
     if ((chartModel.getTitle() != null) && (chartModel.getTitle().getText() != null) && (chartModel.getTitle().getText().trim().length() > 0)) {
@@ -485,7 +486,7 @@ public class JFreeChartFactoryEngine implements Serializable {
     }    
     
     AxesLabels axesLabels = getAxesLabels(chartModel);    
-    PlotOrientation plotOrientation = (graphPlot.getOrientation() == Orientation.HORIZONTAL) ? PlotOrientation.HORIZONTAL : PlotOrientation.VERTICAL;
+    PlotOrientation plotOrientation = (twoAxisPlot.getOrientation() == Orientation.HORIZONTAL) ? PlotOrientation.HORIZONTAL : PlotOrientation.VERTICAL;
     boolean showLegend = (chartModel.getLegend() != null) && (chartModel.getLegend().getVisible());
     JFreeChart chart = ChartFactory.createScatterPlot(title, axesLabels.domainAxisLabel, axesLabels.rangeAxisLabel, dataset, plotOrientation, showLegend, true, false);
 
@@ -506,20 +507,20 @@ public class JFreeChartFactoryEngine implements Serializable {
   }
   
   private AxesLabels getAxesLabels(ChartModel chartModel) {
-    org.pentaho.chart.model.TwoAxisPlot graphPlot = (org.pentaho.chart.model.TwoAxisPlot)chartModel.getPlot();
+    org.pentaho.chart.model.TwoAxisPlot twoAxisPlot = (org.pentaho.chart.model.TwoAxisPlot)chartModel.getPlot();
     AxesLabels graphLabelsAndFonts = new AxesLabels();
 
-    if ((graphPlot.getRangeAxis() != null) 
-        && (graphPlot.getRangeAxis().getLegend() != null) 
-        && (graphPlot.getRangeAxis().getLegend().getText() != null)
-        && (graphPlot.getRangeAxis().getLegend().getText().trim().length() > 0)) {
-      graphLabelsAndFonts.rangeAxisLabel = graphPlot.getRangeAxis().getLegend().getText();
+    if ((twoAxisPlot.getRangeAxis() != null) 
+        && (twoAxisPlot.getRangeAxis().getLegend() != null) 
+        && (twoAxisPlot.getRangeAxis().getLegend().getText() != null)
+        && (twoAxisPlot.getRangeAxis().getLegend().getText().trim().length() > 0)) {
+      graphLabelsAndFonts.rangeAxisLabel = twoAxisPlot.getRangeAxis().getLegend().getText();
     }
-    if ((graphPlot.getDomainAxis() != null) 
-        && (graphPlot.getDomainAxis().getLegend() != null) 
-        && (graphPlot.getDomainAxis().getLegend().getText() != null)
-        && (graphPlot.getDomainAxis().getLegend().getText().trim().length() > 0)) {
-      graphLabelsAndFonts.domainAxisLabel = graphPlot.getDomainAxis().getLegend().getText();
+    if ((twoAxisPlot.getDomainAxis() != null) 
+        && (twoAxisPlot.getDomainAxis().getLegend() != null) 
+        && (twoAxisPlot.getDomainAxis().getLegend().getText() != null)
+        && (twoAxisPlot.getDomainAxis().getLegend().getText().trim().length() > 0)) {
+      graphLabelsAndFonts.domainAxisLabel = twoAxisPlot.getDomainAxis().getLegend().getText();
     }
     
     return graphLabelsAndFonts;
@@ -541,10 +542,32 @@ public class JFreeChartFactoryEngine implements Serializable {
   private void initCategoryPlot(JFreeChart chart, ChartModel chartModel) {
     initPlot(chart, chartModel);
     
-    org.pentaho.chart.model.TwoAxisPlot graphPlot = (org.pentaho.chart.model.TwoAxisPlot)chartModel.getPlot();
+    org.pentaho.chart.model.TwoAxisPlot twoAxisPlot = (org.pentaho.chart.model.TwoAxisPlot)chartModel.getPlot();
     CategoryPlot categoryPlot = chart.getCategoryPlot();
     
-    List<Integer> colors = getPlotColors(graphPlot);
+    Grid grid = twoAxisPlot.getGrid();
+    if (twoAxisPlot.getOrientation() != Orientation.HORIZONTAL) {
+      Color color = (grid.getVerticalLineColor() != null ? new Color(0x00FFFFFF & grid.getVerticalLineColor()) : new Color(0x00FFFFFF & Grid.DEFAULT_GRID_COLOR));
+      categoryPlot.setDomainGridlinesVisible(grid.getVerticalLinesVisible());
+      categoryPlot.setDomainGridlinePaint(color);
+      
+      color = (grid.getHorizontalLineColor() != null ? new Color(0x00FFFFFF & grid.getHorizontalLineColor()) : new Color(0x00FFFFFF & Grid.DEFAULT_GRID_COLOR));
+      categoryPlot.setRangeGridlinesVisible(grid.getHorizontalLinesVisible());
+      categoryPlot.setRangeGridlinePaint(color);
+    } else {
+      Color color = (grid.getHorizontalLineColor() != null ? new Color(0x00FFFFFF & grid.getHorizontalLineColor()) : new Color(0x00FFFFFF & Grid.DEFAULT_GRID_COLOR));
+      categoryPlot.setDomainGridlinesVisible(grid.getHorizontalLinesVisible());
+      categoryPlot.setDomainGridlinePaint(color);
+      
+      color = (grid.getVerticalLineColor() != null ? new Color(0x00FFFFFF & grid.getVerticalLineColor()) : new Color(0x00FFFFFF & Grid.DEFAULT_GRID_COLOR));
+      categoryPlot.setRangeGridlinesVisible(grid.getVerticalLinesVisible());
+      categoryPlot.setRangeGridlinePaint(color);
+    }
+    
+    categoryPlot.setDomainGridlineStroke(new BasicStroke(1));
+    categoryPlot.setRangeGridlineStroke(new BasicStroke(1));
+    
+    List<Integer> colors = getPlotColors(twoAxisPlot);
     
     for (int i = 0; i < colors.size(); i++) {
       for (int j = 0; j < categoryPlot.getDatasetCount(); j++) {
@@ -552,10 +575,10 @@ public class JFreeChartFactoryEngine implements Serializable {
       }
     }
     
-    Font domainAxisFont = ChartUtils.getFont(graphPlot.getDomainAxis().getFontFamily(), graphPlot.getDomainAxis().getFontStyle(), graphPlot.getDomainAxis().getFontWeight(), graphPlot.getDomainAxis().getFontSize());
-    Font rangeAxisFont = ChartUtils.getFont(graphPlot.getRangeAxis().getFontFamily(), graphPlot.getRangeAxis().getFontStyle(), graphPlot.getRangeAxis().getFontWeight(), graphPlot.getRangeAxis().getFontSize());
-    Font rangeTitleFont = ChartUtils.getFont(graphPlot.getRangeAxis().getLegend().getFontFamily(), graphPlot.getRangeAxis().getLegend().getFontStyle(), graphPlot.getRangeAxis().getLegend().getFontWeight(), graphPlot.getRangeAxis().getLegend().getFontSize());
-    Font domainTitleFont = ChartUtils.getFont(graphPlot.getDomainAxis().getLegend().getFontFamily(), graphPlot.getDomainAxis().getLegend().getFontStyle(), graphPlot.getDomainAxis().getLegend().getFontWeight(), graphPlot.getDomainAxis().getLegend().getFontSize());
+    Font domainAxisFont = ChartUtils.getFont(twoAxisPlot.getDomainAxis().getFontFamily(), twoAxisPlot.getDomainAxis().getFontStyle(), twoAxisPlot.getDomainAxis().getFontWeight(), twoAxisPlot.getDomainAxis().getFontSize());
+    Font rangeAxisFont = ChartUtils.getFont(twoAxisPlot.getRangeAxis().getFontFamily(), twoAxisPlot.getRangeAxis().getFontStyle(), twoAxisPlot.getRangeAxis().getFontWeight(), twoAxisPlot.getRangeAxis().getFontSize());
+    Font rangeTitleFont = ChartUtils.getFont(twoAxisPlot.getRangeAxis().getLegend().getFontFamily(), twoAxisPlot.getRangeAxis().getLegend().getFontStyle(), twoAxisPlot.getRangeAxis().getLegend().getFontWeight(), twoAxisPlot.getRangeAxis().getLegend().getFontSize());
+    Font domainTitleFont = ChartUtils.getFont(twoAxisPlot.getDomainAxis().getLegend().getFontFamily(), twoAxisPlot.getDomainAxis().getLegend().getFontStyle(), twoAxisPlot.getDomainAxis().getLegend().getFontWeight(), twoAxisPlot.getDomainAxis().getLegend().getFontSize());
        
     CategoryAxis domainAxis = categoryPlot.getDomainAxis();
     ValueAxis rangeAxis = categoryPlot.getRangeAxis();
@@ -569,9 +592,9 @@ public class JFreeChartFactoryEngine implements Serializable {
       domainAxis.setLabelFont(domainTitleFont);
     }
     
-    LabelOrientation labelOrientation = graphPlot.getHorizontalAxis().getLabelOrientation();
+    LabelOrientation labelOrientation = twoAxisPlot.getHorizontalAxis().getLabelOrientation();
     if ((labelOrientation != null) && (labelOrientation != LabelOrientation.HORIZONTAL)) {
-      if (graphPlot.getOrientation() == Orientation.HORIZONTAL) {
+      if (twoAxisPlot.getOrientation() == Orientation.HORIZONTAL) {
         if (labelOrientation == LabelOrientation.VERTICAL) {
           rangeAxis.setVerticalTickLabels(true);
         }
@@ -594,11 +617,11 @@ public class JFreeChartFactoryEngine implements Serializable {
       rangeAxis.setTickLabelFont(rangeAxisFont);
     }
 
-    Number rangeMin = graphPlot.getRangeAxis().getMinValue();
+    Number rangeMin = twoAxisPlot.getRangeAxis().getMinValue();
     if (rangeMin != null) {
       rangeAxis.setLowerBound(rangeMin.doubleValue());
     }
-    Number rangeMax = graphPlot.getRangeAxis().getMaxValue();
+    Number rangeMax = twoAxisPlot.getRangeAxis().getMaxValue();
     if (rangeMax != null) {
       rangeAxis.setUpperBound(rangeMax.doubleValue());
     }  
@@ -607,10 +630,10 @@ public class JFreeChartFactoryEngine implements Serializable {
   private void initXYPlot(JFreeChart chart, ChartModel chartModel) {
     initPlot(chart, chartModel);
     
-    org.pentaho.chart.model.TwoAxisPlot graphPlot = (org.pentaho.chart.model.TwoAxisPlot)chartModel.getPlot();
+    org.pentaho.chart.model.TwoAxisPlot twoAxisPlot = (org.pentaho.chart.model.TwoAxisPlot)chartModel.getPlot();
     XYPlot xyPlot = chart.getXYPlot();
     
-    List<Integer> colors = getPlotColors(graphPlot);
+    List<Integer> colors = getPlotColors(twoAxisPlot);
     
     for (int i = 0; i < colors.size(); i++) {
       for (int j = 0; j < xyPlot.getDatasetCount(); j++) {
@@ -618,10 +641,10 @@ public class JFreeChartFactoryEngine implements Serializable {
       }
     }
     
-    Font domainAxisFont = ChartUtils.getFont(graphPlot.getDomainAxis().getFontFamily(), graphPlot.getDomainAxis().getFontStyle(), graphPlot.getDomainAxis().getFontWeight(), graphPlot.getDomainAxis().getFontSize());
-    Font rangeAxisFont = ChartUtils.getFont(graphPlot.getRangeAxis().getFontFamily(), graphPlot.getRangeAxis().getFontStyle(), graphPlot.getRangeAxis().getFontWeight(), graphPlot.getRangeAxis().getFontSize());
-    Font rangeTitleFont = ChartUtils.getFont(graphPlot.getRangeAxis().getLegend().getFontFamily(), graphPlot.getRangeAxis().getLegend().getFontStyle(), graphPlot.getRangeAxis().getLegend().getFontWeight(), graphPlot.getRangeAxis().getLegend().getFontSize());
-    Font domainTitleFont = ChartUtils.getFont(graphPlot.getDomainAxis().getLegend().getFontFamily(), graphPlot.getDomainAxis().getLegend().getFontStyle(), graphPlot.getDomainAxis().getLegend().getFontWeight(), graphPlot.getDomainAxis().getLegend().getFontSize());
+    Font domainAxisFont = ChartUtils.getFont(twoAxisPlot.getDomainAxis().getFontFamily(), twoAxisPlot.getDomainAxis().getFontStyle(), twoAxisPlot.getDomainAxis().getFontWeight(), twoAxisPlot.getDomainAxis().getFontSize());
+    Font rangeAxisFont = ChartUtils.getFont(twoAxisPlot.getRangeAxis().getFontFamily(), twoAxisPlot.getRangeAxis().getFontStyle(), twoAxisPlot.getRangeAxis().getFontWeight(), twoAxisPlot.getRangeAxis().getFontSize());
+    Font rangeTitleFont = ChartUtils.getFont(twoAxisPlot.getRangeAxis().getLegend().getFontFamily(), twoAxisPlot.getRangeAxis().getLegend().getFontStyle(), twoAxisPlot.getRangeAxis().getLegend().getFontWeight(), twoAxisPlot.getRangeAxis().getLegend().getFontSize());
+    Font domainTitleFont = ChartUtils.getFont(twoAxisPlot.getDomainAxis().getLegend().getFontFamily(), twoAxisPlot.getDomainAxis().getLegend().getFontStyle(), twoAxisPlot.getDomainAxis().getLegend().getFontWeight(), twoAxisPlot.getDomainAxis().getLegend().getFontSize());
        
        
     NumberAxis domainAxis = (NumberAxis)xyPlot.getDomainAxis();
@@ -639,7 +662,7 @@ public class JFreeChartFactoryEngine implements Serializable {
       domainAxis.setLabelFont(domainTitleFont);
     }
     
-    domainAxis.setVerticalTickLabels(graphPlot.getHorizontalAxis().getLabelOrientation() == LabelOrientation.VERTICAL);
+    domainAxis.setVerticalTickLabels(twoAxisPlot.getHorizontalAxis().getLabelOrientation() == LabelOrientation.VERTICAL);
 
     if (domainAxisFont != null) {
       domainAxis.setTickLabelFont(domainAxisFont);
@@ -648,11 +671,11 @@ public class JFreeChartFactoryEngine implements Serializable {
       rangeAxis.setTickLabelFont(rangeAxisFont);
     }
 
-    Number rangeMin = ((NumericAxis)graphPlot.getRangeAxis()).getMinValue();
+    Number rangeMin = ((NumericAxis)twoAxisPlot.getRangeAxis()).getMinValue();
     if (rangeMin != null) {
       rangeAxis.setLowerBound(rangeMin.doubleValue());
     }
-    Number rangeMax = ((NumericAxis)graphPlot.getRangeAxis()).getMaxValue();
+    Number rangeMax = ((NumericAxis)twoAxisPlot.getRangeAxis()).getMaxValue();
     if (rangeMax != null) {
       rangeAxis.setUpperBound(rangeMax.doubleValue());
     }  
@@ -679,18 +702,18 @@ public class JFreeChartFactoryEngine implements Serializable {
    */
   protected JFreeChart makeBarChart(ChartModel chartModel, CategoricalDataModel dataModel) {
     DefaultCategoryDataset categoryDataset = createCategoryDataset(dataModel);
-    org.pentaho.chart.model.TwoAxisPlot graphPlot = (org.pentaho.chart.model.TwoAxisPlot)chartModel.getPlot();       
+    org.pentaho.chart.model.TwoAxisPlot twoAxisPlot = (org.pentaho.chart.model.TwoAxisPlot)chartModel.getPlot();       
     
     String title = "";
     if ((chartModel.getTitle() != null) && (chartModel.getTitle().getText() != null) && (chartModel.getTitle().getText().trim().length() > 0)) {
       title = chartModel.getTitle().getText();
     }    
     AxesLabels axesLabels = getAxesLabels(chartModel);    
-    PlotOrientation plotOrientation = (graphPlot.getOrientation() == Orientation.HORIZONTAL) ? PlotOrientation.HORIZONTAL : PlotOrientation.VERTICAL;
+    PlotOrientation plotOrientation = (twoAxisPlot.getOrientation() == Orientation.HORIZONTAL) ? PlotOrientation.HORIZONTAL : PlotOrientation.VERTICAL;
     boolean showLegend = (chartModel.getLegend() != null) && (chartModel.getLegend().getVisible());
     JFreeChart chart = null;
     
-    if (BarPlotFlavor.THREED == ((BarPlot)graphPlot).getFlavor()) {
+    if (BarPlotFlavor.THREED == ((BarPlot)twoAxisPlot).getFlavor()) {
       chart = ChartFactory.createBarChart3D(title, axesLabels.domainAxisLabel, axesLabels.rangeAxisLabel, categoryDataset, plotOrientation, showLegend, true, false);
     } else {
       chart = ChartFactory.createBarChart(title, axesLabels.domainAxisLabel, axesLabels.rangeAxisLabel, categoryDataset, plotOrientation, showLegend, true, false);
