@@ -25,7 +25,10 @@ public class ColorConverter {
       return (Integer)color;
     }
     if (color instanceof String){
-     returnColor = Integer.parseInt( (String)color , 16 ); 
+      if (((String) color).contains("#")){
+        color = ((String) color).replace("#", "");
+      }
+      returnColor = Integer.parseInt( (String)color , 16 ); 
     }
     return returnColor;
   }
