@@ -41,9 +41,4 @@ public class ColorConverterTest {
     System.out.println(ColorConverter.toInteger("#00ff00"));
   }
 
-  @Test
-  public void testToHtmlColorString() {
-    fail("Not yet implemented");
-  }
-
 }
