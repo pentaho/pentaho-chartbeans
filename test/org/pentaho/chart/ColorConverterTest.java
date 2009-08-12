@@ -11,10 +11,10 @@ public class ColorConverterTest {
 
   @Test
   public void testToHexString() {
-    System.out.println("Color to Hex String:");
-    System.out.println("Color: " + Color.BLUE);
-    System.out.print("Hex String: ");
-    System.out.println( ColorConverter.toHexString(Color.BLUE));
+    //System.out.println("Color to Hex String:");
+    //System.out.println("Color: " + Color.BLUE);
+    //System.out.print("Hex String: ");
+    //System.out.println( ColorConverter.toHexString(Color.BLUE));
     
     System.out.println("Integer to Hex String:");
     System.out.println("Integer: " + 65280);
@@ -30,10 +30,10 @@ public class ColorConverterTest {
 
   @Test
   public void testToInteger() {
-    System.out.println("Color to Integer:");
-    System.out.println("Color: Green");
-    System.out.print("Integer: ");
-    System.out.println(ColorConverter.toInteger(Color.GREEN));
+    //System.out.println("Color to Integer:");
+    //System.out.println("Color: Green");
+    //System.out.print("Integer: ");
+    //System.out.println(ColorConverter.toInteger(Color.GREEN));
 
     System.out.println("Hex String to Integer:");
     System.out.println("Hex String: #00ff00");
