@@ -21,22 +21,22 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CategoricalDataModel implements IChartDataModel, IScalableDataModel {
+public class MultiSeriesDataModel implements IChartDataModel, IScalableDataModel {
   
   LinkedHashMap<String, NamedValuesDataModel> chartData = new LinkedHashMap<String, NamedValuesDataModel>();
   Number scalingFactor = 1;
   
-  public class Series extends NamedValuesDataModel {
+  public class SeriesData extends NamedValuesDataModel {
     String seriesName;
     
-    Series() {
+    SeriesData() {
     }
     
-    Series(String seriesName) {
+    SeriesData(String seriesName) {
       this.seriesName = seriesName;
     }
     
-    public List<String> getCategories() {
+    public List<String> getDomains() {
       return getNames();
     }
     
@@ -49,26 +49,26 @@ public class CategoricalDataModel implements IChartDataModel, IScalableDataModel
     }
   }
   
-  public class Category extends NamedValuesDataModel {
-    String categoryName;
+  public class DomainData extends NamedValuesDataModel {
+    String domainName;
     
-    Category() {
+    DomainData() {
     }
     
-    Category(String categoryName) {
-      this.categoryName = categoryName;
+    DomainData(String domainName) {
+      this.domainName = domainName;
     }
     
     public List<String> getSeries() {
       return getNames();
     }
     
-    public String getCategoryName() {
-      return categoryName;
+    public String getDomainName() {
+      return domainName;
     }
 
-    public void setCategoryName(String categoryName) {
-      this.categoryName = categoryName;
+    public void setDomainName(String domainName) {
+      this.domainName = domainName;
     }
   }
   
@@ -99,43 +99,43 @@ public class CategoricalDataModel implements IChartDataModel, IScalableDataModel
     }
   }
   
-  public Category getCategory(String categoryName) {
-    Category category = null;
-    NamedValuesDataModel namedValueDataModel = chartData.get(categoryName);
+  public DomainData getDomainData(String domainName) {
+    DomainData domainData = null;
+    NamedValuesDataModel namedValueDataModel = chartData.get(domainName);
     if (namedValueDataModel != null) {
-      category = new Category(categoryName);
-      category.addAll(namedValueDataModel);
+      domainData = new DomainData(domainName);
+      domainData.addAll(namedValueDataModel);
     }
-    return category;
+    return domainData;
   }
   
-  public List<Category> getCategories() {
-    List<Category> categories = new ArrayList<Category>();
+  public List<DomainData> getDomainData() {
+    List<DomainData> domainData = new ArrayList<DomainData>();
     for (Map.Entry<String, NamedValuesDataModel> mapEntry : chartData.entrySet()) {
-      Category category = new Category(mapEntry.getKey());
-      category.addAll(mapEntry.getValue());
-      categories.add(category);
+      DomainData domain = new DomainData(mapEntry.getKey());
+      domain.addAll(mapEntry.getValue());
+      domainData.add(domain);
     }
-    return categories;
+    return domainData;
   }
   
-  public Series getSeries(String seriesName) {
-    Series series = null;
+  public SeriesData getSeriesData(String seriesName) {
+    SeriesData seriesData = null;
     
     if ((chartData.size() > 0) && chartData.values().iterator().next().getNames().contains(seriesName)) {
-      series = new Series(seriesName);
+      seriesData = new SeriesData(seriesName);
       for (Map.Entry<String, NamedValuesDataModel> mapEntry : chartData.entrySet()) {
-        String categoryName = mapEntry.getKey();
+        String domainName = mapEntry.getKey();
         Number value = mapEntry.getValue().getNamedValue(seriesName).value; 
-        series.add(new NamedValue(categoryName, value));
+        seriesData.add(new NamedValue(domainName, value));
       }
     }
        
-    return series;
+    return seriesData;
   }
   
-  public List<Series> getSeries() {
-    List<Series> seriesList = new ArrayList<Series>();
+  public List<SeriesData> getSeriesData() {
+    List<SeriesData> seriesList = new ArrayList<SeriesData>();
     
     List<String> seriesNames = new ArrayList<String>();
     if (chartData.size() > 0) {
@@ -143,12 +143,12 @@ public class CategoricalDataModel implements IChartDataModel, IScalableDataModel
     }
     
     for (String seriesName : seriesNames) {
-      Series series = new Series(seriesName);
+      SeriesData series = new SeriesData(seriesName);
       
       for (Map.Entry<String, NamedValuesDataModel> mapEntry : chartData.entrySet()) {
-        String categoryName = mapEntry.getKey();
+        String domainName = mapEntry.getKey();
         Number value = mapEntry.getValue().getNamedValue(seriesName).value; 
-        series.add(new NamedValue(categoryName, value));
+        series.add(new NamedValue(domainName, value));
       }
       seriesList.add(series);
     }

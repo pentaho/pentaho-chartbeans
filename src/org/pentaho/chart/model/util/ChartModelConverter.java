@@ -16,6 +16,8 @@
  */
 package org.pentaho.chart.model.util;
 
+import java.text.NumberFormat;
+
 import org.pentaho.chart.model.AreaPlot;
 import org.pentaho.chart.model.Axis;
 import org.pentaho.chart.model.BarPlot;
@@ -24,6 +26,7 @@ import org.pentaho.chart.model.CssStyle;
 import org.pentaho.chart.model.DialPlot;
 import org.pentaho.chart.model.Grid;
 import org.pentaho.chart.model.LinePlot;
+import org.pentaho.chart.model.NumericAxis;
 import org.pentaho.chart.model.Palette;
 import org.pentaho.chart.model.PiePlot;
 import org.pentaho.chart.model.Plot;
@@ -177,7 +180,8 @@ public class ChartModelConverter implements Converter {
           || reader.getNodeName().equals("linePlot") 
           || reader.getNodeName().equals("areaPlot")
           || reader.getNodeName().equals("piePlot")
-          || reader.getNodeName().equals("dialPlot")) {        
+          || reader.getNodeName().equals("dialPlot")
+          || reader.getNodeName().equals("scatterPlot")) {        
         chartModel.setPlot(createPlot(reader));
       }
       reader.moveUp();
@@ -281,6 +285,35 @@ public class ChartModelConverter implements Converter {
           axis.setLabelOrientation(Enum.valueOf(LabelOrientation.class, axisLabelOrientation.toUpperCase()));
         } catch (Exception ex) {
           // Do nothing, we'll stay with the default.
+        }
+        if (axis instanceof NumericAxis) {
+          NumericAxis numericAxis = (NumericAxis)axis;
+          String minValueStr = reader.getAttribute("minValue");
+          if (minValueStr != null) {
+            try {
+              numericAxis.setMinValue(Integer.parseInt(minValueStr));
+            } catch (NumberFormatException ex){
+              try {
+                numericAxis.setMinValue(Double.parseDouble(minValueStr));
+              } catch (NumberFormatException ex2) {
+                // Do nothing. No min value will be assigned.
+              }
+            }
+          }
+          String maxValueStr = reader.getAttribute("maxValue");
+          if (maxValueStr != null) {
+            if (maxValueStr != null) {
+              try {
+                numericAxis.setMaxValue(Integer.parseInt(maxValueStr));
+              } catch (NumberFormatException ex){
+                try {
+                  numericAxis.setMaxValue(Double.parseDouble(maxValueStr));
+                } catch (NumberFormatException ex2) {
+                  // Do nothing. No min value will be assigned.
+                }
+              }
+            }
+          }
         }
         cssStyle = reader.getAttribute("style");
         if (cssStyle != null) {

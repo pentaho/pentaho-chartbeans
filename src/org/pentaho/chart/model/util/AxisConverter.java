@@ -38,6 +38,15 @@ public class AxisConverter implements Converter {
     if (axis.getStyle().size() > 0) {
       writer.addAttribute("style", axis.getStyle().getStyleString());
     }
+    if (axis instanceof NumericAxis) {
+      NumericAxis numericAxis = (NumericAxis)axis;
+      if (numericAxis.getMinValue() != null) {
+        writer.addAttribute("minValue", numericAxis.getMinValue().toString());
+      }
+      if (numericAxis.getMaxValue() != null) {
+        writer.addAttribute("maxValue", numericAxis.getMaxValue().toString());
+      }
+    }
     if ((axis.getLegend().getText() != null) && (axis.getLegend().getText().length() > 0)) {
       ExtendedHierarchicalStreamWriterHelper.startNode(writer, "legend", axis.getLegend().getClass());
       context.convertAnother(axis.getLegend());

@@ -24,19 +24,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.pentaho.chart.data.BasicDataModel;
-import org.pentaho.chart.data.CategoricalDataModel;
 import org.pentaho.chart.data.IChartDataModel;
 import org.pentaho.chart.data.IScalableDataModel;
+import org.pentaho.chart.data.MultiSeriesDataModel;
 import org.pentaho.chart.data.MultiSeriesXYDataModel;
 import org.pentaho.chart.data.NamedValue;
 import org.pentaho.chart.data.NamedValuesDataModel;
 import org.pentaho.chart.data.XYDataModel;
 import org.pentaho.chart.data.XYDataPoint;
-import org.pentaho.chart.data.CategoricalDataModel.Category;
+import org.pentaho.chart.data.MultiSeriesDataModel.DomainData;
 import org.pentaho.chart.data.MultiSeriesXYDataModel.Series;
 import org.pentaho.chart.model.ChartModel;
 import org.pentaho.chart.model.DialPlot;
 import org.pentaho.chart.model.PiePlot;
+import org.pentaho.chart.model.Plot;
 import org.pentaho.chart.model.ScatterPlot;
 import org.pentaho.chart.plugin.ChartProcessingException;
 import org.pentaho.chart.plugin.IChartPlugin;
@@ -82,68 +83,71 @@ public class ChartBeanFactory {
       OutputTypes outputType) throws ChartProcessingException, SQLException, ResourceKeyCreationException,
       PersistenceException {
     int rangeColumnIndex = 0;
+    int seriesColumnIndex = -1;
     int domainColumnIndex = -1;
-    int categoryColumnIndex = -1;
 
     if ((queryResults.length > 0) && (queryResults[0].length > 1)) {
-      domainColumnIndex = 1;
+      seriesColumnIndex = 1;
     }
 
     if ((queryResults.length > 0) && (queryResults[0].length > 2)) {
-      categoryColumnIndex = 2;
+      domainColumnIndex = 2;
     }
     
-    return createChart(queryResults, 1, false, rangeColumnIndex, domainColumnIndex, categoryColumnIndex, chartModel,
+    return createChart(queryResults, 1, false, rangeColumnIndex, seriesColumnIndex, domainColumnIndex, chartModel,
         width, height, outputType);
   }
 
   public static InputStream createChart(Object[][] queryResults, Number scalingFactor, boolean convertNullsToZero, int rangeColumnIndex,
-      int domainColumnIdx, int categoryColumnIdx, ChartModel chartModel, int width, int height, OutputTypes outputType)
+      int seriesColumnIdx, int domainColumnIdx, ChartModel chartModel, int width, int height, OutputTypes outputType)
       throws ChartProcessingException, SQLException, ResourceKeyCreationException, PersistenceException {
     ByteArrayInputStream inputStream = null;
 
     IChartDataModel chartDataModel = null;
     
-    if ((categoryColumnIdx >= 0) 
-        && !(chartModel.getPlot() instanceof PiePlot)
-        && !(chartModel.getPlot() instanceof DialPlot)) {
-      if (chartModel.getPlot() instanceof ScatterPlot) {
-        MultiSeriesXYDataModel categoricalXYDataModel = createMultiSeriesXYDataModel(queryResults, categoryColumnIdx, domainColumnIdx, rangeColumnIndex, convertNullsToZero);
-        for (Series series : categoricalXYDataModel.getSeries()) {
+    Plot plot = chartModel.getPlot();
+    if ((plot instanceof PiePlot) && (seriesColumnIdx >= 0) && (rangeColumnIndex >= 0)) {
+      NamedValuesDataModel namedValueDataModel = createNamedValueDataModel(queryResults, seriesColumnIdx, rangeColumnIndex, convertNullsToZero, true);
+      if (namedValueDataModel.size() > 0) {
+        chartDataModel = namedValueDataModel;
+      }
+    } else if ((plot instanceof DialPlot) && (rangeColumnIndex >= 0)) {
+      chartDataModel = createBasicDataModel(queryResults, rangeColumnIndex, true, true);
+    } else if (plot instanceof ScatterPlot) {
+      if ((seriesColumnIdx >= 0) && (domainColumnIdx >= 0)) {
+        MultiSeriesXYDataModel multiSeriesXYDataModel = createMultiSeriesXYDataModel(queryResults, seriesColumnIdx,  domainColumnIdx,rangeColumnIndex, convertNullsToZero);
+        for (Series series : multiSeriesXYDataModel.getSeries()) {
           if (series.size() > 0) {
-            chartDataModel = categoricalXYDataModel;
+            chartDataModel = multiSeriesXYDataModel;
             break;
           }
         }
-      } else {
-        CategoricalDataModel categoricalDataModel = createCategoricalDataModel(queryResults, categoryColumnIdx, domainColumnIdx, rangeColumnIndex, convertNullsToZero);
-        List<Category> categories = categoricalDataModel.getCategories();
-        if (categories.size() > 0) {
-          for (Category category : categories) {
-            if (category.size() > 0) {
-              chartDataModel = categoricalDataModel;
-              break;
-            }
-          }
-        }
-      }
-    } else if ((domainColumnIdx >= 0)
-        && !(chartModel.getPlot() instanceof DialPlot)) {
-      if (chartModel.getPlot() instanceof ScatterPlot) {
+      } else if (domainColumnIdx >= 0) {
         XYDataModel xyDataModel = createXYDataModel(queryResults, domainColumnIdx, rangeColumnIndex, convertNullsToZero);
         if (xyDataModel.size() > 0) {
           chartDataModel = xyDataModel;
         }
-        
+      }
+    } else {
+      if ((seriesColumnIdx >= 0) && (domainColumnIdx >= 0)) {
+        MultiSeriesDataModel multiSeriesDataModel = createMultiSeriesDataModel(queryResults, seriesColumnIdx,  domainColumnIdx, rangeColumnIndex, convertNullsToZero);
+        List<DomainData> domainData = multiSeriesDataModel.getDomainData();
+        if (domainData.size() > 0) {
+          for (DomainData domain : domainData) {
+            if (domain.size() > 0) {
+              chartDataModel = multiSeriesDataModel;
+              break;
+            }
+          }
+        }
       } else {
         NamedValuesDataModel namedValueDataModel = createNamedValueDataModel(queryResults, domainColumnIdx, rangeColumnIndex, convertNullsToZero, true);
         if (namedValueDataModel.size() > 0) {
           chartDataModel = namedValueDataModel;
         }
       }
-    } else {
-      chartDataModel = createBasicDataModel(queryResults, rangeColumnIndex, true, true);
     }
+    
     
     if (chartDataModel != null) {
       if (chartDataModel instanceof IScalableDataModel) {
@@ -164,12 +168,12 @@ public class ChartBeanFactory {
     return inputStream;
   }
 
-  private static CategoricalDataModel createCategoricalDataModel(Object[][] queryResults, int categoryColumn, int domainColumn, int rangeColumn, boolean convertNullValuesToZero) {
-    CategoricalDataModel categoricalChartDataModel = new CategoricalDataModel();
+  private static MultiSeriesDataModel createMultiSeriesDataModel(Object[][] queryResults, int seriesColumn,  int domainColumn,int rangeColumn, boolean convertNullValuesToZero) {
+    MultiSeriesDataModel multiSeriesDataModel = new MultiSeriesDataModel();
     
     for (int i = 0; i < queryResults.length; i++) {
-      String categoryName = queryResults[i][categoryColumn] != null ? queryResults[i][categoryColumn].toString() : "null";        
-      Object domainValue = queryResults[i][domainColumn] != null ? queryResults[i][domainColumn].toString() : "null";
+      String domainValue = queryResults[i][domainColumn] != null ? queryResults[i][domainColumn].toString() : "null";        
+      Object seriesValue = queryResults[i][seriesColumn] != null ? queryResults[i][seriesColumn].toString() : "null";
       Object rangeValue = queryResults[i][rangeColumn];
       if (rangeValue == null) {
         if (convertNullValuesToZero) {
@@ -179,19 +183,19 @@ public class ChartBeanFactory {
         rangeValue = null;
       }
       
-      categoricalChartDataModel.addValue(categoryName, domainValue.toString(), (Number)rangeValue);
+      multiSeriesDataModel.addValue(domainValue, seriesValue.toString(), (Number)rangeValue);
     }
     
-    return categoricalChartDataModel;
+    return multiSeriesDataModel;
   }
   
-  private static MultiSeriesXYDataModel createMultiSeriesXYDataModel(Object[][] queryResults, int categoryColumn, int domainColumn, int rangeColumn, boolean convertNullValuesToZero) {
-    MultiSeriesXYDataModel categoricalChartDataModel = new MultiSeriesXYDataModel();
+  private static MultiSeriesXYDataModel createMultiSeriesXYDataModel(Object[][] queryResults, int seriesColumn,  int domainColumn,int rangeColumn, boolean convertNullValuesToZero) {
+    MultiSeriesXYDataModel multiSeriesDataModel = new MultiSeriesXYDataModel();
     
     for (int i = 0; i < queryResults.length; i++) {
-      String categoryName = queryResults[i][categoryColumn] != null ? queryResults[i][categoryColumn].toString() : "null";  
+      Object domainValue = queryResults[i][domainColumn];      
+      String seriesName = queryResults[i][seriesColumn] != null ? queryResults[i][seriesColumn].toString() : "null"; 
       
-      Object domainValue = queryResults[i][rangeColumn];
       if (domainValue == null) {
         if (convertNullValuesToZero) {
           domainValue = new Integer(0);
@@ -209,10 +213,10 @@ public class ChartBeanFactory {
         rangeValue = null;
       }
       
-      categoricalChartDataModel.addDataPoint(categoryName, (Number)domainValue, (Number)rangeValue);
+      multiSeriesDataModel.addDataPoint(seriesName, (Number)domainValue, (Number)rangeValue);
     }
     
-    return categoricalChartDataModel;
+    return multiSeriesDataModel;
   }
   
   private static NamedValuesDataModel createNamedValueDataModel(Object[][] queryResults, int domainColumn, int rangeColumn, boolean convertNullsToZero, boolean autoSum) {
@@ -271,7 +275,7 @@ public class ChartBeanFactory {
     return oneDimensionalDataModel;
   }
   
-  private static XYDataModel createXYDataModel(Object[][] queryResults, int domainColumn, int rangeColumn, boolean convertNullsToZero) {
+  private static XYDataModel createXYDataModel(Object[][] queryResults, int seriesColumn, int rangeColumn, boolean convertNullsToZero) {
     XYDataModel basicChartDataModel = new XYDataModel();
     
     for (int i = 0; i < queryResults.length; i++) {

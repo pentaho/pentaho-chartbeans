@@ -61,7 +61,7 @@ import org.pentaho.chart.core.ChartElement;
 import org.pentaho.chart.css.keys.ChartStyleKeys;
 import org.pentaho.chart.css.styles.ChartSeriesType;
 import org.pentaho.chart.data.BasicDataModel;
-import org.pentaho.chart.data.CategoricalDataModel;
+import org.pentaho.chart.data.MultiSeriesDataModel;
 import org.pentaho.chart.data.ChartTableModel;
 import org.pentaho.chart.data.IChartDataModel;
 import org.pentaho.chart.data.MultiSeriesXYDataModel;
@@ -69,7 +69,7 @@ import org.pentaho.chart.data.NamedValue;
 import org.pentaho.chart.data.NamedValuesDataModel;
 import org.pentaho.chart.data.XYDataModel;
 import org.pentaho.chart.data.XYDataPoint;
-import org.pentaho.chart.data.CategoricalDataModel.Category;
+import org.pentaho.chart.data.MultiSeriesDataModel.DomainData;
 import org.pentaho.chart.data.MultiSeriesXYDataModel.Series;
 import org.pentaho.chart.model.AreaPlot;
 import org.pentaho.chart.model.BarPlot;
@@ -124,11 +124,11 @@ public class JFreeChartFactoryEngine implements Serializable {
   public IOutput makeChart(ChartModel chartModel, IChartDataModel chartDataModel) {
     IOutput chartOutput = null;
     if (chartModel.getPlot() instanceof BarPlot) {
-      chartOutput = new JFreeChartOutput(makeBarChart(chartModel, (CategoricalDataModel)chartDataModel));
+      chartOutput = new JFreeChartOutput(makeBarChart(chartModel, (MultiSeriesDataModel)chartDataModel));
     } else if (chartModel.getPlot() instanceof LinePlot) {
-      chartOutput = new JFreeChartOutput(makeLineChart(chartModel, (CategoricalDataModel)chartDataModel));
+      chartOutput = new JFreeChartOutput(makeLineChart(chartModel, (MultiSeriesDataModel)chartDataModel));
     } else if (chartModel.getPlot() instanceof AreaPlot) {
-      chartOutput = new JFreeChartOutput(makeAreaChart(chartModel, (CategoricalDataModel)chartDataModel));
+      chartOutput = new JFreeChartOutput(makeAreaChart(chartModel, (MultiSeriesDataModel)chartDataModel));
     } else if (chartModel.getPlot() instanceof DialPlot) {
       chartOutput = new JFreeChartOutput(makeDialChart(chartModel, (BasicDataModel)chartDataModel));
     } else if (chartModel.getPlot() instanceof org.pentaho.chart.model.PiePlot) {
@@ -378,7 +378,7 @@ public class JFreeChartFactoryEngine implements Serializable {
   /* (non-Javadoc)
    * @see org.pentaho.chart.plugin.api.engine.ChartFactoryEngine#makeLineChart(org.pentaho.chart.data.ChartTableModel, org.pentaho.chart.core.ChartDocument, org.pentaho.chart.plugin.api.IOutput)
    */
-  protected JFreeChart makeAreaChart(ChartModel chartModel, CategoricalDataModel dataModel) {
+  protected JFreeChart makeAreaChart(ChartModel chartModel, MultiSeriesDataModel dataModel) {
     DefaultCategoryDataset categoryDataset = createCategoryDataset(dataModel);
     org.pentaho.chart.model.TwoAxisPlot twoAxisPlot = (org.pentaho.chart.model.TwoAxisPlot)chartModel.getPlot();       
     
@@ -402,7 +402,7 @@ public class JFreeChartFactoryEngine implements Serializable {
   /* (non-Javadoc)
    * @see org.pentaho.chart.plugin.api.engine.ChartFactoryEngine#makeLineChart(org.pentaho.chart.data.ChartTableModel, org.pentaho.chart.core.ChartDocument, org.pentaho.chart.plugin.api.IOutput)
    */
-  protected JFreeChart makeLineChart(ChartModel chartModel, CategoricalDataModel dataModel) {
+  protected JFreeChart makeLineChart(ChartModel chartModel, MultiSeriesDataModel dataModel) {
     DefaultCategoryDataset categoryDataset = createCategoryDataset(dataModel);
     org.pentaho.chart.model.TwoAxisPlot twoAxisPlot = (org.pentaho.chart.model.TwoAxisPlot)chartModel.getPlot();       
     
@@ -496,11 +496,11 @@ public class JFreeChartFactoryEngine implements Serializable {
     return chart;
   }
   
-  protected DefaultCategoryDataset createCategoryDataset(CategoricalDataModel data) {
+  protected DefaultCategoryDataset createCategoryDataset(MultiSeriesDataModel data) {
     DefaultCategoryDataset categoryDataset = new DefaultCategoryDataset();
-    for (Category category : data.getCategories()) {
+    for (DomainData category : data.getDomainData()) {
       for (NamedValue dataPoint : category) {
-        categoryDataset.setValue(scaleNumber(dataPoint.getValue(), data.getScalingFactor()), dataPoint.getName(), category.getCategoryName());
+        categoryDataset.setValue(scaleNumber(dataPoint.getValue(), data.getScalingFactor()), dataPoint.getName(), category.getDomainName());
       }
     }
     return categoryDataset;
@@ -637,7 +637,7 @@ public class JFreeChartFactoryEngine implements Serializable {
     
     for (int i = 0; i < colors.size(); i++) {
       for (int j = 0; j < xyPlot.getDatasetCount(); j++) {
-        xyPlot.getRenderer(j).setSeriesPaint(i, new Color(0xFF0000)/*0x00FFFFFF & colors.get(i))*/);
+        xyPlot.getRenderer(j).setSeriesPaint(i, new Color(0x00FFFFFF & colors.get(i)));
       }
     }
     
@@ -700,7 +700,7 @@ public class JFreeChartFactoryEngine implements Serializable {
   /* (non-Javadoc)
    * @see org.pentaho.chart.plugin.api.engine.ChartFactoryEngine#makeBarChart(org.pentaho.chart.data.ChartTableModel, org.pentaho.chart.core.ChartDocument, org.pentaho.chart.plugin.api.IOutput)
    */
-  protected JFreeChart makeBarChart(ChartModel chartModel, CategoricalDataModel dataModel) {
+  protected JFreeChart makeBarChart(ChartModel chartModel, MultiSeriesDataModel dataModel) {
     DefaultCategoryDataset categoryDataset = createCategoryDataset(dataModel);
     org.pentaho.chart.model.TwoAxisPlot twoAxisPlot = (org.pentaho.chart.model.TwoAxisPlot)chartModel.getPlot();       
     

@@ -15,6 +15,7 @@ import org.pentaho.chart.model.DialPlot;
 import org.pentaho.chart.model.LinePlot;
 import org.pentaho.chart.model.Palette;
 import org.pentaho.chart.model.PiePlot;
+import org.pentaho.chart.model.ScatterPlot;
 import org.pentaho.chart.model.StyledText;
 import org.pentaho.chart.model.Axis.LabelOrientation;
 import org.pentaho.chart.model.BarPlot.BarPlotFlavor;
@@ -238,6 +239,103 @@ public class SerializationTest {
     assertEquals(barPlot.getVerticalAxis().getLegend().getFontStyle(), FontStyle.OBLIQUE);
     assertEquals(barPlot.getVerticalAxis().getLegend().getFontWeight(), FontWeight.BOLD);    
     assertTrue(!barPlot.getGrid().getVisible());
+  }
+  
+  @Test
+  public void testScatterPlot(){
+    
+    ChartModel chartModel = new ChartModel();
+    chartModel.setChartEngineId(JFreeChartPlugin.PLUGIN_ID);
+    chartModel.setTheme(ChartTheme.THEME4);
+    chartModel.setBackground(0x343434);
+    chartModel.setBorderColor(0x987654);
+    chartModel.setBorderVisible(true);
+    chartModel.getTitle().setText("Chart Title");
+    chartModel.getTitle().setColor(0x123456);
+    chartModel.getTitle().setFont("monospace", 20, FontStyle.OBLIQUE, FontWeight.BOLD);
+    chartModel.getLegend().setVisible(true);
+    chartModel.getLegend().setBorderColor(0x654321);
+    chartModel.getLegend().setBorderVisible(true);
+    chartModel.getLegend().setBorderWidth(2);
+    chartModel.getLegend().setFont("verdana", 18, FontStyle.ITALIC, FontWeight.BOLD);
+    
+    ScatterPlot scatterPlot = new ScatterPlot();
+    scatterPlot.setBackground(0x765890);
+    scatterPlot.setOpacity(0.75f);
+    scatterPlot.setOrientation(Orientation.HORIZONTAL);
+    scatterPlot.setPalette(new Palette(0x001111, 0x222222, 0x333333));
+    scatterPlot.getXAxis().setColor(0x987654);
+    scatterPlot.getXAxis().setLabelOrientation(LabelOrientation.DIAGONAL);
+    scatterPlot.getXAxis().getLegend().setText("xAxis");
+    scatterPlot.getXAxis().getLegend().setColor(0x192837);
+    scatterPlot.getXAxis().getLegend().setFont("san-serif", 10, FontStyle.NORMAL, FontWeight.NORMAL);
+    scatterPlot.getXAxis().setMinValue(1);
+    scatterPlot.getXAxis().setMaxValue(2);
+    scatterPlot.getYAxis().setColor(0x456789);
+    scatterPlot.getYAxis().getLegend().setText("yAxis");
+    scatterPlot.getYAxis().getLegend().setColor(0x192837);
+    scatterPlot.getYAxis().getLegend().setFont("san-serif", 12, FontStyle.OBLIQUE, FontWeight.BOLD);
+    scatterPlot.getYAxis().setMinValue(10);
+    scatterPlot.getYAxis().setMaxValue(20);
+    scatterPlot.getGrid().setVisible(false);
+    
+    chartModel.setPlot(scatterPlot);
+    
+    
+    String result = ChartSerializer.serialize(chartModel, ChartSerializationFormat.XML);
+    
+    System.out.println(result);
+    
+    ChartModel chartModel2 = ChartSerializer.deSerialize(result, ChartSerializationFormat.XML);
+    assertEquals(chartModel2.getTheme(), ChartTheme.THEME4);
+    assertEquals(chartModel2.getBackground(), new Integer(0x343434));
+    assertTrue(chartModel2.getBorderVisible());
+    assertEquals(chartModel2.getBorderColor(), new Integer(0x987654));
+    assertEquals(chartModel2.getBorderWidth(), new Integer(1));
+    assertEquals(chartModel2.getTitle().getText(), "Chart Title");
+    assertEquals(chartModel2.getTitle().getColor(), 0x123456);
+    assertEquals(chartModel2.getTitle().getFontFamily(), "monospace");
+    assertEquals(chartModel2.getTitle().getFontSize(), new Integer(20));
+    assertEquals(chartModel2.getTitle().getFontStyle(), FontStyle.OBLIQUE);
+    assertEquals(chartModel2.getTitle().getFontWeight(), FontWeight.BOLD);
+    assertTrue(chartModel2.getLegend().getVisible());
+    assertTrue(chartModel2.getLegend().getBorderVisible());
+    assertEquals(chartModel2.getLegend().getBorderWidth(), 2);
+    assertEquals(chartModel2.getLegend().getFontFamily(), "verdana");
+    assertEquals(chartModel2.getLegend().getFontSize(), new Integer(18));
+    assertEquals(chartModel2.getLegend().getFontStyle(), FontStyle.ITALIC);
+    assertEquals(chartModel2.getLegend().getFontWeight(), FontWeight.BOLD);
+    
+    assertTrue(chartModel2.getPlot() instanceof ScatterPlot);    
+    scatterPlot = (ScatterPlot)chartModel2.getPlot();
+    assertEquals(scatterPlot.getBackground(), new Integer(0x765890));
+    assertEquals(scatterPlot.getOpacity(), new Float(0.75));
+    assertEquals(scatterPlot.getOrientation(), Orientation.HORIZONTAL);
+    Palette palette = chartModel2.getPlot().getPalette();
+    assertEquals(palette.size(), 3);
+    assertEquals(palette.get(0), 0x001111);
+    assertEquals(palette.get(1), 0x222222);
+    assertEquals(palette.get(2), 0x333333);
+    assertEquals(scatterPlot.getXAxis().getLabelOrientation(), LabelOrientation.DIAGONAL);
+    assertEquals(scatterPlot.getXAxis().getColor(), 0x987654);
+    assertEquals(scatterPlot.getXAxis().getLegend().getText(), "xAxis");
+    assertEquals(scatterPlot.getXAxis().getLegend().getColor(), 0x192837);
+    assertEquals(scatterPlot.getXAxis().getLegend().getFontFamily(), "san-serif");
+    assertEquals(scatterPlot.getXAxis().getLegend().getFontSize(), 10);
+    assertEquals(scatterPlot.getXAxis().getLegend().getFontStyle(), FontStyle.NORMAL);
+    assertEquals(scatterPlot.getXAxis().getLegend().getFontWeight(), FontWeight.NORMAL);
+    assertEquals(scatterPlot.getXAxis().getMinValue(), 1);
+    assertEquals(scatterPlot.getXAxis().getMaxValue(), 2);
+    assertEquals(scatterPlot.getYAxis().getColor(), 0x456789);
+    assertEquals(scatterPlot.getYAxis().getLegend().getText(), "yAxis");
+    assertEquals(scatterPlot.getYAxis().getLegend().getColor(), 0x192837);
+    assertEquals(scatterPlot.getYAxis().getLegend().getFontFamily(), "san-serif");
+    assertEquals(scatterPlot.getYAxis().getLegend().getFontSize(), 12);
+    assertEquals(scatterPlot.getYAxis().getLegend().getFontStyle(), FontStyle.OBLIQUE);
+    assertEquals(scatterPlot.getYAxis().getLegend().getFontWeight(), FontWeight.BOLD);    
+    assertEquals(scatterPlot.getYAxis().getMinValue(), 10);
+    assertEquals(scatterPlot.getYAxis().getMaxValue(), 20);
+    assertTrue(!scatterPlot.getGrid().getVisible());
   }
   
   @Test

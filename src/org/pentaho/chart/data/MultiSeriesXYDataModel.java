@@ -74,6 +74,7 @@ public class MultiSeriesXYDataModel implements IChartDataModel {
     for (Map.Entry<String, XYDataModel> mapEntry : chartData.entrySet()) {
       Series series = new Series(mapEntry.getKey());
       series.addAll(mapEntry.getValue());      
+      seriesList.add(series);
     }
     
     return seriesList;
