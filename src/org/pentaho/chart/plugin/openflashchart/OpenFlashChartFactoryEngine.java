@@ -799,7 +799,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     for (NamedValue namedValue : dataSeries) {
       Number value = namedValue.getValue();
       if (value == null) {
-        bars.add(null);
+        bars.add(new Bar(null));
       } else {
         Bar bar = new Bar(scaleNumber(value, scalingFactor));
         bars.add(bar);
@@ -1325,7 +1325,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
           } else if (value != null) {
             minValue = Math.min(minValue.doubleValue(), value.doubleValue());
           }
-          bars.add(new Bar(value == null ? 0 : value));
+          bars.add(new Bar(value));
         }
 
         verticalBarChart.addBars(bars);
