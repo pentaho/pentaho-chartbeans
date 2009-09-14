@@ -39,8 +39,10 @@ import org.pentaho.chart.model.DialPlot;
 import org.pentaho.chart.model.PiePlot;
 import org.pentaho.chart.model.Plot;
 import org.pentaho.chart.model.ScatterPlot;
+import org.pentaho.chart.plugin.ChartDataOverflowException;
 import org.pentaho.chart.plugin.ChartProcessingException;
 import org.pentaho.chart.plugin.IChartPlugin;
+import org.pentaho.chart.plugin.NoChartDataException;
 import org.pentaho.chart.plugin.api.IOutput;
 import org.pentaho.chart.plugin.api.PersistenceException;
 import org.pentaho.chart.plugin.api.IOutput.OutputTypes;
@@ -49,6 +51,7 @@ import org.pentaho.chart.plugin.openflashchart.OpenFlashChartPlugin;
 import org.pentaho.reporting.libraries.resourceloader.ResourceKeyCreationException;
 
 public class ChartBeanFactory {
+  private static final int MAX_ALLOWED_DATA_POINTS = 100;
   private static List<IChartPlugin> chartPlugins = new ArrayList<IChartPlugin>();
 
   private ChartBeanFactory() {
@@ -80,7 +83,7 @@ public class ChartBeanFactory {
   }
   
   public static InputStream createChart(Object[][] queryResults, ChartModel chartModel, int width, int height,
-      OutputTypes outputType) throws ChartProcessingException, SQLException, ResourceKeyCreationException,
+      OutputTypes outputType) throws NoChartDataException, ChartDataOverflowException, ChartProcessingException, SQLException, ResourceKeyCreationException,
       PersistenceException {
     int rangeColumnIndex = 0;
     int seriesColumnIndex = -1;
@@ -100,33 +103,32 @@ public class ChartBeanFactory {
 
   public static InputStream createChart(Object[][] queryResults, Number scalingFactor, boolean convertNullsToZero, int rangeColumnIndex,
       int seriesColumnIdx, int domainColumnIdx, ChartModel chartModel, int width, int height, OutputTypes outputType)
-      throws ChartProcessingException, SQLException, ResourceKeyCreationException, PersistenceException {
+      throws NoChartDataException, ChartDataOverflowException, ChartProcessingException, SQLException, ResourceKeyCreationException, PersistenceException {
     ByteArrayInputStream inputStream = null;
-
+    int numberOfDataPoints = 0;
+    
     IChartDataModel chartDataModel = null;
     
     Plot plot = chartModel.getPlot();
     if ((plot instanceof PiePlot) && (seriesColumnIdx >= 0) && (rangeColumnIndex >= 0)) {
       NamedValuesDataModel namedValueDataModel = createNamedValueDataModel(queryResults, seriesColumnIdx, rangeColumnIndex, convertNullsToZero, true);
-      if (namedValueDataModel.size() > 0) {
-        chartDataModel = namedValueDataModel;
-      }
+      numberOfDataPoints = namedValueDataModel.size();
+      chartDataModel = namedValueDataModel;
     } else if ((plot instanceof DialPlot) && (rangeColumnIndex >= 0)) {
-      chartDataModel = createBasicDataModel(queryResults, rangeColumnIndex, true, true);
+      BasicDataModel basicDataModel = createBasicDataModel(queryResults, rangeColumnIndex, true, true);
+      basicDataModel.getData().size();
+      chartDataModel = basicDataModel;
     } else if (plot instanceof ScatterPlot) {
       if ((seriesColumnIdx >= 0) && (domainColumnIdx >= 0)) {
         MultiSeriesXYDataModel multiSeriesXYDataModel = createMultiSeriesXYDataModel(queryResults, seriesColumnIdx,  domainColumnIdx,rangeColumnIndex, convertNullsToZero);
         for (Series series : multiSeriesXYDataModel.getSeries()) {
-          if (series.size() > 0) {
-            chartDataModel = multiSeriesXYDataModel;
-            break;
-          }
+          numberOfDataPoints += series.size();
         }
+        chartDataModel = multiSeriesXYDataModel;
       } else if (domainColumnIdx >= 0) {
         XYDataModel xyDataModel = createXYDataModel(queryResults, domainColumnIdx, rangeColumnIndex, convertNullsToZero);
-        if (xyDataModel.size() > 0) {
-          chartDataModel = xyDataModel;
-        }
+        numberOfDataPoints = xyDataModel.size();
+        chartDataModel = xyDataModel;
       }
     } else {
       if ((seriesColumnIdx >= 0) && (domainColumnIdx >= 0)) {
@@ -134,22 +136,22 @@ public class ChartBeanFactory {
         List<DomainData> domainData = multiSeriesDataModel.getDomainData();
         if (domainData.size() > 0) {
           for (DomainData domain : domainData) {
-            if (domain.size() > 0) {
-              chartDataModel = multiSeriesDataModel;
-              break;
-            }
+            numberOfDataPoints += domain.size();
           }
         }
+        chartDataModel = multiSeriesDataModel;
       } else {
         NamedValuesDataModel namedValueDataModel = createNamedValueDataModel(queryResults, domainColumnIdx, rangeColumnIndex, convertNullsToZero, true);
-        if (namedValueDataModel.size() > 0) {
-          chartDataModel = namedValueDataModel;
-        }
+        numberOfDataPoints = namedValueDataModel.size();
+        chartDataModel = namedValueDataModel;
       }
     }
     
-    
-    if (chartDataModel != null) {
+    if (numberOfDataPoints == 0) {
+      throw new NoChartDataException();
+    } else if (numberOfDataPoints > MAX_ALLOWED_DATA_POINTS) {
+      throw new ChartDataOverflowException(numberOfDataPoints, MAX_ALLOWED_DATA_POINTS);
+    } else {
       if (chartDataModel instanceof IScalableDataModel) {
         ((IScalableDataModel)chartDataModel).setScalingFactor(scalingFactor);
       }
@@ -164,7 +166,7 @@ public class ChartBeanFactory {
         throw new ChartProcessingException("Unknown chart engine.");
       }
     }
-
+    
     return inputStream;
   }
 
