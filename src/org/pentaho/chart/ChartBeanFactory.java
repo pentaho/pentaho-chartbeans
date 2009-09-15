@@ -116,7 +116,7 @@ public class ChartBeanFactory {
       chartDataModel = namedValueDataModel;
     } else if ((plot instanceof DialPlot) && (rangeColumnIndex >= 0)) {
       BasicDataModel basicDataModel = createBasicDataModel(queryResults, rangeColumnIndex, true, true);
-      basicDataModel.getData().size();
+      numberOfDataPoints = basicDataModel.getData().size();
       chartDataModel = basicDataModel;
     } else if (plot instanceof ScatterPlot) {
       if ((seriesColumnIdx >= 0) && (domainColumnIdx >= 0)) {
