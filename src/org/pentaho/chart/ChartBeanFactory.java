@@ -51,7 +51,7 @@ import org.pentaho.chart.plugin.openflashchart.OpenFlashChartPlugin;
 import org.pentaho.reporting.libraries.resourceloader.ResourceKeyCreationException;
 
 public class ChartBeanFactory {
-  private static final int MAX_ALLOWED_DATA_POINTS = 100;
+  private static int MAX_ALLOWED_DATA_POINTS = 100;
   private static List<IChartPlugin> chartPlugins = new ArrayList<IChartPlugin>();
 
   private ChartBeanFactory() {
@@ -74,6 +74,16 @@ public class ChartBeanFactory {
     return plugin;
   }
 
+  public static int getMaxDataPointsPerChart() {
+    return MAX_ALLOWED_DATA_POINTS;
+  }
+  
+  public static void setMaxDataPointsPerChart(int max) {
+    if (max > 0) {
+      MAX_ALLOWED_DATA_POINTS = max;
+    }
+  }
+  
   /**
    *  This method is called from a platform system listener on startup,
    *  to initialize the available plugins from the chartbeans configuration file. 
