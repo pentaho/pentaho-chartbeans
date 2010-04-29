@@ -46,7 +46,7 @@ public class ChartInfo extends ProjectInformation {
     setBootClass(ChartBoot.class.getName());
     setLicenseName("LGPL");
     setInfo("http://pentaho.org/chartbundle/");
-    setCopyright("(C)opyright 2008, by Pentaho Corporation and Contributors");
+    setCopyright("(C)opyright 2008-2010, by Pentaho Corporation and Contributors");
 
     addLibrary(LibBaseInfo.getInstance());
     addLibrary(LibLoaderInfo.getInstance());
