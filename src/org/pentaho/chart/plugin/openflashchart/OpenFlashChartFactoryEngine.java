@@ -49,6 +49,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.pentaho.chart.ChartDocumentContext;
 import org.pentaho.chart.ChartUtils;
+import org.pentaho.chart.IChartLinkGenerator;
 import org.pentaho.chart.core.ChartDocument;
 import org.pentaho.chart.core.ChartElement;
 import org.pentaho.chart.css.keys.ChartStyleKeys;
@@ -117,13 +118,17 @@ public class OpenFlashChartFactoryEngine implements Serializable {
   }
 
   public IOutput makeChart(ChartModel chartModel, IChartDataModel chartTableModel) {
+    return makeChart(chartModel, chartTableModel, null);
+  }
+  
+  public IOutput makeChart(ChartModel chartModel, IChartDataModel chartTableModel, IChartLinkGenerator chartLinkGenerator) {
     IOutput chartOutput = null;
     if (chartModel.getPlot() instanceof BarPlot) {
-      chartOutput = new OpenFlashChartOutput(makeBarChart(chartModel, (MultiSeriesDataModel)chartTableModel));
+      chartOutput = new OpenFlashChartOutput(makeBarChart(chartModel, (MultiSeriesDataModel)chartTableModel, chartLinkGenerator));
     } else if (chartModel.getPlot() instanceof LinePlot) {
-      chartOutput = new OpenFlashChartOutput(makeLineChart(chartModel, (MultiSeriesDataModel)chartTableModel));
+      chartOutput = new OpenFlashChartOutput(makeLineChart(chartModel, (MultiSeriesDataModel)chartTableModel, chartLinkGenerator));
     } else if (chartModel.getPlot() instanceof AreaPlot) {
-      chartOutput = new OpenFlashChartOutput(makeAreaChart(chartModel, (MultiSeriesDataModel)chartTableModel));
+      chartOutput = new OpenFlashChartOutput(makeAreaChart(chartModel, (MultiSeriesDataModel)chartTableModel, chartLinkGenerator));
     } else if (chartModel.getPlot() instanceof ScatterPlot) {
       if (chartTableModel instanceof MultiSeriesXYDataModel) {
         chartOutput = new OpenFlashChartOutput(makeScatterChart(chartModel, (MultiSeriesXYDataModel)chartTableModel));
@@ -131,7 +136,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
         chartOutput = new OpenFlashChartOutput(makeScatterChart(chartModel, (XYDataModel)chartTableModel));
       }
     } else if (chartModel.getPlot() instanceof PiePlot) {
-      chartOutput = new OpenFlashChartOutput(makePieChart(chartModel, (NamedValuesDataModel)chartTableModel));
+      chartOutput = new OpenFlashChartOutput(makePieChart(chartModel, (NamedValuesDataModel)chartTableModel, chartLinkGenerator));
     }
     return chartOutput;
   }
@@ -288,7 +293,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     return xa;
   }
   
-  public Chart makeAreaChart(ChartModel chartModel, MultiSeriesDataModel chartTableModel) {
+  public Chart makeAreaChart(ChartModel chartModel, MultiSeriesDataModel chartTableModel, IChartLinkGenerator linkGenerator) {
     Chart chart = createBasicGraphChart(chartModel);
     AreaPlot areaPlot = (AreaPlot)chartModel.getPlot();
 
@@ -327,7 +332,14 @@ public class OpenFlashChartFactoryEngine implements Serializable {
         if (value == null) {
           dots.add(null);
         } else {
-          dots.add(new Dot(scaleNumber(value, chartTableModel.getScalingFactor())));
+          Dot dot = new Dot(scaleNumber(value, chartTableModel.getScalingFactor()));
+          if (linkGenerator != null) {
+            String dotLink = linkGenerator.generateLink(series.getSeriesName(), namedValue.getName(), namedValue.getValue());
+            if (dotLink != null) {
+              dot.setOnClick(dotLink);
+            }
+          }
+          dots.add(dot);
         }
       }
 
@@ -345,7 +357,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     return chart;
   }
   
-  public Chart makePieChart(ChartModel chartModel, NamedValuesDataModel chartTableModel) {
+  public Chart makePieChart(ChartModel chartModel, NamedValuesDataModel chartTableModel, IChartLinkGenerator chartLinkGenerator) {
     
     PieChart pieChart = new PieChart();
     PiePlot piePlot = (PiePlot)chartModel.getPlot();
@@ -373,6 +385,12 @@ public class OpenFlashChartFactoryEngine implements Serializable {
         } else {
           slice = new Slice(scaleNumber(value, chartTableModel.getScalingFactor()), "");
           slice.setTooltip(chartDataPoint.getName() + " - " + value.toString());
+        }
+        if (chartLinkGenerator != null) {
+          String sliceLink = chartLinkGenerator.generateLink(null, chartDataPoint.getName(), chartDataPoint.getValue());
+          if (sliceLink != null) {
+            slice.setOnClick(sliceLink);
+          }
         }
         slices.add(slice);
       }
@@ -587,7 +605,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     return rangeDescription;
   }
   
-  private StackedBarChart makeStackedBarChart(ChartModel chartModel, MultiSeriesDataModel chartTableModel) {    
+  private StackedBarChart makeStackedBarChart(ChartModel chartModel, MultiSeriesDataModel chartTableModel, IChartLinkGenerator chartLinkGenerator) {    
     StackedBarChart stackedBarChart = new StackedBarChart();
     
 
@@ -618,6 +636,12 @@ public class OpenFlashChartFactoryEngine implements Serializable {
         Number value = namedValue.getValue();
         if ((value != null) && !value.equals(0)) {
           StackValue stackValue = new StackValue(scaleNumber(value, chartTableModel.getScalingFactor()), color);
+          if (chartLinkGenerator != null) {
+            String barLink = chartLinkGenerator.generateLink(namedValue.getName(), category.getDomainName(), namedValue.getValue());
+            if (barLink != null) {
+              stackValue.setOnClick(barLink);
+            }
+          }
           stack.addStackValues(stackValue);
         }
         index++;
@@ -719,7 +743,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     return chart;
   }
   
-  private HorizontalBarChart makeHorizontalBarChart(ChartModel chartModel, SeriesData dataSeries, int seriesIdx, Number scalingFactor) {
+  private HorizontalBarChart makeHorizontalBarChart(ChartModel chartModel, SeriesData dataSeries, int seriesIdx, Number scalingFactor, IChartLinkGenerator chartLinkGenerator) {
     HorizontalBarChart horizontalBarChart = new HorizontalBarChart();
     
     if ((chartModel.getLegend() != null) && chartModel.getLegend().getVisible()) {
@@ -743,18 +767,26 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     ArrayList<ofc4j.model.elements.HorizontalBarChart.Bar> bars = new ArrayList<ofc4j.model.elements.HorizontalBarChart.Bar>();
     for (NamedValue namedValue : dataSeries) {
       Number value = namedValue.getValue();
+      ofc4j.model.elements.HorizontalBarChart.Bar bar = null;
       if (value == null) {
-        bars.add(null);
+        bar = null;
       } else {
-        bars.add(new ofc4j.model.elements.HorizontalBarChart.Bar(scaleNumber(value, scalingFactor)));
+        bar = new ofc4j.model.elements.HorizontalBarChart.Bar((scaleNumber(value, scalingFactor)));
+        if (chartLinkGenerator != null) {
+          String barLink = chartLinkGenerator.generateLink(dataSeries.getSeriesName(), namedValue.getName(), namedValue.getValue());
+          if (barLink != null) {
+            bar.setOnClick(barLink);
+          }
+        }
       }
+      bars.add(bar);
     }
     
     horizontalBarChart.addBars(bars);
     return horizontalBarChart;
   }
   
-  private BarChart makeVerticalBarChart(ChartModel chartModel, SeriesData dataSeries, int seriesIdx, Number scalingFactor) {
+  private BarChart makeVerticalBarChart(ChartModel chartModel, SeriesData dataSeries, int seriesIdx, Number scalingFactor, IChartLinkGenerator chartLinkGenerator) {
     BarChart verticalBarChart = null;
     BarPlot barPlot = (BarPlot) chartModel.getPlot();
     Palette palette = getPalette(barPlot);
@@ -797,20 +829,27 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     
     ArrayList<Bar> bars = new ArrayList<Bar>();
     for (NamedValue namedValue : dataSeries) {
+      Bar bar = null;
       Number value = namedValue.getValue();
       if (value == null) {
-        bars.add(new Bar(null));
+        bar = new Bar(null);
       } else {
-        Bar bar = new Bar(scaleNumber(value, scalingFactor));
-        bars.add(bar);
+        bar = new Bar(scaleNumber(value, scalingFactor));
+        if (chartLinkGenerator != null) {
+          String barLink = chartLinkGenerator.generateLink(dataSeries.getSeriesName(), namedValue.getName(), namedValue.getValue());
+          if (barLink != null) {
+            bar.setOnClick(barLink);
+          }
+        }
       }
+      bars.add(bar);
     }
     
     verticalBarChart.addBars(bars);
     return verticalBarChart;
   }
   
-  public Chart makeBarChart(ChartModel chartModel, MultiSeriesDataModel dataModel) {
+  public Chart makeBarChart(ChartModel chartModel, MultiSeriesDataModel dataModel, IChartLinkGenerator linkGenerator) {
     Chart chart = createBasicGraphChart(chartModel);
     BarPlot barPlot = (BarPlot) chartModel.getPlot();
 
@@ -821,7 +860,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       chart.setTooltip(new Tooltip());
 
       for (SeriesData series : dataModel.getSeriesData()) {
-        chart.addElements(makeHorizontalBarChart(chartModel, series, index, dataModel.getScalingFactor()));
+        chart.addElements(makeHorizontalBarChart(chartModel, series, index, dataModel.getScalingFactor(), linkGenerator));
         index++;
       }
 
@@ -836,11 +875,11 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       }
     } else {
       if (barPlot.getFlavor() == BarPlotFlavor.STACKED) {
-        chart.addElements(makeStackedBarChart(chartModel, dataModel));
+        chart.addElements(makeStackedBarChart(chartModel, dataModel, linkGenerator));
       } else {
         int index = 0;
         for (SeriesData series : dataModel.getSeriesData()) {
-          chart.addElements(makeVerticalBarChart(chartModel, series, index, dataModel.getScalingFactor()));
+          chart.addElements(makeVerticalBarChart(chartModel, series, index, dataModel.getScalingFactor(), linkGenerator));
           index++;
         }
       }
@@ -859,7 +898,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
     return chart;
   }
   
-  public Chart makeLineChart(ChartModel chartModel, MultiSeriesDataModel chartTableModel) {
+  public Chart makeLineChart(ChartModel chartModel, MultiSeriesDataModel chartTableModel, IChartLinkGenerator linkGenerator) {
 
     Chart chart = createBasicGraphChart(chartModel);
     LinePlot linePlot = (LinePlot)chartModel.getPlot();
@@ -900,7 +939,14 @@ public class OpenFlashChartFactoryEngine implements Serializable {
         if (value == null) {
           dots.add(null);
         } else {
-          dots.add(new Dot(scaleNumber(value, chartTableModel.getScalingFactor())));
+          Dot dot = new Dot(scaleNumber(value, chartTableModel.getScalingFactor()));
+          if (linkGenerator != null) {
+            String dotLink = linkGenerator.generateLink(dataSeries.getSeriesName(), namedValue.getName(), namedValue.getValue());
+            if (dotLink != null) {
+              dot.setOnClick(dotLink);
+            }
+          }
+          dots.add(dot);
         }
       }
 

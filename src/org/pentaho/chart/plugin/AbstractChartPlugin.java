@@ -16,9 +16,13 @@
  */
 package org.pentaho.chart.plugin;
 
+import org.pentaho.chart.IChartLinkGenerator;
 import org.pentaho.chart.core.ChartDocument;
 import org.pentaho.chart.core.ChartElement;
+import org.pentaho.chart.data.IChartDataModel;
+import org.pentaho.chart.model.ChartModel;
 import org.pentaho.chart.plugin.api.ChartResult;
+import org.pentaho.chart.plugin.api.IOutput;
 import org.pentaho.util.messages.Messages;
 
 /**
@@ -44,4 +48,7 @@ public abstract class AbstractChartPlugin implements IChartPlugin {
     return new ChartResult();
   }
 
+  public IOutput renderChartDocument(ChartModel chartModel, IChartDataModel data, IChartLinkGenerator linkGenerator) {
+    throw new UnsupportedOperationException();
+  }
 }

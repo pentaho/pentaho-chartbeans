@@ -22,6 +22,7 @@ import java.util.EnumSet;
 import java.util.Set;
 
 import org.pentaho.chart.ChartDocumentContext;
+import org.pentaho.chart.IChartLinkGenerator;
 import org.pentaho.chart.core.ChartDocument;
 import org.pentaho.chart.data.ChartTableModel;
 import org.pentaho.chart.data.IChartDataModel;
@@ -49,7 +50,11 @@ public class OpenFlashChartPlugin extends AbstractChartPlugin
   }
 
   public IOutput renderChartDocument(ChartModel chartModel, IChartDataModel chartTableModel) {
-    return chartFactory.makeChart(chartModel, chartTableModel);
+    return renderChartDocument(chartModel, chartTableModel, null);
+  }
+  
+  public IOutput renderChartDocument(ChartModel chartModel, IChartDataModel chartTableModel, IChartLinkGenerator chartLinkGenerator) {
+    return chartFactory.makeChart(chartModel, chartTableModel, chartLinkGenerator);
   }
   
   /* (non-Javadoc)

@@ -22,6 +22,7 @@ import java.util.EnumSet;
 import java.util.Set;
 
 import org.pentaho.chart.ChartDocumentContext;
+import org.pentaho.chart.IChartLinkGenerator;
 import org.pentaho.chart.core.ChartDocument;
 import org.pentaho.chart.data.ChartTableModel;
 import org.pentaho.chart.data.IChartDataModel;
@@ -70,7 +71,12 @@ public class JFreeChartPlugin extends AbstractChartPlugin
 
   public IOutput renderChartDocument(ChartModel chartModel, final IChartDataModel data)
   {
-    return chartFactory.makeChart(chartModel, data);
+    return renderChartDocument(chartModel, data, null);
+  }
+  
+  public IOutput renderChartDocument(ChartModel chartModel, final IChartDataModel data, IChartLinkGenerator linkGenerator)
+  {
+    return chartFactory.makeChart(chartModel, data, linkGenerator);
   }
   
   /* (non-Javadoc)
