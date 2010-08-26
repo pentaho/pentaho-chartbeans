@@ -95,6 +95,12 @@ public class ChartBeanFactory {
   public static InputStream createChart(Object[][] queryResults, ChartModel chartModel, int width, int height,
       OutputTypes outputType) throws NoChartDataException, ChartDataOverflowException, ChartProcessingException, SQLException, ResourceKeyCreationException,
       PersistenceException {
+    return createChart(queryResults, chartModel, null, width, height, outputType);
+  }
+
+  public static InputStream createChart(Object[][] queryResults, ChartModel chartModel, IChartLinkGenerator contentLinkGenerator, int width, int height,
+      OutputTypes outputType) throws NoChartDataException, ChartDataOverflowException, ChartProcessingException, SQLException, ResourceKeyCreationException,
+      PersistenceException {
     int rangeColumnIndex = 0;
     int seriesColumnIndex = -1;
     int domainColumnIndex = -1;
@@ -108,11 +114,11 @@ public class ChartBeanFactory {
     }
     
     return createChart(queryResults, 1, false, rangeColumnIndex, seriesColumnIndex, domainColumnIndex, chartModel,
-        width, height, outputType);
+        contentLinkGenerator, width, height, outputType);
   }
 
   public static InputStream createChart(Object[][] queryResults, Number scalingFactor, boolean convertNullsToZero, int rangeColumnIndex,
-      int seriesColumnIdx, int domainColumnIdx, ChartModel chartModel, int width, int height, OutputTypes outputType)
+      int seriesColumnIdx, int domainColumnIdx, ChartModel chartModel, IChartLinkGenerator contentLinkGenerator, int width, int height, OutputTypes outputType)
       throws NoChartDataException, ChartDataOverflowException, ChartProcessingException, SQLException, ResourceKeyCreationException, PersistenceException {
     ByteArrayInputStream inputStream = null;
     int numberOfDataPoints = 0;
@@ -168,7 +174,7 @@ public class ChartBeanFactory {
       IOutput output = null;
       IChartPlugin chartPlugin = getPlugin(chartModel.getChartEngineId());
       if (chartPlugin != null) {
-        output = chartPlugin.renderChartDocument(chartModel, chartDataModel);
+        output = chartPlugin.renderChartDocument(chartModel, chartDataModel, contentLinkGenerator);
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         output.persistChart(outputStream, outputType, width, height);
         inputStream = new ByteArrayInputStream(outputStream.toByteArray());
