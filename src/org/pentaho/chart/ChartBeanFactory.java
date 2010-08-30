@@ -92,38 +92,10 @@ public class ChartBeanFactory {
     chartPlugins = plugins;
   }
   
-  public static InputStream createChart(Object[][] queryResults, ChartModel chartModel, int width, int height,
-      OutputTypes outputType) throws NoChartDataException, ChartDataOverflowException, ChartProcessingException, SQLException, ResourceKeyCreationException,
-      PersistenceException {
-    return createChart(queryResults, chartModel, null, width, height, outputType);
-  }
-
-  public static InputStream createChart(Object[][] queryResults, ChartModel chartModel, IChartLinkGenerator contentLinkGenerator, int width, int height,
-      OutputTypes outputType) throws NoChartDataException, ChartDataOverflowException, ChartProcessingException, SQLException, ResourceKeyCreationException,
-      PersistenceException {
-    int rangeColumnIndex = 0;
-    int seriesColumnIndex = -1;
-    int domainColumnIndex = -1;
-
-    if ((queryResults.length > 0) && (queryResults[0].length > 1)) {
-      seriesColumnIndex = 1;
-    }
-
-    if ((queryResults.length > 0) && (queryResults[0].length > 2)) {
-      domainColumnIndex = 2;
-    }
-    
-    return createChart(queryResults, 1, false, rangeColumnIndex, seriesColumnIndex, domainColumnIndex, chartModel,
-        contentLinkGenerator, width, height, outputType);
-  }
-
-  public static InputStream createChart(Object[][] queryResults, Number scalingFactor, boolean convertNullsToZero, int rangeColumnIndex,
-      int seriesColumnIdx, int domainColumnIdx, ChartModel chartModel, IChartLinkGenerator contentLinkGenerator, int width, int height, OutputTypes outputType)
-      throws NoChartDataException, ChartDataOverflowException, ChartProcessingException, SQLException, ResourceKeyCreationException, PersistenceException {
-    ByteArrayInputStream inputStream = null;
-    int numberOfDataPoints = 0;
-    
+  public static IChartDataModel createChartDataModel(Object[][] queryResults, Number scalingFactor, boolean convertNullsToZero, int rangeColumnIndex,
+      int seriesColumnIdx, int domainColumnIdx, ChartModel chartModel) throws ChartDataOverflowException, NoChartDataException{ 
     IChartDataModel chartDataModel = null;
+    int numberOfDataPoints = 0;
     
     Plot plot = chartModel.getPlot();
     if ((plot instanceof PiePlot) && (seriesColumnIdx >= 0) && (rangeColumnIndex >= 0)) {
@@ -162,7 +134,6 @@ public class ChartBeanFactory {
         chartDataModel = namedValueDataModel;
       }
     }
-    
     if (numberOfDataPoints == 0) {
       throw new NoChartDataException();
     } else if (numberOfDataPoints > MAX_ALLOWED_DATA_POINTS) {
@@ -171,17 +142,31 @@ public class ChartBeanFactory {
       if (chartDataModel instanceof IScalableDataModel) {
         ((IScalableDataModel)chartDataModel).setScalingFactor(scalingFactor);
       }
-      IOutput output = null;
-      IChartPlugin chartPlugin = getPlugin(chartModel.getChartEngineId());
-      if (chartPlugin != null) {
-        output = chartPlugin.renderChartDocument(chartModel, chartDataModel, contentLinkGenerator);
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        output.persistChart(outputStream, outputType, width, height);
-        inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-      } else {
-        throw new ChartProcessingException("Unknown chart engine.");
-      }
     }
+    return chartDataModel;
+  }
+  
+  public static IOutput createChart(ChartModel chartModel, IChartDataModel chartDataModel, IChartLinkGenerator contentLinkGenerator) throws ChartProcessingException {
+    IChartPlugin chartPlugin = getPlugin(chartModel.getChartEngineId());
+    IOutput output = null;
+    if (chartPlugin != null) {
+      output = chartPlugin.renderChartDocument(chartModel, chartDataModel, contentLinkGenerator);
+    } else {
+      throw new ChartProcessingException("Unknown chart engine.");
+    }
+    return output;
+  }
+  
+  public static InputStream createChart(Object[][] queryResults, Number scalingFactor, boolean convertNullsToZero, int rangeColumnIndex,
+      int seriesColumnIdx, int domainColumnIdx, ChartModel chartModel, IChartLinkGenerator contentLinkGenerator, int width, int height, OutputTypes outputType)
+      throws NoChartDataException, ChartDataOverflowException, ChartProcessingException, PersistenceException {
+
+    IChartDataModel chartDataModel = createChartDataModel(queryResults, scalingFactor, convertNullsToZero, rangeColumnIndex, seriesColumnIdx, domainColumnIdx, chartModel);
+    IOutput output = createChart(chartModel, chartDataModel, contentLinkGenerator);
+       
+    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    output.persistChart(outputStream, outputType, width, height);
+    ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
     
     return inputStream;
   }

@@ -29,7 +29,8 @@ public interface IOutput
   {
     FILE_TYPE_JPEG,
     FILE_TYPE_PNG,
-    DATA_TYPE_STREAM
+    DATA_TYPE_STREAM,
+    FILE_TYPE_HTML
   }
   //  public static final int FILE_TYPE_JPEG = 1;
   //  public static final int FILE_TYPE_PNG = 2;

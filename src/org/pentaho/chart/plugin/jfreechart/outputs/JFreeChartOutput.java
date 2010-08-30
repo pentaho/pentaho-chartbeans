@@ -125,7 +125,7 @@ public class JFreeChartOutput implements IOutput {
   /* (non-Javadoc)
    * @see org.pentaho.chart.plugin.api.IOutput#getMap(java.lang.String)
    */
-  private String getMap(String mapName) {
+  public String getMap(String mapName) {
     return ImageMapUtilities.getImageMap(mapName, info);
   }
 //
