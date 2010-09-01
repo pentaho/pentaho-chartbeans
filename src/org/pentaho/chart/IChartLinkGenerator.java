@@ -24,8 +24,11 @@ public interface IChartLinkGenerator {
    * @param rangeValue the data point range value. When drawing a chart with an X & Y axis the
    * range value appears along y-axis. Unless the chart has a horizontal orientation, which will 
    * cause the range value to appear along the x-axis (ex. horizontal bar charts).
-   * @return the URL or javascript to be executed when the data point is clicked. May be null.
-   * Note: javascript is only supported by charts rendered using flash charts
+   * @return the URL or a javascript function call to be executed when the data point is clicked. 
+   * May be null. If returning a javascript function call and a JFree chart is being generated then
+   * the returned string must start with "javascript:" (Ex. javascript:alert('hello world')). The javascript:
+   * prefix should be loft off for open flash charts.
+   * 
    */
   public String generateLink(String seriesName, String domainName, Number rangeValue);
   
@@ -44,7 +47,9 @@ public interface IChartLinkGenerator {
    * range value appears along y-axis. Unless the chart has a horizontal orientation, which will 
    * cause the range value to appear along the x-axis (ex. horizontal bar charts).
    * @return the URL or javascript to be executed when the data point is clicked. May be null.
-   * Note: javascript is only supported by charts rendered using flash charts
+   * If returning a javascript function call and a JFree chart is being generated then
+   * the returned string must start with "javascript:" (Ex. javascript:alert('hello world')). The 
+   * javascript: prefix should be loft off for open flash charts.
    */
   public String generateLink(String seriesName, Number domainValue, Number rangeValue);
 }
