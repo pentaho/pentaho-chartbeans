@@ -336,7 +336,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
           if (linkGenerator != null) {
             String dotLink = linkGenerator.generateLink(series.getSeriesName(), namedValue.getName(), namedValue.getValue());
             if (dotLink != null) {
-              dot.setOnClick(dotLink);
+              dot.setOnClick(dotLink.replaceAll("javascript:", "")); //$NON-NLS-1$ //$NON-NLS-2$
             }
           }
           dots.add(dot);
@@ -389,7 +389,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
         if (chartLinkGenerator != null) {
           String sliceLink = chartLinkGenerator.generateLink(null, chartDataPoint.getName(), chartDataPoint.getValue());
           if (sliceLink != null) {
-            slice.setOnClick(sliceLink);
+            slice.setOnClick(sliceLink.replaceAll("javascript:", "")); //$NON-NLS-1$ //$NON-NLS-2$
           }
         }
         slices.add(slice);
@@ -639,7 +639,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
           if (chartLinkGenerator != null) {
             String barLink = chartLinkGenerator.generateLink(namedValue.getName(), category.getDomainName(), namedValue.getValue());
             if (barLink != null) {
-              stackValue.setOnClick(barLink);
+              stackValue.setOnClick(barLink.replaceAll("javascript:", "")); //$NON-NLS-1$ //$NON-NLS-2$
             }
           }
           stack.addStackValues(stackValue);
@@ -775,7 +775,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
         if (chartLinkGenerator != null) {
           String barLink = chartLinkGenerator.generateLink(dataSeries.getSeriesName(), namedValue.getName(), namedValue.getValue());
           if (barLink != null) {
-            bar.setOnClick(barLink);
+            bar.setOnClick(barLink.replaceAll("javascript:", "")); //$NON-NLS-1$ //$NON-NLS-2$
           }
         }
       }
@@ -838,7 +838,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
         if (chartLinkGenerator != null) {
           String barLink = chartLinkGenerator.generateLink(dataSeries.getSeriesName(), namedValue.getName(), namedValue.getValue());
           if (barLink != null) {
-            bar.setOnClick(barLink);
+            bar.setOnClick(barLink.replaceAll("javascript:", ""));//$NON-NLS-1$ //$NON-NLS-2$
           }
         }
       }
@@ -943,7 +943,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
           if (linkGenerator != null) {
             String dotLink = linkGenerator.generateLink(dataSeries.getSeriesName(), namedValue.getName(), namedValue.getValue());
             if (dotLink != null) {
-              dot.setOnClick(dotLink);
+              dot.setOnClick(dotLink.replaceAll("javascript:", "")); //$NON-NLS-1$ //$NON-NLS-2$
             }
           }
           dots.add(dot);
