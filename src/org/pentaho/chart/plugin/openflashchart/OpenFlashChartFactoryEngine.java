@@ -387,7 +387,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
           slice.setTooltip(chartDataPoint.getName() + " - " + value.toString());
         }
         if (chartLinkGenerator != null) {
-          String sliceLink = chartLinkGenerator.generateLink(null, chartDataPoint.getName(), chartDataPoint.getValue());
+          String sliceLink = chartLinkGenerator.generateLink(chartDataPoint.getName(), chartDataPoint.getName(), chartDataPoint.getValue());
           if (sliceLink != null) {
             slice.setOnClick(sliceLink.replaceAll("javascript:", "")); //$NON-NLS-1$ //$NON-NLS-2$
           }

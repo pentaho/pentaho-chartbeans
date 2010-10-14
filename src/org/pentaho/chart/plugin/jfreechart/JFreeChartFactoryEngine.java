@@ -178,7 +178,7 @@ public class JFreeChartFactoryEngine implements Serializable {
       jFreePiePlot.setURLGenerator(new PieURLGenerator() {
         
         public String generateURL(PieDataset arg0, Comparable arg1, int arg2) {
-          return linkGenerator.generateLink(null, arg1.toString(), arg0.getValue(arg1));
+          return linkGenerator.generateLink(arg1.toString(), arg1.toString(), arg0.getValue(arg1));
         }
       });
     }
