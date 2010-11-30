@@ -28,7 +28,7 @@ public class ChartDataDefinition implements Serializable {
    * A map where the keys are the names of parameters (i.e. placeholders) that appear in the <code>query</code> string. 
    * The values are the default values: the values to use if a "real" value isn't supplied at runtime.
    */
-  private  Map<String, String> defaultParameterMap = new HashMap<String, String>();
+  private  Map<String, Object> defaultParameterMap = new HashMap<String, Object>();
   
   private String rangeColumn;
 
@@ -121,12 +121,12 @@ public class ChartDataDefinition implements Serializable {
       return false;
     }
     
-    for (Map.Entry<String, String> mapEntry : defaultParameterMap.entrySet()) {
+    for (Map.Entry<String, Object> mapEntry : defaultParameterMap.entrySet()) {
       if (!defaultParameterMap.containsKey(mapEntry.getKey())) {
         return false;
       }
-      String thisValue = mapEntry.getValue();
-      String thatValue = defaultParameterMap.get(mapEntry.getKey());
+      Object thisValue = mapEntry.getValue();
+      Object thatValue = defaultParameterMap.get(mapEntry.getKey());
       if(thisValue == null){
         if(thatValue != null){
           return false;
@@ -167,13 +167,13 @@ public class ChartDataDefinition implements Serializable {
   /**
    * @return defaultParameterMap (never <code>null</code>)
    */
-  public Map<String, String> getDefaultParameterMap() {
+  public Map<String, Object> getDefaultParameterMap() {
     return defaultParameterMap;
   }
 
-  public void setDefaultParameterMap(Map<String, String> defaultParameterMap) {
+  public void setDefaultParameterMap(Map<String, Object> defaultParameterMap) {
     if (defaultParameterMap == null) {
-      this.defaultParameterMap = new HashMap<String, String>();
+      this.defaultParameterMap = new HashMap<String, Object>();
     } else {
       this.defaultParameterMap = defaultParameterMap;
     }
