@@ -119,7 +119,7 @@ public class ChartBeanFactory {
         chartDataModel = xyDataModel;
       }
     } else {
-      if ((seriesColumnIdx >= 0) && (domainColumnIdx >= 0)) {
+      if ((seriesColumnIdx >= 0) ){
         MultiSeriesDataModel multiSeriesDataModel = createMultiSeriesDataModel(queryResults, seriesColumnIdx,  domainColumnIdx, rangeColumnIndex, convertNullsToZero);
         List<DomainData> domainData = multiSeriesDataModel.getDomainData();
         if (domainData.size() > 0) {
@@ -175,7 +175,7 @@ public class ChartBeanFactory {
     MultiSeriesDataModel multiSeriesDataModel = new MultiSeriesDataModel();
     
     for (int i = 0; i < queryResults.length; i++) {
-      String domainValue = queryResults[i][domainColumn] != null ? queryResults[i][domainColumn].toString() : "null";        
+      String domainValue = domainColumn >= 0 && queryResults[i][domainColumn] != null ? queryResults[i][domainColumn].toString() : "";
       Object seriesValue = queryResults[i][seriesColumn] != null ? queryResults[i][seriesColumn].toString() : "null";
       Object rangeValue = queryResults[i][rangeColumn];
       if (rangeValue == null) {
@@ -226,7 +226,10 @@ public class ChartBeanFactory {
     NamedValuesDataModel basicChartDataModel = new NamedValuesDataModel();
     
     for (int i = 0; i < queryResults.length; i++) {
-      Object domainValue = queryResults[i][domainColumn];     
+      Object domainValue = null;
+      if(domainColumn > -1){
+        domainValue = queryResults[i][domainColumn];
+      }
       if (domainValue == null) {
         domainValue = "null";
       }

@@ -721,23 +721,23 @@ public class JFreeChartFactoryEngine implements Serializable {
     
     
   }
-   
+
   /* (non-Javadoc)
    * @see org.pentaho.chart.plugin.api.engine.ChartFactoryEngine#makeBarChart(org.pentaho.chart.data.ChartTableModel, org.pentaho.chart.core.ChartDocument, org.pentaho.chart.plugin.api.IOutput)
    */
   public JFreeChart makeBarChart(ChartModel chartModel, MultiSeriesDataModel dataModel, IChartLinkGenerator linkGenerator) {
     DefaultCategoryDataset categoryDataset = createCategoryDataset(dataModel);
-    org.pentaho.chart.model.TwoAxisPlot twoAxisPlot = (org.pentaho.chart.model.TwoAxisPlot)chartModel.getPlot();       
-    
+    org.pentaho.chart.model.TwoAxisPlot twoAxisPlot = (org.pentaho.chart.model.TwoAxisPlot)chartModel.getPlot();
+
     String title = "";
     if ((chartModel.getTitle() != null) && (chartModel.getTitle().getText() != null) && (chartModel.getTitle().getText().trim().length() > 0)) {
       title = chartModel.getTitle().getText();
-    }    
-    AxesLabels axesLabels = getAxesLabels(chartModel);    
+    }
+    AxesLabels axesLabels = getAxesLabels(chartModel);
     PlotOrientation plotOrientation = (twoAxisPlot.getOrientation() == Orientation.HORIZONTAL) ? PlotOrientation.HORIZONTAL : PlotOrientation.VERTICAL;
     boolean showLegend = (chartModel.getLegend() != null) && (chartModel.getLegend().getVisible());
     JFreeChart chart = null;
-    
+
     if (BarPlotFlavor.THREED == ((BarPlot)twoAxisPlot).getFlavor()) {
       chart = ChartFactory.createBarChart3D(title, axesLabels.domainAxisLabel, axesLabels.rangeAxisLabel, categoryDataset, plotOrientation, showLegend, true, false);
     } else if (BarPlotFlavor.STACKED == ((BarPlot)twoAxisPlot).getFlavor()) {
@@ -746,9 +746,9 @@ public class JFreeChartFactoryEngine implements Serializable {
       chart = ChartFactory.createBarChart(title, axesLabels.domainAxisLabel, axesLabels.rangeAxisLabel, categoryDataset, plotOrientation, showLegend, true, false);
     }
 
-    initCategoryPlot(chart, chartModel, linkGenerator);    
+    initCategoryPlot(chart, chartModel, linkGenerator);
     initChart(chart, chartModel);
-    
+
     return chart;
   }
 

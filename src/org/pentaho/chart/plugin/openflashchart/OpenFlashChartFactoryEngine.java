@@ -1256,7 +1256,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       for (int i = 0; i < chartTableModel.getColumnCount(); i++) {
         categories.add(chartTableModel.getColumnName(i));
       }
-      if (categories.size() > 0) {
+      if (categories.size() > 0 && (categories.size() > 1 || !categories.get(0).equals(""))) {
         YAxis ya = new YAxis();
         ya.setLabels(categories.toArray(new String[0]));
         ya.setMax(categories.size());
@@ -1318,7 +1318,7 @@ public class OpenFlashChartFactoryEngine implements Serializable {
       for (int i = 0; i < chartTableModel.getColumnCount(); i++) {
         categories.add(chartTableModel.getColumnName(i));
       }
-      if (categories.size() > 0) {
+      if (categories.size() > 0 && (categories.size() > 1 || !categories.get(0).equals(""))) {
         XAxis xa = new XAxis();
         xa.setLabels(categories);
         xa.setMax(categories.size());
