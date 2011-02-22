@@ -21,9 +21,12 @@ package org.pentaho.chart.plugin.openflashchart.outputs;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
+import ofc4j.OFCException;
  import ofc4j.model.Chart;
 
 import org.jfree.chart.ChartRenderingInfo;
@@ -55,9 +58,17 @@ public class OpenFlashChartOutput implements IOutput {
     } catch (IOException e1) {
       throw new PersistenceException(e1);
     }
-    PrintStream printStream = new PrintStream(outputStream, true);
-    printStream.print(chart.toString());
-//    printStream.print(OPEN_FLASHCHART_JSON);
+    try {
+      OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, "utf-8"); //$NON-NLS-1$
+      outputStreamWriter.write(chart.toString());
+      outputStreamWriter.flush();
+    } catch (UnsupportedEncodingException e) {
+      throw new PersistenceException(e); 
+    } catch (OFCException e) {
+      throw new PersistenceException(e);
+    } catch (IOException e) {
+      throw new PersistenceException(e);        
+    }
     return outputStream;
   }
 
