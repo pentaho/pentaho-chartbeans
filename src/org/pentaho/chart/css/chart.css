@@ -24,10 +24,6 @@ plot {
   -x-pentaho-chart-drill-url-template: none;	
   -x-pentaho-chart-scale: 1;	
   -x-pentaho-chart-pie-labels-inside-chart: hidden;
-  -x-pentaho-chart-first-bar-color: auto;
-  -x-pentaho-chart-last-bar-color: auto;
-  -x-pentaho-chart-negative-bar-color: auto; 
-  -x-pentaho-chart-positive-bar-color: auto;
 }
 
 axis {
