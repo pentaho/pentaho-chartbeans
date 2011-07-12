@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Theme implements Serializable {
-  public enum ChartTheme{THEME1, THEME2, THEME3, THEME4, THEME5, THEME6, THEME7, THEME8, THEME9, THEME10};
+  public enum ChartTheme{THEME1, THEME2, THEME3, THEME4, THEME5, THEME6, THEME7, THEME8, THEME9, THEME10, THEME11, THEME12};
   
   String id;
   List<Integer> colors = new ArrayList<Integer>();
