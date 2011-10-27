@@ -43,7 +43,7 @@ public class ChartDefinitionImplTest extends TestCase {
     // Create the chart definition from the chart document
     final ChartDefinition def1 = ChartDefinitionFactory.createChartDefinition(testDoc);
     assertNotNull(def1);
-    assertNull(def1.getChartResourceKey());
+    assertNotNull(def1.getChartResourceKey());
     assertNotNull(def1.getChartResourceManager());
     assertNull(def1.getData());
     assertEquals(testDoc, def1.getChartDocument());
@@ -51,7 +51,7 @@ public class ChartDefinitionImplTest extends TestCase {
     // Create the chart definition from the chart document and the test data
     final ChartDefinition def2 = ChartDefinitionFactory.createChartDefinition(chartData, testDoc);
     assertNotNull(def2);
-    assertNull(def2.getChartResourceKey());
+    assertNotNull(def2.getChartResourceKey());
     assertNotNull(def2.getChartResourceManager());
     assertEquals(chartData, def2.getData());
     assertEquals(testDoc, def1.getChartDocument());
