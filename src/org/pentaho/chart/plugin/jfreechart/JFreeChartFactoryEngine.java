@@ -30,7 +30,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.StandardChartTheme;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.NumberAxis;
@@ -124,10 +123,6 @@ public class JFreeChartFactoryEngine implements Serializable {
   
   private static final long serialVersionUID = -1079376910255750394L;
 
-  static {
-	  ChartFactory.setChartTheme(StandardChartTheme.createLegacyTheme());
-  }
-  
   public JFreeChartFactoryEngine(){
   }
 
