@@ -24,9 +24,9 @@
     <dependency org="jfree" name="jfreechart" rev="${dependency.jfreechart.revision}" />
     <dependency org="commons-collections" name="commons-collections" rev="3.1" />
     <dependency org="commons-logging" name="commons-logging" rev="1.1" transitive="false" />
-    <dependency org="com.thoughtworks.xstream" name="xstream" rev="1.4.2" />
+    <dependency org="com.thoughtworks.xstream" name="xstream" rev="${dependency.xstream.revision}" />
     <dependency org="ofc4j" name="pentaho-ofc4j" rev="${dependency.pentaho-ofc4j.revision}"/>
-    <dependency org="org.codehaus.jettison" name="jettison" rev="1.2" />
+    <dependency org="org.codehaus.jettison" name="jettison" rev="${dependency.jettison.revision}" />
 
     <!--  Testing dependencies -->
     <dependency org="junit" name="junit" rev="4.3.1" transitive="false" conf="test->default" />
