@@ -16,9 +16,9 @@
   <dependencies defaultconf="default->default">
 
     <!--  internal dependencies -->
-    <dependency org="pentaho-library" name="libbase" rev="${dependency.libbase.revision}" transitive="true" changing="true" />
-    <dependency org="pentaho-library" name="libxml" rev="${dependency.libxml.revision}" transitive="true" changing="true" />
-    <dependency org="pentaho-library" name="libcss" rev="${dependency.libcss.revision}" transitive="true" changing="true" />
+    <dependency org="pentaho-library" name="libbase" rev="${dependency.reporting-library.revision}" transitive="true" changing="true" />
+    <dependency org="pentaho-library" name="libxml" rev="${dependency.reporting-library.revision}" transitive="true" changing="true" />
+    <dependency org="pentaho-library" name="libcss" rev="${dependency.reporting-library.revision}" transitive="true" changing="true" />
 
     <!--  external dependencies -->
     <dependency org="jfree" name="jfreechart" rev="${dependency.jfreechart.revision}" />
