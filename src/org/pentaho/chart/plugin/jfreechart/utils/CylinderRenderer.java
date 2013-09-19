@@ -1,9 +1,9 @@
 /* ---------------------
- * CylinderRenderer.java
- * ---------------------
- * (C) Copyright 2005-2007, by Object Refinery Limited.
- *
- */
+* CylinderRenderer.java
+* ---------------------
+* (C) Copyright 2005-2007, by Object Refinery Limited.
+*
+*/
 
 package org.pentaho.chart.plugin.jfreechart.utils;
 
