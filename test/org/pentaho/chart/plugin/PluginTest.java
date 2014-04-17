@@ -100,7 +100,7 @@ public class PluginTest extends TestCase {
     // Now we can manipulate it to meet our needs so that we get the correct
     // output location and type.
 
-    String chartFileName = TEST_FILE_PATH + fileName.substring(0, fileName.indexOf('.')) + PNG_SUFFIX;
+    String chartFileName = TEST_FILE_PATH + File.separator + fileName.substring(0, fileName.indexOf('.')) + PNG_SUFFIX;
 
     // Load / parse the chart document
     final URL chartURL = this.getClass().getResource(fileName);
@@ -115,12 +115,13 @@ public class PluginTest extends TestCase {
     final File chartFile = new File(chartFileName);
     assertTrue(chartFile.exists());
     assertTrue(chartFile.length() > 5000);
+    final File mapFile = new File(chartFileName + MAP_EXTENSION);
     if (JFreeChartUtils.getShowUrls(cdc.getChartDocument())) {
       OutputUtils.persistMap(output, chartFileName + MAP_EXTENSION);
-      final File mapFile = new File(chartFileName + MAP_EXTENSION);
       assertTrue(mapFile.exists());
       assertTrue(mapFile.length() > 100);
     }
+    chartFile.delete();
   }
 
   private void testRenderAsJpeg(final String fileName,
@@ -131,8 +132,8 @@ public class PluginTest extends TestCase {
     // output location and type.
 
     // Now lets create some data
-    String chartFileName = TEST_FILE_PATH + fileName.substring(0, fileName.indexOf('.')) + JPG_SUFFIX;
-
+    String chartFileName = TEST_FILE_PATH + File.separator + fileName.substring(0, fileName.indexOf('.')) + JPG_SUFFIX;
+    
     // Load / parse the chart document
     final URL chartURL = this.getClass().getResource(fileName);
     final ChartDocumentContext cdc = ChartFactory.generateChart(chartURL, data);
@@ -142,16 +143,19 @@ public class PluginTest extends TestCase {
 
     // Render and save the plot
     IOutput output = plugin.renderChartDocument(cdc, data);
-    OutputUtils.persistChart(output, chartFileName, IOutput.OutputTypes.FILE_TYPE_JPEG, 400, 400);
     final File chartFile = new File(chartFileName);
+    OutputUtils.persistChart(output, chartFileName, IOutput.OutputTypes.FILE_TYPE_JPEG, 400, 400);
+    
     assertTrue(chartFile.exists());
     assertTrue(chartFile.length() > 5000);
+    final File mapFile = new File(chartFileName + MAP_EXTENSION);
     if (JFreeChartUtils.getShowUrls(cdc.getChartDocument())) {
       OutputUtils.persistMap(output, chartFileName + MAP_EXTENSION);
-      final File mapFile = new File(chartFileName + MAP_EXTENSION);
       assertTrue(mapFile.exists());
       assertTrue(mapFile.length() > 100);
     }
+    mapFile.delete();
+    chartFile.delete();
   }
 
   private void testRenderAsPngStream(final String fileName,
@@ -342,6 +346,12 @@ public class PluginTest extends TestCase {
   }
   
   private void runTests(final String[] fileNames, final ChartTableModel data) {
+    
+    File testFilePath = new File(TEST_FILE_PATH);
+    if(!testFilePath.exists()) {
+      testFilePath.mkdirs();
+    }
+    
     for (int i = 0; i < fileNames.length; i++) {
       // mlowery temporarily disabled testRenderAsXml as it is failing
 //      try {
@@ -375,6 +385,7 @@ public class PluginTest extends TestCase {
         fail("Failed parsing "+fileNames[i]+ " file in method testRenderAsPngStream"); //$NON-NLS-1$ //$NON-NLS-2$
       }
     }
+    testFilePath.delete();
   }
 
 
