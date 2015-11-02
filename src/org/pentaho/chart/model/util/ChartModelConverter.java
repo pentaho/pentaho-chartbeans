@@ -360,8 +360,8 @@ public class ChartModelConverter implements Converter {
         while (reader.hasMoreChildren()) {
           CssStyle rangeStyle = new CssStyle();
           Integer color = null;
-          Integer rangeMin = null;
-          Integer rangeMax = null;
+          Double rangeMin = null;
+          Double rangeMax = null;
           reader.moveDown();
           if (reader.getNodeName().equals("range")) {
             cssStyle = reader.getAttribute("style");
@@ -371,11 +371,11 @@ public class ChartModelConverter implements Converter {
             }
             String str = reader.getAttribute("min");
             if (str != null) {
-              rangeMin = new Integer(str);
+              rangeMin = new Double(str);
             }
             str = reader.getAttribute("max");
             if (str != null) {
-              rangeMax = new Integer(str);
+              rangeMax = new Double(str);
             }
             ((DialPlot)plot).getScale().addRange(new DialRange(rangeMin, rangeMax, color));
           }
