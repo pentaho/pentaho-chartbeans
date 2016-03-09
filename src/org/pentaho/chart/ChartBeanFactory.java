@@ -48,8 +48,16 @@ import org.pentaho.chart.plugin.api.PersistenceException;
 import org.pentaho.chart.plugin.api.IOutput.OutputTypes;
 import org.pentaho.chart.plugin.jfreechart.JFreeChartPlugin;
 import org.pentaho.chart.plugin.openflashchart.OpenFlashChartPlugin;
+import org.pentaho.commons.connection.IPentahoMetaData;
+import org.pentaho.metadata.model.concept.types.DataType;
+import org.pentaho.metadata.model.concept.util.DataFormatter;
 
 public class ChartBeanFactory {
+
+  private static String META_DATA_MASK_ATTRIBUTE = "mask";
+  private static String META_DATA_DATATYPE_ATTRIBUTE = "datatype";
+  private static int META_DATA_ROW_WITH_ATTRIBUTE = 0;
+
   private static int MAX_ALLOWED_DATA_POINTS = 100;
   private static List<IChartPlugin> chartPlugins = new ArrayList<IChartPlugin>();
 
@@ -91,9 +99,23 @@ public class ChartBeanFactory {
     chartPlugins = plugins;
   }
 
+  /**
+   * we should use
+   * {@link #createChartDataModel(Object[][], Number, boolean, int, int, int, ChartModel, IPentahoMetaData)} instead of
+   * it.
+   * 
+   */
+  @Deprecated
   public static IChartDataModel createChartDataModel( Object[][] queryResults, Number scalingFactor,
       boolean convertNullsToZero, int rangeColumnIndex, int seriesColumnIdx, int domainColumnIdx,
       ChartModel chartModel ) throws ChartDataOverflowException, NoChartDataException {
+    return createChartDataModel( queryResults, scalingFactor, convertNullsToZero, rangeColumnIndex, seriesColumnIdx,
+        domainColumnIdx, chartModel, null );
+  }
+
+  public static IChartDataModel createChartDataModel( Object[][] queryResults, Number scalingFactor,
+      boolean convertNullsToZero, int rangeColumnIndex, int seriesColumnIdx, int domainColumnIdx, ChartModel chartModel,
+      IPentahoMetaData metadata ) throws ChartDataOverflowException, NoChartDataException {
     IChartDataModel chartDataModel = null;
     int numberOfDataPoints = 0;
 
@@ -111,7 +133,7 @@ public class ChartBeanFactory {
       if ( ( seriesColumnIdx >= 0 ) && ( domainColumnIdx >= 0 ) ) {
         MultiSeriesXYDataModel multiSeriesXYDataModel =
             createMultiSeriesXYDataModel( queryResults, seriesColumnIdx, domainColumnIdx, rangeColumnIndex,
-                convertNullsToZero );
+                convertNullsToZero, metadata );
         for ( Series series : multiSeriesXYDataModel.getSeries() ) {
           numberOfDataPoints += series.size();
         }
@@ -126,7 +148,7 @@ public class ChartBeanFactory {
       if ( ( seriesColumnIdx >= 0 ) ) {
         MultiSeriesDataModel multiSeriesDataModel =
             createMultiSeriesDataModel( queryResults, seriesColumnIdx, domainColumnIdx, rangeColumnIndex,
-                convertNullsToZero );
+                convertNullsToZero, metadata );
         List<DomainData> domainData = multiSeriesDataModel.getDomainData();
         if ( domainData.size() > 0 ) {
           for ( DomainData domain : domainData ) {
@@ -183,13 +205,16 @@ public class ChartBeanFactory {
   }
 
   private static MultiSeriesDataModel createMultiSeriesDataModel( Object[][] queryResults, int seriesColumn,
-      int domainColumn, int rangeColumn, boolean convertNullValuesToZero ) {
+      int domainColumn, int rangeColumn, boolean convertNullValuesToZero, IPentahoMetaData metaData ) {
     MultiSeriesDataModel multiSeriesDataModel = new MultiSeriesDataModel();
 
     for ( int i = 0; i < queryResults.length; i++ ) {
       String domainValue =
-          domainColumn >= 0 && queryResults[i][domainColumn] != null ? queryResults[i][domainColumn].toString() : "";
-      Object seriesValue = queryResults[i][seriesColumn] != null ? queryResults[i][seriesColumn].toString() : "null";
+          domainColumn >= 0 && queryResults[i][domainColumn] != null ? formatSeriesString(
+              queryResults[i][domainColumn], metaData, i, domainColumn ) : "";
+      Object seriesValue =
+          queryResults[i][seriesColumn] != null ? formatSeriesString( queryResults[i][seriesColumn], metaData, i,
+              seriesColumn ) : "null";
       Object rangeValue = queryResults[i][rangeColumn];
       if ( rangeValue == null ) {
         if ( convertNullValuesToZero ) {
@@ -205,13 +230,25 @@ public class ChartBeanFactory {
     return multiSeriesDataModel;
   }
 
+  private static String formatSeriesString( Object data, IPentahoMetaData metaData, int rowNo, int columnNo ) {
+    if ( metaData != null ) {
+      String mask = (String) metaData.getAttribute( META_DATA_ROW_WITH_ATTRIBUTE, columnNo, META_DATA_MASK_ATTRIBUTE );
+      DataType datatype =
+          (DataType) metaData.getAttribute( META_DATA_ROW_WITH_ATTRIBUTE, columnNo, META_DATA_DATATYPE_ATTRIBUTE );
+      return DataFormatter.getFormatedString( datatype, mask, data );
+    }
+    return data.toString();
+  }
+
   private static MultiSeriesXYDataModel createMultiSeriesXYDataModel( Object[][] queryResults, int seriesColumn,
-      int domainColumn, int rangeColumn, boolean convertNullValuesToZero ) {
+      int domainColumn, int rangeColumn, boolean convertNullValuesToZero, IPentahoMetaData metadata ) {
     MultiSeriesXYDataModel multiSeriesDataModel = new MultiSeriesXYDataModel();
 
     for ( int i = 0; i < queryResults.length; i++ ) {
       Object domainValue = queryResults[i][domainColumn];
-      String seriesName = queryResults[i][seriesColumn] != null ? queryResults[i][seriesColumn].toString() : "null";
+      String seriesName =
+          queryResults[i][seriesColumn] != null ? formatSeriesString( queryResults[i][seriesColumn], metadata, i,
+              seriesColumn ) : "null";
 
       if ( domainValue == null ) {
         if ( convertNullValuesToZero ) {
