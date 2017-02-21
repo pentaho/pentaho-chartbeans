@@ -16,9 +16,9 @@
   <dependencies defaultconf="default->default">
 
     <!--  internal dependencies -->
-    <dependency org="pentaho-library" name="libbase" rev="${dependency.libbase.revision}" transitive="true" changing="true" />
-    <dependency org="pentaho-library" name="libxml" rev="${dependency.libxml.revision}" transitive="true" changing="true" />
-    <dependency org="pentaho-library" name="libcss" rev="${dependency.libcss.revision}" transitive="true" changing="true" />
+    <dependency org="org.pentaho.reporting.library" name="libbase" rev="${dependency.libbase.revision}" transitive="true" changing="true" />
+    <dependency org="org.pentaho.reporting.library" name="libxml" rev="${dependency.libxml.revision}" transitive="true" changing="true" />
+    <dependency org="org.pentaho.reporting.library" name="libcss" rev="${dependency.libcss.revision}" transitive="true" changing="true" />
     <dependency org="pentaho"          name="pentaho-metadata" rev="${dependency.pentaho-metadata.revision}">
       <artifact name="pentaho-metadata" />
       <exclude org="com.ibm.icu" name="icu4j" />
