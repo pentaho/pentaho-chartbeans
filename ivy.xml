@@ -23,6 +23,7 @@
       <artifact name="pentaho-metadata" />
       <exclude org="com.ibm.icu" name="icu4j" />
     </dependency>
+    <dependency org="xerces" name="xercesImpl" rev="2.9.1" transitive="false" />
 
     <!--  external dependencies -->
     <dependency org="jfree" name="jfreechart" rev="${dependency.jfreechart.revision}" />
