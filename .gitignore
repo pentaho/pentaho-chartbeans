@@ -21,3 +21,4 @@ test-src/test-output/
 *.war
 *.ear
 *.iml
+/target/
