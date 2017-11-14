@@ -21,7 +21,7 @@
   <properties>
     <dependency.jfreechart.revision>1.0.13</dependency.jfreechart.revision>
     <dependency.commons-collections.revision>3.2.2</dependency.commons-collections.revision>
-    <dependency.xstream.revision>1.4.9</dependency.xstream.revision>
+    <dependency.xstream.revision>1.4.10</dependency.xstream.revision>
     <dependency.pentaho-ofc4j.revision>1.1.0</dependency.pentaho-ofc4j.revision>
   </properties>
   <dependencies>
