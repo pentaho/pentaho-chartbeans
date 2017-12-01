@@ -22,7 +22,7 @@
     <dependency.jfreechart.revision>1.0.13</dependency.jfreechart.revision>
     <dependency.commons-collections.revision>3.2.2</dependency.commons-collections.revision>
     <dependency.xstream.revision>1.4.10</dependency.xstream.revision>
-    <dependency.pentaho-ofc4j.revision>1.1.0</dependency.pentaho-ofc4j.revision>
+    <pentaho-ofc4j.version>1.1.0</pentaho-ofc4j.version>
   </properties>
   <dependencies>
   <!--  internal dependencies -->
@@ -71,7 +71,7 @@
 	<dependency>
 	  <groupId>ofc4j</groupId>
 	  <artifactId>pentaho-ofc4j</artifactId>
-	  <version>${dependency.pentaho-ofc4j.revision}</version>
+	  <version>${pentaho-ofc4j.version}</version>
 	</dependency>
 	<dependency>
 	  <groupId>org.codehaus.jettison</groupId>
