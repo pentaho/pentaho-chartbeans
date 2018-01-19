@@ -14,83 +14,85 @@
   <description>The Pentaho Chart Bean charting API.  An engine agnostic charting API.</description>
   <url>http://www.pentaho.com</url>
   <scm>
-    <connection>scm:git:git@github.com:pentaho/${project.artifactId}.git</connection>
-    <developerConnection>scm:git:git@github.com:pentaho/${project.artifactId}.git</developerConnection>
-    <url>scm:git:git@github.com:pentaho/${project.artifactId}.git</url>
+    <connection>scm:git:git@github.com:pentaho/pentaho-chartbeans.git</connection>
+    <developerConnection>scm:git:git@github.com:pentaho/pentaho-chartbeans.git</developerConnection>
+    <url>scm:git:git@github.com:pentaho/pentaho-chartbeans.git</url>
   </scm>
   <properties>
     <dependency.jfreechart.revision>1.0.13</dependency.jfreechart.revision>
     <dependency.commons-collections.revision>3.2.2</dependency.commons-collections.revision>
     <dependency.xstream.revision>1.4.10</dependency.xstream.revision>
     <pentaho-ofc4j.version>1.1.0</pentaho-ofc4j.version>
+    <pentaho-metadata.version>8.1.0.0-SNAPSHOT</pentaho-metadata.version>
+    <pentaho-reporting.version>8.1.0.0-SNAPSHOT</pentaho-reporting.version>
   </properties>
   <dependencies>
   <!--  internal dependencies -->
     <dependency>
       <groupId>org.pentaho.reporting.library</groupId>
       <artifactId>libcss</artifactId>
-      <version>${project.version}</version>
+      <version>${pentaho-reporting.version}</version>
     </dependency>
     <dependency>
       <groupId>org.pentaho.reporting.library</groupId>
       <artifactId>libbase</artifactId>
-      <version>${project.version}</version>
+      <version>${pentaho-reporting.version}</version>
     </dependency>
     <dependency>
       <groupId>org.pentaho.reporting.library</groupId>
       <artifactId>libxml</artifactId>
-      <version>${project.version}</version>
+      <version>${pentaho-reporting.version}</version>
     </dependency>
-	<dependency>
-	  <groupId>pentaho</groupId>
-	  <artifactId>pentaho-metadata</artifactId>
-	  <version>${project.version}</version>
-	    <exclusions>
-	        <exclusion>
-	          <groupId>com.ibm.icu</groupId>
-	          <artifactId>icu4j</artifactId>
-	        </exclusion>
-        </exclusions>
-	</dependency>
+  <dependency>
+    <groupId>org.pentaho</groupId>
+    <artifactId>pentaho-metadata</artifactId>
+    <version>${pentaho-metadata.version}</version>
+    <exclusions>
+      <exclusion>
+        <groupId>com.ibm.icu</groupId>
+        <artifactId>icu4j</artifactId>
+      </exclusion>
+    </exclusions>
+  </dependency>
   <!--  external dependencies -->
-	<dependency>
-	  <groupId>jfree</groupId>
-	  <artifactId>jfreechart</artifactId>
-	  <version>${dependency.jfreechart.revision}</version>
-	</dependency>
-	<dependency>
-	  <groupId>commons-collections</groupId>
-	  <artifactId>commons-collections</artifactId>
-	  <version>${dependency.commons-collections.revision}</version>
-	</dependency>
-	<dependency>
-	  <groupId>com.thoughtworks.xstream</groupId>
-	  <artifactId>xstream</artifactId>
-	  <version>${dependency.xstream.revision}</version>
-	</dependency>
-	<dependency>
-	  <groupId>ofc4j</groupId>
-	  <artifactId>pentaho-ofc4j</artifactId>
-	  <version>${pentaho-ofc4j.version}</version>
-	</dependency>
-	<dependency>
-	  <groupId>org.codehaus.jettison</groupId>
-	  <artifactId>jettison</artifactId>
-	  <version>1.2</version>
-	</dependency>
+  <dependency>
+    <groupId>jfree</groupId>
+    <artifactId>jfreechart</artifactId>
+    <version>${dependency.jfreechart.revision}</version>
+  </dependency>
+  <dependency>
+    <groupId>commons-collections</groupId>
+    <artifactId>commons-collections</artifactId>
+    <version>${dependency.commons-collections.revision}</version>
+  </dependency>
+  <dependency>
+    <groupId>com.thoughtworks.xstream</groupId>
+    <artifactId>xstream</artifactId>
+    <version>${dependency.xstream.revision}</version>
+  </dependency>
+  <dependency>
+    <groupId>ofc4j</groupId>
+    <artifactId>pentaho-ofc4j</artifactId>
+    <version>${pentaho-ofc4j.version}</version>
+  </dependency>
+  <dependency>
+    <groupId>org.codehaus.jettison</groupId>
+    <artifactId>jettison</artifactId>
+    <version>1.2</version>
+  </dependency>
   <!-- test dependencies -->
-	<dependency>
-	  <groupId>org.mockito</groupId>
-	  <artifactId>mockito-all</artifactId>
-	  <version>1.9.5</version>
-	  <scope>test</scope>
-	</dependency>
-	<dependency>
-	  <groupId>junit</groupId>
-	  <artifactId>junit</artifactId>
-	  <version>4.3.1</version>
-	  <scope>test</scope>
-	</dependency>
+  <dependency>
+    <groupId>org.mockito</groupId>
+    <artifactId>mockito-all</artifactId>
+    <version>1.9.5</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>junit</groupId>
+    <artifactId>junit</artifactId>
+    <version>4.3.1</version>
+    <scope>test</scope>
+  </dependency>
   </dependencies>
   <build />
 </project>
