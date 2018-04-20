@@ -17,8 +17,49 @@
 
 package org.pentaho.chart.data;
 
-import java.util.ArrayList;
 
-public class XYDataModel extends ArrayList<XYDataPoint> implements IChartDataModel {
+public class FormattableName implements Comparable<FormattableName> {
+  String key;
+  String formatted;
 
+  public FormattableName() {
+  }
+
+  public FormattableName( String key ) {
+    this.key = key;
+    this.formatted = key;
+  }
+
+  public FormattableName( String key, String formattedName ) {
+    this.key = key;
+    this.formatted = ( formattedName == null ? key : formattedName );
+  }
+
+  public String getKey() {
+    return key;
+  }
+
+  public void setKey( String key ) {
+    this.key = key;
+  }
+
+  public String getFormatted() {
+    return formatted;
+  }
+
+  public void setFormatted( String formatted ) {
+    this.formatted = formatted;
+  }
+
+  public int hashCode() {
+    return key.hashCode();
+  }
+
+  public String toString() {
+    return formatted;
+  }
+
+  public int compareTo( FormattableName other ) {
+    return this.key.compareTo( other.key );
+  }
 }
