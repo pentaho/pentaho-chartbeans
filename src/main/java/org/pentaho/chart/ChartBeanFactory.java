@@ -1,19 +1,19 @@
 /*!
-* This program is free software; you can redistribute it and/or modify it under the
-* terms of the GNU Lesser General Public License, version 2.1 as published by the Free Software
-* Foundation.
-*
-* You should have received a copy of the GNU Lesser General Public License along with this
-* program; if not, you can obtain a copy at http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
-* or from the Free Software Foundation, Inc.,
-* 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*
-* This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-* without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-* See the GNU Lesser General Public License for more details.
-*
-* Copyright (c) 2002-2017 Hitachi Vantara..  All rights reserved.
-*/
+ * This program is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License, version 2.1 as published by the Free Software
+ * Foundation.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with this
+ * program; if not, you can obtain a copy at http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+ * or from the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * Copyright (c) 2002-2018 Hitachi Vantara..  All rights reserved.
+ */
 
 package org.pentaho.chart;
 
@@ -103,26 +103,29 @@ public class ChartBeanFactory {
    * we should use
    * {@link #createChartDataModel(Object[][], Number, boolean, int, int, int, ChartModel, IPentahoMetaData)} instead of
    * it.
-   * 
    */
   @Deprecated
   public static IChartDataModel createChartDataModel( Object[][] queryResults, Number scalingFactor,
-      boolean convertNullsToZero, int rangeColumnIndex, int seriesColumnIdx, int domainColumnIdx,
-      ChartModel chartModel ) throws ChartDataOverflowException, NoChartDataException {
+                                                      boolean convertNullsToZero, int rangeColumnIndex,
+                                                      int seriesColumnIdx, int domainColumnIdx,
+                                                      ChartModel chartModel )
+    throws ChartDataOverflowException, NoChartDataException {
     return createChartDataModel( queryResults, scalingFactor, convertNullsToZero, rangeColumnIndex, seriesColumnIdx,
-        domainColumnIdx, chartModel, null );
+      domainColumnIdx, chartModel, null );
   }
 
   public static IChartDataModel createChartDataModel( Object[][] queryResults, Number scalingFactor,
-      boolean convertNullsToZero, int rangeColumnIndex, int seriesColumnIdx, int domainColumnIdx, ChartModel chartModel,
-      IPentahoMetaData metadata ) throws ChartDataOverflowException, NoChartDataException {
+                                                      boolean convertNullsToZero, int rangeColumnIndex,
+                                                      int seriesColumnIdx, int domainColumnIdx, ChartModel chartModel,
+                                                      IPentahoMetaData metadata )
+    throws ChartDataOverflowException, NoChartDataException {
     IChartDataModel chartDataModel = null;
     int numberOfDataPoints = 0;
 
     Plot plot = chartModel.getPlot();
     if ( ( plot instanceof PiePlot ) && ( seriesColumnIdx >= 0 ) && ( rangeColumnIndex >= 0 ) ) {
       NamedValuesDataModel namedValueDataModel =
-          createNamedValueDataModel( queryResults, seriesColumnIdx, rangeColumnIndex, convertNullsToZero, true );
+        createNamedValueDataModel( queryResults, seriesColumnIdx, rangeColumnIndex, convertNullsToZero, true );
       numberOfDataPoints = namedValueDataModel.size();
       chartDataModel = namedValueDataModel;
     } else if ( ( plot instanceof DialPlot ) && ( rangeColumnIndex >= 0 ) ) {
@@ -132,23 +135,23 @@ public class ChartBeanFactory {
     } else if ( plot instanceof ScatterPlot ) {
       if ( ( seriesColumnIdx >= 0 ) && ( domainColumnIdx >= 0 ) ) {
         MultiSeriesXYDataModel multiSeriesXYDataModel =
-            createMultiSeriesXYDataModel( queryResults, seriesColumnIdx, domainColumnIdx, rangeColumnIndex,
-                convertNullsToZero, metadata );
+          createMultiSeriesXYDataModel( queryResults, seriesColumnIdx, domainColumnIdx, rangeColumnIndex,
+            convertNullsToZero, metadata );
         for ( Series series : multiSeriesXYDataModel.getSeries() ) {
           numberOfDataPoints += series.size();
         }
         chartDataModel = multiSeriesXYDataModel;
       } else if ( domainColumnIdx >= 0 ) {
         XYDataModel xyDataModel =
-            createXYDataModel( queryResults, domainColumnIdx, rangeColumnIndex, convertNullsToZero );
+          createXYDataModel( queryResults, domainColumnIdx, rangeColumnIndex, convertNullsToZero );
         numberOfDataPoints = xyDataModel.size();
         chartDataModel = xyDataModel;
       }
     } else {
       if ( ( seriesColumnIdx >= 0 ) ) {
         MultiSeriesDataModel multiSeriesDataModel =
-            createMultiSeriesDataModel( queryResults, seriesColumnIdx, domainColumnIdx, rangeColumnIndex,
-                convertNullsToZero, metadata );
+          createMultiSeriesDataModel( queryResults, seriesColumnIdx, domainColumnIdx, rangeColumnIndex,
+            convertNullsToZero, metadata );
         List<DomainData> domainData = multiSeriesDataModel.getDomainData();
         if ( domainData.size() > 0 ) {
           for ( DomainData domain : domainData ) {
@@ -158,7 +161,7 @@ public class ChartBeanFactory {
         chartDataModel = multiSeriesDataModel;
       } else {
         NamedValuesDataModel namedValueDataModel =
-            createNamedValueDataModel( queryResults, domainColumnIdx, rangeColumnIndex, convertNullsToZero, true );
+          createNamedValueDataModel( queryResults, domainColumnIdx, rangeColumnIndex, convertNullsToZero, true );
         numberOfDataPoints = namedValueDataModel.size();
         chartDataModel = namedValueDataModel;
       }
@@ -176,7 +179,7 @@ public class ChartBeanFactory {
   }
 
   public static IOutput createChart( ChartModel chartModel, IChartDataModel chartDataModel,
-      IChartLinkGenerator contentLinkGenerator ) throws ChartProcessingException {
+                                     IChartLinkGenerator contentLinkGenerator ) throws ChartProcessingException {
     IChartPlugin chartPlugin = getPlugin( chartModel.getChartEngineId() );
     IOutput output = null;
     if ( chartPlugin != null ) {
@@ -188,13 +191,15 @@ public class ChartBeanFactory {
   }
 
   public static InputStream createChart( Object[][] queryResults, Number scalingFactor, boolean convertNullsToZero,
-      int rangeColumnIndex, int seriesColumnIdx, int domainColumnIdx, ChartModel chartModel,
-      IChartLinkGenerator contentLinkGenerator, int width, int height, OutputTypes outputType )
-        throws NoChartDataException, ChartDataOverflowException, ChartProcessingException, PersistenceException {
+                                         int rangeColumnIndex, int seriesColumnIdx, int domainColumnIdx,
+                                         ChartModel chartModel,
+                                         IChartLinkGenerator contentLinkGenerator, int width, int height,
+                                         OutputTypes outputType )
+    throws NoChartDataException, ChartDataOverflowException, ChartProcessingException, PersistenceException {
 
     IChartDataModel chartDataModel =
-        createChartDataModel( queryResults, scalingFactor, convertNullsToZero, rangeColumnIndex, seriesColumnIdx,
-            domainColumnIdx, chartModel );
+      createChartDataModel( queryResults, scalingFactor, convertNullsToZero, rangeColumnIndex, seriesColumnIdx,
+        domainColumnIdx, chartModel );
     IOutput output = createChart( chartModel, chartDataModel, contentLinkGenerator );
 
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -205,17 +210,24 @@ public class ChartBeanFactory {
   }
 
   private static MultiSeriesDataModel createMultiSeriesDataModel( Object[][] queryResults, int seriesColumn,
-      int domainColumn, int rangeColumn, boolean convertNullValuesToZero, IPentahoMetaData metaData ) {
+                                                                  int domainColumn, int rangeColumn,
+                                                                  boolean convertNullValuesToZero,
+                                                                  IPentahoMetaData metaData ) {
     MultiSeriesDataModel multiSeriesDataModel = new MultiSeriesDataModel();
 
     for ( int i = 0; i < queryResults.length; i++ ) {
-      String domainValue =
-          domainColumn >= 0 && queryResults[i][domainColumn] != null ? formatSeriesString(
-              queryResults[i][domainColumn], metaData, i, domainColumn ) : "";
-      Object seriesValue =
-          queryResults[i][seriesColumn] != null ? formatSeriesString( queryResults[i][seriesColumn], metaData, i,
-              seriesColumn ) : "null";
-      Object rangeValue = queryResults[i][rangeColumn];
+      Object domainData = domainColumn >= 0 ? queryResults[ i ][ domainColumn ] : null;
+      Object seriesData = seriesColumn >= 0 ? queryResults[ i ][ seriesColumn ] : null;
+
+      String domainKey = domainData != null ? domainData.toString() : "";
+      String domainFormatted = domainData != null ? formatSeriesString( domainData, metaData, i, domainColumn ) : "";
+
+      String seriesKey = seriesData != null ? seriesData.toString() : "";
+      String seriesFormatted =
+        seriesData != null ? formatSeriesString( seriesData, metaData, i, seriesColumn ) : "null";
+
+      Object rangeValue = queryResults[ i ][ rangeColumn ];
+
       if ( rangeValue == null ) {
         if ( convertNullValuesToZero ) {
           rangeValue = new Integer( 0 );
@@ -224,7 +236,7 @@ public class ChartBeanFactory {
         rangeValue = null;
       }
 
-      multiSeriesDataModel.addValue( domainValue, seriesValue.toString(), (Number) rangeValue );
+      multiSeriesDataModel.addValue( domainKey, domainFormatted, seriesKey, seriesFormatted, (Number) rangeValue );
     }
 
     return multiSeriesDataModel;
@@ -234,22 +246,25 @@ public class ChartBeanFactory {
     if ( metaData != null ) {
       String mask = (String) metaData.getAttribute( META_DATA_ROW_WITH_ATTRIBUTE, columnNo, META_DATA_MASK_ATTRIBUTE );
       DataType datatype =
-          (DataType) metaData.getAttribute( META_DATA_ROW_WITH_ATTRIBUTE, columnNo, META_DATA_DATATYPE_ATTRIBUTE );
+        (DataType) metaData.getAttribute( META_DATA_ROW_WITH_ATTRIBUTE, columnNo, META_DATA_DATATYPE_ATTRIBUTE );
       return DataFormatter.getFormatedString( datatype, mask, data );
     }
     return data.toString();
   }
 
   private static MultiSeriesXYDataModel createMultiSeriesXYDataModel( Object[][] queryResults, int seriesColumn,
-      int domainColumn, int rangeColumn, boolean convertNullValuesToZero, IPentahoMetaData metadata ) {
+                                                                      int domainColumn, int rangeColumn,
+                                                                      boolean convertNullValuesToZero,
+                                                                      IPentahoMetaData metadata ) {
     MultiSeriesXYDataModel multiSeriesDataModel = new MultiSeriesXYDataModel();
 
     for ( int i = 0; i < queryResults.length; i++ ) {
-      Object domainValue = queryResults[i][domainColumn];
-      String seriesName =
-          queryResults[i][seriesColumn] != null ? formatSeriesString( queryResults[i][seriesColumn], metadata, i,
-              seriesColumn ) : "null";
+      Object seriesData = seriesColumn >= 0 ? queryResults[ i ][ seriesColumn ] : null;
+      String seriesKey = seriesData != null ? seriesData.toString() : "";
+      String seriesFormatted =
+        seriesData != null ? formatSeriesString( seriesData, metadata, i, seriesColumn ) : "null";
 
+      Object domainValue = queryResults[ i ][ domainColumn ];
       if ( domainValue == null ) {
         if ( convertNullValuesToZero ) {
           domainValue = new Integer( 0 );
@@ -258,7 +273,7 @@ public class ChartBeanFactory {
         domainValue = null;
       }
 
-      Object rangeValue = queryResults[i][rangeColumn];
+      Object rangeValue = queryResults[ i ][ rangeColumn ];
       if ( rangeValue == null ) {
         if ( convertNullValuesToZero ) {
           rangeValue = new Integer( 0 );
@@ -267,20 +282,21 @@ public class ChartBeanFactory {
         rangeValue = null;
       }
 
-      multiSeriesDataModel.addDataPoint( seriesName, (Number) domainValue, (Number) rangeValue );
+      multiSeriesDataModel.addDataPoint( seriesKey, seriesFormatted, (Number) domainValue, (Number) rangeValue );
     }
 
     return multiSeriesDataModel;
   }
 
   private static NamedValuesDataModel createNamedValueDataModel( Object[][] queryResults, int domainColumn,
-      int rangeColumn, boolean convertNullsToZero, boolean autoSum ) {
+                                                                 int rangeColumn, boolean convertNullsToZero,
+                                                                 boolean autoSum ) {
     NamedValuesDataModel basicChartDataModel = new NamedValuesDataModel();
 
     for ( int i = 0; i < queryResults.length; i++ ) {
       Object domainValue = null;
       if ( domainColumn > -1 ) {
-        domainValue = queryResults[i][domainColumn];
+        domainValue = queryResults[ i ][ domainColumn ];
       }
       if ( domainValue == null ) {
         domainValue = "null";
@@ -288,7 +304,7 @@ public class ChartBeanFactory {
 
       String name = domainValue.toString();
 
-      Object rangeValue = queryResults[i][rangeColumn];
+      Object rangeValue = queryResults[ i ][ rangeColumn ];
       if ( rangeValue == null ) {
         if ( convertNullsToZero ) {
           rangeValue = new Integer( 0 );
@@ -305,7 +321,7 @@ public class ChartBeanFactory {
           existingDataPoint.setValue( (Number) rangeValue );
         } else if ( rangeValue != null ) {
           existingDataPoint.setValue( ( (Number) existingDataPoint.getValue() ).doubleValue() + ( (Number) rangeValue )
-              .doubleValue() );
+            .doubleValue() );
         }
       } else {
         basicChartDataModel.add( new NamedValue( name, (Number) rangeValue ) );
@@ -316,11 +332,11 @@ public class ChartBeanFactory {
   }
 
   private static BasicDataModel createBasicDataModel( Object[][] queryResults, int rangeColumn,
-      boolean convertNullsToZero, boolean autoSum ) {
+                                                      boolean convertNullsToZero, boolean autoSum ) {
     BasicDataModel oneDimensionalDataModel = new BasicDataModel( autoSum );
 
     for ( int i = 0; i < queryResults.length; i++ ) {
-      Object rangeValue = queryResults[i][rangeColumn];
+      Object rangeValue = queryResults[ i ][ rangeColumn ];
       if ( rangeValue == null ) {
         if ( convertNullsToZero ) {
           rangeValue = new Integer( 0 );
@@ -336,11 +352,11 @@ public class ChartBeanFactory {
   }
 
   private static XYDataModel createXYDataModel( Object[][] queryResults, int seriesColumn, int rangeColumn,
-      boolean convertNullsToZero ) {
+                                                boolean convertNullsToZero ) {
     XYDataModel basicChartDataModel = new XYDataModel();
 
     for ( int i = 0; i < queryResults.length; i++ ) {
-      Object domainValue = queryResults[i][rangeColumn];
+      Object domainValue = queryResults[ i ][ rangeColumn ];
       if ( domainValue == null ) {
         if ( convertNullsToZero ) {
           domainValue = new Integer( 0 );
@@ -349,7 +365,7 @@ public class ChartBeanFactory {
         domainValue = null;
       }
 
-      Object rangeValue = queryResults[i][rangeColumn];
+      Object rangeValue = queryResults[ i ][ rangeColumn ];
       if ( rangeValue == null ) {
         if ( convertNullsToZero ) {
           rangeValue = new Integer( 0 );
