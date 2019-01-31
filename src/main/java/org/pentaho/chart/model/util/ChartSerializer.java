@@ -40,58 +40,52 @@ public class ChartSerializer {
   private static XStream xmlChartWriter = new XStream( new DomDriver() );
   private static XStream xmlChartDefWriter = new XStream( new DomDriver() );
   static {
-    jsonChartWriter.setMode( XStream.NO_REFERENCES );
-    jsonChartWriter.alias( "chartModel", ChartModel.class ); //$NON-NLS-1$
-    jsonChartWriter.useAttributeFor( CssStyle.class );
-    jsonChartWriter.useAttributeFor( Orientation.class );
-    jsonChartWriter.useAttributeFor( LinePlotFlavor.class );
-    jsonChartWriter.useAttributeFor( BarPlotFlavor.class );
-    jsonChartWriter.registerConverter( new CssStylesConverter() );
-    jsonChartWriter.omitField( ChartLegend.class, "visible" ); //$NON-NLS-1$
-    jsonChartWriter.registerConverter( new StyledTextConverter() );
-    jsonChartWriter.registerConverter( new PaletteConverter() );
-    jsonChartWriter.registerConverter( new ScaleConverter() );
-    jsonChartWriter.registerConverter( new ChartModelConverter() );
-    jsonChartWriter.registerConverter( new AxisConverter() );
-    jsonChartWriter.registerConverter( new ChartTitleConverter() );
-    jsonChartWriter.registerConverter( new GridConverter() );
-    jsonChartWriter.useAttributeFor( PiePlot.class, "animate" ); //$NON-NLS-1$
-    jsonChartWriter.useAttributeFor( DialPlot.class, "animate" ); //$NON-NLS-1$
-    jsonChartWriter.useAttributeFor( PiePlot.class, "startAngle" ); //$NON-NLS-1$
-    jsonChartWriter.omitField( PiePlot.class, "slices" ); //$NON-NLS-1$
-    jsonChartWriter.omitField( PiePlot.class, "labels" ); //$NON-NLS-1$
-    jsonChartWriter.omitField( PieLabels.class, "visible" ); //$NON-NLS-1$
-    jsonChartWriter.omitField( TwoAxisPlot.class, "horizontalAxis" ); //$NON-NLS-1$
-    jsonChartWriter.omitField( TwoAxisPlot.class, "verticalAxis" ); //$NON-NLS-1$
-    jsonChartWriter.omitField( TwoAxisPlot.class, "grid" ); //$NON-NLS-1$
-    xmlChartWriter.setMode( XStream.NO_REFERENCES );
-    xmlChartWriter.alias( "chartModel", ChartModel.class ); //$NON-NLS-1$
-    xmlChartWriter.useAttributeFor( CssStyle.class );
-    xmlChartWriter.useAttributeFor( Orientation.class );
-    xmlChartWriter.useAttributeFor( LinePlotFlavor.class );
-    xmlChartWriter.useAttributeFor( BarPlotFlavor.class );
-    xmlChartWriter.registerConverter( new CssStylesConverter() );
-    xmlChartWriter.omitField( ChartLegend.class, "visible" ); //$NON-NLS-1$
-    xmlChartWriter.registerConverter( new StyledTextConverter() );
-    xmlChartWriter.registerConverter( new PaletteConverter() );
-    xmlChartWriter.registerConverter( new ScaleConverter() );
-    xmlChartWriter.registerConverter( new ChartModelConverter() );
-    xmlChartWriter.registerConverter( new AxisConverter() );
-    xmlChartWriter.registerConverter( new ChartTitleConverter() );
-    xmlChartWriter.registerConverter( new GridConverter() );
-    xmlChartWriter.useAttributeFor( PiePlot.class, "animate" ); //$NON-NLS-1$
-    xmlChartWriter.useAttributeFor( DialPlot.class, "animate" ); //$NON-NLS-1$
-    xmlChartWriter.useAttributeFor( PiePlot.class, "startAngle" ); //$NON-NLS-1$
-    xmlChartWriter.omitField( PiePlot.class, "slices" ); //$NON-NLS-1$
-    xmlChartWriter.omitField( PiePlot.class, "labels" ); //$NON-NLS-1$
-    xmlChartWriter.omitField( PieLabels.class, "visible" ); //$NON-NLS-1$
-    xmlChartWriter.omitField( TwoAxisPlot.class, "horizontalAxis" ); //$NON-NLS-1$
-    xmlChartWriter.omitField( TwoAxisPlot.class, "verticalAxis" ); //$NON-NLS-1$
-    xmlChartWriter.omitField( TwoAxisPlot.class, "grid" ); //$NON-NLS-1$
-    jsonChartDefWriter.setMode( XStream.NO_REFERENCES );
-    jsonChartDefWriter.alias( "chartDataModel", ChartDataDefinition.class ); //$NON-NLS-1$
-    xmlChartDefWriter.setMode( XStream.NO_REFERENCES );
-    xmlChartDefWriter.alias( "chartDataModel", ChartDataDefinition.class ); //$NON-NLS-1$
+    initChartWriter( jsonChartWriter );
+    initChartWriter( xmlChartWriter );
+    initChartDefWriter( jsonChartDefWriter );
+    initChartDefWriter( xmlChartDefWriter );
+    initWriterSecurity( jsonChartWriter );
+    initWriterSecurity( jsonChartDefWriter );
+    initWriterSecurity( xmlChartWriter );
+    initWriterSecurity( xmlChartDefWriter );
+  }
+
+  private static void initChartWriter( XStream chartWriter ) {
+    chartWriter.setMode( XStream.NO_REFERENCES );
+    chartWriter.alias( "chartModel", ChartModel.class ); //$NON-NLS-1$
+    chartWriter.useAttributeFor( CssStyle.class );
+    chartWriter.useAttributeFor( Orientation.class );
+    chartWriter.useAttributeFor( LinePlotFlavor.class );
+    chartWriter.useAttributeFor( BarPlotFlavor.class );
+    chartWriter.registerConverter( new CssStylesConverter() );
+    chartWriter.omitField( ChartLegend.class, "visible" ); //$NON-NLS-1$
+    chartWriter.registerConverter( new StyledTextConverter() );
+    chartWriter.registerConverter( new PaletteConverter() );
+    chartWriter.registerConverter( new ScaleConverter() );
+    chartWriter.registerConverter( new ChartModelConverter() );
+    chartWriter.registerConverter( new AxisConverter() );
+    chartWriter.registerConverter( new ChartTitleConverter() );
+    chartWriter.registerConverter( new GridConverter() );
+    chartWriter.useAttributeFor( PiePlot.class, "animate" ); //$NON-NLS-1$
+    chartWriter.useAttributeFor( DialPlot.class, "animate" ); //$NON-NLS-1$
+    chartWriter.useAttributeFor( PiePlot.class, "startAngle" ); //$NON-NLS-1$
+    chartWriter.omitField( PiePlot.class, "slices" ); //$NON-NLS-1$
+    chartWriter.omitField( PiePlot.class, "labels" ); //$NON-NLS-1$
+    chartWriter.omitField( PieLabels.class, "visible" ); //$NON-NLS-1$
+    chartWriter.omitField( TwoAxisPlot.class, "horizontalAxis" ); //$NON-NLS-1$
+    chartWriter.omitField( TwoAxisPlot.class, "verticalAxis" ); //$NON-NLS-1$
+    chartWriter.omitField( TwoAxisPlot.class, "grid" ); //$NON-NLS-1$
+  }
+
+  private static void initChartDefWriter( XStream chartDefWriter ) {
+    chartDefWriter.setMode( XStream.NO_REFERENCES );
+    chartDefWriter.alias( "chartDataModel", ChartDataDefinition.class ); //$NON-NLS-1$
+  }
+
+  private static void initWriterSecurity( XStream chartWriter ) {
+    XStream.setupDefaultSecurity( chartWriter );
+    Class[] allowedTypes = new Class[]{ ChartModel.class, ChartDataDefinition.class };
+    chartWriter.allowTypes( allowedTypes );
   }
 
   public static String serialize( ChartModel model, ChartSerializationFormat outputFormat ) {
