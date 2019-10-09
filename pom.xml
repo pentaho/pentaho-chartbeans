@@ -21,7 +21,6 @@
   <properties>
     <dependency.jfreechart.revision>1.0.13</dependency.jfreechart.revision>
     <dependency.commons-collections.revision>3.2.2</dependency.commons-collections.revision>
-    <dependency.xstream.revision>1.4.10</dependency.xstream.revision>
     <pentaho-ofc4j.version>1.1.0</pentaho-ofc4j.version>
     <pentaho-metadata.version>9.0.0.0-SNAPSHOT</pentaho-metadata.version>
     <pentaho-reporting.version>9.0.0.0-SNAPSHOT</pentaho-reporting.version>
@@ -68,7 +67,6 @@
   <dependency>
     <groupId>com.thoughtworks.xstream</groupId>
     <artifactId>xstream</artifactId>
-    <version>${dependency.xstream.revision}</version>
   </dependency>
   <dependency>
     <groupId>ofc4j</groupId>
