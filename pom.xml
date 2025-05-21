@@ -5,11 +5,11 @@
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>pentaho-ce-jar-parent-pom</artifactId>
-    <version>10.3.0.0-SNAPSHOT</version>
+    <version>10.3.0.0-356</version>
   </parent>
   <groupId>org.pentaho</groupId>
   <artifactId>pentaho-chartbeans</artifactId>
-  <version>10.3.0.0-SNAPSHOT</version>
+  <version>10.3.0.0-356</version>
   <name>pentaho-chartbeans-charting-engine</name>
   <description>The Pentaho Chart Bean charting API.  An engine agnostic charting API.</description>
   <url>http://www.pentaho.com</url>
@@ -22,8 +22,8 @@
     <dependency.jfreechart.revision>1.0.13</dependency.jfreechart.revision>
     <dependency.commons-collections.revision>3.2.2</dependency.commons-collections.revision>
     <pentaho-ofc4j.version>1.1.0</pentaho-ofc4j.version>
-    <pentaho-metadata.version>10.3.0.0-SNAPSHOT</pentaho-metadata.version>
-    <pentaho-reporting.version>10.3.0.0-SNAPSHOT</pentaho-reporting.version>
+    <pentaho-metadata.version>10.3.0.0-356</pentaho-metadata.version>
+    <pentaho-reporting.version>10.3.0.0-356</pentaho-reporting.version>
   </properties>
   <dependencies>
   <!--  internal dependencies -->
